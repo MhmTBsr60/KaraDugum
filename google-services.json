@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "976033813398-uotrvm4bgvmj218g58qr6v02v19f5mac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.karadugum.puzzle",
+            "certificate_hash": "b34db0890c979880d4dad7d5921f054b3752420a"
+          }
+        },
+        {
           "client_id": "976033813398-b5fr6fm0tsp4vi93o2tps53cepo44nfj.apps.googleusercontent.com",
           "client_type": 3
         }
