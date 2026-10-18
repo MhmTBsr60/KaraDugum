@@ -83,9 +83,22 @@ jobs:
       - name: APK olustur
         run: gradle --no-daemon --stacktrace :app:assembleDebug
 
-      - name: SHA-1 sertifikasini goster
+            - name: SHA-1 sertifikasini goster
         shell: bash
         run: |
+          mkdir -p "$HOME/.android"
+
+          keytool -genkeypair \
+            -keystore "$HOME/.android/debug.keystore" \
+            -alias androiddebugkey \
+            -storepass android \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US" \
+            -noprompt
+
           keytool -list -v \
             -keystore "$HOME/.android/debug.keystore" \
             -alias androiddebugkey \
