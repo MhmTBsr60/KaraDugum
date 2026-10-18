@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "976033813398",
+    "firebase_url": "https://karadugum-33c7f-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "karadugum-33c7f",
+    "storage_bucket": "karadugum-33c7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976033813398:android:0e3683947e64f5db5643b7",
+        "android_client_info": {
+          "package_name": "com.karadugum.puzzle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976033813398-tho13h2d50afa2c5iv7ssjq3c2q47r4j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.karadugum.puzzle",
+            "certificate_hash": "5f1480af68b8695254a1dd09242d174792a943ea"
+          }
+        },
+        {
+          "client_id": "976033813398-b5fr6fm0tsp4vi93o2tps53cepo44nfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0kIqYO8gk4EozFaZWHu10xxTNXojzx4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976033813398-b5fr6fm0tsp4vi93o2tps53cepo44nfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
