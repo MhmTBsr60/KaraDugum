@@ -56,6 +56,9 @@ soundLabels();if(musicOn)startMusic();$('ranking').onclick=()=>{if(window.KaraNa
 const el=id=>document.getElementById(id), native=()=>window.KaraNative;
 const get=k=>{try{return localStorage.getItem(k)}catch(e){return null}}, put=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const read=k=>{try{return JSON.parse(get(k)||'{}')}catch(e){return {}}};
+// v6.4: Game state helpers are scoped to the first script; provide safe local equivalents.
+const get64=(k,d)=>{try{return JSON.parse(localStorage.getItem('kd64_'+k))??d}catch(e){return d}};
+const set64=(k,v)=>{try{localStorage.setItem('kd64_'+k,JSON.stringify(v))}catch(e){}};
 let page='home',user=null,ranks=[],rankMessage='Dünya sıralaması için Google hesabınızla giriş yapın.';
 let sound=get('kd3_sound')!=='0',music=get('kd3_music')==='1',vibration=get('kd5_vibration')==='1',glow=get('kd5_glow')!=='0';
 const logo=`<svg class="kdLogo" viewBox="0 0 240 240" aria-label="Orynexa Games amblemi"><defs><linearGradient id="metal" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".45" stop-color="#9b9b9b"/><stop offset="1" stop-color="#f3d18a"/></linearGradient></defs><circle cx="120" cy="120" r="96" fill="none" stroke="url(#metal)" stroke-width="7"/><path d="M46 176 L110 54 L138 103 L124 130 L110 105 L77 176 Z" fill="url(#metal)"/><path d="M106 176 L174 56 L199 176 L171 176 L164 117 L131 176 Z" fill="#eac26c"/><path d="M120 3 L128 32 L148 40 L128 48 L120 77 L112 48 L92 40 L112 32Z" fill="#f6d27e"/></svg>`;
