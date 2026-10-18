@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: KaraDugum v5.2 APK Olustur
+    name: KaraDugum v6.1 APK Olustur
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,13 +25,15 @@ jobs:
           mkdir -p app/src/main/java/com/karadugum/puzzle app/src/main/assets
           cp MainActivity.java app/src/main/java/com/karadugum/puzzle/MainActivity.java
           cp index.html app/src/main/assets/index.html
+          mkdir -p app/src/main/res/drawable
+          cp icon.png app/src/main/res/drawable/karadugum_icon.png
           cp google-services.json app/google-services.json
           cat > app/src/main/AndroidManifest.xml <<'MANIFEST'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.VIBRATE" />
-            <application android:label="KARA DÜĞÜM" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
+            <application android:label="KARA DÜĞÜM" android:icon="@drawable/karadugum_icon" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
               <activity android:name=".MainActivity" android:exported="true">
                 <intent-filter>
                   <action android:name="android.intent.action.MAIN" />
@@ -68,8 +70,8 @@ jobs:
               applicationId 'com.karadugum.puzzle'
               minSdk 23
               targetSdk 35
-              versionCode 60
-              versionName '6.0'
+              versionCode 61
+              versionName '6.1'
             }
           }
           dependencies {
@@ -109,7 +111,7 @@ jobs:
           echo "KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
           echo "EXPECTED_SHA256=$EXPECTED_SHA256" >> "$GITHUB_ENV"
       - name: APK olustur
-        run: gradle --no-daemon --stacktrace :app:assembleRelease
+        run: gradle --no-daemon --stacktrace :app:assembleRelease :app:bundleRelease
       - name: APK SHA-1 sertifikasini goster
         shell: bash
         run: |
@@ -123,7 +125,9 @@ jobs:
           test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo "HATA: APK imzasi beklenen imzayla eslesmiyor"; exit 1; }
       - uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.0-APK
-          path: app/build/outputs/apk/release/app-release.apk
+          name: KaraDugum-v6.1-APK-ve-AAB
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 30
