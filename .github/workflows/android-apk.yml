@@ -2,12 +2,18 @@ name: KaraDugum Android APK
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
   build:
+    name: KaraDugum APK Olustur
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Kaynak dosyalarini al
@@ -19,7 +25,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Gradle kur
+      - name: Gradle 8.9 kur
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
@@ -44,6 +50,7 @@ jobs:
                   gradlePluginPortal()
               }
           }
+
           dependencyResolutionManagement {
               repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
               repositories {
@@ -51,6 +58,7 @@ jobs:
                   mavenCentral()
               }
           }
+
           rootProject.name = 'KaraDugum'
           include ':app'
           EOF
@@ -81,29 +89,44 @@ jobs:
           EOF
 
       - name: APK olustur
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
-
-            - name: SHA-1 sertifikasini goster
         shell: bash
         run: |
-          mkdir -p "$HOME/.android"
+          set -euo pipefail
+          gradle --no-daemon --stacktrace :app:assembleDebug
 
-          keytool -genkeypair \
-            -keystore "$HOME/.android/debug.keystore" \
-            -alias androiddebugkey \
-            -storepass android \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US" \
-            -noprompt
+      - name: Gercek APK SHA-1 sertifikasini goster
+        shell: bash
+        run: |
+          set -euo pipefail
 
-          keytool -list -v \
-            -keystore "$HOME/.android/debug.keystore" \
-            -alias androiddebugkey \
-            -storepass android \
-            -keypass android
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+
+          test -f "$APK"
+
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+
+          APKSIGNER=$(find "$SDK/build-tools" \
+            -type f \
+            -name apksigner \
+            | sort -V \
+            | tail -n 1)
+
+          if [ -z "$APKSIGNER" ]; then
+            echo "HATA: apksigner bulunamadi."
+            exit 1
+          fi
+
+          echo "======================================"
+          echo "KARADUGUM APK IMZA BILGILERI"
+          echo "======================================"
+
+          "$APKSIGNER" verify \
+            --print-certs \
+            "$APK"
+
+          echo "======================================"
+          echo "Firebase icin SHA-1 degerini kullan."
+          echo "======================================"
 
       - name: APK dosyasini kaydet
         uses: actions/upload-artifact@v4
@@ -111,3 +134,4 @@ jobs:
           name: KaraDugum-v2-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 30
