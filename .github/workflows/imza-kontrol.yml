@@ -1,0 +1,26 @@
+name: KaraDugum Imza Kontrol
+on:
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Imza sertifikasini kontrol et
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$KEYSTORE_B64" || -z "$KEYSTORE_PASSWORD" ]]; then
+            echo 'HATA: KEYSTORE_BASE64 veya KEYSTORE_PASSWORD eksik.'
+            exit 1
+          fi
+          umask 077
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/karadugum.jks"
+          keytool -list -v -keystore "$RUNNER_TEMP/karadugum.jks" -storepass:env KEYSTORE_PASSWORD | grep -E '^(Alias name:|SHA1:|SHA256:|Entry type:)' || true
+          rm -f "$RUNNER_TEMP/karadugum.jks"
