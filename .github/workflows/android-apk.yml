@@ -28,6 +28,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           mkdir -p app/src/main/java/com/karadugum/puzzle
           mkdir -p app/src/main/assets
 
@@ -79,17 +80,17 @@ jobs:
           }
           EOF
 
-           - name: SHA-1 sertifikasini goster
+      - name: APK olustur
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+
+      - name: SHA-1 sertifikasini goster
         shell: bash
         run: |
           keytool -list -v \
             -keystore "$HOME/.android/debug.keystore" \
             -alias androiddebugkey \
             -storepass android \
-            -keypass android 
-            
-            - name: APK olustur
-        run: gradle --no-daemon :app:assembleDebug
+            -keypass android
 
       - name: APK dosyasini kaydet
         uses: actions/upload-artifact@v4
