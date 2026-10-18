@@ -83,10 +83,11 @@ jobs:
           GRADLE
       - name: Kalici imzalama bilgilerini dogrula
         env:
-          KEYSTORE_B64: ${{ secrets.ORYNEXA_KEYSTORE_B64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ORYNEXA_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ORYNEXA_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ORYNEXA_KEY_PASSWORD }}
+                  env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           EXPECTED_SHA256: ${{ vars.ORYNEXA_CERT_SHA256 }}
         shell: bash
         run: |
