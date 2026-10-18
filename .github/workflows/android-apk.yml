@@ -118,7 +118,7 @@ jobs:
             defaultConfig {
               applicationId 'com.karadugum.puzzle'
               minSdk 23
-              targetSdk 28
+              targetSdk 35
               versionCode 4
               versionName '4.0'
             }
