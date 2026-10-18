@@ -1,0 +1,12 @@
+KARADÜĞÜM v6.4 — HD simgeli tam kaynak paket
+
+Bu paket daha önce Chrome testinde açılan düzeltilmiş index.html dosyasını, Android kaynak kodunu, APK/AAB GitHub Actions iş akışını ve yeni simgeyi içerir.
+
+GITHUB'A YÜKLEME
+1. ZIP dosyasını çıkartın.
+2. GitHub deposunun KÖK dizinine index.html, MainActivity.java, icon.png ve android-icons klasörünü yükleyin.
+3. android-apk.yml dosyasını .github/workflows/android-apk.yml yoluna koyun (deponuzdaki eski iş akışını bununla değiştirin).
+4. Önceden var olan google-services.json dosyasını ve GitHub Actions Secrets/Variables değerlerini SİLMEYİN. Bu dosya gizli yapılandırma olduğundan pakete dahil değildir.
+5. Actions üzerinden APK/AAB oluşturun; yeni APK'yı yükleyip simgeyi ve oyun açılışını kontrol edin.
+
+NOT: Bu bir kaynak kod paketidir, derlenmiş APK değildir. APK GitHub Actions ile oluşturulur.
