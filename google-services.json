@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "976033813398-ejptj5jas4kra700mao86n5s727aovcr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.karadugum.puzzle",
+            "certificate_hash": "a1651dcdd656a93de45cdc8bccf0481c4fa1224a"
+          }
+        },
+        {
           "client_id": "976033813398-tho13h2d50afa2c5iv7ssjq3c2q47r4j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
