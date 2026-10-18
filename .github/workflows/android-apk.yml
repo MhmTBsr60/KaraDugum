@@ -1,4 +1,3 @@
-
 name: KaraDugum APK
 
 on:
@@ -9,8 +8,10 @@ on:
 jobs:
   android-apk:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
       - name: Kaynak kodlarini al
         uses: actions/checkout@v4
@@ -21,67 +22,86 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Gradle 8.9 kur
+      - name: Gradle kur
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Projeyi otomatik duzelt ve SDK sec
+      - name: Android projesini hazirla
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p app/src/main/java/com/karadugum/puzzle 
-app/src/main/assets
-          [ ! -f AndroidManifest.xml ] || cp AndroidManifest.xml app/src/main/AndroidManifest.xml
-          [ ! -f MainActivity.java ] || cp MainActivity.java app/src/main/java/com/karadugum/puzzle/MainActivity.java
-          [ ! -f index.html ] || cp index.html app/src/main/assets/index.html
-          test -s 
-app/src/main/AndroidManifest.xml
-          test -s app/src/main/java/com/karadugum/puzzle/MainActivity.java
-          test -s app/src/main/assets/index.html
+
+          mkdir -p app/src/main/java/com/karadugum/puzzle
+          mkdir -p app/src/main/assets
+
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
+          cp MainActivity.java app/src/main/java/com/karadugum/puzzle/MainActivity.java
+          cp index.html app/src/main/assets/index.html
+
           cat > settings.gradle <<'EOF'
-          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
-          dependencyResolutionManagement { 
-repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
           rootProject.name = 'KaraDugum'
           include ':app'
           EOF
+
           cat > build.gradle <<'EOF'
-          plugins { id 'com.android.application' version '8.7.3' apply false }
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
           EOF
-          
-SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+
           echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
-          if ! find "$SDK/platforms" -mindepth 1 -maxdepth 1 -type d -name 'android-*' 2>/dev/null | grep -q . ; then
-            echo "Android SDK platformu kurulu degil. SDK manager ile kurulum 
-deneniyor."
-            yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
-            "$SDK/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0'
+
+          API=35
+
+          if [ ! -d "$SDK/platforms/android-35" ]; then
+            "$SDK/cmdline-tools/latest/bin/sdkmanager" \
+              "platforms;android-35" \
+              "build-tools;35.0.0"
           fi
-          API="$(find "$SDK/platforms" -mindepth 1 -maxdepth 1 -type d -name 'android-*' -printf '%f\n' | sed 's/android-//' | grep -E '^[0-9]+$' | sort -n | tail -1)"
-          echo "Derlenecek Android API: 
-$API"
-          cat > app/build.gradle <<EOF
-          plugins { id 'com.android.application' }
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
           android {
               namespace 'com.karadugum.puzzle'
-              compileSdk $API
+              compileSdk 35
+
               defaultConfig {
                   applicationId 'com.karadugum.puzzle'
                   minSdk 23
                   targetSdk 28
                   versionCode 1
                   versionName '1.0'
-              
-}
+              }
           }
           EOF
 
-      - name: APK derle
+      - name: APK olustur
         run: gradle --no-daemon --stacktrace :app:assembleDebug
 
-      - name: APK dosyasini indirilebilir hale getir
+      - name: APK dosyasini kaydet
         uses: actions/upload-artifact@v4
         with:
           name: KaraDugum-APK
