@@ -37,14 +37,16 @@ jobs:
           cp index.html app/src/main/assets/index.html
           cp google-services.json app/google-services.json
 
-          cat > app/src/main/AndroidManifest.xml <<'MANIFEST'
+          cat > 
+app/src/main/AndroidManifest.xml <<'MANIFEST'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
             <application
-              android:label="KARA DÜĞÜM"
+              
+android:label="KARA DÜĞÜM"
               android:theme="@android:style/Theme.Material.NoActionBar"
               android:usesCleartextTraffic="false"
               android:allowBackup="true">
@@ -75,7 +77,8 @@ jobs:
           }
 
           dependencyResolutionManagement {
-            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            
+repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
             repositories {
               google()
               mavenCentral()
@@ -87,7 +90,8 @@ jobs:
           GRADLE
 
           cat > build.gradle <<'GRADLE'
-          plugins {
+          plugins 
+{
             id 'com.android.application' version '8.7.3' apply false
             id 'com.google.gms.google-services' version '4.4.2' apply false
           }
@@ -96,12 +100,23 @@ jobs:
           cat > app/build.gradle <<'GRADLE'
           plugins {
             id 'com.android.application'
-            id 'com.google.gms.google-services'
+            id 
+'com.google.gms.google-services'
           }
 
           android {
             namespace 'com.karadugum.puzzle'
             compileSdk 35
+
+            signingConfigs {
+              release {
+                storeFile file(System.getenv('SIGNING_KEYSTORE_PATH'))
+                storePassword 
+System.getenv('KEYSTORE_PASSWORD')
+                keyAlias 'karadugum'
+                keyPassword System.getenv('KEY_PASSWORD')
+              }
+            }
 
             defaultConfig {
               applicationId 'com.karadugum.puzzle'
@@ -109,46 +124,70 @@ jobs:
               targetSdk 28
               versionCode 4
               versionName '4.0'
+            
+}
+
+            buildTypes {
+              release {
+                signingConfig signingConfigs.release
+                minifyEnabled false
+              }
             }
           }
 
           dependencies {
             implementation platform('com.google.firebase:firebase-bom:33.7.0')
-            implementation 'com.google.firebase:firebase-auth'
+            implementation 
+'com.google.firebase:firebase-auth'
             implementation 'com.google.firebase:firebase-database'
             implementation 'com.google.android.gms:play-services-auth:21.3.0'
           }
           GRADLE
 
-      - name: APK olustur
+      - name: Kalici imza anahtarini hazirla
         shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 
+}}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          gradle --no-daemon --stacktrace :app:assembleDebug
+          test -n "$KEYSTORE_BASE64" || { echo "KEYSTORE_BASE64 eksik"; exit 1; }
+          test -n "$KEYSTORE_PASSWORD" || { echo "KEYSTORE_PASSWORD eksik"; exit 1; 
+}
+          test -n "$KEY_PASSWORD" || { echo "KEY_PASSWORD eksik"; exit 1; }
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/karadugum-release.jks"
+          chmod 600 "$RUNNER_TEMP/karadugum-release.jks"
+          test -s "$RUNNER_TEMP/karadugum-release.jks"
+          echo 
+"SIGNING_KEYSTORE_PATH=$RUNNER_TEMP/karadugum-release.jks" >> "$GITHUB_ENV"
+
+      - name: Kalici anahtarla APK olustur
+        shell: bash
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo 
+pipefail
+          gradle --no-daemon --stacktrace :app:assembleRelease
 
       - name: APK SHA-1 sertifikasini goster
         shell: bash
         run: |
           set -euo pipefail
-
-          APK="app/build/outputs/apk/debug/app-debug.apk"
-
-          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
-
-          APKSIGNER=$(find "$SDK/build-tools" \
-            -type f \
-            -name apksigner \
-            | sort -V \
-            | tail -n 1)
-
-          "$APKSIGNER" verify \
-            --print-certs \
-            "$APK"
+          APK="app/build/outputs/apk/release/app-release.apk"
+          
+SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          APKSIGNER=$(find "$SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)
+          "$APKSIGNER" verify --print-certs "$APK"
 
       - name: APK dosyasini kaydet
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v4-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: 
+KaraDugum-v4-Sabit-Imzali-APK
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
