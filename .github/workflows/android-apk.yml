@@ -79,7 +79,16 @@ jobs:
           }
           EOF
 
-      - name: APK olustur
+           - name: SHA-1 sertifikasini goster
+        shell: bash
+        run: |
+          keytool -list -v \
+            -keystore "$HOME/.android/debug.keystore" \
+            -alias androiddebugkey \
+            -storepass android \
+            -keypass android 
+            
+            - name: APK olustur
         run: gradle --no-daemon :app:assembleDebug
 
       - name: APK dosyasini kaydet
