@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.Build;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import android.webkit.JavascriptInterface;
@@ -220,6 +224,23 @@ public class MainActivity extends Activity {
     }
 
     public class Bridge {
+
+        @JavascriptInterface
+        public void vibrate(int milliseconds) {
+            runOnUiThread(() -> {
+                try {
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator == null || !vibrator.hasVibrator()) return;
+                    long duration = Math.max(10, Math.min(150, milliseconds));
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(duration);
+                    }
+                } catch (Exception e) { Log.w(TAG, "Titreşim kullanılamadı", e); }
+            });
+        }
+
 
         @JavascriptInterface
         public void login() {
@@ -439,10 +460,17 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (view.canGoBack()) {
-            view.goBack();
-        } else {
-            super.onBackPressed();
+        if (view != null) {
+            view.evaluateJavascript("(function(){return !!(window.kdHandleBack && window.kdHandleBack())})()", result -> {
+                if (!"true".equals(result)) {
+                    new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("KARA DÜĞÜM")
+                        .setMessage("Oyundan çıkmak istiyor musun?")
+                        .setNegativeButton("Vazgeç", null)
+                        .setPositiveButton("Çıkış", (dialog, which) -> finish())
+                        .show();
+                }
+            });
         }
     }
 }
