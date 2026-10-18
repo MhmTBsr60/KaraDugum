@@ -30,6 +30,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import java.util.Iterator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -223,6 +226,35 @@ public class MainActivity extends Activity {
         }
     }
 
+    private JSONObject mergeSave(JSONObject a, JSONObject b) throws Exception {
+        JSONObject result = new JSONObject();
+        JSONObject ca = a.optJSONObject("completed"), cb = b.optJSONObject("completed");
+        JSONObject ba = a.optJSONObject("best"), bb = b.optJSONObject("best");
+        JSONObject completed = new JSONObject(), best = new JSONObject();
+        for (int i = 1; i <= 100; i++) {
+            String k = String.valueOf(i);
+            int stars = Math.max(ca == null ? 0 : ca.optInt(k), cb == null ? 0 : cb.optInt(k));
+            int points = Math.max(ba == null ? 0 : ba.optInt(k), bb == null ? 0 : bb.optInt(k));
+            if (stars > 0) completed.put(k, Math.min(3, stars));
+            if (points > 0) best.put(k, Math.min(10000000, points));
+        }
+        int level = Math.min(100, Math.max(1, Math.max(a.optInt("level", 1), b.optInt("level", 1))));
+        for (int i = 1; i <= 100; i++) if (completed.optInt(String.valueOf(i)) > 0) level = Math.max(level, Math.min(100, i + 1));
+        result.put("level", level);
+        result.put("completed", completed);
+        result.put("best", best);
+        return result;
+    }
+
+    private JSONObject parseSave(DataSnapshot snapshot) throws Exception {
+        JSONObject data = new JSONObject();
+        data.put("level", snapshot.child("level").getValue() instanceof Number ? ((Number) snapshot.child("level").getValue()).intValue() : 1);
+        Object c = snapshot.child("completed").getValue(), b = snapshot.child("best").getValue();
+        data.put("completed", new JSONObject(c instanceof String ? (String)c : "{}"));
+        data.put("best", new JSONObject(b instanceof String ? (String)b : "{}"));
+        return data;
+    }
+
     public class Bridge {
 
         @JavascriptInterface
@@ -353,6 +385,44 @@ public class MainActivity extends Activity {
                                         }
                                     });
                         });
+            });
+        }
+
+        @JavascriptInterface
+        public void syncSave(String raw) {
+            runOnUiThread(() -> {
+                FirebaseUser user = auth.getCurrentUser();
+                if (user == null) return;
+                try {
+                    JSONObject incoming = new JSONObject(raw);
+                    if (!(incoming.optJSONObject("completed") instanceof JSONObject) || !(incoming.optJSONObject("best") instanceof JSONObject)) return;
+                    if (raw.length() > 18000) { error("Kayıt çok büyük"); return; }
+                    DatabaseReference own = FirebaseDatabase.getInstance().getReference("playerSaves").child(user.getUid());
+                    own.runTransaction(new Transaction.Handler() {
+                        @Override public Transaction.Result doTransaction(MutableData current) {
+                            try {
+                                JSONObject old = new JSONObject();
+                                Object oldLevel = current.child("level").getValue();
+                                old.put("level", oldLevel instanceof Number ? ((Number)oldLevel).intValue() : 1);
+                                Object oldCompleted = current.child("completed").getValue();
+                                Object oldBest = current.child("best").getValue();
+                                old.put("completed", new JSONObject(oldCompleted instanceof String ? (String)oldCompleted : "{}"));
+                                old.put("best", new JSONObject(oldBest instanceof String ? (String)oldBest : "{}"));
+                                JSONObject merged = mergeSave(old, incoming);
+                                current.child("level").setValue(merged.optInt("level", 1));
+                                current.child("completed").setValue(merged.getJSONObject("completed").toString());
+                                current.child("best").setValue(merged.getJSONObject("best").toString());
+                                current.child("updatedAt").setValue(System.currentTimeMillis());
+                                return Transaction.success(current);
+                            } catch (Exception e) { return Transaction.abort(); }
+                        }
+                        @Override public void onComplete(DatabaseError err, boolean committed, DataSnapshot snapshot) {
+                            if (err != null || !committed) { error("Bulut kayıt eşitlenemedi: " + (err == null ? "İşlem durdu" : err.getMessage())); return; }
+                            try { send("cloudSave", parseSave(snapshot).toString()); }
+                            catch (Exception e) { error("Bulut kayıt okunamadı"); }
+                        }
+                    });
+                } catch (Exception e) { error("Kayıt verisi geçersiz"); }
             });
         }
 
