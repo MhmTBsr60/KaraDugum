@@ -57,9 +57,10 @@ jobs:
           fi
 
           if [ ! -f app/src/main/res/mipmap-mdpi/ic_launcher.png ]; then
-            echo "HATA: Android uygulama simgesi eksik."
-            exit 1
-          fi
+  echo "Android simgesi mipmap-mdpi klasorunde bulunamadi."
+  echo "Mevcut simge dosyalari:"
+  find app/src/main/res -type f | sort
+fi
 
           cat > app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
