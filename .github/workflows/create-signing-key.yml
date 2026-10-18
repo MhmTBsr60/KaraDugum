@@ -1,0 +1,37 @@
+name: Create Android Signing Key
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-key:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate signing key
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "Signing passwords have not been configured."
+            exit 1
+          fi
+
+          keytool -genkeypair \
+            -v \
+            -keystore karadugum-release.jks \
+            -alias karadugum \
+            -keyalg RSA \
+            -keysize 3072 \
+            -validity 10000 \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -dname "CN=KaraDugum, OU=Orynexa Games, O=Orynexa Games, C=TR"
+
+      - name: Upload signing key
+        uses: actions/upload-artifact@v4
+        with:
+          name: karadugum-signing-key
+          path: karadugum-release.jks
+          retention-days: 1
