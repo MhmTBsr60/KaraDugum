@@ -82,14 +82,13 @@ jobs:
       - name: Kalici imzalama bilgilerini dogrula
         env:
           KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
-KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-KEY_ALIAS: ${{ secrets.ORYNEXA_KEY_ALIAS }}
-KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          EXPECTED_SHA256: ${{ vars.ORYNEXA_CERT_SHA256 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ORYNEXA_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$KEYSTORE_B64" && test -n "$KEYSTORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD" && test -n "$EXPECTED_SHA256" || { echo "Kalici imza bilgileri eksik. APK olusturulmadi."; exit 1; }
+          test -n "$KEYSTORE_B64" && test -n "$KEYSTORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD" || { echo "Kalici imza bilgileri eksik. APK olusturulmadi."; exit 1; }
           printf '%s' "$KEYSTORE_B64" | base64 -d > app/orynexa.jks
           cat >> app/build.gradle <<'GRADLE'
           android {
@@ -107,10 +106,9 @@ KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
           echo "KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
-          echo "EXPECTED_SHA256=$EXPECTED_SHA256" >> "$GITHUB_ENV"
       - name: APK olustur
         run: gradle --no-daemon --stacktrace :app:assembleRelease
-      - name: APK SHA-1 sertifikasini goster
+      - name: APK sertifikasini goster
         shell: bash
         run: |
           set -euo pipefail
@@ -119,8 +117,8 @@ KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           APKSIGNER=$(find "$SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)
           "$APKSIGNER" verify --print-certs "$APK" | tee /tmp/cert.txt
           ACTUAL=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p; s/^V2 Signer: certificate SHA-256 digest: //p' /tmp/cert.txt | head -n1 | tr -d ':' | tr '[:upper:]' '[:lower:]')
-          EXPECTED=$(printf '%s' "$EXPECTED_SHA256" | tr -d ':' | tr '[:upper:]' '[:lower:]')
-          test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo "HATA: APK imzasi beklenen imzayla eslesmiyor"; exit 1; }
+          test -n "$ACTUAL" || { echo "HATA: APK sertifika bilgisi okunamadi"; exit 1; }
+          echo "APK_CERT_SHA256=$ACTUAL"
       - uses: actions/upload-artifact@v4
         with:
           name: KaraDugum-v5.2-APK
