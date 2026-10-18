@@ -1,0 +1,129 @@
+name: KaraDugum Android APK
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+jobs:
+  build:
+    name: KaraDugum v5.2 APK Olustur
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Android projesini hazirla
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p app/src/main/java/com/karadugum/puzzle app/src/main/assets
+          cp MainActivity.java app/src/main/java/com/karadugum/puzzle/MainActivity.java
+          cp index.html app/src/main/assets/index.html
+          cp google-services.json app/google-services.json
+          cat > app/src/main/AndroidManifest.xml <<'MANIFEST'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.VIBRATE" />
+            <application android:label="KARA DÜĞÜM" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
+              <activity android:name=".MainActivity" android:exported="true">
+                <intent-filter>
+                  <action android:name="android.intent.action.MAIN" />
+                  <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+              </activity>
+            </application>
+          </manifest>
+          MANIFEST
+          cat > settings.gradle <<'GRADLE'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories { google(); mavenCentral() }
+          }
+          rootProject.name = 'KaraDugum'
+          include ':app'
+          GRADLE
+          cat > build.gradle <<'GRADLE'
+          plugins {
+            id 'com.android.application' version '8.7.3' apply false
+            id 'com.google.gms.google-services' version '4.4.2' apply false
+          }
+          GRADLE
+          cat > app/build.gradle <<'GRADLE'
+          plugins {
+            id 'com.android.application'
+            id 'com.google.gms.google-services'
+          }
+          android {
+            namespace 'com.karadugum.puzzle'
+            compileSdk 35
+            defaultConfig {
+              applicationId 'com.karadugum.puzzle'
+              minSdk 23
+              targetSdk 35
+              versionCode 60
+              versionName '6.0'
+            }
+          }
+          dependencies {
+            implementation platform('com.google.firebase:firebase-bom:33.7.0')
+            implementation 'com.google.firebase:firebase-auth'
+            implementation 'com.google.firebase:firebase-database'
+            implementation 'com.google.android.gms:play-services-auth:21.3.0'
+          }
+          GRADLE
+      - name: Kalici imzalama bilgilerini dogrula
+        env:
+          KEYSTORE_B64: ${{ secrets.ORYNEXA_KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ORYNEXA_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ORYNEXA_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ORYNEXA_KEY_PASSWORD }}
+          EXPECTED_SHA256: ${{ vars.ORYNEXA_CERT_SHA256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_B64" && test -n "$KEYSTORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD" && test -n "$EXPECTED_SHA256" || { echo "Kalici imza bilgileri eksik. APK olusturulmadi."; exit 1; }
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/orynexa.jks
+          cat >> app/build.gradle <<'GRADLE'
+          android {
+            signingConfigs {
+              orynexa {
+                storeFile file('orynexa.jks')
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+              }
+            }
+            buildTypes { release { signingConfig signingConfigs.orynexa; minifyEnabled false } }
+          }
+          GRADLE
+          echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+          echo "EXPECTED_SHA256=$EXPECTED_SHA256" >> "$GITHUB_ENV"
+      - name: APK olustur
+        run: gradle --no-daemon --stacktrace :app:assembleRelease
+      - name: APK SHA-1 sertifikasini goster
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="app/build/outputs/apk/release/app-release.apk"
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          APKSIGNER=$(find "$SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)
+          "$APKSIGNER" verify --print-certs "$APK" | tee /tmp/cert.txt
+          ACTUAL=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p; s/^V2 Signer: certificate SHA-256 digest: //p' /tmp/cert.txt | head -n1 | tr -d ':' | tr '[:upper:]' '[:lower:]')
+          EXPECTED=$(printf '%s' "$EXPECTED_SHA256" | tr -d ':' | tr '[:upper:]' '[:lower:]')
+          test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo "HATA: APK imzasi beklenen imzayla eslesmiyor"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-v6.0-APK
+          path: app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
