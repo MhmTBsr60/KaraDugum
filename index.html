@@ -140,39 +140,53 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  // Kilitli taşlar çözümü ele vermesin: az sayıda ve sadece orta/ileri seviyelerde.
  // Bölüm tipleri dönüşümlü: klasik, sabit düğüm, mühürlü düğüm, karma ağ.
  // 15 farklı görev varyasyonu, seviyeler boyunca dönüşümlü dağıtılır.
- mode=level<=5?0:level<=10?(level%2?2:1):1+(level-11)%14;
- const names=['KLASİK AĞ','KİLİTLİ DÜĞÜM','MÜHÜRLÜ DÜĞÜM','ÇİFT MÜHÜR','ANAHTAR VE KAPI','SİSLİ AĞ','TERS DÖNÜŞ','HEDEF NOKTALARI','ZİNCİR MÜHÜR','BUZLU DÜĞÜM','KARMA ENGEL','GİZLİ ANAHTAR','TERS VE KİLİTLİ','USTA KARIŞIMI','SON DÜĞÜM'];
- modeName=names[mode];
- // Her tür için farklı görev kuralı; oyuncuya oynanış açıklaması.
- const rules=[
- 'Tüm bağlantıları birleştir.','Sabit düğümler döndürülemez.',
- 'Mühürlü düğüme önce bir kez dokun.','Çift mühürleri iki kez aç.',
- 'Anahtarları topla, sonra kapıları döndür.','Gizli çizgileri dokunarak ortaya çıkar.',
- 'Düğümler saat yönünün tersine döner.','🎯 Hedefleri dokunarak etkinleştir ve ağı tamamla.',
- 'Zincir mühürlerini açmadan ilerleyemezsin.','❄ Buzlu düğümü iki dokunuşla çöz.',
- 'Engelleri aş ve hedefleri etkinleştir.','Sis içindeki anahtarları bul.',
- 'Sabit düğümler arasında ters yönde döndür.','Ters dönüş ve anahtarları birlikte kullan.',
- 'Mühür, anahtar, sis, buz ve hedeflerin hepsini çöz.'
- ];
- window.kdCurrentRule=rules[mode];
- const lockRate=[0,.15,.02,.02,.03,.02,.02,.03,.09,.05,.12,.03,.12,.12,.16][mode];
+ mode=level<=10?0:(level-11)%15;
+ const names=['TERS DÖNÜŞ','ENGELLİ HEDEFLER','SABİT VE TERS DÖNÜŞ','ZİNCİRLEME DÖNÜŞ','KAYDIRMALI DÜĞÜMLER','ÇİFT ENERJİ HATTI','AYNALI DÜĞÜMLER','HAMLE SINIRI','IŞINLANMA KAPILARI','DÖNEN SATIRLAR','ENERJİ ANAHTARLARI','HAREKETLİ ENGELLER','ÇİFT KATMAN','TEK YÖNLÜ AKIŞ','KARANLIK AĞ'];
+ const rules=['Düğümleri ters yönde döndür.','Engelleri aş ve hedefleri etkinleştir.','Sabit düğümler arasında ters yönde döndür.','Bir düğüm, komşularını da döndürür.','İki komşu düğümün yerini değiştir.','İki renkli hattı aynı anda tamamla.','Bir düğüm, aynadaki eşini ters döndürür.','Hamle sınırını aşmadan tamamla.','Portalların konumunu dikkate al.','Bir satırdaki bütün düğümler birlikte döner.','Anahtarları doğru sırayla etkinleştir.','Engeller belirli hamlelerde hareket eder.','İki katmanı sırayla tamamla.','Akışı okların yönüne göre kur.','Karanlık düğümleri keşfederek ağı tamamla.'];
+ modeName=level<=10?'SABİT BAĞLANTI':names[mode];
+ window.kdCurrentRule=level<=10?'Tüm bağlantıları birleştir.':rules[mode];
+ const advanced=level>10;
+ const modeOn=k=>advanced&&mode===k;
+ const neighbors=i=>[i-n,i+n,i-1,i+1].filter(j=>j>=0&&j<count&&(Math.abs((j%n)-(i%n))+Math.abs((j/n|0)-(i/n|0))===1));
+ let portalPair=[],layer=0,layerDone=false,otherSolution=[],otherTiles=[],otherInitial=[],switchOrder=[],switchProgress=0,blockedIndex=-1;
+ // These variables are persisted in the enclosing scope via the shared mechanics object.
+ window.kdExtra={portalPair,layer,layerDone,otherSolution,otherTiles,otherInitial,switchOrder,switchProgress,blockedIndex};
+ const lockRate=advanced&&[1,2,11].includes(mode)? .10:0;
  fixed=solution.map(()=>rand()<lockRate);
- sealed=solution.map((_,i)=>!fixed[i]&&[2,3,8,9,10,13,14].includes(mode)&&rand()<([3,8,14].includes(mode)?.35:.22)?([3,8,14].includes(mode)?2:1):0);
- sealInitial=sealed.slice();
- keys=solution.map((_,i)=>!fixed[i]&&[4,11,13,14].includes(mode)&&rand()<.12);
- if([4,11,13,14].includes(mode)&&!keys.some(Boolean)){const k=fixed.findIndex(v=>!v);if(k>=0)keys[k]=true;}
- keyInitial=keys.slice();
- doors=solution.map((_,i)=>!fixed[i]&&!keys[i]&&[4,11,13,14].includes(mode)&&rand()<.18);
- fog=solution.map((_,i)=>[5,11,14].includes(mode)&&rand()<.4);
- fogInitial=fog.slice();
- reverseMode=[6,12,13,14].includes(mode);
- targets=solution.map((_,i)=>!fixed[i]&&[7,10,14].includes(mode)&&rand()<.16);
+ sealed=solution.map(()=>0);sealInitial=sealed.slice();
+ keys=solution.map(()=>false);keyInitial=keys.slice();
+ doors=solution.map(()=>false);
+ fog=solution.map((_,i)=>modeOn(14)&&rand()<.55);fogInitial=fog.slice();
+ reverseMode=advanced&&[0,2].includes(mode);
+ targets=solution.map((_,i)=>modeOn(1)&&!fixed[i]&&rand()<.16);
+ if(modeOn(1)&&!targets.some(Boolean))targets[0]=true;
+ const extra=window.kdExtra;
+ if(modeOn(8)){let a=Math.floor(rand()*count),b=Math.floor(rand()*count);if(a===b)b=(b+1)%count;extra.portalPair=[a,b];}
+ if(modeOn(10)){extra.switchOrder=[0,1,2].map(()=>Math.floor(rand()*count));extra.switchOrder=[...new Set(extra.switchOrder)];}
+ if(modeOn(11)){extra.blockedIndex=Math.floor(rand()*count);fixed[extra.blockedIndex]=false;}
+ if(modeOn(12)){extra.otherSolution=solution.slice();extra.otherTiles=solution.map(v=>rotate(v,Math.floor(rand()*4)));extra.otherInitial=extra.otherTiles.slice();}
  rotCount=Array(count).fill(0);rotInitial=rotCount.slice();
  targetDone=targets.map(()=>false);targetInitial=targetDone.slice();
- ice=solution.map((_,i)=>!fixed[i]&&[9,14].includes(mode)&&rand()<.25?2:0);
- if([9,14].includes(mode)&&!ice.some(Boolean)){const ix=fixed.findIndex(v=>!v);if(ix>=0)ice[ix]=2;}
+ ice=solution.map(()=>0);
+ if(false&&!ice.some(Boolean)){const ix=fixed.findIndex(v=>!v);if(ix>=0)ice[ix]=2;}
  iceInitial=ice.slice();pulse=0;
  tiles=solution.map((v,i)=>fixed[i]?v:rotate(v,Math.floor(rand()*4)));
+ if(advanced&&[3,6,9].includes(mode)){
+   tiles=solution.slice();
+   for(let z=0;z<count*2;z++){
+     const i=Math.floor(rand()*count);
+     const targetsMove=mode===3?[i,...neighbors(i)]:mode===6?[i,count-1-i]:Array.from({length:n},(_,c)=>(i/n|0)*n+c);
+     for(const j of new Set(targetsMove))if(!fixed[j])tiles[j]=rot(tiles[j]);
+   }
+ }
+ if(modeOn(4)){ // slide mode: swap only adjacent tiles, preserving a reversible scramble
+   tiles=solution.slice();
+   for(let z=0;z<count*2;z++){const i=Math.floor(rand()*count),ns=neighbors(i);const j=ns[Math.floor(rand()*ns.length)];[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
+ }
+ if(modeOn(5)||modeOn(13)){ // two colored/directional routes have separate visual rule markers
+   window.kdExtra.colors=solution.map((_,i)=>i%2?'#fb7185':'#5dbbff');
+ }
+
  const target=Math.min(count-fixed.filter(Boolean).length,Math.ceil(count*(level<=5?.45:level<=10?.70:level<=20?.88:.98)));
  let unsolved=tiles.reduce((a,v,i)=>a+(!fixed[i]&&v!==solution[i]?1:0),0);
  for(let i=0;i<count&&unsolved<target;i++)if(!fixed[i]&&tiles[i]===solution[i]&&rot(tiles[i])!==tiles[i]){tiles[i]=rot(tiles[i]);unsolved++;}
@@ -184,14 +198,22 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
 }function countValid(){let valid=0,total=0;for(let i=0;i<tiles.length;i++){let r=i/n|0,c=i%n;for(let [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){if(!(tiles[i]&bit))continue;total++;let rr=r+dr,cc=c+dc;if(rr>=0&&rr<n&&cc>=0&&cc<n&&(tiles[rr*n+cc]&opp))valid++}}return [valid,total]}
 function solved(){let seen=new Set([0]),queue=[0];for(let k=0;k<queue.length;k++){let i=queue[k],r=i/n|0,c=i%n;for(let [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){if(!(tiles[i]&bit))continue;let rr=r+dr,cc=c+dc;if(rr<0||rr>=n||cc<0||cc>=n||!(tiles[rr*n+cc]&opp))return false;let j=rr*n+cc;if(!seen.has(j)){seen.add(j);queue.push(j)}}}return seen.size===tiles.length}
 function svg(v){let lines='';for(let [bit,x,y] of [[1,50,3],[2,97,50],[4,50,97],[8,3,50]])if(v&bit)lines+=`<line x1="50" y1="50" x2="${x}" y2="${y}" stroke="white" stroke-width="10" stroke-linecap="round"/>`;return `<svg viewBox="0 0 100 100" aria-hidden="true">${lines}<circle cx="50" cy="50" r="9" fill="white"/></svg>`}
-function render(){let board=$('board');board.style.gridTemplateColumns=`repeat(${n},1fr)`;board.innerHTML=tiles.map((v,i)=>`<button class="tile ${fixed[i]?'good':''}" aria-label="${i+1}. kareyi döndür" data-i="${i}">${fog[i]?'<span style="font-size:22px;color:#aab">?</span>':svg(v)}${keys[i]?'<span class="kdBadge">🔑</span>':doors[i]&&keys.some(Boolean)?'<span class="kdBadge">🚪</span>':targets[i]?'<span class="kdBadge">'+(targetDone[i]?'✅':'🎯')+'</span>':''}${ice[i]?'<span class="kdIceBadge">❄'+ice[i]+'</span>':''}${fixed[i]?'<span style="position:absolute;right:5px;top:3px;font-size:12px">🔒</span>':sealed[i]?'<span style="position:absolute;right:4px;top:2px;font-size:12px">'+(sealed[i]===2?'🔐':'🔓')+'</span>':''}</button>`).join('');$('level').textContent=level;const levelHead=$('kdGameLevel');if(levelHead)levelHead.textContent='BÖLÜM '+level;$('moves').textContent=moves;let [valid,total]=countValid();$('links').textContent=Math.round(valid/Math.max(1,total)*100)+'%';$('hint').textContent=`◈ İPUCU (${hints})`;$('challenge').textContent=(level<=5?'◆ ÖĞRETİCİ':level<=10?'◆ NORMAL':level<=20?'⚡ ZOR':level<=55?'☠ ÇOK ZOR':level<=130?'☠ UZMAN':'☠ ACIMASIZ')+' • '+n+'×'+n+' • '+modeName;$('score').textContent=Object.values(best).reduce((a,b)=>a+(+b||0),0);$('stars').textContent=Object.values(completed).reduce((a,b)=>a+(+b||0),0);tick(false);
+function render(){let board=$('board');board.style.gridTemplateColumns=`repeat(${n},1fr)`;board.innerHTML=tiles.map((v,i)=>`<button class="tile ${fixed[i]?'good':''}" aria-label="${i+1}. kareyi döndür" data-i="${i}">${fog[i]?'<span style="font-size:22px;color:#aab">?</span>':svg(v)}${keys[i]?'<span class="kdBadge">🔑</span>':doors[i]&&keys.some(Boolean)?'<span class="kdBadge">🚪</span>':targets[i]?'<span class="kdBadge">'+(targetDone[i]?'✅':'🎯')+'</span>':''}${level>10&&mode===8&&window.kdExtra.portalPair.includes(i)?'<span class="kdBadge">🌀</span>':''}${level>10&&mode===10&&window.kdExtra.switchOrder.includes(i)?'<span class="kdBadge">⚡</span>':''}${level>10&&mode===11&&window.kdExtra.blockedIndex===i?'<span class="kdBadge">⛔</span>':''}${level>10&&mode===12?'<span class="kdBadge">Ⅱ</span>':''}${level>10&&mode===13?'<span class="kdBadge">➜</span>':''}${ice[i]?'<span class="kdIceBadge">❄'+ice[i]+'</span>':''}${fixed[i]?'<span style="position:absolute;right:5px;top:3px;font-size:12px">🔒</span>':sealed[i]?'<span style="position:absolute;right:4px;top:2px;font-size:12px">'+(sealed[i]===2?'🔐':'🔓')+'</span>':''}</button>`).join('');$('level').textContent=level;const levelHead=$('kdGameLevel');if(levelHead)levelHead.textContent='BÖLÜM '+level;$('moves').textContent=moves;let [valid,total]=countValid();$('links').textContent=Math.round(valid/Math.max(1,total)*100)+'%';$('hint').textContent=`◈ İPUCU (${hints})`;$('challenge').textContent=(level<=5?'◆ ÖĞRETİCİ':level<=10?'◆ NORMAL':level<=20?'⚡ ZOR':level<=55?'☠ ÇOK ZOR':level<=130?'☠ UZMAN':'☠ ACIMASIZ')+' • '+n+'×'+n+' • '+modeName;$('score').textContent=Object.values(best).reduce((a,b)=>a+(+b||0),0);$('stars').textContent=Object.values(completed).reduce((a,b)=>a+(+b||0),0);tick(false);
  const rule=$('kdModeRule')||document.createElement('div');
  if(!rule.id){rule.id='kdModeRule';rule.style.cssText='font-size:12px;color:#d7bd7a;text-align:center;margin:7px auto;max-width:460px;line-height:1.5';$('challenge').insertAdjacentElement('afterend',rule);}
  rule.textContent='◈ '+window.kdCurrentRule;
 }
 $('board').addEventListener('click',e=>{let btn=e.target.closest('.tile');if(!btn||locked)return;let i=+btn.dataset.i;if(fixed[i]){fx('lock');$('status').textContent='🔒 Sabit düğüm döndürülemez.';return}if(doors[i]&&!keys[i]&&keys.some(Boolean)){$('status').textContent='🔑 Önce altın anahtarları topla.';fx('lock');return}if(targets[i]&&!targetDone[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});targetDone[i]=true;fx('chain');$('status').textContent='🎯 Hedef etkinleştirildi.';render();if(solved()&&!keys.some(Boolean)&&targets.every((v,j)=>!v||targetDone[j])&&ice.every(v=>!v))win();return}
 if(ice[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});ice[i]--;fx('lock');$('status').textContent=ice[i]?'❄ Buz çatladı; tekrar dokun.':'❄ Buz kırıldı; artık döndürebilirsin.';render();return}
-if(keys[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});keys[i]=false;fog[i]=false;fx('chain');$('status').textContent='🔑 Anahtar alındı! Kapılar açılabilir.';render();return}if(sealed[i]>0){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});sealed[i]--;fx('lock');$('status').textContent=sealed[i]?'🔐 Mühür zayıfladı. Bir kez daha dokun.':'🔓 Mühür açıldı. Şimdi kareyi döndürebilirsin.';render();return}history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});fx('tap');btn.classList.add('flash');tiles[i]=reverseMode?rotate(tiles[i],3):rot(tiles[i]);rotCount[i]++;moves++;fog[i]=false;render();if(solved()&&!keys.some(Boolean)&&targets.every((v,j)=>!v||targetDone[j])&&ice.every(v=>!v)){try{win()}catch(err){console.error('Bölüm bitiş hatası',err);locked=false;$('status').textContent='Bitiş ekranı hatası. Yeniden başlat veya ana menüye dön.';}}else if(moves%25===0){$('status').textContent=['Burası biraz sinir bozucu, değil mi?','Bir köşeyi düzeltirken diğerini bozmak...','Tüm açık uçları kontrol et.'][moves/25%3|0]}});
+if(keys[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});keys[i]=false;fog[i]=false;fx('chain');$('status').textContent='🔑 Anahtar alındı! Kapılar açılabilir.';render();return}if(sealed[i]>0){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});sealed[i]--;fx('lock');$('status').textContent=sealed[i]?'🔐 Mühür zayıfladı. Bir kez daha dokun.':'🔓 Mühür açıldı. Şimdi kareyi döndürebilirsin.';render();return}history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});fx('tap');btn.classList.add('flash');if(level>10&&mode===4){
+ const candidates=neighbors(i).filter(j=>!fixed[j]);
+ const j=candidates.length?candidates[0]:i;
+ [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+ }else{
+ const affected=level>10&&mode===3?[i,...[i-n,i+n,i-1,i+1].filter(j=>j>=0&&j<tiles.length&&(Math.abs(j%n-i%n)+Math.abs((j/n|0)-(i/n|0))===1))]:level>10&&mode===6?[i,tiles.length-1-i]:level>10&&mode===9?Array.from({length:n},(_,c)=>(i/n|0)*n+c):[i];
+ for(const j of new Set(affected))if(!fixed[j])tiles[j]=reverseMode?rotate(tiles[j],3):rot(tiles[j]);
+ }
+ rotCount[i]++;moves++;fog[i]=false;render();if(solved()&&!keys.some(Boolean)&&targets.every((v,j)=>!v||targetDone[j])&&ice.every(v=>!v)){try{win()}catch(err){console.error('Bölüm bitiş hatası',err);locked=false;$('status').textContent='Bitiş ekranı hatası. Yeniden başlat veya ana menüye dön.';}}else if(moves%25===0){$('status').textContent=['Burası biraz sinir bozucu, değil mi?','Bir köşeyi düzeltirken diğerini bozmak...','Tüm açık uçları kontrol et.'][moves/25%3|0]}});
 $('restart').onclick=()=>{attempts++;addStat('attempts',1);tiles=initial.slice();sealed=sealInitial.slice();keys=keyInitial.slice();fog=fogInitial.slice();rotCount=rotInitial.slice();targetDone=targetInitial.slice();ice=iceInitial.slice();moves=0;usedHints=0;undos=0;hints=level<=5?3:level<=10?2:level<=20?1:0;history=[];locked=false;startTime=Date.now();render();$('status').textContent='Aynı bulmaca. Yeni şans.'};$('new').onclick=()=>{generate();$('status').textContent='Bu bölümün bulmacası yeniden karıştırıldı.'};$('undo').onclick=()=>{if(!history.length||locked)return;fx('undo');let previous=history.pop();tiles=previous.tiles;sealed=previous.sealed;keys=previous.keys;fog=previous.fog;rotCount=previous.rotCount;targetDone=previous.targetDone||targetDone;ice=previous.ice||ice;moves=Number.isFinite(previous.moves)?previous.moves:Math.max(0,moves-1);undos++;render()};$('hint').onclick=()=>{if(locked)return;if(!hints){let coupons=get64('hintCoupons',0);if(coupons<=0){$('status').textContent='İpucu bitti. Mağazadan ipucu kuponu al.';return;}set64('hintCoupons',coupons-1);hints=1;}fx('tap');let options=tiles.map((v,i)=>i).filter(i=>!fixed[i]&&tiles[i]!==solution[i]&&![rot(solution[i]),rotate(solution[i],2),rotate(solution[i],3)].every(v=>v===solution[i]));if(!options.length){const pending=tiles.map((_,i)=>i).filter(i=>!fixed[i]&&(ice[i]||sealed[i]||keys[i]||(targets[i]&&!targetDone[i])));if(!pending.length){$('status').textContent='Tüm taşlar hizalı. Bağlantıları kontrol et.';return;}options=pending;}let i=options[rand()*options.length|0];history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});tiles[i]=solution[i];sealed[i]=0;ice[i]=0;targetDone[i]=true;keys[i]=false;fog[i]=false;moves++;hints--;usedHints++;render();let b=$('board').children[i];b.style.background='#555';$('status').textContent='Bir kareyi düzelttim. Kalanı senin.';if(solved()&&!keys.some(Boolean)&&targets.every((v,j)=>!v||targetDone[j])&&ice.every(v=>!v))win()};function tick(expire=true){let seconds=Math.floor((Date.now()-startTime)/1000);let left=timeLimit?Math.max(0,timeLimit-seconds):seconds;$('clock').textContent=(left/60|0)+':'+String(left%60).padStart(2,'0');if(expire&&timeLimit&&left===0&&!locked){locked=true;clearInterval(timer);fx('fail');$('modalTitle').textContent='SÜRE BİTTİ';$('modalText').textContent='Bu bölüm seni yendi. Yeniden dene.';$('next').textContent='TEKRAR DENE';$('modal').classList.add('show')}}function win(){try{fx('win')}catch(e){}locked=true;clearInterval(timer);let seconds=Math.floor((Date.now()-startTime)/1000);let ratio=moves/optimal;let parTime=Math.max(35,optimal*3+10);let star=1;if(!usedHints&&undos===0&&ratio<=1.35)star=2;if(!usedHints&&undos===0&&ratio<=1.08&&seconds<=parTime)star=3;let pts=Math.max(100,Math.round((1900-moves*19-seconds*3-usedHints*180-undos*80)*star));addStat('wins',1);addStat('time',seconds);addStat('moves',moves);addStat('xp',40+star*20);let rewardLedger=get64('rewardedLevels',null);if(!rewardLedger||typeof rewardLedger!=='object'||Array.isArray(rewardLedger)){rewardLedger={};for(const oldLevel of Object.keys(completed))rewardLedger[oldLevel]=true;}let coinReward=0;if(!rewardLedger[level]){let base=level<=15?2:level<=30?3:level<=75?4:level<=150?5:7;coinReward=base+(star===3?3:star===2?1:0);rewardLedger[level]=true;addStat('coins',coinReward);}set64('rewardedLevels',rewardLedger);window.kdLastWin={level,star,pts,moves,optimal,seconds,xp:40+star*20,coins:coinReward};if(star===3)addStat('perfect',1);let fastest=get64('fastest',{});fastest[level]=Math.min(Number(fastest[level]||Infinity),seconds);set64('fastest',fastest);let minMoves=get64('minMoves',{});minMoves[level]=Math.min(Number(minMoves[level]||Infinity),moves);set64('minMoves',minMoves);completed[level]=Math.max(star,completed[level]||0);best[level]=Math.max(pts,best[level]||0);safeSet('kd64_completed',JSON.stringify(completed));safeSet('kd64_best',JSON.stringify(best));safeSet('kd64_level',Math.min(300,Math.max(level+1,+(safeGet('kd64_level')||1))));if(window.kdSignedIn&&typeof window.kdCloudSync==='function'){try{Promise.resolve(window.kdCloudSync()).catch(()=>{});}catch(e){console.warn('Bulut eşitleme ertelendi',e);}}if(window.KaraNative && window.kdSignedIn){try{KaraNative.upload(Object.values(best).reduce((a,b)=>a+(+b||0),0))}catch(e){}}$('modalTitle').textContent='DÜĞÜM ÇÖZÜLDÜ';$('modalText').textContent=`${'★'.repeat(star)}${'☆'.repeat(3-star)} • ${pts} puan • ${moves} hamle (hedef ${optimal}) • ${seconds} saniye. +${40+star*20} XP • +${coinReward} jeton. ${level===300?'300 BÖLÜM TAMAMLANDI!':'Daha zoru geliyor.'}`;$('next').textContent=level===300?'BÖLÜMLER':'SONRAKİ BÖLÜM →';$('modal').classList.add('show');render()}window.kdAdvanceLevel=function(replay=false){
   const modal=document.getElementById('modal');
   modal.classList.remove('show','kdWinModal');
