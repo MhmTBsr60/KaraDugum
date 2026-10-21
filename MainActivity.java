@@ -239,15 +239,15 @@ public class MainActivity extends Activity {
         JSONObject ca = a.optJSONObject("completed"), cb = b.optJSONObject("completed");
         JSONObject ba = a.optJSONObject("best"), bb = b.optJSONObject("best");
         JSONObject completed = new JSONObject(), best = new JSONObject();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 300; i++) {
             String k = String.valueOf(i);
             int stars = Math.max(ca == null ? 0 : ca.optInt(k), cb == null ? 0 : cb.optInt(k));
             int points = Math.max(ba == null ? 0 : ba.optInt(k), bb == null ? 0 : bb.optInt(k));
             if (stars > 0) completed.put(k, Math.min(3, stars));
             if (points > 0) best.put(k, Math.min(10000000, points));
         }
-        int level = Math.min(100, Math.max(1, Math.max(a.optInt("level", 1), b.optInt("level", 1))));
-        for (int i = 1; i <= 100; i++) if (completed.optInt(String.valueOf(i)) > 0) level = Math.max(level, Math.min(100, i + 1));
+        int level = Math.min(300, Math.max(1, Math.max(a.optInt("level", 1), b.optInt("level", 1))));
+        for (int i = 1; i <= 300; i++) if (completed.optInt(String.valueOf(i)) > 0) level = Math.max(level, Math.min(300, i + 1));
         result.put("level", level);
         result.put("completed", completed);
         result.put("best", best);
