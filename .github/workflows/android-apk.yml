@@ -85,11 +85,11 @@ jobs:
           }
           android {
             namespace 'com.orynexa.karadugum'
-            compileSdk 35
+            compileSdk 36
             defaultConfig {
               applicationId 'com.orynexa.karadugum'
               minSdk 24
-              targetSdk 35
+              targetSdk 36
               versionCode 65
               versionName '6.5'
             }
