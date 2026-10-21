@@ -1,39 +1,59 @@
 name: KaraDugum Android APK
+
 on:
   push:
     branches: [main, master]
   workflow_dispatch:
+
 jobs:
   build:
-    name: KaraDugum v6.4 APK Olustur
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Kaynaklari al
+        uses: actions/checkout@v4
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
       - name: Android projesini hazirla
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p app/src/main/java/com/karadugum/puzzle app/src/main/assets
-          cp MainActivity.java app/src/main/java/com/karadugum/puzzle/MainActivity.java
+          test -f MainActivity.java || { echo 'MainActivity.java eksik'; exit 1; }
+          test -f index.html || { echo 'index.html eksik'; exit 1; }
+          test -f google-services.json || { echo 'google-services.json eksik'; exit 1; }
+          grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
+          grep -q '"package_name": "com.orynexa.karadugum"' google-services.json || { echo 'HATA: Firebase paket adi yanlis'; exit 1; }
+          mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
+          cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp index.html app/src/main/assets/index.html
-          mkdir -p app/src/main/res
-          cp -R android-icons/* app/src/main/res/
           cp google-services.json app/google-services.json
-          cat > app/src/main/AndroidManifest.xml <<'MANIFEST'
+          if [ -f icon.png ]; then
+            cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-xxxhdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-mdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-mdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          else
+            echo 'HATA: icon.png veya android-icons simgesi bulunamadi.'
+            exit 1
+          fi
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.VIBRATE" />
-            <application android:label="KARA DÜĞÜM" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
+            <application android:label="KARA DÜĞÜM" android:icon="@drawable/karadugum_icon" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
               <activity android:name=".MainActivity" android:exported="true">
                 <intent-filter>
                   <action android:name="android.intent.action.MAIN" />
@@ -42,8 +62,8 @@ jobs:
               </activity>
             </application>
           </manifest>
-          MANIFEST
-          cat > settings.gradle <<'GRADLE'
+          EOF
+          cat > settings.gradle <<'EOF'
           pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
           dependencyResolutionManagement {
             repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -51,27 +71,41 @@ jobs:
           }
           rootProject.name = 'KaraDugum'
           include ':app'
-          GRADLE
-          cat > build.gradle <<'GRADLE'
+          EOF
+          cat > build.gradle <<'EOF'
           plugins {
             id 'com.android.application' version '8.7.3' apply false
             id 'com.google.gms.google-services' version '4.4.2' apply false
           }
-          GRADLE
-          cat > app/build.gradle <<'GRADLE'
+          EOF
+          cat > app/build.gradle <<'EOF'
           plugins {
             id 'com.android.application'
             id 'com.google.gms.google-services'
           }
           android {
-            namespace 'com.karadugum.puzzle'
+            namespace 'com.orynexa.karadugum'
             compileSdk 35
             defaultConfig {
-              applicationId 'com.karadugum.puzzle'
+              applicationId 'com.orynexa.karadugum'
               minSdk 23
               targetSdk 35
-              versionCode 64
-              versionName '6.4'
+              versionCode 65
+              versionName '6.5'
+            }
+            signingConfigs {
+              release {
+                storeFile file('karadugum.jks')
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+              }
+            }
+            buildTypes {
+              release {
+                signingConfig signingConfigs.release
+                minifyEnabled false
+              }
             }
           }
           dependencies {
@@ -80,52 +114,57 @@ jobs:
             implementation 'com.google.firebase:firebase-database'
             implementation 'com.google.android.gms:play-services-auth:21.3.0'
           }
-          GRADLE
-      - name: Kalici imzalama bilgilerini dogrula
+          EOF
+
+      - name: Imzalama anahtarini hazirla
+        shell: bash
         env:
-          KEYSTORE_B64: ${{ secrets.ORYNEXA_KEYSTORE_B64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ORYNEXA_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ORYNEXA_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ORYNEXA_KEY_PASSWORD }}
-          EXPECTED_SHA256: ${{ vars.ORYNEXA_CERT_SHA256 }}
-        shell: bash
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          test -n "$KEYSTORE_B64" && test -n "$KEYSTORE_PASSWORD" && test -n "$KEY_ALIAS" && test -n "$KEY_PASSWORD" && test -n "$EXPECTED_SHA256" || { echo "Kalici imza bilgileri eksik. APK olusturulmadi."; exit 1; }
-          printf '%s' "$KEYSTORE_B64" | base64 -d > app/orynexa.jks
-          cat >> app/build.gradle <<'GRADLE'
-          android {
-            signingConfigs {
-              orynexa {
-                storeFile file('orynexa.jks')
-                storePassword System.getenv('KEYSTORE_PASSWORD')
-                keyAlias System.getenv('KEY_ALIAS')
-                keyPassword System.getenv('KEY_PASSWORD')
-              }
-            }
-            buildTypes { release { signingConfig signingConfigs.orynexa; minifyEnabled false } }
-          }
-          GRADLE
-          echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
-          echo "KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
-          echo "KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
-          echo "EXPECTED_SHA256=$EXPECTED_SHA256" >> "$GITHUB_ENV"
-      - name: APK olustur
+          for variable in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!variable:-}" ]; then
+              echo "HATA: $variable icin GitHub Secret eksik veya bos."
+              exit 1
+            fi
+          done
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          keytool -list -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" >/dev/null
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}' > /tmp/expected-cert-sha256
+          echo 'Imza sertifikasi hazir.'
+
+      - name: APK ve AAB derle
+        shell: bash
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: gradle --no-daemon --stacktrace :app:assembleRelease :app:bundleRelease
-      - name: APK SHA-1 sertifikasini goster
+
+      - name: APK imzasini kontrol et
         shell: bash
         run: |
           set -euo pipefail
-          APK="app/build/outputs/apk/release/app-release.apk"
+          APK=app/build/outputs/apk/release/app-release.apk
+          test -f "$APK"
           SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
           APKSIGNER=$(find "$SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)
-          "$APKSIGNER" verify --print-certs "$APK" | tee /tmp/cert.txt
-          ACTUAL=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p; s/^V2 Signer: certificate SHA-256 digest: //p' /tmp/cert.txt | head -n1 | tr -d ':' | tr '[:upper:]' '[:lower:]')
-          EXPECTED=$(printf '%s' "$EXPECTED_SHA256" | tr -d ':' | tr '[:upper:]' '[:lower:]')
-          test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo "HATA: APK imzasi beklenen imzayla eslesmiyor"; exit 1; }
-      - uses: actions/upload-artifact@v4
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --print-certs "$APK" | tee /tmp/apk-cert.txt
+          ACTUAL=$(grep -i 'certificate SHA-256 digest:' /tmp/apk-cert.txt | head -n 1 | sed 's/.*digest: //' | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]')
+          EXPECTED=$(cat /tmp/expected-cert-sha256)
+          echo "APK sertifikasi: $ACTUAL"
+          echo "Anahtar sertifikasi: $EXPECTED"
+          test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo 'HATA: APK sertifikasi imza anahtariyla eslesmiyor.'; exit 1; }
+          echo 'APK imzasi dogrulandi.'
+
+      - name: APK ve AAB dosyalarini yukle
+        uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.4-HD-APK-ve-AAB
+          name: KaraDugum-v6.5-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

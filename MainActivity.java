@@ -1,4 +1,4 @@
-package com.karadugum.puzzle;
+package com.orynexa.karadugum;
 
 import android.app.Activity;
 import android.content.Intent;
