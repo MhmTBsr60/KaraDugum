@@ -88,7 +88,7 @@ jobs:
             compileSdk 35
             defaultConfig {
               applicationId 'com.orynexa.karadugum'
-              minSdk 23
+              minSdk 24
               targetSdk 35
               versionCode 65
               versionName '6.5'
