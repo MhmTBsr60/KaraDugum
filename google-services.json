@@ -1,61 +1,26 @@
 {
   "project_info": {
-    "project_number": "976033813398",
-    "firebase_url": "https://karadugum-33c7f-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "karadugum-33c7f",
-    "storage_bucket": "karadugum-33c7f.firebasestorage.app"
+    "project_number": "1097423047801",
+    "project_id": "karadugum-orynexa",
+    "storage_bucket": "karadugum-orynexa.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:976033813398:android:0e3683947e64f5db5643b7",
+        "mobilesdk_app_id": "1:1097423047801:android:47cb18cb98b3cf49cdd8a8",
         "android_client_info": {
-          "package_name": "com.karadugum.puzzle"
+          "package_name": "com.orynexa.karadugum"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "976033813398-ejptj5jas4kra700mao86n5s727aovcr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.karadugum.puzzle",
-            "certificate_hash": "a1651dcdd656a93de45cdc8bccf0481c4fa1224a"
-          }
-        },
-        {
-          "client_id": "976033813398-tho13h2d50afa2c5iv7ssjq3c2q47r4j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.karadugum.puzzle",
-            "certificate_hash": "5f1480af68b8695254a1dd09242d174792a943ea"
-          }
-        },
-        {
-          "client_id": "976033813398-uotrvm4bgvmj218g58qr6v02v19f5mac.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.karadugum.puzzle",
-            "certificate_hash": "b34db0890c979880d4dad7d5921f054b3752420a"
-          }
-        },
-        {
-          "client_id": "976033813398-b5fr6fm0tsp4vi93o2tps53cepo44nfj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA0kIqYO8gk4EozFaZWHu10xxTNXojzx4c"
+          "current_key": "AIzaSyCrMnY2sRgWjQ0V8pxLIWMN8Q1DOYGUMGs"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "976033813398-b5fr6fm0tsp4vi93o2tps53cepo44nfj.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
