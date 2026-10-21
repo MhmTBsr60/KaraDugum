@@ -12,7 +12,20 @@
           "package_name": "com.orynexa.karadugum"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1097423047801-j2k0gvrr97nj2v4mci9k04hakcbcf391.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.orynexa.karadugum",
+            "certificate_hash": "a1651dcdd656a93de45cdc88ccf0481c4fa1224a"
+          }
+        },
+        {
+          "client_id": "1097423047801-hjn1gvvpeftfrra9dlaanid845o46e4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCrMnY2sRgWjQ0V8pxLIWMN8Q1DOYGUMGs"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097423047801-hjn1gvvpeftfrra9dlaanid845o46e4m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
