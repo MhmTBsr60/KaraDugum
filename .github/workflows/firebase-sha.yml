@@ -1,0 +1,33 @@
+name: Firebase SHA Fingerprints
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fingerprints:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Imza sertifikasi parmak izlerini goster
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          for variable in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS; do
+            if [ -z "${!variable:-}" ]; then
+              echo "HATA: $variable GitHub Secret eksik veya bos."
+              exit 1
+            fi
+          done
+          printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/karadugum.jks"
+          keytool -exportcert -rfc -keystore "$RUNNER_TEMP/karadugum.jks" -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" > "$RUNNER_TEMP/certificate.pem"
+          openssl x509 -in "$RUNNER_TEMP/certificate.pem" -noout -fingerprint -sha1
+          openssl x509 -in "$RUNNER_TEMP/certificate.pem" -noout -fingerprint -sha256
+          rm -f "$RUNNER_TEMP/karadugum.jks" "$RUNNER_TEMP/certificate.pem"
