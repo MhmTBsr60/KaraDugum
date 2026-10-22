@@ -61,6 +61,33 @@ jobs:
           PY
           for script in /tmp/karadugum-script-*.js; do node --check "$script"; done
 
+      - name: Bolum ve kayit koruma kontrolleri
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('index.html').read_text(encoding='utf-8')
+          workflow = Path('.github/workflows/android-apk.yml').read_text(encoding='utf-8')
+          required = [
+              ("300 bolum", "Math.min(300"),
+              ("Bulut kaydi", "window.kdCloudSync"),
+              ("Cift odul korumasi", "function win(){if(locked)return;"),
+              ("Sure bitimi", "window.kdLastWin=null;clearInterval(timer);"),
+              ("Tekrar dene", "if(replay || !window.kdLastWin)"),
+              ("Bolum boyutlari", "n=level<=15?4:level<=30?5:level<=75?6:level<=150?7:8;"),
+          ]
+          for label, token in required:
+              if token not in html:
+                  raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
+          if 'id="backup"' in html:
+              raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
+          if "versionCode 67" not in workflow or "versionName '6.7'" not in workflow:
+              raise SystemExit('HATA: Surum 6.7 ayarlari uyusmuyor')
+          print('Bolum, kayit, odul ve surum kontrolleri gecti.')
+          PY
+
       - name: Android projesini hazirla
         shell: bash
         run: |
