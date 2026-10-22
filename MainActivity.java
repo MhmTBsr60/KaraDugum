@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "KaraDugum";
 
     private WebView view;
+    private boolean backHandling = false;
     private GoogleSignInClient google;
     private FirebaseAuth auth;
     private DatabaseReference scores;
@@ -98,6 +99,14 @@ public class MainActivity extends Activity {
 
         setContentView(view);
         view.loadUrl("file:///android_asset/index.html");
+
+        // Android 13+ gesture navigation uses the predictive-back dispatcher.
+        if (Build.VERSION.SDK_INT >= 33) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                () -> handleGameBack()
+            );
+        }
     }
 
     private void send(String event, String payload) {
@@ -536,19 +545,36 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void handleGameBack() {
+        if (backHandling || isFinishing() || isDestroyed()) return;
+        backHandling = true;
+        if (view == null) {
+            backHandling = false;
+            showExitConfirmation();
+            return;
+        }
+        view.evaluateJavascript(
+            "(function(){try{return !!(window.kdHandleBack && window.kdHandleBack())}catch(e){return false}})()",
+            result -> {
+                backHandling = false;
+                if (!"true".equals(result) && !isFinishing() && !isDestroyed()) {
+                    showExitConfirmation();
+                }
+            }
+        );
+    }
+
+    private void showExitConfirmation() {
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("KARA DÜĞÜM")
+            .setMessage("Oyundan çıkmak istiyor musun?")
+            .setNegativeButton("Vazgeç", null)
+            .setPositiveButton("Çıkış", (dialog, which) -> finish())
+            .show();
+    }
+
     @Override
     public void onBackPressed() {
-        if (view != null) {
-            view.evaluateJavascript("(function(){return !!(window.kdHandleBack && window.kdHandleBack())})()", result -> {
-                if (!"true".equals(result)) {
-                    new android.app.AlertDialog.Builder(MainActivity.this)
-                        .setTitle("KARA DÜĞÜM")
-                        .setMessage("Oyundan çıkmak istiyor musun?")
-                        .setNegativeButton("Vazgeç", null)
-                        .setPositiveButton("Çıkış", (dialog, which) -> finish())
-                        .show();
-                }
-            });
-        }
+        handleGameBack();
     }
 }
