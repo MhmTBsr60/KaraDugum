@@ -113,7 +113,7 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  clearInterval(timer);
  seed=(Math.imul(level,2654435761)^(level*7919))>>>0||1;
  // 1-10 öğretici, 11-15 normal; 16'dan itibaren hızla artan zorluk.
- n=level<=10?4:level<=20?5:level<=55?6:level<=130?7:8;
+ n=level<=15?4:level<=30?5:level<=75?6:level<=150?7:8;
  const count=n*n;solution=Array(count).fill(0);
  const visited=new Set([0]);
  while(visited.size<count){
@@ -218,6 +218,12 @@ $('restart').onclick=()=>{attempts++;addStat('attempts',1);tiles=initial.slice()
   const modal=document.getElementById('modal');
   modal.classList.remove('show','kdWinModal');
   const finished=Number(window.kdLastWin?.level)||level;
+  if(!replay && finished>=300){
+    window.kdLastWin=null;
+    const levelsButton=document.getElementById('levels');
+    if(levelsButton)levelsButton.click();
+    return;
+  }
   level=replay?finished:Math.min(300,finished+1);
   window.kdLastWin=null;
   safeSet('kd64_level',String(Math.max(level,Number(safeGet('kd64_level'))||1)));
