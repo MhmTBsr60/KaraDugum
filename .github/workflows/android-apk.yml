@@ -83,9 +83,12 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 67" not in workflow or "versionName '6.7'" not in workflow:
-              raise SystemExit('HATA: Surum 6.7 ayarlari uyusmuyor')
-          print('Bolum, kayit, odul ve surum kontrolleri gecti.')
+          if "versionCode 68" not in workflow or "versionName '6.8'" not in workflow:
+              raise SystemExit('HATA: Surum 6.8 ayarlari uyusmuyor')
+          java = Path('MainActivity.java').read_text(encoding='utf-8')
+          if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
+              raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
+          print('Bolum, kayit, odul, geri hareketi ve surum kontrolleri gecti.')
           PY
 
       - name: Android projesini hazirla
@@ -153,8 +156,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 67
-              versionName '6.7'
+              versionCode 68
+              versionName '6.8'
             }
             signingConfigs {
               release {
@@ -227,7 +230,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.7-APK-AAB
+          name: KaraDugum-v6.8-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
