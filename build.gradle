@@ -1,13 +1,4 @@
-plugins { id 'com.android.application' }
-
-android {
-    namespace 'com.karadugum.puzzle'
-    compileSdk 35
-    defaultConfig {
-        applicationId 'com.karadugum.puzzle'
-        minSdk 23
-        targetSdk 28
-        versionCode 1
-        versionName '1.0'
-    }
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+    id 'com.google.gms.google-services' version '4.4.2' apply false
 }
