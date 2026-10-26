@@ -171,9 +171,11 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  if(false&&!ice.some(Boolean)){const ix=fixed.findIndex(v=>!v);if(ix>=0)ice[ix]=2;}
  iceInitial=ice.slice();pulse=0;
  tiles=solution.map((v,i)=>fixed[i]?v:rotate(v,Math.floor(rand()*4)));
+ let specialScrambleMoves=0;
  if(advanced&&[3,6,9].includes(mode)){
    tiles=solution.slice();
    for(let z=0;z<count*2;z++){
+     specialScrambleMoves++;
      const i=Math.floor(rand()*count);
      const targetsMove=mode===3?[i,...neighbors(i)]:mode===6?[i,count-1-i]:Array.from({length:n},(_,c)=>(i/n|0)*n+c);
      for(const j of new Set(targetsMove))if(!fixed[j])tiles[j]=rot(tiles[j]);
@@ -184,7 +186,7 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
    const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
    const reversible=[];
    for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)reversible.push([i,j]);}
-   for(let z=0;z<count*2&&reversible.length;z++){const [i,j]=reversible[Math.floor(rand()*reversible.length)];[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
+   for(let z=0;z<count*2&&reversible.length;z++){specialScrambleMoves++;const [i,j]=reversible[Math.floor(rand()*reversible.length)];[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
  }
  if(modeOn(5)||modeOn(13)){ // two colored/directional routes have separate visual rule markers
    window.kdExtra.colors=solution.map((_,i)=>i%2?'#fb7185':'#5dbbff');
@@ -195,6 +197,7 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  for(let i=0;i<count&&unsolved<target&&!([3,4,6,9].includes(mode)&&advanced);i++)if(!fixed[i]&&tiles[i]===solution[i]&&rot(tiles[i])!==tiles[i]){tiles[i]=rot(tiles[i]);unsolved++;}
  initial=tiles.slice();
  optimal=tiles.reduce((a,v,i)=>{if(fixed[i])return a;for(let k=0;k<4;k++)if(rotate(v,k)===solution[i])return a+k;return a},0);
+ if(advanced&&[3,4,6,9].includes(mode))optimal=mode===4?specialScrambleMoves:specialScrambleMoves*3;
  optimal=Math.max(1,optimal);
  attempts++;addStat('attempts',1);moves=0;hints=level<=5?3:level<=10?2:level<=20?1:0;usedHints=0;undos=0;history=[];locked=false;
  timeLimit=0;clearInterval(timer);startTime=Date.now();timer=setInterval(()=>{try{tick()}catch(e){console.warn('Sayaç hatası',e)}},500);render();
