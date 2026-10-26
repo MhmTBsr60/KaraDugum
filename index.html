@@ -181,7 +181,10 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  }
  if(modeOn(4)){ // slide mode: swap only adjacent tiles, preserving a reversible scramble
    tiles=solution.slice();
-   for(let z=0;z<count*2;z++){const i=Math.floor(rand()*count),ns=neighbors(i).filter(j=>!fixed[j]);const j=ns.length?ns[0]:i;[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
+   const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
+   const reversible=[];
+   for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)reversible.push([i,j]);}
+   for(let z=0;z<count*2&&reversible.length;z++){const [i,j]=reversible[Math.floor(rand()*reversible.length)];[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
  }
  if(modeOn(5)||modeOn(13)){ // two colored/directional routes have separate visual rule markers
    window.kdExtra.colors=solution.map((_,i)=>i%2?'#fb7185':'#5dbbff');
