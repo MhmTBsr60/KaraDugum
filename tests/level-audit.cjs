@@ -24,7 +24,7 @@ for(let testLevel=1;testLevel<=300;testLevel++){
 }
 window.auditResult={tested:300,failures};
 `;
-const patched=source.replace(/generate\(\)\s*\}\)\(\);\s*$/,hook+'})();');
+const patched=source.replace(/generate\(\)\s*\}\)\(\);\s*$/, 'generate();'+hook+'})();');
 assert.notEqual(patched,source,'Could not attach audit hook');
 const storage=new Map();
 const elements=new Map();
