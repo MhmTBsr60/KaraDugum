@@ -17,6 +17,13 @@ for(let testLevel=1;testLevel<=300;testLevel++){
  if(!Number.isFinite(optimal)||optimal<1)failures.push([testLevel,'optimal']);
  if(tiles.some(v=>!Number.isInteger(v)||v<0||v>15))failures.push([testLevel,'tile bits']);
  if(fixed.some((v,i)=>v&&tiles[i]!==solution[i]))failures.push([testLevel,'fixed mismatch']);
+ if(level>10&&mode===4){
+  const neighbor=i=>[i-n,i+n,i-1,i+1].filter(j=>j>=0&&j<count&&(Math.abs(j%n-i%n)+Math.abs((j/n|0)-(i/n|0))===1)&&!fixed[j])[0];
+  for(let i=0;i<count;i++)if(tiles[i]!==solution[i]){
+   const j=neighbor(i);
+   if(j===undefined||neighbor(j)!==i||tiles[i]!==solution[j]||tiles[j]!==solution[i])failures.push([testLevel,'unreachable slide pair '+i]);
+  }
+ }
  const saved=tiles;
  tiles=solution.slice();
  if(!solved())failures.push([testLevel,'solution connectivity']);
