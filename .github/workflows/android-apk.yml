@@ -203,6 +203,15 @@ jobs:
           printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
           keytool -list -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" >/dev/null
           keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}' > /tmp/expected-cert-sha256
+          # Play Games Android OAuth credential must match the installed APK signing certificate.
+          EXPECTED_PGS_SHA1='A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A'
+          ACTUAL_PGS_SHA1=$(keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha1sum | awk '{print toupper($1)}' | sed 's/../&:/g;s/:$//')
+          echo "Play Games OAuth SHA-1: $EXPECTED_PGS_SHA1"
+          echo "APK signing SHA-1: $ACTUAL_PGS_SHA1"
+          if [ "$ACTUAL_PGS_SHA1" != "$EXPECTED_PGS_SHA1" ]; then
+            echo 'HATA: APK imza SHA-1 Play Games Android OAuth kimlik bilgisiyle eslesmiyor.'
+            exit 1
+          fi
           echo 'Imza sertifikasi hazir.'
 
       - name: APK ve AAB derle
