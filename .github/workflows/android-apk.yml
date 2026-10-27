@@ -120,6 +120,7 @@ jobs:
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.VIBRATE" />
             <application android:label="KARA DÜĞÜM" android:icon="@drawable/karadugum_icon" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
+              <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-6340528165840202~8704733869" />
               <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
               <activity android:name=".MainActivity" android:exported="true">
                 <intent-filter>
@@ -177,6 +178,7 @@ jobs:
           }
           dependencies {
             implementation 'com.google.android.gms:play-services-games-v2:21.0.0'
+            implementation 'com.google.android.gms:play-services-ads:24.5.0'
           }
           EOF
 
