@@ -24,6 +24,9 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
+    private static final String ACH_FIRST = "CgkI-ZiLnPgfEAIQAg";
+    private static final String ACH_STARS = "CgkI-ZiLnPgfEAIQAw";
+    private static final String ACH_LEGEND = "CgkI-ZiLnPgfEAIQBA";
     private static final String LEADERBOARD_ID = "CgkI-ZiLnPgfEAIQAQ";
     private WebView view;
     private boolean backHandling = false;
@@ -182,6 +185,14 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void state() { runOnUiThread(() -> checkSignIn()); }
         @JavascriptInterface public void syncSave(String raw) { runOnUiThread(() -> MainActivity.this.syncSave(raw)); }
+        @JavascriptInterface public void achievements(int completed, int stars) {
+            runOnUiThread(() -> {
+                if (!signedIn) return;
+                if (completed >= 10) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_FIRST);
+                if (stars >= 50) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_STARS);
+                if (completed >= 100) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_LEGEND);
+            });
+        }
         @JavascriptInterface public void upload(int points) {
             runOnUiThread(() -> {
                 if (!signedIn) return;
