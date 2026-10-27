@@ -208,7 +208,7 @@ function render(){let board=$('board');board.style.gridTemplateColumns=`repeat($
  const rule=$('kdModeRule')||document.createElement('div');
  if(!rule.id){rule.id='kdModeRule';rule.style.cssText='font-size:12px;color:#d7bd7a;text-align:center;margin:7px auto;max-width:460px;line-height:1.5';$('challenge').insertAdjacentElement('afterend',rule);}
  const helpDetails=[
- 'Bağlantı çizgileri birbirine uyacak şekilde düğümlere dokunarak döndür. Tüm hatlar birleştiğinde bölüm tamamlanır.',
+ 'Bu bölümde dönüş yönü terstir. Düğümlere dokunarak bağlantıları doğru yöne çevir ve bütün hatları birleştir.',
  'Düğümlere dokunarak bağlantıları doğru yöne çevir. Bu bölümde bazı düğümler kilitlidir; kilitli düğümleri döndüremezsin. 🎯 işaretli hedeflere ayrıca dokunarak onları etkinleştir. Hedefleri açıp bağlantıları tamamla.',
  'Sabit düğümler yerinde kalır. Diğer düğümlere dokunarak ters dönüş kuralına göre bağlantıları tamamla.',
  'Bir düğüme dokunduğunda komşuları da etkilenir. Her hamlenin çevredeki bağlantıları nasıl değiştirdiğini izleyerek ağı tamamla.',
@@ -224,7 +224,7 @@ function render(){let board=$('board');board.style.gridTemplateColumns=`repeat($
  'Bağlantıların yönünü gösteren işaretleri izle. Akışı doğru yönde birleştir.',
  'Gizli düğümleri dokunarak keşfet. Açığa çıkan bağlantıları eşleştirerek ağı tamamla.'
  ];
- const detail=level<=10?helpDetails[0]:helpDetails[mode+1]||helpDetails[0];
+ const detail=level<=10?'Düğümlere dokunarak bağlantıları döndür. Bütün çizgileri birbirine bağlayıp ağı tamamla.':helpDetails[mode]||helpDetails[0];
  rule.style.cssText='display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#d7bd7a;text-align:center;margin:10px auto;max-width:560px;line-height:1.5';
  if(typeof rule.appendChild!=='function'){rule.textContent='◈ '+window.kdCurrentRule;return;}
  rule.innerHTML='';
