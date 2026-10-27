@@ -507,4 +507,18 @@ panel.dataset.level=String(window.kdLastWin.level);panel.className='kdWinPanel';
 #modal.kdWinModal .kdWinStat strong{font-size:clamp(10px,2.9vw,15px);overflow:hidden;text-overflow:ellipsis}
 #modal.kdWinModal .kdWinStat small{font-size:clamp(7px,1.9vw,10px)}
 @media(max-width:360px){#modal.kdWinModal .kdWinStats{grid-template-columns:repeat(3,minmax(0,1fr))}}
-</style></body></html>
+</style><style id="kd18-scroll-home">
+/* Ana ekran: büyük OYNA odağı ve yatay kaydırılabilir menü. */
+#kdShell:has(.kdOrbit){height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+#kdShell:has(.kdOrbit) .kdOrbit{height:clamp(280px,48dvh,480px);width:min(100%,470px);flex:1 1 auto;min-height:235px;max-height:48dvh}
+#kdShell:has(.kdOrbit) .kdOrbitPlay{width:clamp(170px,55vw,285px);height:clamp(170px,55vw,285px);max-width:72%;max-height:85%;box-shadow:0 0 0 7px #b9863e33,0 0 45px #e5a83d40,inset 0 4px 20px #fff4}
+#kdShell:has(.kdOrbit) .kdOrbitRing{width:min(85%,39dvh)}
+#kdShell:has(.kdOrbit) .kdMenuGrid{display:flex!important;flex:0 0 auto!important;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;gap:10px;padding:5px 3px 13px;min-height:125px;height:clamp(125px,20dvh,190px);grid-template-columns:none!important;grid-template-rows:none!important;scrollbar-width:thin;scrollbar-color:#bd914c #1b1712;-webkit-overflow-scrolling:touch}
+#kdShell:has(.kdOrbit) .kdMenuGrid .kdBtn{flex:0 0 clamp(115px,34vw,160px)!important;width:clamp(115px,34vw,160px);height:100%!important;scroll-snap-align:start;min-width:0;padding:10px 6px!important;border-radius:16px}
+#kdShell:has(.kdOrbit) .kdMenuGrid .kdBtn .kdIcon{font-size:clamp(25px,4dvh,35px)}
+#kdShell:has(.kdOrbit) .kdMenuGrid .kdBtn span:last-child{font-size:clamp(11px,1.65dvh,14px)}
+#kdShell:has(.kdOrbit) .kdMenuGrid .kdSmall{font-size:clamp(9px,1.3dvh,11px)}
+#kdShell:has(.kdOrbit) .kdHomeScore{margin-bottom:5px}
+#kdShell:has(.kdOrbit) .kdMenuGrid:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-height:650px){#kdShell:has(.kdOrbit) .kdOrbit{min-height:175px;max-height:41dvh}#kdShell:has(.kdOrbit) .kdOrbitPlay{width:clamp(145px,45vw,205px);height:clamp(145px,45vw,205px)}#kdShell:has(.kdOrbit) .kdMenuGrid{height:110px;min-height:110px}}
+</style><script id="kd18-menu-accessibility">(()=>{const shell=document.getElementById('kdShell');if(!shell)return;const update=()=>{const grid=shell.querySelector('.kdMenuGrid');if(grid&&!grid.hasAttribute('tabindex')){grid.setAttribute('tabindex','0');grid.setAttribute('role','region');grid.setAttribute('aria-label','Menü seçenekleri, yatay kaydırın')}};new MutationObserver(update).observe(shell,{childList:true});update()})();</script></body></html>
