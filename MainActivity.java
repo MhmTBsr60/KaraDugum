@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 
         auth = FirebaseAuth.getInstance();
 
-        scores = FirebaseDatabase.getInstance()
+        scores = FirebaseDatabase.getInstance("https://karadugum-orynexa-default-rtdb.europe-west1.firebasedatabase.app")
                 .getReference("leaderboard");
 
         GoogleSignInOptions options =
@@ -415,7 +415,7 @@ public class MainActivity extends Activity {
                     JSONObject incoming = new JSONObject(raw);
                     if (!(incoming.optJSONObject("completed") instanceof JSONObject) || !(incoming.optJSONObject("best") instanceof JSONObject)) return;
                     if (raw.length() > 18000) { error("Kayıt çok büyük"); return; }
-                    DatabaseReference own = FirebaseDatabase.getInstance().getReference("playerSaves").child(user.getUid());
+                    DatabaseReference own = FirebaseDatabase.getInstance("https://karadugum-orynexa-default-rtdb.europe-west1.firebasedatabase.app").getReference("playerSaves").child(user.getUid());
                     own.runTransaction(new Transaction.Handler() {
                         @Override public Transaction.Result doTransaction(MutableData current) {
                             try {
