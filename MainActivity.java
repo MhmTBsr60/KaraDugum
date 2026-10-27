@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     private InterstitialAd interstitialAd;
     private long lastInterstitialAt = 0;
     private int completedSinceInterstitial = 0;
+    private String rewardPurpose = "coins";
     private WebView view;
     private boolean backHandling = false;
     private boolean signedIn = false;
@@ -181,7 +182,8 @@ public class MainActivity extends Activity {
             @Override public void onAdDismissedFullScreenContent() { loadRewarded(); }
             @Override public void onAdFailedToShowFullScreenContent(AdError error) { send("adUnavailable", "null"); loadRewarded(); }
         });
-        ad.show(this, reward -> send("adReward", "15"));
+        final String purpose = rewardPurpose;
+        ad.show(this, reward -> send("adReward", JSONObject.quote(purpose)));
     }
     private void loadInterstitial() {
         InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
@@ -190,12 +192,9 @@ public class MainActivity extends Activity {
         });
     }
     private void onLevelCompletedForAds(int level) {
-        if (level <= 5) return;
-        completedSinceInterstitial++;
-        if (completedSinceInterstitial < 5 || System.currentTimeMillis() - lastInterstitialAt < 300000 || interstitialAd == null) return;
+        if (level < 3 || level % 3 != 0 || interstitialAd == null) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
-        completedSinceInterstitial = 0;
         lastInterstitialAt = System.currentTimeMillis();
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override public void onAdDismissedFullScreenContent() { loadInterstitial(); }
@@ -204,7 +203,8 @@ public class MainActivity extends Activity {
         ad.show(this);
     }
     public class Bridge {
-        @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> showRewarded()); }
+        @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
+        @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { rewardPurpose = "double"; showRewarded(); }); }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void vibrate(int milliseconds) {
             runOnUiThread(() -> {
