@@ -72,7 +72,15 @@ public class MainActivity extends Activity {
     }
     private void checkSignIn() {
         PlayGames.getGamesSignInClient(this).isAuthenticated().addOnCompleteListener(task -> {
-            signedIn = task.isSuccessful() && task.getResult().isAuthenticated();
+            if (!task.isSuccessful()) {
+                signedIn = false;
+                Log.e(TAG, "Play Games kimlik kontrolu basarisiz", task.getException());
+                send("user", "null");
+                error("Play Games kimlik kontrolü başarısız: " + (task.getException() == null ? "bilinmeyen" : task.getException().getMessage()));
+                return;
+            }
+            signedIn = task.getResult() != null && task.getResult().isAuthenticated();
+            Log.i(TAG, "Play Games authenticated=" + signedIn);
             announceUser();
         });
     }
@@ -151,7 +159,20 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void login() {
             runOnUiThread(() -> PlayGames.getGamesSignInClient(MainActivity.this).signIn()
-                .addOnCompleteListener(task -> checkSignIn()));
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e(TAG, "Play Games giris hatasi", task.getException());
+                        error("Play Games giriş hatası: " + (task.getException() == null ? "bilinmeyen" : task.getException().getMessage()));
+                        return;
+                    }
+                    if (task.getResult() == null || !task.getResult().isAuthenticated()) {
+                        error("Play Games girişini tamamlayamadı. Test kullanıcısı ve Play Oyunlar hesabını kontrol edin.");
+                        checkSignIn();
+                        return;
+                    }
+                    signedIn = true;
+                    announceUser();
+                }));
         }
         @JavascriptInterface public void logout() {
             runOnUiThread(() -> Toast.makeText(MainActivity.this,
