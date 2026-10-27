@@ -265,6 +265,7 @@ public class MainActivity extends Activity {
 
     private JSONObject parseSave(DataSnapshot snapshot) throws Exception {
         JSONObject data = new JSONObject();
+        data.put("saveVersion", 64);
         data.put("level", snapshot.child("level").getValue() instanceof Number ? ((Number) snapshot.child("level").getValue()).intValue() : 1);
         Object c = snapshot.child("completed").getValue(), b = snapshot.child("best").getValue();
         data.put("completed", new JSONObject(c instanceof String ? (String)c : "{}"));
