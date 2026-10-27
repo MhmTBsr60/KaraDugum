@@ -226,6 +226,7 @@ function render(){let board=$('board');board.style.gridTemplateColumns=`repeat($
  ];
  const detail=level<=10?helpDetails[0]:helpDetails[mode+1]||helpDetails[0];
  rule.style.cssText='display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#d7bd7a;text-align:center;margin:10px auto;max-width:560px;line-height:1.5';
+ if(typeof rule.appendChild!=='function'){rule.textContent='◈ '+window.kdCurrentRule;return;}
  rule.innerHTML='';
  const summary=document.createElement('span');summary.textContent='◈ '+window.kdCurrentRule;rule.appendChild(summary);
  const info=document.createElement('button');info.type='button';info.textContent='?';info.setAttribute('aria-label','Bölüm nasıl oynanır?');info.title='Nasıl oynanır?';info.style.cssText='flex:none;width:29px;height:29px;border-radius:50%;border:1px solid #e9c477;background:#29231a;color:#f5d58e;font-size:18px;font-weight:bold;cursor:pointer';
