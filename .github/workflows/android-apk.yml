@@ -86,7 +86,7 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 68" not in workflow or "versionName '6.8'" not in workflow:
+          if "versionCode 69" not in workflow or "versionName '6.9'" not in workflow:
               raise SystemExit('HATA: Surum 6.8 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
@@ -100,13 +100,10 @@ jobs:
           set -euo pipefail
           test -f MainActivity.java || { echo 'MainActivity.java eksik'; exit 1; }
           test -f index.html || { echo 'index.html eksik'; exit 1; }
-          test -f google-services.json || { echo 'google-services.json eksik'; exit 1; }
           grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
-          grep -q '"package_name": "com.orynexa.karadugum"' google-services.json || { echo 'HATA: Firebase paket adi yanlis'; exit 1; }
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp index.html app/src/main/assets/index.html
-          cp google-services.json app/google-services.json
           if [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
@@ -123,6 +120,7 @@ jobs:
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.VIBRATE" />
             <application android:label="KARA DÜĞÜM" android:icon="@drawable/karadugum_icon" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
+              <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
               <activity android:name=".MainActivity" android:exported="true">
                 <intent-filter>
                   <action android:name="android.intent.action.MAIN" />
@@ -132,6 +130,8 @@ jobs:
             </application>
           </manifest>
           EOF
+          mkdir -p app/src/main/res/values
+          printf '<resources><string name="game_services_project_id">1097423047801</string></resources>\n' > app/src/main/res/values/strings.xml
           cat > settings.gradle <<'EOF'
           pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
           dependencyResolutionManagement {
@@ -144,13 +144,11 @@ jobs:
           cat > build.gradle <<'EOF'
           plugins {
             id 'com.android.application' version '8.7.3' apply false
-            id 'com.google.gms.google-services' version '4.4.2' apply false
           }
           EOF
           cat > app/build.gradle <<'EOF'
           plugins {
             id 'com.android.application'
-            id 'com.google.gms.google-services'
           }
           android {
             namespace 'com.orynexa.karadugum'
@@ -178,10 +176,7 @@ jobs:
             }
           }
           dependencies {
-            implementation platform('com.google.firebase:firebase-bom:33.7.0')
-            implementation 'com.google.firebase:firebase-auth'
-            implementation 'com.google.firebase:firebase-database'
-            implementation 'com.google.android.gms:play-services-auth:21.3.0'
+            implementation 'com.google.android.gms:play-services-games-v2:21.0.0'
           }
           EOF
 
@@ -242,7 +237,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.8-APK-AAB
+          name: KaraDugum-v6.9-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
