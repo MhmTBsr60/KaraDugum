@@ -18,6 +18,15 @@ import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.Player;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
@@ -28,6 +37,12 @@ public class MainActivity extends Activity {
     private static final String ACH_STARS = "CgkI-ZiLnPgfEAIQAw";
     private static final String ACH_LEGEND = "CgkI-ZiLnPgfEAIQBA";
     private static final String LEADERBOARD_ID = "CgkI-ZiLnPgfEAIQAQ";
+    private static final String REWARDED_TEST_ID = "ca-app-pub-3940256099942544/5224354917";
+    private static final String INTERSTITIAL_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
+    private RewardedAd rewardedAd;
+    private InterstitialAd interstitialAd;
+    private long lastInterstitialAt = 0;
+    private int completedSinceInterstitial = 0;
     private WebView view;
     private boolean backHandling = false;
     private boolean signedIn = false;
@@ -46,6 +61,9 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
         PlayGamesSdk.initialize(this);
+        MobileAds.initialize(this, status -> {});
+        loadRewarded();
+        loadInterstitial();
         view = new WebView(this);
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
@@ -149,7 +167,45 @@ public class MainActivity extends Activity {
     private void flushPending() {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
     }
+    private void loadRewarded() {
+        RewardedAd.load(this, REWARDED_TEST_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
+            @Override public void onAdLoaded(RewardedAd ad) { rewardedAd = ad; send("adReady", "true"); }
+            @Override public void onAdFailedToLoad(LoadAdError error) { rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
+        });
+    }
+    private void showRewarded() {
+        if (rewardedAd == null) { send("adUnavailable", "null"); loadRewarded(); return; }
+        RewardedAd ad = rewardedAd;
+        rewardedAd = null;
+        ad.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override public void onAdDismissedFullScreenContent() { loadRewarded(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { send("adUnavailable", "null"); loadRewarded(); }
+        });
+        ad.show(this, reward -> send("adReward", "15"));
+    }
+    private void loadInterstitial() {
+        InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
+            @Override public void onAdLoaded(InterstitialAd ad) { interstitialAd = ad; }
+            @Override public void onAdFailedToLoad(LoadAdError error) { interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
+        });
+    }
+    private void onLevelCompletedForAds(int level) {
+        if (level <= 5) return;
+        completedSinceInterstitial++;
+        if (completedSinceInterstitial < 5 || System.currentTimeMillis() - lastInterstitialAt < 300000 || interstitialAd == null) return;
+        InterstitialAd ad = interstitialAd;
+        interstitialAd = null;
+        completedSinceInterstitial = 0;
+        lastInterstitialAt = System.currentTimeMillis();
+        ad.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override public void onAdDismissedFullScreenContent() { loadInterstitial(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { loadInterstitial(); }
+        });
+        ad.show(this);
+    }
     public class Bridge {
+        @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> showRewarded()); }
+        @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void vibrate(int milliseconds) {
             runOnUiThread(() -> {
                 try {
