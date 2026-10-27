@@ -159,7 +159,7 @@ html,body{margin:0;max-width:100%;overflow-x:hidden}
  fog=solution.map((_,i)=>modeOn(14)&&rand()<.55);fogInitial=fog.slice();
  reverseMode=advanced&&[0,2].includes(mode);
  targets=solution.map((_,i)=>modeOn(1)&&!fixed[i]&&rand()<.16);
- if(modeOn(1)&&!targets.some(Boolean))targets[0]=true;
+ if(modeOn(1)&&!targets.some(Boolean)){const available=fixed.findIndex(v=>!v);if(available>=0)targets[available]=true;}
  const extra=window.kdExtra;
  if(modeOn(8)){let a=Math.floor(rand()*count),b=Math.floor(rand()*count);if(a===b)b=(b+1)%count;extra.portalPair=[a,b];}
  if(modeOn(10)){extra.switchOrder=[0,1,2].map(()=>Math.floor(rand()*count));extra.switchOrder=[...new Set(extra.switchOrder)];}
