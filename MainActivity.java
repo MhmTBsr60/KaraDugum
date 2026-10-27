@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
+    private static final String LEADERBOARD_ID = "CgkI-ZiLnPgfEAIQAQ";
     private WebView view;
     private boolean backHandling = false;
     private boolean signedIn = false;
@@ -182,10 +183,18 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void state() { runOnUiThread(() -> checkSignIn()); }
         @JavascriptInterface public void syncSave(String raw) { runOnUiThread(() -> MainActivity.this.syncSave(raw)); }
         @JavascriptInterface public void upload(int points) {
-            // Leaderboard requires a configured Play Games leaderboard ID.
+            runOnUiThread(() -> {
+                if (!signedIn) return;
+                PlayGames.getLeaderboardsClient(MainActivity.this).submitScore(LEADERBOARD_ID, Math.max(0, points));
+            });
         }
         @JavascriptInterface public void ranking() {
-            runOnUiThread(() -> error("Play Games dünya sıralaması henüz yapılandırılmadı."));
+            runOnUiThread(() -> {
+                if (!signedIn) { error("Önce Play Games hesabına giriş yap."); return; }
+                PlayGames.getLeaderboardsClient(MainActivity.this).getLeaderboardIntent(LEADERBOARD_ID)
+                    .addOnSuccessListener(intent -> startActivityForResult(intent, 9001))
+                    .addOnFailureListener(e -> error("Dünya sıralaması açılamadı: " + e.getMessage()));
+            });
         }
     }
     private void handleGameBack() {
