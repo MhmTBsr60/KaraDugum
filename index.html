@@ -428,12 +428,12 @@ const titles=[[0,'Çırak'],[300,'Düğüm Avcısı'],[1200,'Yol Ustası'],[3000
 function title(){return titles.filter(x=>xp()>=x[0]).at(-1)[1]}
 function toast(message){document.querySelector('.kdV9Toast')?.remove();let d=document.createElement('div');d.className='kdV9Toast';d.textContent=message;document.body.append(d);setTimeout(()=>d.remove(),2600)}
 function tone(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=new C(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(540,c.currentTime);o.frequency.exponentialRampToValueAtTime(860,c.currentTime+.12);g.gain.setValueAtTime(.03,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.19);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.2);setTimeout(()=>c.close(),450)}catch{}}
-const prices={hint:100,ice:750,emerald:1000};
+const prices={hint:20,ice:35,emerald:45,ruby:55,amethyst:65,neon:75,ocean:40};
 function overlay(kind){document.querySelector('.kdV9Overlay')?.remove();let d=document.createElement('div');d.className='kdV9Overlay';if(kind==='stats')d.classList.add('kdStatsFull');d.innerHTML='<div class="kdV9Card"><h2 id="v9Heading"></h2><p id="v9Intro" style="color:#aaa;font-size:13px"></p><div id="v9Rows"></div><button class="kdV9Close" id="v9Close">MENÜYE DÖN</button></div>';document.body.append(d);d.querySelector('#v9Close').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove()};drawOverlay(kind,d)}
 function drawOverlay(kind,d){let heading=d.querySelector('#v9Heading'),intro=d.querySelector('#v9Intro'),rows=d.querySelector('#v9Rows');rows.replaceChildren();const row=(label,desc,button,action,disabled=false)=>{let div=document.createElement('div');div.className='kdV9Row';let span=document.createElement('span');span.textContent=label;let small=document.createElement('small');small.textContent=desc;span.append(small);let b=document.createElement('button');b.textContent=button;b.disabled=disabled;b.onclick=()=>{action();drawOverlay(kind,d)};div.append(span,b);rows.append(div)};
 if(kind==='shop'){heading.textContent='🪙 JETON MAĞAZASI';intro.textContent=`Bakiye: ${coins()} jeton · İpucu kuponu: ${read('hintCoupons',0)}`;
-row('💡 1 ipucu kuponu','100 jeton · Bölümde ipuçların bitince kullanılır','SATIN AL',()=>buy('hint'),coins()<100);
-for(const [key,label] of [['ice','❄️ Buz mavisi tema'],['emerald','🌿 Zümrüt tema']]){let owned=read('v9_'+key,false);row(label,owned?'Kalıcı olarak açıldı':`${prices[key]} jeton · Kalıcı görünüm`,owned?'UYGULA':'SATIN AL',()=>owned?applyTheme(key):buy(key),!owned&&coins()<prices[key])}
+row('💡 1 ipucu kuponu',`${prices.hint} jeton · Bölümde ipuçların bitince kullanılır`,'SATIN AL',()=>buy('hint'),coins()<prices.hint);
+for(const [key,label] of [['ice','❄️ Buz mavisi tema'],['emerald','🌿 Zümrüt tema'],['ocean','🌊 Okyanus tema'],['ruby','❤️ Yakut kırmızısı tema'],['amethyst','💜 Ametist moru tema'],['neon','⚡ Neon tema']]){let owned=read('v9_'+key,false);row(label,owned?'Kalıcı olarak açıldı':`${prices[key]} jeton · Kalıcı görünüm`,owned?'UYGULA':'SATIN AL',()=>owned?applyTheme(key):buy(key),!owned&&coins()<prices[key])}
 row('✨ Klasik altın tema','Ücretsiz varsayılan görünüm','UYGULA',()=>applyTheme('gold'));
 }
 if(kind==='quests'){heading.textContent='🎯 GÜNLÜK GÖREVLER';let q=questState();intro.textContent='Her gün yenilenen 3 görev · Tamamlayınca ödülünü al.';
@@ -443,7 +443,7 @@ if(kind==='achievements'){heading.textContent='🏅 BAŞARIM ÖDÜLLERİ';intro.
 if(kind==='stats'){heading.textContent='📊 OYUNCU PERFORMANSI';intro.textContent=`Unvanın: ${title()} · Toplam XP: ${xp()}`;for(const [a,b] of [['Tamamlanan bölüm',count()+'/300'],['Toplam galibiyet',read('wins',0)],['Toplam deneme',read('attempts',0)],['Toplam hamle',read('moves',0)],['Kusursuz çözüm',read('perfect',0)],['Oyun süresi',Math.floor(read('time',0)/60)+' dakika'],['Günlük seri',read('streak',0)+' gün'],['Jeton',coins()],['İpucu kuponu',read('hintCoupons',0)]])row(a,String(b),'✓',()=>{},true)}
 }
 function buy(key){let cost=prices[key];if(coins()<cost)return toast('Yeterli jeton yok.');addCoins(-cost);if(key==='hint')write('hintCoupons',read('hintCoupons',0)+1);else{write('v9_'+key,true);applyTheme(key)}tone();toast('Satın alma başarılı!')}
-function applyTheme(key){write('v9_theme',key);document.body.classList.toggle('kdThemeIce',key==='ice');document.body.classList.toggle('kdThemeEmerald',key==='emerald');toast('Tema uygulandı.')}
+function applyTheme(key){write('v9_theme',key);for(const name of ['ice','emerald','ocean','ruby','amethyst','neon'])document.body.classList.toggle('kdTheme'+name[0].toUpperCase()+name.slice(1),key===name);toast('Tema uygulandı.')}
 function questState(){let q=read('v9_quest',null);if(!q||q.date!==day()){q={date:day(),baseline:{wins:read('wins',0),moves:read('moves',0),perfect:read('perfect',0)},claimed:{}};write('v9_quest',q)}return q}
 questState();applyTheme(read('v9_theme','gold'));
 const buttons=[['🛒','JETON MAĞAZASI','İpucu ve özel temalar','shop'],['🎯','GÜNLÜK GÖREVLER','Jeton kazan, görevleri tamamla','quests'],['🏅','BAŞARIM ÖDÜLLERİ','Rozetler ve özel ödüller','achievements'],['📊','OYUNCU PERFORMANSI','İstatistikler ve unvanlar','stats']];
@@ -521,4 +521,15 @@ panel.dataset.level=String(window.kdLastWin.level);panel.className='kdWinPanel';
 #kdShell:has(.kdOrbit) .kdHomeScore{margin-bottom:5px}
 #kdShell:has(.kdOrbit) .kdMenuGrid:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(max-height:650px){#kdShell:has(.kdOrbit) .kdOrbit{min-height:175px;max-height:41dvh}#kdShell:has(.kdOrbit) .kdOrbitPlay{width:clamp(145px,45vw,205px);height:clamp(145px,45vw,205px)}#kdShell:has(.kdOrbit) .kdMenuGrid{height:110px;min-height:110px}}
-</style><script id="kd18-menu-accessibility">(()=>{const shell=document.getElementById('kdShell');if(!shell)return;const update=()=>{const grid=shell.querySelector('.kdMenuGrid');if(grid&&!grid.hasAttribute('tabindex')){grid.setAttribute('tabindex','0');grid.setAttribute('role','region');grid.setAttribute('aria-label','Menü seçenekleri, yatay kaydırın')}};new MutationObserver(update).observe(shell,{childList:true});update()})();</script></body></html>
+</style><script id="kd18-menu-accessibility">(()=>{const shell=document.getElementById('kdShell');if(!shell)return;const update=()=>{const grid=shell.querySelector('.kdMenuGrid');if(grid&&!grid.hasAttribute('tabindex')){grid.setAttribute('tabindex','0');grid.setAttribute('role','region');grid.setAttribute('aria-label','Menü seçenekleri, yatay kaydırın')}};new MutationObserver(update).observe(shell,{childList:true});update()})();</script><style id="kd19-more-themes">
+body.kdThemeOcean{--v9accent:#40b9e9;--v9light:#d9f6ff}
+body.kdThemeRuby{--v9accent:#ff6478;--v9light:#ffe1e5}
+body.kdThemeAmethyst{--v9accent:#bb8bff;--v9light:#f0e2ff}
+body.kdThemeNeon{--v9accent:#c4f65e;--v9light:#efffc7}
+body:is(.kdThemeIce,.kdThemeEmerald,.kdThemeOcean,.kdThemeRuby,.kdThemeAmethyst,.kdThemeNeon){--gold:var(--v9accent)}
+body:is(.kdThemeOcean,.kdThemeRuby,.kdThemeAmethyst,.kdThemeNeon) .kdGold{color:var(--v9accent)!important}
+body:is(.kdThemeOcean,.kdThemeRuby,.kdThemeAmethyst,.kdThemeNeon) .kdBtn[data-go="game"]{border-color:var(--v9accent)!important}
+body:is(.kdThemeIce,.kdThemeEmerald,.kdThemeOcean,.kdThemeRuby,.kdThemeAmethyst,.kdThemeNeon) .kdOrbitPlay{background:radial-gradient(circle at 40% 30%,var(--v9light),var(--v9accent) 65%,#262018)!important;border-color:var(--v9accent)!important;box-shadow:0 0 35px color-mix(in srgb,var(--v9accent) 35%,transparent)!important}
+body:is(.kdThemeIce,.kdThemeEmerald,.kdThemeOcean,.kdThemeRuby,.kdThemeAmethyst,.kdThemeNeon) .kdOrbitStat{border-color:var(--v9accent)!important}
+.kdV9Overlay .kdV9Card{max-height:92dvh;overflow-y:auto;overscroll-behavior:contain}
+</style></body></html>
