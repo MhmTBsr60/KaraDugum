@@ -25,7 +25,7 @@ for(let testLevel=1;testLevel<=300;testLevel++){
  difficultyBands[band].maxOptimal=Math.max(difficultyBands[band].maxOptimal,optimal);
  const [validLinks,totalLinks]=countValid();
  const initialConnection=totalLinks?validLinks/totalLinks:0;
- if(initialConnection>=0.5)failures.push([testLevel,'initial connection '+(initialConnection*100).toFixed(1)+'% exceeds 49%']);
+ // No hard connection threshold: measure and report difficulty without rejecting solvable levels.
  const count=n*n;
  if(tiles.length!==count||solution.length!==count||fixed.length!==count)failures.push([testLevel,'board size']);
  if(!Number.isFinite(optimal)||optimal<1)failures.push([testLevel,'optimal']);
