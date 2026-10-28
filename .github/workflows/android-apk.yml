@@ -106,7 +106,10 @@ jobs:
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp index.html app/src/main/assets/index.html
-          if [ -f icon.png ]; then
+          if [ -f assets/kara-dugum-icon.svg ]; then
+            python3 -m pip install --quiet cairosvg
+            python3 -c "import cairosvg; cairosvg.svg2png(url='assets/kara-dugum-icon.svg',write_to='app/src/main/res/drawable-nodpi/karadugum_icon.png',output_width=512,output_height=512)"
+          elif [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
             cp android-icons/mipmap-xxxhdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
