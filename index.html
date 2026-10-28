@@ -263,16 +263,25 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
   const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
   const pairs=[];
   for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)pairs.push([i,j]);}
-  // Independent pair swaps are their own inverse: all candidate boards remain solvable.
-  for(let pass=0;pass<8;pass++){
-   let improved=false;
-   for(const [i,j] of pairs){
-    [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
-    const ratio=connectionRatio();
-    if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();improved=true;}
-    else [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+  // Search multiple reversible pair configurations instead of getting stuck in
+  // one greedy local minimum. Each pair remains either solved or swapped.
+  const baseline=solution.slice();
+  for(let restart=0;restart<36;restart++){
+   tiles=baseline.slice();
+   for(const [i,j] of pairs)if(rand()<.65)[tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+   let ratio=connectionRatio();
+   if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();}
+   for(let pass=0;pass<4;pass++){
+    let improved=false;
+    for(let p=pairs.length-1;p>0;p--){const q=Math.floor(rand()*(p+1));[pairs[p],pairs[q]]=[pairs[q],pairs[p]];}
+    for(const [i,j] of pairs){
+     [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+     const candidate=connectionRatio();
+     if(candidate<ratio){ratio=candidate;improved=true;if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();}}
+     else [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+    }
+    if(!improved)break;
    }
-   if(!improved)break;
   }
  }else{
   // Legal reversible rotation moves; keep the lowest observed connection rate.
