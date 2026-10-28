@@ -12,6 +12,9 @@ const failures=[];
 for(let testLevel=1;testLevel<=300;testLevel++){
  level=testLevel;
  generate();
+ const snapshot=JSON.stringify({n,mode,tiles,solution,fixed,optimal});
+ generate();
+ if(JSON.stringify({n,mode,tiles,solution,fixed,optimal})!==snapshot)failures.push([testLevel,'nondeterministic board']);
  const count=n*n;
  if(tiles.length!==count||solution.length!==count||fixed.length!==count)failures.push([testLevel,'board size']);
  if(!Number.isFinite(optimal)||optimal<1)failures.push([testLevel,'optimal']);
