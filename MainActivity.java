@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
     private long lastInterstitialAt = 0;
     private int completedSinceInterstitial = 0;
     private String rewardPurpose = "coins";
+    private boolean rewardedInProgress = false;
     private WebView view;
     private boolean backHandling = false;
     private boolean signedIn = false;
@@ -175,17 +176,20 @@ public class MainActivity extends Activity {
         });
     }
     private void showRewarded() {
+        if (rewardedInProgress) return;
         if (rewardedAd == null) { send("adUnavailable", "null"); loadRewarded(); return; }
+        rewardedInProgress = true;
         RewardedAd ad = rewardedAd;
         rewardedAd = null;
         send("adReady", "false");
         final boolean[] rewardEarned = {false};
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override public void onAdDismissedFullScreenContent() {
+                rewardedInProgress = false;
                 if (!rewardEarned[0]) send("adUnavailable", "null");
                 loadRewarded();
             }
-            @Override public void onAdFailedToShowFullScreenContent(AdError error) { send("adUnavailable", "null"); loadRewarded(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; send("adUnavailable", "null"); loadRewarded(); }
         });
         final String purpose = rewardPurpose;
         ad.show(this, reward -> {
