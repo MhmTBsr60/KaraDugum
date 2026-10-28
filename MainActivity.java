@@ -195,11 +195,18 @@ public class MainActivity extends Activity {
             @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; send("adUnavailable", "null"); loadRewarded(); }
         });
         final String purpose = rewardPurpose;
-        ad.show(this, reward -> {
-            if (rewardEarned[0]) return;
-            rewardEarned[0] = true;
-            send("adReward", JSONObject.quote(purpose));
-        });
+        try {
+            ad.show(this, reward -> {
+                if (rewardEarned[0]) return;
+                rewardEarned[0] = true;
+                send("adReward", JSONObject.quote(purpose));
+            });
+        } catch (RuntimeException error) {
+            rewardedInProgress = false;
+            Log.e(TAG, "Rewarded display failed", error);
+            send("adUnavailable", "null");
+            loadRewarded();
+        }
     }
     private void loadInterstitial() {
         InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
