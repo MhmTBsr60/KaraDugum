@@ -23,6 +23,9 @@ for(let testLevel=1;testLevel<=300;testLevel++){
  difficultyBands[band].totalOptimal+=optimal;
  difficultyBands[band].minOptimal=Math.min(difficultyBands[band].minOptimal,optimal);
  difficultyBands[band].maxOptimal=Math.max(difficultyBands[band].maxOptimal,optimal);
+ const [validLinks,totalLinks]=countValid();
+ const initialConnection=totalLinks?validLinks/totalLinks:0;
+ if(initialConnection>=0.5)failures.push([testLevel,'initial connection '+(initialConnection*100).toFixed(1)+'% exceeds 49%']);
  const count=n*n;
  if(tiles.length!==count||solution.length!==count||fixed.length!==count)failures.push([testLevel,'board size']);
  if(!Number.isFinite(optimal)||optimal<1)failures.push([testLevel,'optimal']);
