@@ -9,12 +9,20 @@ const source = scripts.find(x => x.includes('function generate(){') && x.include
 assert(source, 'Game generator script not found');
 const hook = `
 const failures=[];
+const difficultyBands={};
+const solvedAtStart=[];
 for(let testLevel=1;testLevel<=300;testLevel++){
  level=testLevel;
  generate();
  const snapshot=JSON.stringify({n,mode,tiles,solution,fixed,optimal});
  generate();
  if(JSON.stringify({n,mode,tiles,solution,fixed,optimal})!==snapshot)failures.push([testLevel,'nondeterministic board']);
+ const band=n+'x'+n;
+ if(!difficultyBands[band])difficultyBands[band]={levels:0,totalOptimal:0,minOptimal:Infinity,maxOptimal:0};
+ difficultyBands[band].levels++;
+ difficultyBands[band].totalOptimal+=optimal;
+ difficultyBands[band].minOptimal=Math.min(difficultyBands[band].minOptimal,optimal);
+ difficultyBands[band].maxOptimal=Math.max(difficultyBands[band].maxOptimal,optimal);
  const count=n*n;
  if(tiles.length!==count||solution.length!==count||fixed.length!==count)failures.push([testLevel,'board size']);
  if(!Number.isFinite(optimal)||optimal<1)failures.push([testLevel,'optimal']);
@@ -28,11 +36,12 @@ for(let testLevel=1;testLevel<=300;testLevel++){
   }
  }
  const saved=tiles;
+ if(solved())solvedAtStart.push(testLevel);
  tiles=solution.slice();
  if(!solved())failures.push([testLevel,'solution connectivity']);
  tiles=saved;
 }
-window.auditResult={tested:300,failures};
+window.auditResult={tested:300,failures,difficultyBands,solvedAtStart};
 `;
 const patched=source.replace(/generate\(\)\s*\}\)\(\);\s*$/, 'generate();'+hook+'})();');
 assert.notEqual(patched,source,'Could not attach audit hook');
@@ -51,6 +60,9 @@ vm.runInContext(patched,ctx,{timeout:15000});
 const result=ctx.window.auditResult;
 assert(result,'Audit did not execute');
 console.log('Audited '+result.tested+' levels');
+for(const [band,v] of Object.entries(result.difficultyBands))console.log('Difficulty '+band+': '+v.levels+' levels, estimated moves '+v.minOptimal+'-'+v.maxOptimal+', mean '+(v.totalOptimal/v.levels).toFixed(1));
+console.log('Already solved at start: '+(result.solvedAtStart.join(', ')||'none'));
+if(result.solvedAtStart.length){console.error('Levels starting solved:',result.solvedAtStart);process.exitCode=1;}
 if(result.failures.length){console.error(JSON.stringify(result.failures));process.exitCode=1}
 else console.log('PASS: board sizes, tile bits, fixed tiles and solved target connectivity');
 console.log('NOTE: This is NOT an exhaustive proof of reachability under special-mode rules.');
