@@ -178,6 +178,7 @@ public class MainActivity extends Activity {
         if (rewardedAd == null) { send("adUnavailable", "null"); loadRewarded(); return; }
         RewardedAd ad = rewardedAd;
         rewardedAd = null;
+        send("adReady", "false");
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override public void onAdDismissedFullScreenContent() { loadRewarded(); }
             @Override public void onAdFailedToShowFullScreenContent(AdError error) { send("adUnavailable", "null"); loadRewarded(); }
