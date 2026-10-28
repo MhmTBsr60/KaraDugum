@@ -32,11 +32,18 @@ for(let testLevel=1;testLevel<=300;testLevel++){
  if(tiles.some(v=>!Number.isInteger(v)||v<0||v>15))failures.push([testLevel,'tile bits']);
  if(fixed.some((v,i)=>v&&tiles[i]!==solution[i]))failures.push([testLevel,'fixed mismatch']);
  if(level>10&&mode===4){
-  const neighbor=i=>[i-n,i+n,i-1,i+1].filter(j=>j>=0&&j<count&&(Math.abs(j%n-i%n)+Math.abs((j/n|0)-(i/n|0))===1)&&!fixed[j])[0];
-  for(let i=0;i<count;i++)if(tiles[i]!==solution[i]){
-   const j=neighbor(i);
-   if(j===undefined||neighbor(j)!==i||tiles[i]!==solution[j]||tiles[j]!==solution[i])failures.push([testLevel,'unreachable slide pair '+i]);
+  const partner=window.kdSlidePartner||[];
+  let misplaced=0;
+  for(let i=0;i<count;i++){
+   const j=partner[i];
+   if(j>=0&&(partner[j]!==i||fixed[i]||fixed[j]||Math.abs(i%n-j%n)+Math.abs((i/n|0)-(j/n|0))!==1))
+    failures.push([testLevel,'invalid slide partner '+i]);
+   if(tiles[i]!==solution[i]){
+    misplaced++;
+    if(j===undefined||j<0||tiles[i]!==solution[j]||tiles[j]!==solution[i])failures.push([testLevel,'unreachable slide pair '+i]);
+   }
   }
+  if(testLevel>=151&&misplaced<12)failures.push([testLevel,'slide too easy: only '+misplaced+' misplaced tiles']);
  }
  let validConnections=0,totalConnections=0;
  for(let i=0;i<count;i++)for(const [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){
