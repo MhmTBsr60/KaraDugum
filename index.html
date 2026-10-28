@@ -587,7 +587,7 @@ const original=window.kdNativeEvent;
 window.kdNativeEvent=function(event,payload){
  if(event==='adReward'){
   try{
-   if(payload==='hint'){write('hintCoupons',Math.max(0,Number(read('hintCoupons',0))||0)+1);window.kdCloudSync?.();alert('🎉 +1 ipucu kuponu kazandın! İPUCU butonuna tekrar bas.');}else if(payload==='double'&&pending){
+   if(payload==='hint'){write('kd64_hintCoupons',Math.max(0,Number(read('kd64_hintCoupons',0))||0)+1);window.kdCloudSync?.();alert('🎉 +1 ipucu kuponu kazandın! İPUCU butonuna tekrar bas.');}else if(payload==='double'&&pending){
     const r=pending;pending=null;
     if(read('kd64_doubleClaim_'+r.level,false))return;
     write('kd64_doubleClaim_'+r.level,true);
