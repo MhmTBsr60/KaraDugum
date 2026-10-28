@@ -242,7 +242,11 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
    const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
    const reversible=[];
    for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)reversible.push([i,j]);}
-   for(let z=0;z<count*2&&reversible.length;z++){specialScrambleMoves++;const [i,j]=reversible[Math.floor(rand()*reversible.length)];[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}
+   // Swap disjoint reversible pairs an odd number of times; repeated random swaps cancel out.
+   // A complete set of distinct pairs guarantees a substantially scrambled board.
+   for(let z=reversible.length-1;z>0;z--){const j=Math.floor(rand()*(z+1));[reversible[z],reversible[j]]=[reversible[j],reversible[z]];}
+   for(const [i,j] of reversible){[tiles[i],tiles[j]]=[tiles[j],tiles[i]];specialScrambleMoves++;}
+   // Do not re-swap a pair here: that would restore its original solved positions.
  }
  if(modeOn(5)||modeOn(13)){ // two colored/directional routes have separate visual rule markers
    window.kdExtra.colors=solution.map((_,i)=>i%2?'#fb7185':'#5dbbff');
