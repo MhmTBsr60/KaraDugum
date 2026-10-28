@@ -38,6 +38,14 @@ for(let testLevel=1;testLevel<=300;testLevel++){
    if(j===undefined||neighbor(j)!==i||tiles[i]!==solution[j]||tiles[j]!==solution[i])failures.push([testLevel,'unreachable slide pair '+i]);
   }
  }
+ let validConnections=0,totalConnections=0;
+ for(let i=0;i<count;i++)for(const [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){
+  if(!(tiles[i]&bit))continue;
+  totalConnections++;
+  const rr=(i/n|0)+dr,cc=i%n+dc;
+  if(rr>=0&&rr<n&&cc>=0&&cc<n&&(tiles[rr*n+cc]&opp))validConnections++;
+ }
+ if(totalConnections&&validConnections/totalConnections>=.25)failures.push([testLevel,'initial connection rate '+(100*validConnections/totalConnections).toFixed(1)+'% (must be below 25%)']);
  const expectedHints=testLevel<=25?3:testLevel<=70?2:testLevel<=100?1:0;
  if(hints!==expectedHints)failures.push([testLevel,'free hint count '+hints+' expected '+expectedHints]);
  if(testLevel>10&&[3,4,6,9].includes(mode)){
