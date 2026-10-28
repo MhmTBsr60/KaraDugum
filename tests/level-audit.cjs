@@ -38,7 +38,7 @@ for(let testLevel=1;testLevel<=300;testLevel++){
  const expectedHints=testLevel<=25?3:testLevel<=70?2:testLevel<=100?1:0;
  if(hints!==expectedHints)failures.push([testLevel,'free hint count '+hints+' expected '+expectedHints]);
  if(testLevel>10&&[3,4,6,9].includes(mode)){
-  const candidates=tiles.map((v,i)=>i).filter(i=>!fixed[i]&&v!==solution[i]);
+  const candidates=tiles.map((v,i)=>i).filter(i=>!fixed[i]&&tiles[i]!==solution[i]);
   if(!candidates.length && !tiles.every((v,i)=>fixed[i]||v===solution[i]))failures.push([testLevel,'no special hint candidates despite unsolved board']);
  }
  const saved=tiles;
