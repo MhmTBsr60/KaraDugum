@@ -72,3 +72,17 @@ if(result.solvedAtStart.length){console.error('Levels starting solved:',result.s
 if(result.failures.length){console.error(JSON.stringify(result.failures));process.exitCode=1}
 else console.log('PASS: board sizes, tile bits, fixed tiles and solved target connectivity');
 console.log('NOTE: This is NOT an exhaustive proof of reachability under special-mode rules.');
+
+
+/* Hint regression checks: run against the shipped HTML, not a duplicate rules table. */
+const hintHandler = html.match(/\$\('hint'\)\.onclick=\(\)=>\{[\s\S]*?\};function tick\(/)?.[0];
+assert(hintHandler, 'Hint click handler missing');
+assert(hintHandler.includes('rewardedHint()'), 'Rewarded hint request missing');
+assert(hintHandler.includes('hintCoupons'), 'Hint coupon spending missing');
+assert(hintHandler.includes('usedHints++'), 'Hint usage accounting missing');
+assert(hintHandler.includes('if(locked)return'), 'Hint usable after game lock');
+const restartHandler = html.match(/\$\('restart'\)\.onclick=\(\)=>\{[\s\S]*?\};\$\('new'\)/)?.[0];
+assert(restartHandler, 'Restart handler missing');
+assert(restartHandler.includes('level<=25?3:level<=70?2:level<=100?1:0'), 'Restart free hint bands differ from generator');
+assert(html.includes("window.kdHintAdPending=false"), 'Rewarded hint pending state is not cleared');
+console.log('PASS: hint handler, reward path, coupon accounting and restart hint bands present');
