@@ -35,6 +35,12 @@ for(let testLevel=1;testLevel<=300;testLevel++){
    if(j===undefined||neighbor(j)!==i||tiles[i]!==solution[j]||tiles[j]!==solution[i])failures.push([testLevel,'unreachable slide pair '+i]);
   }
  }
+ const expectedHints=testLevel<=25?3:testLevel<=70?2:testLevel<=100?1:0;
+ if(hints!==expectedHints)failures.push([testLevel,'free hint count '+hints+' expected '+expectedHints]);
+ if(testLevel>10&&[3,4,6,9].includes(mode)){
+  const candidates=tiles.map((v,i)=>i).filter(i=>!fixed[i]&&v!==solution[i]);
+  if(!candidates.length)failures.push([testLevel,'no special hint candidates']);
+ }
  const saved=tiles;
  if(solved())solvedAtStart.push(testLevel);
  tiles=solution.slice();
