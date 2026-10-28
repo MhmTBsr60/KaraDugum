@@ -212,6 +212,7 @@ public class MainActivity extends Activity {
     }
     public class Bridge {
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
+        @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
         @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { rewardPurpose = "double"; showRewarded(); }); }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void vibrate(int milliseconds) {
