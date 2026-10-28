@@ -239,9 +239,20 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
  }
  if(modeOn(4)){ // slide mode: swap only adjacent tiles, preserving a reversible scramble
    tiles=solution.slice();
-   const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
-   const reversible=[];
-   for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)reversible.push([i,j]);}
+   // Match adjacent free cells into disjoint reversible pairs. The old
+   // first-neighbor mutual rule left most of the 8x8 board untouched.
+   const reversible=[],paired=new Set();
+   const order=Array.from({length:count},(_,i)=>i).filter(i=>!fixed[i]);
+   for(let z=order.length-1;z>0;z--){const k=Math.floor(rand()*(z+1));[order[z],order[k]]=[order[k],order[z]];}
+   for(const i of order){
+    if(paired.has(i))continue;
+    const options=neighbors(i).filter(j=>!fixed[j]&&!paired.has(j));
+    if(!options.length)continue;
+    const j=options[Math.floor(rand()*options.length)];
+    reversible.push([i,j]);paired.add(i);paired.add(j);
+   }
+   window.kdSlidePartner=Array(count).fill(-1);
+   for(const [i,j] of reversible){window.kdSlidePartner[i]=j;window.kdSlidePartner[j]=i;}
    // Swap disjoint reversible pairs an odd number of times; repeated random swaps cancel out.
    // A complete set of distinct pairs guarantees a substantially scrambled board.
    for(let z=reversible.length-1;z>0;z--){const j=Math.floor(rand()*(z+1));[reversible[z],reversible[j]]=[reversible[j],reversible[z]];}
@@ -260,9 +271,7 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
  let bestRatio=connectionRatio(),bestTiles=tiles.slice();
  const movable=Array.from({length:count},(_,i)=>i).filter(i=>!fixed[i]);
  if(modeOn(4)){
-  const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
-  const pairs=[];
-  for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)pairs.push([i,j]);}
+  const pairs=reversible.slice();
   // Search multiple reversible pair configurations instead of getting stuck in
   // one greedy local minimum. Each pair remains either solved or swapped.
   const baseline=solution.slice();
@@ -335,9 +344,9 @@ function render(){let board=$('board');board.style.gridTemplateColumns=`repeat($
 }
 $('board').addEventListener('click',e=>{let btn=e.target.closest('.tile');if(!btn||locked)return;let i=+btn.dataset.i;if(fixed[i]){fx('lock');$('status').textContent='🔒 Sabit düğüm döndürülemez.';return}if(doors[i]&&!keys[i]&&keys.some(Boolean)){$('status').textContent='🔑 Önce altın anahtarları topla.';fx('lock');return}if(targets[i]&&!targetDone[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();targetDone[i]=true;fx('chain');$('status').textContent='🎯 Hedef etkinleştirildi.';render();if(solved()&&!keys.some(Boolean)&&targets.every((v,j)=>!v||targetDone[j])&&ice.every(v=>!v))win();return}
 if(ice[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();ice[i]--;fx('lock');$('status').textContent=ice[i]?'❄ Buz çatladı; tekrar dokun.':'❄ Buz kırıldı; artık döndürebilirsin.';render();return}
-if(keys[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();keys[i]=false;fog[i]=false;fx('chain');$('status').textContent='🔑 Anahtar alındı! Kapılar açılabilir.';render();return}if(sealed[i]>0){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();sealed[i]--;fx('lock');$('status').textContent=sealed[i]?'🔐 Mühür zayıfladı. Bir kez daha dokun.':'🔓 Mühür açıldı. Şimdi kareyi döndürebilirsin.';render();return}if(level>10&&mode===4&&!neighbors(i).some(j=>!fixed[j])){$('status').textContent='Bu düğümün kaydırılabilecek komşusu yok.';fx('lock');return;}history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();fx('tap');btn.classList.add('flash');if(level>10&&mode===4){
- const candidates=neighbors(i).filter(j=>!fixed[j]);
- const j=candidates.length?candidates[0]:i;
+if(keys[i]){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();keys[i]=false;fog[i]=false;fx('chain');$('status').textContent='🔑 Anahtar alındı! Kapılar açılabilir.';render();return}if(sealed[i]>0){history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();sealed[i]--;fx('lock');$('status').textContent=sealed[i]?'🔐 Mühür zayıfladı. Bir kez daha dokun.':'🔓 Mühür açıldı. Şimdi kareyi döndürebilirsin.';render();return}if(level>10&&mode===4&&!(window.kdSlidePartner?.[i]>=0)){$('status').textContent='Bu düğümün kaydırılabilecek komşusu yok.';fx('lock');return;}history.push({tiles:tiles.slice(),sealed:sealed.slice(),keys:keys.slice(),fog:fog.slice(),rotCount:rotCount.slice(),targetDone:targetDone.slice(),ice:ice.slice(),moves});if(history.length>120)history.shift();fx('tap');btn.classList.add('flash');if(level>10&&mode===4){
+ const j=window.kdSlidePartner?.[i]??-1;
+ if(j<0)return;
  [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
  }else{
  const affected=level>10&&mode===3?[i,...[i-n,i+n,i-1,i+1].filter(j=>j>=0&&j<tiles.length&&(Math.abs(j%n-i%n)+Math.abs((j/n|0)-(i/n|0))===1))]:level>10&&mode===6?[i,tiles.length-1-i]:level>10&&mode===9?Array.from({length:n},(_,c)=>(i/n|0)*n+c):[i];
@@ -367,7 +376,7 @@ function renderHintLabel(){const b=$('hint');if(b)b.textContent=hints>0?`◈ İP
   let score=0,priority=0;
   if(targets[i]&&!targetDone[i]||ice[i]||keys[i]||sealed[i]){priority=100;score=before-1;}
   else if(level>10&&mode===4){
-   const j=neighbors(i).filter(j=>!fixed[j])[0];
+   const j=window.kdSlidePartner?.[i];
    if(j===undefined)continue;
    const next=tiles.slice();[next[i],next[j]]=[next[j],next[i]];
    score=before-mismatch(next);
