@@ -227,7 +227,7 @@ button:focus-visible{outline:2px solid #efc978;outline-offset:3px}
  optimal=tiles.reduce((a,v,i)=>{if(fixed[i])return a;for(let k=0;k<4;k++)if(rotate(v,k)===solution[i])return a+k;return a},0);
  if(advanced&&[3,4,6,9].includes(mode))optimal=mode===4?specialScrambleMoves:specialScrambleMoves*3;
  optimal=Math.max(1,optimal);
- attempts++;addStat('attempts',1);moves=0;hints=level<=5?3:level<=10?2:level<=20?1:0;usedHints=0;undos=0;history=[];locked=false;
+ attempts++;addStat('attempts',1);moves=0;hints=level<=5?3:level<=10?2:level<=30?1:0;usedHints=0;undos=0;history=[];locked=false;
  timeLimit=0;clearInterval(timer);startTime=Date.now();timer=setInterval(()=>{try{tick()}catch(e){console.warn('Sayaç hatası',e)}},500);render();
 }function countValid(){let valid=0,total=0;for(let i=0;i<tiles.length;i++){let r=i/n|0,c=i%n;for(let [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){if(!(tiles[i]&bit))continue;total++;let rr=r+dr,cc=c+dc;if(rr>=0&&rr<n&&cc>=0&&cc<n&&(tiles[rr*n+cc]&opp))valid++}}return [valid,total]}
 function solved(){let seen=new Set([0]),queue=[0];for(let k=0;k<queue.length;k++){let i=queue[k],r=i/n|0,c=i%n;for(let [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){if(!(tiles[i]&bit))continue;let rr=r+dr,cc=c+dc;if(rr<0||rr>=n||cc<0||cc>=n||!(tiles[rr*n+cc]&opp))return false;let j=rr*n+cc;if(!seen.has(j)){seen.add(j);queue.push(j)}}}return seen.size===tiles.length}
