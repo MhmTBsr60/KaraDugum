@@ -65,6 +65,7 @@ jobs:
         run: |
           node tests/level-audit.cjs
           node tests/hint-runtime-audit.cjs
+          node tests/ui-regression.cjs
 
       - name: Bolum ve kayit koruma kontrolleri
         shell: bash
