@@ -62,7 +62,9 @@ jobs:
           for script in /tmp/karadugum-script-*.js; do node --check "$script"; done
 
       - name: 300 bolum otomatik denetimi
-        run: node tests/level-audit.cjs
+        run: |
+          node tests/level-audit.cjs
+          node tests/hint-runtime-audit.cjs
 
       - name: Bolum ve kayit koruma kontrolleri
         shell: bash
