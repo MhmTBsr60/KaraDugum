@@ -255,30 +255,37 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
  const target=Math.min(count-fixed.filter(Boolean).length,Math.ceil(count*(level<=5?.45:level<=10?.70:level<=20?.88:.98)));
  let unsolved=tiles.reduce((a,v,i)=>a+(!fixed[i]&&v!==solution[i]?1:0),0);
  for(let i=0;i<count&&unsolved<target&&!([3,4,6,9].includes(mode)&&advanced);i++)if(!fixed[i]&&tiles[i]===solution[i]&&rot(tiles[i])!==tiles[i]){tiles[i]=rot(tiles[i]);unsolved++;}
- // Enforce a genuinely low initial connection ratio using reversible, legal moves.
- // This changes the board, never the displayed percentage.
+ // Minimize starting connections while preserving the legal scramble of each mode.
  const connectionRatio=()=>{let valid=0,total=0;for(let i=0;i<count;i++)for(const [bit,dr,dc,opp] of [[1,-1,0,4],[2,0,1,8],[4,1,0,1],[8,0,-1,2]]){if(!(tiles[i]&bit))continue;total++;const rr=(i/n|0)+dr,cc=i%n+dc;if(rr>=0&&rr<n&&cc>=0&&cc<n&&(tiles[rr*n+cc]&opp))valid++;}return total?valid/total:0;};
- let bestRatio=connectionRatio(),bestTiles=tiles.slice(),lastScramble=-1;
+ let bestRatio=connectionRatio(),bestTiles=tiles.slice();
  const movable=Array.from({length:count},(_,i)=>i).filter(i=>!fixed[i]);
- const maxScramble=1200+count*20;
- for(let step=0;bestRatio>=.25&&step<maxScramble;step++){
-  if(!movable.length)break;
-  const i=movable[Math.floor(rand()*movable.length)];
-  if(modeOn(4)){
-   const j=neighbors(i).find(j=>!fixed[j]);
-   if(j===undefined)continue;
-   [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
-  }else{
+ if(modeOn(4)){
+  const firstNeighbor=i=>neighbors(i).find(j=>!fixed[j]);
+  const pairs=[];
+  for(let i=0;i<count;i++){if(fixed[i])continue;const j=firstNeighbor(i);if(j!==undefined&&firstNeighbor(j)===i&&i<j)pairs.push([i,j]);}
+  // Independent pair swaps are their own inverse: all candidate boards remain solvable.
+  for(let pass=0;pass<8;pass++){
+   let improved=false;
+   for(const [i,j] of pairs){
+    [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+    const ratio=connectionRatio();
+    if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();improved=true;}
+    else [tiles[i],tiles[j]]=[tiles[j],tiles[i]];
+   }
+   if(!improved)break;
+  }
+ }else{
+  // Legal reversible rotation moves; keep the lowest observed connection rate.
+  for(let step=0;step<900&&movable.length;step++){
+   const i=movable[Math.floor(rand()*movable.length)];
    const affected=modeOn(3)?[i,...neighbors(i)]:modeOn(6)?[i,count-1-i]:modeOn(9)?Array.from({length:n},(_,c)=>(i/n|0)*n+c):[i];
    for(const j of new Set(affected))if(!fixed[j])tiles[j]=reverseMode?rotate(tiles[j],3):rot(tiles[j]);
+   const ratio=connectionRatio();
+   if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();}
+   if(step%150===149)tiles=bestTiles.slice();
   }
-  const ratio=connectionRatio();
-  if(ratio<bestRatio){bestRatio=ratio;bestTiles=tiles.slice();lastScramble=step;}
-  // Random walks can escape local minima; restore the best state periodically.
-  if(step%150===149)tiles=bestTiles.slice();
  }
  tiles=bestTiles;
- if(bestRatio>=.25)console.warn('Bölüm '+level+': başlangıç bağlantı hedefi sağlanamadı: '+Math.round(bestRatio*100)+'%');
  initial=tiles.slice();
  optimal=tiles.reduce((a,v,i)=>{if(fixed[i])return a;for(let k=0;k<4;k++)if(rotate(v,k)===solution[i])return a+k;return a},0);
  if(advanced&&[3,4,6,9].includes(mode))optimal=mode===4?specialScrambleMoves:specialScrambleMoves*3;
