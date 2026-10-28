@@ -86,3 +86,9 @@ assert(restartHandler, 'Restart handler missing');
 assert(restartHandler.includes('level<=25?3:level<=70?2:level<=100?1:0'), 'Restart free hint bands differ from generator');
 assert(html.includes("window.kdHintAdPending=false"), 'Rewarded hint pending state is not cleared');
 console.log('PASS: hint handler, reward path, coupon accounting and restart hint bands present');
+
+assert(hintHandler.includes('button.click()'), 'Hint must use real board click');
+assert(hintHandler.includes('if(!changed)'), 'Failed hint must preserve credits');
+assert(hintHandler.indexOf('if(!changed)') < hintHandler.indexOf('usedHints++'), 'Hint charged before successful move');
+assert(!hintHandler.includes('tiles[i]=solution[i]'), 'Hint bypasses game rules');
+console.log('PASS: hints invoke real moves and charge only after state changes');
