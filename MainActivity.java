@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
     private int completedSinceInterstitial = 0;
     private String rewardPurpose = "coins";
     private boolean rewardedInProgress = false;
+    private boolean rewardedLoading = false;
     private WebView view;
     private boolean backHandling = false;
     private boolean signedIn = false;
@@ -170,9 +171,11 @@ public class MainActivity extends Activity {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
     }
     private void loadRewarded() {
+        if (rewardedLoading || rewardedInProgress || rewardedAd != null) return;
+        rewardedLoading = true;
         RewardedAd.load(this, REWARDED_TEST_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
-            @Override public void onAdLoaded(RewardedAd ad) { rewardedAd = ad; send("adReady", "true"); }
-            @Override public void onAdFailedToLoad(LoadAdError error) { rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
+            @Override public void onAdLoaded(RewardedAd ad) { rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
+            @Override public void onAdFailedToLoad(LoadAdError error) { rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
         });
     }
     private void showRewarded() {
@@ -193,6 +196,7 @@ public class MainActivity extends Activity {
         });
         final String purpose = rewardPurpose;
         ad.show(this, reward -> {
+            if (rewardEarned[0]) return;
             rewardEarned[0] = true;
             send("adReward", JSONObject.quote(purpose));
         });
