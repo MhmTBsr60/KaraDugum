@@ -339,11 +339,11 @@ $('restart').onclick=()=>{attempts++;addStat('attempts',1);tiles=initial.slice()
  const i=candidates[0].i,button=$('board').children[i];
  if(!button){$('status').textContent='İpucu hamlesi başlatılamadı.';return;}
  const old=JSON.stringify({tiles,sealed,keys,fog,rotCount,targetDone,ice,moves});
- button.click();
- const changed=old!==JSON.stringify({tiles,sealed,keys,fog,rotCount,targetDone,ice,moves});
- if(!changed){$('status').textContent='İpucu uygulanamadı; hakkın korunuyor.';return;}
- if(hints>0)hints--;else set64('hintCoupons',coupons-1);
  usedHints++;
+ try{button.click();}catch(e){usedHints--;console.error('İpucu hamlesi hatası',e);$('status').textContent='İpucu uygulanamadı; hakkın korunuyor.';return;}
+ const changed=old!==JSON.stringify({tiles,sealed,keys,fog,rotCount,targetDone,ice,moves});
+ if(!changed){usedHints--;$('status').textContent='İpucu uygulanamadı; hakkın korunuyor.';return;}
+ if(hints>0)hints--;else set64('hintCoupons',coupons-1);
  renderHintLabel();
  const shown=$('board').children[i];
  if(shown){shown.style.outline='3px solid #facc15';shown.style.outlineOffset='-3px';setTimeout(()=>{if(shown.isConnected){shown.style.outline='';shown.style.outlineOffset='';}},2200);}
