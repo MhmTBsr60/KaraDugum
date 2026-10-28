@@ -87,7 +87,7 @@ jobs:
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
           if "versionCode 69" not in workflow or "versionName '6.9'" not in workflow:
-              raise SystemExit('HATA: Surum 6.8 ayarlari uyusmuyor')
+              raise SystemExit('HATA: Surum 6.9 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -158,8 +158,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 68
-              versionName '6.8'
+              versionCode 69
+              versionName '6.9'
             }
             signingConfigs {
               release {
