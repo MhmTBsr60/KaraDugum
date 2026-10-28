@@ -179,12 +179,19 @@ public class MainActivity extends Activity {
         RewardedAd ad = rewardedAd;
         rewardedAd = null;
         send("adReady", "false");
+        final boolean[] rewardEarned = {false};
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
-            @Override public void onAdDismissedFullScreenContent() { loadRewarded(); }
+            @Override public void onAdDismissedFullScreenContent() {
+                if (!rewardEarned[0]) send("adUnavailable", "null");
+                loadRewarded();
+            }
             @Override public void onAdFailedToShowFullScreenContent(AdError error) { send("adUnavailable", "null"); loadRewarded(); }
         });
         final String purpose = rewardPurpose;
-        ad.show(this, reward -> send("adReward", JSONObject.quote(purpose)));
+        ad.show(this, reward -> {
+            rewardEarned[0] = true;
+            send("adReward", JSONObject.quote(purpose));
+        });
     }
     private void loadInterstitial() {
         InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
