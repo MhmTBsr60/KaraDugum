@@ -271,7 +271,8 @@ body{background:radial-gradient(ellipse at 50% -10%,#35151c 0%,#130e16 35%,#0809
  let bestRatio=connectionRatio(),bestTiles=tiles.slice();
  const movable=Array.from({length:count},(_,i)=>i).filter(i=>!fixed[i]);
  if(modeOn(4)){
-  const pairs=reversible.slice();
+  const pairs=[];
+  for(let i=0;i<count;i++){const j=window.kdSlidePartner?.[i];if(j>i)pairs.push([i,j]);}
   // Search multiple reversible pair configurations instead of getting stuck in
   // one greedy local minimum. Each pair remains either solved or swapped.
   const baseline=solution.slice();
