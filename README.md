@@ -111,3 +111,6 @@ Aynı makinede Chromium, 390×844 ekran, 4× CPU yavaşlatması; v6.19 (`d571c8b
 | 20 hamlede yeniden oluşturulan dokunma düğmesi | 1280 | 0 |
 
 Yeniden ölçmek için `CHROMIUM_PATH=/usr/bin/chromium node tests/performance-benchmark.cjs current`; başka bir temiz sürüm için `BENCH_ROOT` yolunu belirt. Zaman ölçümleri test paketinin geçme koşulu yapılmaz; yapısal iyileştirmeler normal tarayıcı testinde doğrulanır.
+
+### v6.21
+Ayarlar tanıtım metni ve yedekleme bağlantısı kaldırıldı, dikey/yatay ekrana sığan düzen eklendi. Mağazaya görünür +15 kristal reklam kartı geri eklendi. Tüm tahta boyutlarında boruların pahalı SVG gölge filtreleri kaldırıldı ve hücre boyamaları sınırlandı; tema dokuları ve metal borular korundu.
