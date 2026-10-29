@@ -42,3 +42,5 @@ check(workflow.includes('cp home-icons.css app/src/main/assets/home-icons.css'),
 check(workflow.includes('cp assets/kara-dugum-home-icons.webp app/src/main/assets/assets/kara-dugum-home-icons.webp'),'APK missing navigation artwork');
 
 for(const file of ['board-renderer.js','reward-receipts.js','modern-panels.css'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing '+file);
+
+for(const file of ['learning.js','learning.css']){assert(html.includes(file),file+' must be loaded');assert(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' must be packaged');}

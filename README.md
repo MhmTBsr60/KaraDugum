@@ -135,3 +135,7 @@ Yeni test: `tests/goals-finale-audit.cjs`.
 Oyuncu merkezi ve ödül penceresi aynı 12 hedefi, ilerlemeyi ve alınma durumunu kullanır. Eski `first/ten/fifty/hundred/threehundred/perfect` ödül anahtarları ve 5/15/40/80/300/25 kristal tutarları korunur. Yeni hedefler: 25/150/200/250 bölüm (25/100/125/150 kristal), 25 kusursuz çözüm (60 kristal) ve 7 günlük seri (50 kristal).
 Ödüller profil kartlarından da alınır; hazır ödül sayısı ve alınmış/kilitli durumları görünür. Kaydedilen en yüksek ilerleme, kazanılmış başarımın seri bozulunca kaybolmasını önler. Aynı ödülü farklı ekranlardan isteme, tekrar tıklama, yeniden açılış ve yarım kalan kayıt için ortak işlem kaydı kullanılır.
 Test: `tests/achievements-audit.cjs`.
+
+### v6.26 — Mekanik gösterimleri ve yıldız hedefleri
+Yeni bir mekanik ilk kez açıldığında küçük, geçilebilir bir gösterim daveti görünür; doğrudan oynamak da daveti kapatır. Önceden o türden bölüm tamamlamış oyunculara tekrar gösterilmez. Soru işareti ile gösterim, ★★★ düğmesi ile gerçek hamle/süre hedefleri tekrar açılabilir. Örnekler tahtanın kopyasında çalışır; hamle, ipucu, kaynak ve kayıtlı bulmaca değişmez. Gösterim penceresinde süre durur; arka plan, geri ve Escape ile kapanışlar korunur.
+Yıldız hesaplama kuralları değişmez: 2 yıldız için hedef hamlenin en fazla %135'i, ipucusuz ve geri almasız çözüm; 3 yıldız için en fazla %108 ve `max(35, hedef×3+10)` saniye. Gösterilen tam sayı sınırları bu hesaplardan üretilir. Bölüm sonu bu dört üç-yıldız koşulunun karşılanıp karşılanmadığını gösterir. Yeni test `tests/learning-audit.cjs`.
