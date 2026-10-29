@@ -74,3 +74,4 @@ html[data-kd-theme] #kdGame .kdTop,html[data-kd-theme] #kdGame .stat,html[data-k
 html[data-kd-theme] #kdGame #kdModeRule{border-color:var(--stone-edge)!important;color:var(--pipe-tone)!important}
 html[data-kd-theme] #kdGame .stat b{color:var(--pipe-tone)}
 html[data-kd-theme] #kdGame main>.controls>button:not(.secondary){background:linear-gradient(120deg,var(--pipe-tone),var(--stone-edge));color:#111}
+html[data-kd-theme] #kdGame main>.controls button.secondary{background:color-mix(in srgb,var(--stone-tone) 40%,#111318);border-color:var(--stone-edge)}
