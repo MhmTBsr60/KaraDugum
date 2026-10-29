@@ -12,15 +12,15 @@ const url=`http://127.0.0.1:${server.address().port}/index.html`;
 await page.goto(url);await page.locator('.kdDailyClose').click();await page.waitForTimeout(2200);
 assert.equal(await page.locator('.kdHot').count(),7);assert(await page.locator('.kdExactImage').evaluate(e=>e.complete&&e.naturalWidth>0));
 const screenshotDir=process.env.AUDIT_SCREENSHOTS;if(screenshotDir){fs.mkdirSync(screenshotDir,{recursive:true});await page.screenshot({path:path.join(screenshotDir,'home-after.png')});}
-for(const selector of ['.kdHotSettings','.kdHotStats','.kdHotLevels','.kdHotShop']){await page.locator(selector).click();assert(await page.locator('#kdShell .kdTop').isVisible());await page.locator('#kdShell .kdBack').click();}
+for(const selector of ['.kdHotSettings','.kdHotStats','.kdHotLevels','.kdHotShop']){await page.locator(selector).click();assert(await page.locator('#kdShell .kdTop').isVisible());if(selector==='.kdHotShop')await page.evaluate(()=>kdNavigate('home'));else await page.locator('#kdShell .kdBack').click();}
 await page.locator('.kdHotPlay').click();assert(await page.locator('#kdGame').isVisible());await page.locator('#board .tile').first().click();const before=await page.evaluate(()=>__audit.state());await page.locator('#undo').click();assert.equal(await page.evaluate(()=>__audit.state().moves),0);await page.locator('#hint').click();const saved=await page.evaluate(()=>__audit.state());assert.equal(saved.hints,2);
 await page.reload();await page.waitForTimeout(2200);const restored=await page.evaluate(()=>__audit.state());assert.deepEqual(restored.tiles,saved.tiles);assert.equal(restored.hints,2);assert.equal(restored.moves,saved.moves);
 await page.evaluate(()=>kdNavigate('game'));await page.waitForTimeout(1100);await page.evaluate(()=>kdNavigate('home'));const clock=await page.locator('#clock').textContent();await page.waitForTimeout(1100);assert.equal(await page.locator('#clock').textContent(),clock,'Timer runs in menu');
 // All visible shop controls: exact debit, repeated claims, ownership and persistence.
-await page.evaluate(()=>{localStorage.setItem('kd64_coins','1000');localStorage.setItem('kd64_hintCoupons','0');kdNavigate('shop')});
-for(const [count,price] of [[1,50],[3,135],[10,400]]){const balance=await page.evaluate(()=>+localStorage.getItem('kd64_coins'));await page.locator(`[data-shop-buy="${count}"]`).click();assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_coins')),balance-price);}
-assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_hintCoupons')),14);
-await page.evaluate(()=>localStorage.setItem('kd64_coins','0'));await page.locator('[data-shop-buy="1"]').click();assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_hintCoupons')),14);
+await page.evaluate(()=>{localStorage.setItem('kd64_coins','3000');localStorage.setItem('kd64_hintCoupons','0');kdNavigate('shop')});
+for(const [count,price] of [[5,225],[15,600],[30,1050]]){const balance=await page.evaluate(()=>+localStorage.getItem('kd64_coins'));await page.locator(`[data-shop-buy="${count}"]`).click();assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_coins')),balance-price);}
+assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_hintCoupons')),50);
+await page.evaluate(()=>localStorage.setItem('kd64_coins','0'));await page.locator('[data-shop-buy="5"]').click();assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_hintCoupons')),50);
 await page.locator('[data-shop-daily]').click();assert.equal(await page.evaluate(()=>+localStorage.getItem('kd64_coins')),25);assert(await page.locator('[data-shop-daily]').isDisabled());
 await page.locator('[data-shop-spin]').click();await page.locator('.kdWheelSpin').click();await page.waitForFunction(()=>document.getElementById('kdWheelOverlay').dataset.spinning==='false');await page.locator('.kdWheelClose').click();const wheelBalance=await page.evaluate(()=>+localStorage.getItem('kd64_coins'));assert(wheelBalance>=25&&wheelBalance<=75);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('kd64_wheelState')).freeUsed),true);
 await page.evaluate(()=>localStorage.setItem('kd64_coins','1000'));

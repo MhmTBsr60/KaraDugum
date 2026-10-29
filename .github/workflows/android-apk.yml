@@ -97,8 +97,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 73" not in workflow or "versionName '6.13'" not in workflow:
-              raise SystemExit('HATA: Surum 6.13 ayarlari uyusmuyor')
+          if "versionCode 74" not in workflow or "versionName '6.14'" not in workflow:
+              raise SystemExit('HATA: Surum 6.14 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -117,9 +117,11 @@ jobs:
           cp index.html app/src/main/assets/index.html
           cp wheel.js app/src/main/assets/wheel.js
           cp screens.css app/src/main/assets/screens.css
+          cp reference.css app/src/main/assets/reference.css
           mkdir -p app/src/main/assets/assets
           cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
           cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
+          cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png
           if [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
@@ -173,8 +175,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 73
-              versionName '6.13'
+              versionCode 74
+              versionName '6.14'
             }
             signingConfigs {
               release {
@@ -254,7 +256,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.13-APK-AAB
+          name: KaraDugum-v6.14-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
