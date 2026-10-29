@@ -7,13 +7,23 @@ const hook=`
 const hintAudit=[];
 for(let testLevel=1;testLevel<=300;testLevel++){
  level=testLevel;generate();set64('hintCoupons',2000);
+ const snap=()=>JSON.stringify({tiles,sealed,keys,fog,rotCount,targetDone,ice,moves,extra:window.kdExtra});
+ const original=snap();
+ for(let step=0;step<8;step++){
+  const i=(testLevel*7+step*11)%tiles.length,old=snap(),h=history.length;
+  $('board').children[i].click();
+  if(history.length>h){$('undo').onclick();if(snap()!==old)hintAudit.push({level:testLevel,error:'undo failed',step});}
+ }
+ $('hint').onclick();$('restart').onclick();
+ if(snap()!==original)hintAudit.push({level:testLevel,error:'restart failed'});
+
  let steps=0;
  while(!locked&&steps<1000){
   const old=JSON.stringify({tiles,targetDone,keys,moves,extra:window.kdExtra});
   $('hint').onclick();steps++;
   if(old===JSON.stringify({tiles,targetDone,keys,moves,extra:window.kdExtra}))break;
  }
- if(!locked||!solved())hintAudit.push({level:testLevel,mode,steps,status:$('status').textContent});
+ if(!locked||!solved()||moves>optimal)hintAudit.push({level:testLevel,mode,steps,status:$('status').textContent});
 }
 window.hintAudit=hintAudit;
 `;
