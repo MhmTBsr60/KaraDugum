@@ -125,3 +125,8 @@ Bölüm 18 / Gece Tapınağı ekran kaydında görülen beyaz taş flaşı kald�
 - Dört günlük görev grubu: 3 çözüm/40 hamle/1 kusursuz; 2 çözüm/30 hamle/3 dakika; 4 çözüm/60 hamle/5 dakika; 2 çözüm/1 kusursuz/25 hamle. Süre yalnızca tamamlanan bulmacalardan sayılır; görevler 40–55 kristal kazandırır. O gün başlamış eski görevler korunur; yeni günde grup ve başlangıç sayaçları yenilenir.
 - Altı tema fiyatı ve 5/15/30 ipucu paketlerinin 225/600/1050 kristal fiyatları değişmez. Üç yıldızla 300 ilk çözümün toplam normal kazancı 3345 (önce 2580), altı yolculuk ödülü 1650 kristal: toplam 4995; günlük/reklam/tekrar kazançları hariç. Bu hesap oyuncu davranışı ölçümü değildir; kapalı test geri bildirimleriyle yeniden değerlendirilmeli.
 - Yeni tarayıcı denetimi: `tests/progression-audit.cjs`; 50'lik ödüller, tekrar/yeniden açılış/yarım kayıt, dört görev grubu, eski tarihli ve yinelenen talepler.
+
+### v6.24 — Sıradaki hedef ve günün zaferi
+Oyuncu merkezi ve bölümler ekranında sıradaki 50 bölüm ödülü, gerçek tamamlanan bölüm sayısı ve kalan ilerleme gösterilir. Eksik önceki bölümler ödülü açmaz; hak edilmiş ödül karttan teslim alınabilir. Altı ödül alındığında ustalık kartı gösterilir.
+Günün üç görev ödülü toplandıktan sonra, ayrı karttan tek seferlik +20 kristal ve +1 ipucu alınabilir. Ana menü rozeti bu hazır ödülü de sayar. Sadece görev hedeflerinin tamamlanması bonusu açmaz; üç ödülün de alınması gerekir. Gün değişimi, tekrar tıklama, yeniden açılış ve yarım kalan kayıt için kontroller vardır. Ana görevlerin 40–55 kristal ödülüne ek olarak günlük toplam 60–75 kristal ve 1 ipucu elde edilebilir.
+Yeni test: `tests/goals-finale-audit.cjs`.
