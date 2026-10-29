@@ -257,7 +257,8 @@ function soundLabels(){$('effects').textContent='🔊 EFEKTLER: '+(soundOn?'AÇI
  window.kdLastWin=null;pausedAt=0;clearInterval(timer);$('status').textContent='';
  seed=dailyRun?dailyRun.seed:((Math.imul(level,2654435761)^(level*7919))>>>0||1);
  // 1-10 öğretici, 11-15 normal; 16'dan itibaren hızla artan zorluk.
- n=dailyRun?5:level<=15?4:level<=30?5:level<=75?6:level<=150?7:8;
+ n=level<=15?4:level<=30?5:level<=75?6:level<=150?7:8;
+ if(dailyRun)n=5;
  const count=n*n;solution=Array(count).fill(0);
  const visited=new Set([0]);
  while(visited.size<count){
