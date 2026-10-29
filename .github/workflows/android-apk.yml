@@ -66,6 +66,7 @@ jobs:
           node --check board-renderer.js
           node --check reward-receipts.js
           node --check learning.js
+          node --check daily-challenge.js
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -102,8 +103,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 86" not in workflow or "versionName '6.26'" not in workflow:
-              raise SystemExit('HATA: Surum 6.26 ayarlari uyusmuyor')
+          if "versionCode 87" not in workflow or "versionName '6.27'" not in workflow:
+              raise SystemExit('HATA: Surum 6.27 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -128,6 +129,8 @@ jobs:
           cp home-icons.css app/src/main/assets/home-icons.css
           cp modern-panels.css app/src/main/assets/modern-panels.css
           cp learning.css app/src/main/assets/learning.css
+          cp daily-challenge.css app/src/main/assets/daily-challenge.css
+          cp daily-challenge.js app/src/main/assets/daily-challenge.js
           cp learning.js app/src/main/assets/learning.js
           cp board-renderer.js app/src/main/assets/board-renderer.js
           cp reward-receipts.js app/src/main/assets/reward-receipts.js
@@ -193,8 +196,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 86
-              versionName '6.26'
+              versionCode 87
+              versionName '6.27'
             }
             signingConfigs {
               release {
@@ -274,7 +277,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.26-APK-AAB
+          name: KaraDugum-v6.27-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

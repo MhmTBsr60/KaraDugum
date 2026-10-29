@@ -44,3 +44,5 @@ check(workflow.includes('cp assets/kara-dugum-home-icons.webp app/src/main/asset
 for(const file of ['board-renderer.js','reward-receipts.js','modern-panels.css'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing '+file);
 
 for(const file of ['learning.js','learning.css']){assert(html.includes(file),file+' must be loaded');assert(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' must be packaged');}
+
+for(const file of ['daily-challenge.js','daily-challenge.css']){check(html.includes(file),file+' not loaded');check(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' not packaged');}
