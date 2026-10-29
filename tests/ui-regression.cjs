@@ -20,3 +20,7 @@ console.log('PASS: menu image, APK packaging, navigation and game controls');
 check(fs.existsSync('wheel.js'),'Wheel script missing');
 check(html.includes('src="wheel.js"'),'Wheel script not loaded');
 check(workflow.includes('cp wheel.js app/src/main/assets/wheel.js'),'APK does not package wheel script');
+
+check(html.includes('href="screens.css"'),'Collection styles not loaded');
+check(workflow.includes('cp screens.css app/src/main/assets/screens.css'),'APK does not package collection styles');
+check(workflow.includes('cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp'),'APK does not package hero artwork');

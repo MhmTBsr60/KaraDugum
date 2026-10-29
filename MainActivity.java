@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Build;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.os.VibratorManager;
 import android.media.AudioManager;
 import android.content.Context;
 import android.util.Log;
@@ -51,7 +48,6 @@ public class MainActivity extends Activity {
     private boolean rewardedLoading = false;
     private WebView view;
     private boolean backHandling = false;
-    private boolean hapticWarned = false;
     private boolean signedIn = false;
     private boolean saving = false;
     private String pendingSave;
@@ -266,29 +262,6 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { rewardPurpose = "double"; showRewarded(); }); }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
-        @JavascriptInterface public void vibrate(int milliseconds) {
-            runOnUiThread(() -> {
-                try {
-                    Vibrator v;
-                    if(Build.VERSION.SDK_INT>=31){VibratorManager manager=(VibratorManager)getSystemService(Context.VIBRATOR_MANAGER_SERVICE);v=manager==null?null:manager.getDefaultVibrator();}
-                    else v=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-                    if(v==null || !v.hasVibrator()){
-                        if(!view.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS) && !hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}
-                        return;
-                    }
-                    long total=Math.max(90,Math.min(180,milliseconds));
-                    long pulse=(total-30)/2;
-                    long[] timings={0,pulse,30,pulse};
-                    if(Build.VERSION.SDK_INT>=26){
-                        VibrationEffect effect=v.hasAmplitudeControl()
-                            ?VibrationEffect.createWaveform(timings,new int[]{0,255,0,255},-1)
-                            :VibrationEffect.createWaveform(timings,-1);
-                        // Use the vibrator directly: two distinct pulses on each legal rotation.
-                        v.vibrate(effect);
-                    }else v.vibrate(timings,-1);
-                }catch(Exception e){Log.w(TAG,"Titreşim",e);if(!hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}}
-            });
-        }
         @JavascriptInterface public void login() {
             runOnUiThread(() -> PlayGames.getGamesSignInClient(MainActivity.this).signIn()
                 .addOnCompleteListener(task -> {

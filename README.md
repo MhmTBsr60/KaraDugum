@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.12` (versionCode `72`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.12-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.13` (versionCode `73`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.13-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -40,3 +40,11 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Günlük görevler: 3 galibiyet (+15 jeton), çözülen bulmacalarda toplam 40 hamle (+10 jeton), 1 kusursuz çözüm (+15 jeton). Her görev günde bir kez ödüllendirilir.
 - Günlük sandık +20 jeton verir; 7 ardışık açılışta ayrıca +1 ipucu verir. Sandık günde bir kez açılır.
 - `tests/rewards-menu-audit.cjs`, Bölüm 16 eski/bulut kayıt senaryosu, tekrar oynama, ödül tekrarı, çift ödül, yasal hamle titreşimi, yeni menü, günlük görevler ve 7 günlük sandık serisini denetler.
+
+## v6.13
+
+- Titreşim ve titreşim deneme kontrolleri tamamen kaldırıldı; oyun çağrıları, Android Vibrator köprüsü ve VIBRATE izni de kaldırıldı. Eski kayıtlar ve diğer ayarlar korunur.
+- Mağaza: bu çalışma için üretilmiş yerel hazine görseli, bakiye kartları, ipucu paketleri, kalıcı tema önizlemeleri, kategori kısayolları ve günlük ödül alanı. Fiyatlar aynı: 1/3/10 ipucu için 50/135/400 jeton, temalar için 0/150/200/250 jeton.
+- Bölümler: 300 bölüm altı 50 bölümlük bölgeye ayrılır; yıldızlar, ilerleme, bölge kısayolları ve Tümü/Açık/Tamamlanan/Eksik yıldız filtreleri gösterilir. Kaldığın yerden devam et, yarım kalan bulmacanın hamlelerini korur. Kilitler mevcut ilerlemeye göre çalışır; ücretli bölüm açma yoktur.
+- `assets/kara-dugum-treasury.webp` çevrimdışı paketlenir; görsel yaklaşık 319 KiB WebP olarak hazırlanmıştır. `screens.css` mağaza ve bölüm ekranlarını düzenler, ana menüyü ve oyun tahtasını değiştirmez.
+- `tests/collections-audit.cjs`, titreşimin kaldırılmasını, 300 bölüm/6 bölgeyi, filtreleri, kilitleri, kaldığı yerden devamı, mağaza işlemlerini ve 3 ekran boyutunu denetler.

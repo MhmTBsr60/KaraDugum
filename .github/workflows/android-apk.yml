@@ -97,8 +97,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 72" not in workflow or "versionName '6.12'" not in workflow:
-              raise SystemExit('HATA: Surum 6.12 ayarlari uyusmuyor')
+          if "versionCode 73" not in workflow or "versionName '6.13'" not in workflow:
+              raise SystemExit('HATA: Surum 6.13 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -116,8 +116,10 @@ jobs:
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp index.html app/src/main/assets/index.html
           cp wheel.js app/src/main/assets/wheel.js
+          cp screens.css app/src/main/assets/screens.css
           mkdir -p app/src/main/assets/assets
           cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
+          cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
           if [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
@@ -132,7 +134,6 @@ jobs:
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-permission android:name="android.permission.VIBRATE" />
             <application android:label="KARA DÜĞÜM" android:icon="@drawable/karadugum_icon" android:theme="@android:style/Theme.Material.NoActionBar" android:usesCleartextTraffic="false" android:allowBackup="true">
               <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-6340528165840202~8704733869" />
               <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
@@ -172,8 +173,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 72
-              versionName '6.12'
+              versionCode 73
+              versionName '6.13'
             }
             signingConfigs {
               release {
@@ -253,7 +254,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.12-APK-AAB
+          name: KaraDugum-v6.13-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
