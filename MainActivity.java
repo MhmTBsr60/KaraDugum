@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
-import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.content.Context;
 import android.util.Log;
@@ -277,11 +276,16 @@ public class MainActivity extends Activity {
                         if(!view.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS) && !hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}
                         return;
                     }
-                    long ms=Math.max(30,Math.min(180,milliseconds));
+                    long total=Math.max(90,Math.min(180,milliseconds));
+                    long pulse=(total-30)/2;
+                    long[] timings={0,pulse,30,pulse};
                     if(Build.VERSION.SDK_INT>=26){
-                        AudioAttributes attributes=new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
-                        v.vibrate(VibrationEffect.createOneShot(ms,v.hasAmplitudeControl()?220:VibrationEffect.DEFAULT_AMPLITUDE),attributes);
-                    }else v.vibrate(ms);
+                        VibrationEffect effect=v.hasAmplitudeControl()
+                            ?VibrationEffect.createWaveform(timings,new int[]{0,255,0,255},-1)
+                            :VibrationEffect.createWaveform(timings,-1);
+                        // Use the vibrator directly: two distinct pulses on each legal rotation.
+                        v.vibrate(effect);
+                    }else v.vibrate(timings,-1);
                 }catch(Exception e){Log.w(TAG,"Titreşim",e);if(!hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}}
             });
         }
