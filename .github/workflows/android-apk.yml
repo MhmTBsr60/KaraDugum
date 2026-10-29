@@ -62,6 +62,7 @@ jobs:
           for script in /tmp/karadugum-script-*.js; do node --check "$script"; done
           node --check wheel.js
           node --check localization.js
+          node --check theme-renderer.js
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -98,8 +99,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 76" not in workflow or "versionName '6.16'" not in workflow:
-              raise SystemExit('HATA: Surum 6.16 ayarlari uyusmuyor')
+          if "versionCode 77" not in workflow or "versionName '6.17'" not in workflow:
+              raise SystemExit('HATA: Surum 6.17 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -120,11 +121,15 @@ jobs:
           cp localization.js app/src/main/assets/localization.js
           cp screens.css app/src/main/assets/screens.css
           cp reference.css app/src/main/assets/reference.css
+          cp theme-skins.css app/src/main/assets/theme-skins.css
+          cp theme-renderer.js app/src/main/assets/theme-renderer.js
           mkdir -p app/src/main/assets/assets
           cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
           cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
           cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png
           cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp
+          cp assets/kara-dugum-theme-scenes.webp app/src/main/assets/assets/kara-dugum-theme-scenes.webp
+          cp assets/kara-dugum-theme-stones.webp app/src/main/assets/assets/kara-dugum-theme-stones.webp
           if [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
@@ -178,8 +183,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 76
-              versionName '6.16'
+              versionCode 77
+              versionName '6.17'
             }
             signingConfigs {
               release {
@@ -259,7 +264,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.16-APK-AAB
+          name: KaraDugum-v6.17-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

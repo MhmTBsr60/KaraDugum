@@ -33,3 +33,6 @@ check(workflow.includes('cp assets/kara-dugum-expansion.webp app/src/main/assets
 
 check(html.includes('src="localization.js"'),'Localization script missing');
 check(workflow.includes('cp localization.js app/src/main/assets/localization.js'),'APK localization script missing');
+
+for(const file of ['theme-renderer.js','theme-skins.css'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing '+file);
+for(const file of ['kara-dugum-theme-scenes.webp','kara-dugum-theme-stones.webp'])check(workflow.includes('cp assets/'+file+' app/src/main/assets/assets/'+file),'APK missing '+file);

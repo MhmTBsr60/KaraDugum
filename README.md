@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.16` (versionCode `76`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.16-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.17` (versionCode `77`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.17-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -72,3 +72,9 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Çevrimdışı 25 dil: Türkçe, İngilizce, Çince, Hintçe, İspanyolca, Arapça, Fransızca, Bengalce, Portekizce, Rusça, Urduca, Endonezce, Almanca, Japonca, Marathi, Vietnamca, Telugu, Hausa, Tamilce, Pencapça, Svahili, Filipince, Farsça, Korece, Cava dili. Çok konuşulan dillerden geniş bir seçimdir; sıralama toplam/ana dili konuşurları ve lehçe sınıflandırmasına göre değişir.
 - Dil seçimi kalıcıdır; telefon dili desteklenmiyorsa İngilizce kullanılır. Arapça/Urduca/Farsça RTL, bulmaca koordinatları her dilde LTR. Güncellenen metin düğümleri ve erişilebilir etiketler yeniden çevrilir.
 - `npm test` 300 bölüm, gerçek ipuçları ve çözüm denetimi; `npm run test:browser` yedi gerçek tarayıcı paketi içerir. Yeni paket tüm dilleri, altı tema SVG uyumunu, sekiz ödülün çift değerlerini ve kayıtlı çark geçişini denetler.
+
+## v6.17
+- Altı referans tema gerçek oyun ekranına uygulandı: ayrı sahne/taş atlasları, işlemeli SVG çerçeveler, değerli taşlar, silindirik borular, yuvarlak dirsekler ve metal bilezikler.
+- 4×4, 5×5, 6×6, 7×7 ve 8×8 tahtalarda aynı oyun maskeleri ve dokunma hedefleri kullanılır. Anahtarlar, hedefler, sis, buz, engel, portal ve çift enerji renkleri korunur. Görsel yenileme hamle veya kayıt değiştirmez.
+- Önizlemeler aynı boru çizimini kullanır; seçili tema tüm bölümlerde ve yeniden açılışta uygulanır. Yatay ekran için iki sütunlu oyun düzeni; dar telefonlarda kontroller görünür kalır.
+- Sekiz tarayıcı paketi: yeni denetim altı temanın her birinde 300 bölüm (1800 tahta), boru açıklıkları, sis/enerji renkleri, üç ekran boyutu, dokunma hedefleri ve tema kalıcılığını kontrol eder.

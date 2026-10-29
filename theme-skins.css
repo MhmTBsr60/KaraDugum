@@ -1,0 +1,56 @@
+/* Six responsive skins. One real tile grid remains responsible for every move. */
+.kdThemeDefinitions{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+html[data-kd-theme="gold"] #kdGame,[data-kd-preview="gold"]{--scene-position:0% 0%;--skin-metal:#c99e52;--skin-ink:#f6dba3;--skin-jewel:#d5aa59}
+html[data-kd-theme="ice"] #kdGame,[data-kd-preview="ice"]{--scene-position:50% 0%;--skin-metal:#8dabc2;--skin-ink:#d5e9f7;--skin-jewel:#73c5f4}
+html[data-kd-theme="fire"] #kdGame,[data-kd-preview="fire"]{--scene-position:100% 0%;--skin-metal:#cd9b50;--skin-ink:#ffe2a2;--skin-jewel:#e4b95e}
+html[data-kd-theme="shadow"] #kdGame,[data-kd-preview="shadow"]{--scene-position:0% 100%;--skin-metal:#b39bc7;--skin-ink:#eddafa;--skin-jewel:#c19bec}
+html[data-kd-theme="emerald"] #kdGame,[data-kd-preview="emerald"]{--scene-position:50% 100%;--skin-metal:#d2ad54;--skin-ink:#f5e3a5;--skin-jewel:#73ecb1}
+html[data-kd-theme="ruby"] #kdGame,[data-kd-preview="ruby"]{--scene-position:100% 100%;--skin-metal:#d2a150;--skin-ink:#ffe0a0;--skin-jewel:#ff7966}
+html[data-kd-theme] #kdGame{position:relative;isolation:isolate;background-color:#070809;background-image:linear-gradient(90deg,#0003,#000a 22%,#000b 78%,#0003),url('assets/kara-dugum-theme-scenes.webp');background-size:100% 100%,300% 200%;background-position:center,var(--scene-position);background-repeat:no-repeat}
+html[data-kd-theme] #kdGame:before{content:"";position:absolute;z-index:-1;inset:7px max(8px,calc((100vw - 610px)/2));border:1px solid var(--skin-metal);border-radius:20px;background:linear-gradient(90deg,#080a0cb8,#080a0ce8 25%,#080a0ce8 75%,#080a0cb8);box-shadow:0 0 0 3px #0008,inset 0 0 0 3px #0009,0 8px 30px #000b;pointer-events:none}
+.kdGameThemeLabel{flex:0 0 24px;line-height:24px;text-align:center;font:small-caps 600 13px/24px Georgia,serif;letter-spacing:2px;color:var(--skin-ink);text-shadow:0 2px 5px #000;padding-top:3px;pointer-events:none}
+.kdGameThemeLabel:before,.kdGameThemeLabel:after{content:"◇";display:inline-block;color:var(--skin-jewel);font-size:12px;padding:0 12px}
+html[data-kd-theme] #kdGame>.kdTop{max-width:600px;margin:0 auto;padding:4px 18px 5px;border:0;background:transparent;min-height:37px}
+html[data-kd-theme] #kdGame .kdTitle{font-size:clamp(10px,3.3vw,15px);letter-spacing:.7px;color:#f6eee0}
+html[data-kd-theme] #kdGame .kdBack{border:1px solid var(--skin-metal);border-radius:10px;background:#101214ad;color:var(--skin-ink)}
+html[data-kd-theme] #kdGame main{padding:4px 22px 14px;max-width:600px;gap:7px}
+html[data-kd-theme] #kdGame main>.stats .stat{background:linear-gradient(130deg,#17181be6,#080b0de8);border-color:var(--skin-metal);border-radius:9px;box-shadow:inset 0 1px #fff2;padding:7px 2px}
+html[data-kd-theme] #kdGame main>.stats .stat b{color:var(--skin-ink);font-size:clamp(17px,3.4dvh,25px)}
+html[data-kd-theme] #kdGame main>.stats .stat span{color:#d6cfc2;font-size:9px}
+html[data-kd-theme] #kdGame main>.instructions{line-height:1.25}
+html[data-kd-theme] #kdGame #challenge{font-size:clamp(9px,2.4vw,12px)!important;color:#f5efdf!important;text-shadow:0 1px 4px #000}
+html[data-kd-theme] #kdGame #kdModeRule{border:1px solid var(--skin-metal)!important;border-radius:10px!important;background:#090d10dd!important;color:var(--skin-ink)!important;padding:7px!important;margin:7px 0!important;font-size:clamp(10px,2.5vw,12px)!important;min-height:35px}
+html[data-kd-theme] #kdGame #kdModeRule>button{border-color:var(--skin-metal)!important;color:var(--skin-ink)!important;background:#161718!important;width:25px!important;height:25px!important;font-size:16px!important}
+html[data-kd-theme] #kdGame main>.board{position:relative;isolation:isolate;overflow:visible;flex:0 0 auto!important;width:min(calc(100% - 10px),calc(100dvh - 310px))!important;height:auto!important;max-width:100%;max-height:calc(100dvh - 310px)!important;aspect-ratio:1;gap:2px;padding:7px!important;background:#12110d;border:1px solid var(--skin-metal)!important;border-radius:9px;box-shadow:0 0 0 3px #12120f,0 0 0 4px var(--skin-metal),0 14px 35px #000a}
+.kdBoardOrnament{position:absolute;z-index:4;inset:-10px;display:block;width:calc(100% + 20px);height:calc(100% + 20px);overflow:visible;pointer-events:none}
+html[data-kd-theme] #kdGame main>.board .tile,.kdMiniBoard .tile{position:relative;min-width:0;min-height:0;aspect-ratio:1;overflow:hidden;background-color:var(--stone-tone);background-image:linear-gradient(140deg,#ffffff16,#00000010 40%,#0009),url('assets/kara-dugum-theme-stones.webp');background-size:100% 100%,300% 200%;background-position:center,var(--scene-position);border:1px solid color-mix(in srgb,var(--skin-metal) 75%,#0e1011);border-radius:5px;box-shadow:inset 0 2px 2px #fff3,inset 0 -2px 3px #000a;transition:filter .12s}
+html[data-kd-theme] #kdGame main>.board .tile:active{filter:brightness(1.35)}
+.kdSculptedPipe{overflow:hidden;pointer-events:none}
+html[data-kd-theme] #kdGame .tile svg .kdPipeCastShadow,.kdMiniBoard .kdPipeCastShadow{fill:none;stroke:#000b;stroke-width:calc(var(--pipe-width) + 14);stroke-linecap:round;stroke-linejoin:round;transform:translate(0,3px)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeShell,.kdMiniBoard .kdPipeShell{fill:none;stroke-width:calc(var(--pipe-width) + 10);stroke-linecap:round;stroke-linejoin:round;filter:none}
+html[data-kd-theme] #kdGame .tile svg .kdPipeCore,.kdMiniBoard .kdPipeCore{fill:none;stroke:var(--pipe-tone);stroke-width:var(--pipe-width);stroke-linecap:round;stroke-linejoin:round}
+html[data-kd-theme] #kdGame .tile svg .kdPipeLustre,.kdMiniBoard .kdPipeLustre{fill:none;stroke-width:var(--pipe-width);stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+html[data-kd-theme] #kdGame .tile svg .kdPipeFilament,.kdMiniBoard .kdPipeFilament{fill:none;stroke:#fffce4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.58;transform:translate(-1px,-1px)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeJointLight,.kdMiniBoard .kdPipeJointLight{fill:var(--pipe-tone);opacity:1;stroke:#f3d494;stroke-width:1;filter:none}
+html[data-kd-theme] #kdGame .tile>span{z-index:5;text-shadow:0 1px 3px #000,0 0 3px #000}
+html[data-kd-theme] #kdGame .tile .kdBadge{font-size:clamp(9px,2vw,14px);background:#080b0dc7;border-radius:3px;padding:1px;top:0;right:0}
+html[data-kd-theme] #kdGame main>.controls{gap:9px;width:100%;margin:1px 0}
+html[data-kd-theme] #kdGame main>.controls button{min-width:0;padding:11px 3px;font-size:clamp(9px,2.4vw,12px);border-radius:10px}
+html[data-kd-theme] #kdGame main>.controls button.secondary{background:linear-gradient(#18191bd9,#07090be8);border:1px solid var(--skin-metal);color:#f1e8d4}
+html[data-kd-theme] #kdGame main>.controls button:not(.secondary){background:linear-gradient(125deg,#fbe0a2,var(--skin-metal));color:#211a10;border:1px solid var(--skin-metal)}
+html[data-kd-theme] #kdGame main>.status{font-size:10px;line-height:1.2;color:var(--skin-ink)}
+.kdLivePreview{overflow:visible}.kdLivePreview>.kdThemePreview{display:none}.kdMiniBoard{inset:4px 9%;padding:3px;border-color:var(--skin-metal);box-shadow:0 0 0 2px #000,0 0 0 3px var(--skin-metal)}
+@media(max-height:690px) and (orientation:portrait){.kdGameThemeLabel{flex-basis:20px;font-size:11px;line-height:20px}html[data-kd-theme] #kdGame>.kdTop{min-height:32px;padding-top:2px;padding-bottom:2px}html[data-kd-theme] #kdGame main{gap:4px;padding-bottom:10px}html[data-kd-theme] #kdGame main>.stats .stat{padding:5px 2px}html[data-kd-theme] #kdGame #kdModeRule{margin:4px 0!important;padding:4px!important;min-height:31px}html[data-kd-theme] #kdGame main>.controls button{padding:8px 2px;font-size:9px}}
+@media(orientation:landscape) and (max-height:550px){.kdGameThemeLabel{flex-basis:19px;font-size:11px;line-height:19px}html[data-kd-theme] #kdGame:before{inset:5px 10px}html[data-kd-theme] #kdGame>.kdTop{max-width:none;min-height:30px;padding:2px 20px}html[data-kd-theme] #kdGame main{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;gap:5px 24px;align-content:center;align-items:center;max-width:940px;padding:8px 30px 18px}html[data-kd-theme] #kdGame main>.stats{grid-column:1;grid-row:1}html[data-kd-theme] #kdGame main>.instructions{grid-column:1;grid-row:2}html[data-kd-theme] #kdGame main>.status{grid-column:1;grid-row:3}html[data-kd-theme] #kdGame main>.board{grid-column:2;grid-row:1/-1;width:min(100%,calc(100dvh - 90px))!important;max-height:calc(100dvh - 90px)!important;justify-self:center;align-self:center}html[data-kd-theme] #kdGame main>.controls:has(#restart){grid-column:1;grid-row:4}html[data-kd-theme] #kdGame main>.controls:has(#undo){grid-column:1;grid-row:5}html[data-kd-theme] #kdGame main>.controls button{padding:8px 2px;font-size:10px}html[data-kd-theme] #kdGame #kdModeRule{margin:3px 0!important}}
+@media(prefers-reduced-motion:reduce){html[data-kd-theme] #kdGame .tile{transition:none}}
+/* The atlas is sampled at 2x so each small tile has broad natural cracks, not fine noise. */
+html[data-kd-theme="gold"] #kdGame,[data-kd-preview="gold"]{--stone-position:10% 16.6667%;--skin-energy:#ffd16b}
+html[data-kd-theme="ice"] #kdGame,[data-kd-preview="ice"]{--stone-position:50% 16.6667%;--skin-energy:#c6edff}
+html[data-kd-theme="fire"] #kdGame,[data-kd-preview="fire"]{--stone-position:90% 16.6667%;--skin-energy:#ffce68}
+html[data-kd-theme="shadow"] #kdGame,[data-kd-preview="shadow"]{--stone-position:10% 83.3333%;--skin-energy:#c49aff}
+html[data-kd-theme="emerald"] #kdGame,[data-kd-preview="emerald"]{--stone-position:50% 83.3333%;--skin-energy:#4bff94}
+html[data-kd-theme="ruby"] #kdGame,[data-kd-preview="ruby"]{--stone-position:90% 83.3333%;--skin-energy:#ff5429}
+html[data-kd-theme] #kdGame main>.board .tile,.kdMiniBoard .tile{background-size:100% 100%,600% 400%;background-position:center,var(--stone-position)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeEnergy,.kdMiniBoard .kdPipeEnergy{fill:none;stroke:var(--skin-energy);stroke-width:calc(var(--pipe-width) - 3);stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px var(--skin-energy))}
+html[data-kd-theme] #kdGame .tile svg .kdPipeLustre,.kdMiniBoard .kdPipeLustre{opacity:.5}
+@media(orientation:portrait){html[data-kd-theme] #kdGame:before{left:max(17px,calc((100vw - 590px)/2));right:max(17px,calc((100vw - 590px)/2))}html[data-kd-theme] #kdGame main{padding-left:30px;padding-right:30px}html[data-kd-theme] #kdGame>.kdTop{padding-left:26px;padding-right:26px}}

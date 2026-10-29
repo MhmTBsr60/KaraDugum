@@ -1,4 +1,4 @@
-KARADÜĞÜM v6.16 — HD simgeli tam kaynak paket
+KARADÜĞÜM v6.17 — HD simgeli tam kaynak paket
 
 Bu paket daha önce Chrome testinde açılan düzeltilmiş index.html dosyasını, Android kaynak kodunu, APK/AAB GitHub Actions iş akışını ve yeni simgeyi içerir.
 
