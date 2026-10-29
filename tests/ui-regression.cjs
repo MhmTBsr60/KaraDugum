@@ -16,3 +16,7 @@ check(html.includes("if(page==='levels')"),'Level screen missing');
 check(html.includes('id="hint"'),'Hint button missing');
 check(html.includes('id="board"'),'Game board missing');
 console.log('PASS: menu image, APK packaging, navigation and game controls');
+
+check(fs.existsSync('wheel.js'),'Wheel script missing');
+check(html.includes('src="wheel.js"'),'Wheel script not loaded');
+check(workflow.includes('cp wheel.js app/src/main/assets/wheel.js'),'APK does not package wheel script');

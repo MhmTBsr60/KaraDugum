@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -49,12 +52,14 @@ public class MainActivity extends Activity {
     private boolean rewardedLoading = false;
     private WebView view;
     private boolean backHandling = false;
+    private boolean hapticWarned = false;
     private boolean signedIn = false;
     private boolean saving = false;
     private String pendingSave;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         getWindow().getDecorView().setSystemUiVisibility(
             android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
             android.view.View.SYSTEM_UI_FLAG_FULLSCREEN |
@@ -71,6 +76,7 @@ public class MainActivity extends Activity {
         view = new WebView(this);
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
+        view.getSettings().setMediaPlaybackRequiresUserGesture(false);
         view.getSettings().setDomStorageEnabled(true);
         view.getSettings().setAllowContentAccess(false);
         view.getSettings().setAllowFileAccessFromFileURLs(false);
@@ -255,17 +261,28 @@ public class MainActivity extends Activity {
     public class Bridge {
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
         @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
+        @JavascriptInterface public void rewardedWheel(String requestId) {
+            if(requestId==null || !requestId.matches("[a-zA-Z0-9_-]{1,100}"))return;
+            runOnUiThread(() -> { if(rewardedInProgress){send("wheelAdUnavailable",JSONObject.quote(requestId));return;}rewardPurpose="wheel:"+requestId;showRewarded(); });
+        }
         @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { rewardPurpose = "double"; showRewarded(); }); }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void vibrate(int milliseconds) {
             runOnUiThread(() -> {
                 try {
-                    Vibrator v=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-                    if(v==null || !v.hasVibrator())return;
-                    long ms=Math.max(10,Math.min(150,milliseconds));
-                    if(Build.VERSION.SDK_INT>=26)v.vibrate(VibrationEffect.createOneShot(ms,VibrationEffect.DEFAULT_AMPLITUDE));
-                    else v.vibrate(ms);
-                }catch(Exception e){Log.w(TAG,"Titreşim",e);}
+                    Vibrator v;
+                    if(Build.VERSION.SDK_INT>=31){VibratorManager manager=(VibratorManager)getSystemService(Context.VIBRATOR_MANAGER_SERVICE);v=manager==null?null:manager.getDefaultVibrator();}
+                    else v=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                    if(v==null || !v.hasVibrator()){
+                        if(!view.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS) && !hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}
+                        return;
+                    }
+                    long ms=Math.max(30,Math.min(180,milliseconds));
+                    if(Build.VERSION.SDK_INT>=26){
+                        AudioAttributes attributes=new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+                        v.vibrate(VibrationEffect.createOneShot(ms,v.hasAmplitudeControl()?220:VibrationEffect.DEFAULT_AMPLITUDE),attributes);
+                    }else v.vibrate(ms);
+                }catch(Exception e){Log.w(TAG,"Titreşim",e);if(!hapticWarned){hapticWarned=true;send("hapticUnavailable","null");}}
             });
         }
         @JavascriptInterface public void login() {
@@ -344,12 +361,12 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
-        if (view != null) { view.evaluateJavascript("window.kdSetPaused && window.kdSetPaused(true)",null); view.onPause(); }
+        if (view != null) { view.evaluateJavascript("window.kdAppBackground=true;window.kdSetPaused && window.kdSetPaused(true)",null); view.onPause(); }
         super.onPause();
     }
     @Override protected void onResume() {
         super.onResume();
-        if (view != null) { view.onResume(); view.evaluateJavascript("window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
+        if (view != null) { view.onResume(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
     }
     @Override protected void onDestroy() {
         rewardedAd=null; interstitialAd=null;
