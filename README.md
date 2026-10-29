@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.19` (versionCode `79`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.19-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.20` (versionCode `80`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.20-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -90,3 +90,24 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Görseller tek şeffaf WebP atlasından gösterilir; yükleme hatasında mevcut dört SVG simge görünür kalır. Yazılar ve erişilebilir düğme adları 25 dilde HTML olarak çevrilir.
 - Basılma geri bildirimi ve klavye odağı eklendi. Yalnızca alınabilir görev/sandık ödülünde üç kısa ışık geçişi; ödül alındığında kapanır. Hareket azaltma tercihinde animasyon kullanılmaz.
 - Dokuz tarayıcı paketi: yeni ana menü denetimi üç ekran boyutu, dört hedef, gerçek ödül alımı, rozet/ışık durumu, 25 dil, hareket azaltma ve eksik görsel durumunu kontrol eder.
+
+## v6.20
+- Oyuncu merkezi: yeni kimlik/XP kartları, kaynak göstergeleri, bölüm kısayolu ve gerçek ilerlemeli başarım kartları. Ayarlar: ayrı dil kartı ve kayıt yedekleme kısayolu. Sandık/görevler: parşömen/sandık görselleri, günlük durum özeti, ödül rozetleri ve daha okunaklı kartlar.
+- Fiziksel reklam düğmesi tıklamasının sonuç panelindeki `data-level` bilgisini bölüm seçimi olarak tetiklemesi düzeltildi; bölüm seçimi yalnızca gerçek düğmelere uygulanır.
+- 2× ödül: istek/bölüm tamamlayış kimliğiyle kalıcı kayıt, Native tarafta onaylanana kadar saklanan kazanılmış ödüller, WebView yenilemesinden sonra teslim ve tekrar ödeme koruması. Sonuç ekranı XP/puan/kristal değerlerini anında günceller; önceki yüksek puanda da reklam bonusu eklenir.
+- Tahtada sadece değişen hücrelerin içeriği güncellenir; dokunma hedefleri korunur. Gizli/duraklatılmış oyunun zamanlayıcısı kayıt yazmaz. Hamle ve arka plana geçiş kayıtları anlıktır; boşta geçen süre 5 saniyede bir saklanır.
+- Çeviri yalnızca değişen metin/öğelerde çalışır; Türkçe arayüzde tüm gövde taraması yapılmaz. Ekran dışındaki tema kartlarının çizimi ertelenir; yoğun 8×8 tahtalarda pahalı bulanıklık yüzeyleri azaltılır.
+- On tarayıcı paketi; yeni denetimde 17. bölüm gerçek yasal hamlelerle 3 yıldızla bitirilir, 100→200 XP ve 2× puan/kristal, eski yüksek puan, fiziksel tıklama, tekrar callback, iptal, WebView yenileme, yarım kalan yazma, gizli kayıtlar ve DOM hücre sürekliliği sınanır.
+
+### v6.20 performans ölçümü
+Aynı makinede Chromium, 390×844 ekran, 4× CPU yavaşlatması; v6.19 (`d571c8b`) ve v6.20 karşılaştırması. Mağaza için 8 açılış, 8×8 oyun için 20 hamle ortalaması. Bunlar tarayıcı işlem süreleridir; cihazdaki kare hızı ayrıca cihaz donanımına bağlıdır.
+
+| Ölçüm | v6.19 | v6.20 |
+|---|---:|---:|
+| Mağaza açılışı ortalama | 50,8 ms | 20,5 ms |
+| Hamle işleme ortalama | 24,9 ms | 6,6 ms |
+| Mağazada 1,6 saniyede gereksiz aktif oyun kaydı | 3 | 0 |
+| Mağazada 1,6 saniyede tüm gövde çeviri taraması | 3 | 0 |
+| 20 hamlede yeniden oluşturulan dokunma düğmesi | 1280 | 0 |
+
+Yeniden ölçmek için `CHROMIUM_PATH=/usr/bin/chromium node tests/performance-benchmark.cjs current`; başka bir temiz sürüm için `BENCH_ROOT` yolunu belirt. Zaman ölçümleri test paketinin geçme koşulu yapılmaz; yapısal iyileştirmeler normal tarayıcı testinde doğrulanır.

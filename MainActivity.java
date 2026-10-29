@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
             @Override public boolean shouldOverrideUrlLoading(WebView v, String url) {
                 return !"file:///android_asset/index.html".equals(url);
             }
-            @Override public void onPageFinished(WebView v, String url) { checkSignIn(); }
+            @Override public void onPageFinished(WebView v, String url) { checkSignIn(); deliverPendingRewards(); }
         });
         setContentView(view);
         view.loadUrl("file:///android_asset/index.html");
@@ -195,6 +195,21 @@ public class MainActivity extends Activity {
     private void flushPending() {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
     }
+    private void rewardUnavailable(String purpose) {
+        if (purpose.startsWith("double:")) send("doubleAdUnavailable", JSONObject.quote(purpose.substring(7)));
+        else send("adUnavailable", "null");
+    }
+    private void recordReward(String purpose) {
+        if (purpose.startsWith("double:")) getApplicationContext().getSharedPreferences("reward_receipts", MODE_PRIVATE).edit().putString("earned_" + purpose, purpose).commit();
+        send("adReward", JSONObject.quote(purpose));
+    }
+    private void deliverPendingRewards() {
+        android.content.SharedPreferences receipts = getApplicationContext().getSharedPreferences("reward_receipts", MODE_PRIVATE);
+        for (String key : receipts.getAll().keySet()) if (key.startsWith("earned_double:")) {
+            String purpose = receipts.getString(key, "");
+            if (purpose != null && purpose.matches("double:[a-zA-Z0-9_-]{1,100}")) send("adReward", JSONObject.quote(purpose));
+        }
+    }
     private void loadRewarded() {
         if (rewardedLoading || rewardedInProgress || rewardedAd != null || isFinishing() || isDestroyed()) return;
         rewardedLoading = true;
@@ -204,8 +219,9 @@ public class MainActivity extends Activity {
         });
     }
     private void showRewarded() {
+        final String purpose = rewardPurpose;
         if (rewardedInProgress) return;
-        if (rewardedAd == null) { send("adUnavailable", "null"); loadRewarded(); return; }
+        if (rewardedAd == null) { rewardUnavailable(purpose); loadRewarded(); return; }
         rewardedInProgress = true;
         RewardedAd ad = rewardedAd;
         rewardedAd = null;
@@ -214,22 +230,21 @@ public class MainActivity extends Activity {
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override public void onAdDismissedFullScreenContent() {
                 rewardedInProgress = false;
-                if (!rewardEarned[0]) send("adUnavailable", "null");
+                if (!rewardEarned[0]) rewardUnavailable(purpose);
                 loadRewarded();
             }
-            @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; send("adUnavailable", "null"); loadRewarded(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; rewardUnavailable(purpose); loadRewarded(); }
         });
-        final String purpose = rewardPurpose;
         try {
             ad.show(this, reward -> {
                 if (rewardEarned[0]) return;
                 rewardEarned[0] = true;
-                send("adReward", JSONObject.quote(purpose));
+                recordReward(purpose);
             });
         } catch (RuntimeException error) {
             rewardedInProgress = false;
             Log.e(TAG, "Rewarded display failed", error);
-            send("adUnavailable", "null");
+            rewardUnavailable(purpose);
             loadRewarded();
         }
     }
@@ -260,7 +275,15 @@ public class MainActivity extends Activity {
             if(requestId==null || !requestId.matches("[a-zA-Z0-9_-]{1,100}"))return;
             runOnUiThread(() -> { if(rewardedInProgress){send("wheelAdUnavailable",JSONObject.quote(requestId));return;}rewardPurpose="wheel:"+requestId;showRewarded(); });
         }
-        @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { rewardPurpose = "double"; showRewarded(); }); }
+        @JavascriptInterface public void rewardedDouble() { runOnUiThread(() -> { if(rewardedInProgress)return;rewardPurpose="double";showRewarded(); }); }
+        @JavascriptInterface public void rewardedDoubleRequest(String requestId) {
+            if(requestId==null || !requestId.matches("[a-zA-Z0-9_-]{1,100}"))return;
+            runOnUiThread(() -> { if(rewardedInProgress){send("doubleAdUnavailable",JSONObject.quote(requestId));return;}rewardPurpose="double:"+requestId;showRewarded(); });
+        }
+        @JavascriptInterface public void ackReward(String purpose) {
+            if(purpose==null || !purpose.matches("double:[a-zA-Z0-9_-]{1,100}"))return;
+            getApplicationContext().getSharedPreferences("reward_receipts", MODE_PRIVATE).edit().remove("earned_"+purpose).apply();
+        }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void login() {
             runOnUiThread(() -> PlayGames.getGamesSignInClient(MainActivity.this).signIn()
@@ -343,7 +366,7 @@ public class MainActivity extends Activity {
     }
     @Override protected void onResume() {
         super.onResume();
-        if (view != null) { view.onResume(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
+        if (view != null) { view.onResume(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
     }
     @Override protected void onDestroy() {
         rewardedAd=null; interstitialAd=null;

@@ -40,3 +40,5 @@ for(const file of ['kara-dugum-theme-scenes.webp','kara-dugum-theme-stones.webp'
 check(html.includes('href="home-icons.css"'),'Premium navigation styles missing');
 check(workflow.includes('cp home-icons.css app/src/main/assets/home-icons.css'),'APK missing navigation styles');
 check(workflow.includes('cp assets/kara-dugum-home-icons.webp app/src/main/assets/assets/kara-dugum-home-icons.webp'),'APK missing navigation artwork');
+
+for(const file of ['board-renderer.js','reward-receipts.js','modern-panels.css'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing '+file);
