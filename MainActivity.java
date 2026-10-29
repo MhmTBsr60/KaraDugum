@@ -12,6 +12,7 @@ import android.widget.Toast;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebResourceRequest;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
 import com.google.android.gms.games.SnapshotsClient;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
     private RewardedAd rewardedAd;
     private InterstitialAd interstitialAd;
     private long lastInterstitialAt = 0;
-    private int completedSinceInterstitial = 0;
+    private boolean interstitialLoading = false;
     private String rewardPurpose = "coins";
     private boolean rewardedInProgress = false;
     private boolean rewardedLoading = false;
@@ -71,8 +72,17 @@ public class MainActivity extends Activity {
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
         view.getSettings().setDomStorageEnabled(true);
+        view.getSettings().setAllowContentAccess(false);
+        view.getSettings().setAllowFileAccessFromFileURLs(false);
+        view.getSettings().setAllowUniversalAccessFromFileURLs(false);
         view.addJavascriptInterface(new Bridge(), "KaraNative");
         view.setWebViewClient(new WebViewClient() {
+            @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest request) {
+                return !"file:///android_asset/index.html".equals(request.getUrl().toString());
+            }
+            @Override public boolean shouldOverrideUrlLoading(WebView v, String url) {
+                return !"file:///android_asset/index.html".equals(url);
+            }
             @Override public void onPageFinished(WebView v, String url) { checkSignIn(); }
         });
         setContentView(view);
@@ -85,7 +95,7 @@ public class MainActivity extends Activity {
 
     private void send(String event, String payload) {
         runOnUiThread(() -> {
-            if (view != null) view.evaluateJavascript(
+            if (view != null && !isFinishing() && !isDestroyed()) view.evaluateJavascript(
                 "window.kdNativeEvent && window.kdNativeEvent(" +
                 JSONObject.quote(event) + "," + payload + ")", null);
         });
@@ -147,31 +157,45 @@ public class MainActivity extends Activity {
             if(saving) { pendingSave=raw; return; }
             saving=true;
             SnapshotsClient client=PlayGames.getSnapshotsClient(this);
-            client.open(SAVE_NAME,true,SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED)
-                .addOnSuccessListener(result -> {
-                    Snapshot snapshot=result.getData();
-                    if(snapshot==null) { saving=false; error("Bulut kayıt açılamadı"); return; }
-                    try {
-                        byte[] bytes=snapshot.getSnapshotContents().readFully();
-                        JSONObject remote=bytes.length==0?new JSONObject():new JSONObject(new String(bytes,StandardCharsets.UTF_8));
-                        JSONObject merged=mergeSave(remote,incoming);
-                        snapshot.getSnapshotContents().writeBytes(merged.toString().getBytes(StandardCharsets.UTF_8));
-                        client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE)
-                            .addOnSuccessListener(meta -> {
-                                send("cloudSave",merged.toString());
-                                saving=false;
-                                flushPending();
-                            })
-                            .addOnFailureListener(e -> { saving=false; error("Bulut kayıt yazılamadı: "+e.getMessage()); });
-                    } catch(Exception e) { client.discardAndClose(snapshot); saving=false; error("Bulut kayıt okunamadı: "+e.getMessage()); }
-                }).addOnFailureListener(e -> { saving=false; error("Bulut kayda erişilemedi: "+e.getMessage()); });
+            client.open(SAVE_NAME,true,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
+                .addOnSuccessListener(result -> handleSnapshot(client,result,incoming,0))
+                .addOnFailureListener(e -> { saving=false; flushPending(); error("Bulut kayda erişilemedi: "+e.getMessage()); });
         } catch(Exception e) { saving=false; error("Kayıt verisi geçersiz"); }
+    }
+    private JSONObject readSnapshot(Snapshot snapshot) throws Exception {
+        byte[] bytes=snapshot.getSnapshotContents().readFully();
+        return bytes.length==0?new JSONObject():new JSONObject(new String(bytes,StandardCharsets.UTF_8));
+    }
+    private void handleSnapshot(SnapshotsClient client, SnapshotsClient.DataOrConflict<Snapshot> result, JSONObject incoming, int depth) {
+        if(result.isConflict()) {
+            SnapshotsClient.SnapshotConflict conflict=result.getConflict();
+            if(conflict==null || depth>=5) { saving=false; error("Bulut kayıt çakışması çözülemedi. Tekrar giriş yaparak eşitle."); return; }
+            Snapshot chosen=conflict.getSnapshot();
+            Snapshot other=conflict.getConflictingSnapshot();
+            try {
+                JSONObject merged=mergeSave(mergeSave(readSnapshot(chosen),readSnapshot(other)),incoming);
+                chosen.getSnapshotContents().writeBytes(merged.toString().getBytes(StandardCharsets.UTF_8));
+                client.resolveConflict(conflict.getConflictId(),chosen)
+                    .addOnSuccessListener(next -> handleSnapshot(client,next,merged,depth+1))
+                    .addOnFailureListener(e -> { saving=false; flushPending(); error("Bulut kayıt çakışması: "+e.getMessage()); });
+            } catch(Exception e) { client.discardAndClose(chosen); saving=false; flushPending(); error("Bulut kayıt birleştirilemedi: "+e.getMessage()); }
+            return;
+        }
+        Snapshot snapshot=result.getData();
+        if(snapshot==null) { saving=false; flushPending(); error("Bulut kayıt açılamadı"); return; }
+        try {
+            JSONObject merged=mergeSave(readSnapshot(snapshot),incoming);
+            snapshot.getSnapshotContents().writeBytes(merged.toString().getBytes(StandardCharsets.UTF_8));
+            client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE)
+                .addOnSuccessListener(meta -> { send("cloudSave",merged.toString()); saving=false; flushPending(); })
+                .addOnFailureListener(e -> { saving=false; flushPending(); error("Bulut kayıt yazılamadı: "+e.getMessage()); });
+        } catch(Exception e) { client.discardAndClose(snapshot); saving=false; flushPending(); error("Bulut kayıt okunamadı: "+e.getMessage()); }
     }
     private void flushPending() {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
     }
     private void loadRewarded() {
-        if (rewardedLoading || rewardedInProgress || rewardedAd != null) return;
+        if (rewardedLoading || rewardedInProgress || rewardedAd != null || isFinishing() || isDestroyed()) return;
         rewardedLoading = true;
         RewardedAd.load(this, REWARDED_TEST_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
             @Override public void onAdLoaded(RewardedAd ad) { rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
@@ -209,13 +233,15 @@ public class MainActivity extends Activity {
         }
     }
     private void loadInterstitial() {
+        if (interstitialLoading || interstitialAd != null || isFinishing() || isDestroyed()) return;
+        interstitialLoading = true;
         InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
-            @Override public void onAdLoaded(InterstitialAd ad) { interstitialAd = ad; }
-            @Override public void onAdFailedToLoad(LoadAdError error) { interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
+            @Override public void onAdLoaded(InterstitialAd ad) { interstitialLoading = false; interstitialAd = ad; }
+            @Override public void onAdFailedToLoad(LoadAdError error) { interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
         });
     }
     private void onLevelCompletedForAds(int level) {
-        if (level < 3 || level % 3 != 0 || interstitialAd == null) return;
+        if (level < 3 || level % 3 != 0 || interstitialAd == null || rewardedInProgress || System.currentTimeMillis()-lastInterstitialAt < 60000) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
         lastInterstitialAt = System.currentTimeMillis();
@@ -223,7 +249,8 @@ public class MainActivity extends Activity {
             @Override public void onAdDismissedFullScreenContent() { loadInterstitial(); }
             @Override public void onAdFailedToShowFullScreenContent(AdError error) { loadInterstitial(); }
         });
-        ad.show(this);
+        try { ad.show(this); }
+        catch (RuntimeException e) { Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
@@ -314,6 +341,20 @@ public class MainActivity extends Activity {
             .setNegativeButton("Vazgeç", null)
             .setPositiveButton("Çıkış", (dialog, which) -> finish())
             .show();
+    }
+
+    @Override protected void onPause() {
+        if (view != null) { view.evaluateJavascript("window.kdSetPaused && window.kdSetPaused(true)",null); view.onPause(); }
+        super.onPause();
+    }
+    @Override protected void onResume() {
+        super.onResume();
+        if (view != null) { view.onResume(); view.evaluateJavascript("window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
+    }
+    @Override protected void onDestroy() {
+        rewardedAd=null; interstitialAd=null;
+        if(view!=null){view.removeJavascriptInterface("KaraNative");view.stopLoading();view.destroy();view=null;}
+        super.onDestroy();
     }
 
     @Override

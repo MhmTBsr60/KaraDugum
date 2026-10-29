@@ -108,7 +108,7 @@ console.log('PASS: hint handler, reward path, coupon accounting and restart hint
 assert(hintHandler.includes('button.click()'), 'Hint must use real board click');
 assert(hintHandler.includes('if(!changed)'), 'Failed hint must preserve credits');
 assert(hintHandler.includes('if(!changed){usedHints--'), 'Failed hint does not restore usage counter');
-assert(hintHandler.indexOf('usedHints++') < hintHandler.indexOf('button.click()'), 'Winning hint not counted before win scoring');
+assert(hintHandler.indexOf('usedHints++') < hintHandler.indexOf('try{button.click()'), 'Winning hint not counted before win scoring');
 assert(!hintHandler.includes('tiles[i]=solution[i]'), 'Hint bypasses game rules');
 console.log('PASS: hints invoke real moves and charge only after state changes');
 

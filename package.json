@@ -1,0 +1,9 @@
+{
+  "name": "karadugum-audits",
+  "private": true,
+  "scripts": {
+    "test": "node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs",
+    "test:browser": "node tests/browser-audit.cjs"
+  },
+  "devDependencies": { "playwright": "1.56.1" }
+}
