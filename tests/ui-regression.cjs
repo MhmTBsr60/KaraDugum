@@ -28,3 +28,5 @@ check(workflow.includes('cp assets/kara-dugum-treasury.webp app/src/main/assets/
 check(html.includes('href="reference.css"'),'Reference screen styles not loaded');
 check(workflow.includes('cp reference.css app/src/main/assets/reference.css'),'APK does not package reference screen styles');
 check(workflow.includes('cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png'),'APK does not package approved reference artwork');
+
+check(workflow.includes('cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp'),'APK does not package wheel and new theme art');

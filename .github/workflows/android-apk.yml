@@ -97,8 +97,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 74" not in workflow or "versionName '6.14'" not in workflow:
-              raise SystemExit('HATA: Surum 6.14 ayarlari uyusmuyor')
+          if "versionCode 75" not in workflow or "versionName '6.15'" not in workflow:
+              raise SystemExit('HATA: Surum 6.15 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -122,6 +122,7 @@ jobs:
           cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
           cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
           cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png
+          cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp
           if [ -f icon.png ]; then
             cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
           elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
@@ -175,8 +176,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 74
-              versionName '6.14'
+              versionCode 75
+              versionName '6.15'
             }
             signingConfigs {
               release {
@@ -256,7 +257,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.14-APK-AAB
+          name: KaraDugum-v6.15-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

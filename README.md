@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.14` (versionCode `74`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.14-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.15` (versionCode `75`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.15-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -56,3 +56,11 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Ana temalar Kadim Taş (gold), Gece Tapınağı (ice), Çöl Harabeleri (fire) olarak adlandırılır; eski tema sahiplik anahtarları ve 0/150/200 jeton ücretleri korunur. Gece Moru (shadow/250) da koleksiyonda korunur. Tahta renk ve yüzeyleri seçilen tema ile eşleşir.
 - Ayarlar modern kartlar ve anahtarlarla düzenlendi. Oyuncu merkezi İstatistikler/Temalar/Başarımlar sekmeleri içerir. Sandık ekranı yedi günlük seriyi, görev ekranı gerçek ilerleme çubuklarını gösterir. Eski görev, sandık ve başarım ödülleri ile kayıt anahtarları korunur. Titreşim geri eklenmedi.
 - `tests/reference-panels-audit.cjs`, referans resmin bütünlüğünü, paket içerik/ücretlerini, ayarları, profil sekmelerini, sahip olunan temaların ücretsiz tekrar uygulanmasını, gerçek tahta paletini ve tekrar eden/eski görev tıklamalarının ödül vermemesini denetler.
+
+## v6.15
+
+- Görünen para birimi Kristal olarak adlandırılır. Bakiye, ücret ve ödül miktarları dönüştürülmez; `kd64_coins` kayıt anahtarı ve yerel reklam payload'ları uyumluluk için korunur. Görünen etiket ve simgeler kristalle değiştirilir.
+- Mağaza başlığı ekran merkezine sabitlenir; büyük bakiye metinleri başlığın üzerine taşmaz. Günlük Ödül ve görselli Şans Çarkı kartları ipucu paketlerinden sonra, temalardan önce gelir. Oyuna Dön ve Diğer Koleksiyonun alanları kaldırılır.
+- Altı tema tek koleksiyondadır: Kadim Taş, Gece Tapınağı, Çöl Harabeleri, Gece Moru, Zümrüt Mabedi, Yakut Ateşi. Önceki sahiplikler korunur. Yeni Zümrüt Mabedi 300 kristal, Yakut Ateşi 350 kristaldir; çizimleri ve oyun tahtası paletleri farklıdır.
+- Yeni görseller bu çalışma için üretilmiş `assets/kara-dugum-expansion.webp` dosyasında çevrimdışı paketlenir. Şans çarkının 1 ücretsiz + 3 tamamlanan reklamla 1 ek hak kuralı değişmez.
+- `tests/crystal-shop-audit.cjs`, başlık merkezini, 3 ekran boyutunda 4 farklı bakiyeyi, birim adı değişirken bakiyenin korunmasını, kart sırasını, altı temayı, yeni tema alışverişlerini ve oyun paletlerini, eski çark sonuçlarının yeniden ödül vermeden yeni adla gösterilmesini denetler.
