@@ -57,3 +57,4 @@ html[data-kd-theme] #kdGame .tile svg .kdPipeLustre,.kdMiniBoard .kdPipeLustre{o
 /* Keep long translated layer headings between the two navigation controls. */
 html[data-kd-theme] #kdGame .kdTitle{min-width:0;flex:1;line-height:1.25;overflow-wrap:anywhere}
 html[data-kd-theme] #kdGame>.kdTop>.kdBack{flex-shrink:0}
+html[data-kd-theme] #kdGameLevel{display:inline-block;white-space:nowrap;overflow-wrap:normal}
