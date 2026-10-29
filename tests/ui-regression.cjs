@@ -30,3 +30,6 @@ check(workflow.includes('cp reference.css app/src/main/assets/reference.css'),'A
 check(workflow.includes('cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png'),'APK does not package approved reference artwork');
 
 check(workflow.includes('cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp'),'APK does not package wheel and new theme art');
+
+check(html.includes('src="localization.js"'),'Localization script missing');
+check(workflow.includes('cp localization.js app/src/main/assets/localization.js'),'APK localization script missing');

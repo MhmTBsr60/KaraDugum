@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.15` (versionCode `75`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.15-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.16` (versionCode `76`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.16-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -64,3 +64,11 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Altı tema tek koleksiyondadır: Kadim Taş, Gece Tapınağı, Çöl Harabeleri, Gece Moru, Zümrüt Mabedi, Yakut Ateşi. Önceki sahiplikler korunur. Yeni Zümrüt Mabedi 300 kristal, Yakut Ateşi 350 kristaldir; çizimleri ve oyun tahtası paletleri farklıdır.
 - Yeni görseller bu çalışma için üretilmiş `assets/kara-dugum-expansion.webp` dosyasında çevrimdışı paketlenir. Şans çarkının 1 ücretsiz + 3 tamamlanan reklamla 1 ek hak kuralı değişmez.
 - `tests/crystal-shop-audit.cjs`, başlık merkezini, 3 ekran boyutunda 4 farklı bakiyeyi, birim adı değişirken bakiyenin korunmasını, kart sırasını, altı temayı, yeni tema alışverişlerini ve oyun paletlerini, eski çark sonuçlarının yeniden ödül vermeden yeni adla gösterilmesini denetler.
+
+## v6.16
+- Üç tamamlanmış reklamla açılan günlük ek çarkın kristal ve ipucu ödülleri 2×; ücretsiz hak ve boş dilim değişmez. Çarpan çevirmeyle birlikte saklanır, eski bekleyen çevirmeler 1× ödenir.
+- Altı tema önizlemesi oyunla aynı SVG boru çizimini ve taş renklerini kullanır. Zümrüt Mabedi/Yakut Ateşi 20 birim, diğerleri 13 birim boru kalınlığı; çok renkli oyun kuralının renkleri korunur.
+- Zümrüt Mabedi 900, Yakut Ateşi 1200 kristal. Önceki satın alımlar ve bakiyeler korunur.
+- Çevrimdışı 25 dil: Türkçe, İngilizce, Çince, Hintçe, İspanyolca, Arapça, Fransızca, Bengalce, Portekizce, Rusça, Urduca, Endonezce, Almanca, Japonca, Marathi, Vietnamca, Telugu, Hausa, Tamilce, Pencapça, Svahili, Filipince, Farsça, Korece, Cava dili. Çok konuşulan dillerden geniş bir seçimdir; sıralama toplam/ana dili konuşurları ve lehçe sınıflandırmasına göre değişir.
+- Dil seçimi kalıcıdır; telefon dili desteklenmiyorsa İngilizce kullanılır. Arapça/Urduca/Farsça RTL, bulmaca koordinatları her dilde LTR. Güncellenen metin düğümleri ve erişilebilir etiketler yeniden çevrilir.
+- `npm test` 300 bölüm, gerçek ipuçları ve çözüm denetimi; `npm run test:browser` yedi gerçek tarayıcı paketi içerir. Yeni paket tüm dilleri, altı tema SVG uyumunu, sekiz ödülün çift değerlerini ve kayıtlı çark geçişini denetler.

@@ -39,3 +39,38 @@ html[data-kd-theme="emerald"] #kdGame{--pipe-tone:#83ddb0;--stone-tone:#173b2f;-
 @media(max-width:350px){.kdRefHeader .kdTitle{max-width:calc(100% - 144px);font-size:12px!important}.kdRefHeader .kdRefWallet{gap:3px}.kdWalletAmount>span{font-size:10px}.kdRefHeader .kdRefWallet .kdBlueCrystal{width:16px;height:20px}.kdWheelTeaserCopy>small{font-size:5px;letter-spacing:.2px}}
 .kdRefHeader .kdRefWallet{max-width:102px}.kdRefHeader .kdWalletAmount{min-width:0;flex:1}.kdWalletAmount>span{max-width:54px;width:100%}
 @media(max-width:350px){.kdRefHeader .kdRefWallet{max-width:86px}.kdWalletAmount>span{max-width:36px}}
+/* v6.16: the shop miniatures and playable board share the same pipe/stone renderer. */
+html[data-kd-theme] #kdGame{--pipe-width:13;--pipe-metal:#5b3c20;--pipe-shine:#fff3c0}
+html[data-kd-theme="emerald"] #kdGame,[data-kd-preview="emerald"]{--pipe-tone:#83ddb0;--pipe-metal:#a77c36;--pipe-shine:#edffcf;--pipe-width:20;--stone-tone:#173b2f;--stone-light:#315e48;--stone-edge:#6b9d73}
+html[data-kd-theme="ruby"] #kdGame,[data-kd-preview="ruby"]{--pipe-tone:#f18d7b;--pipe-metal:#ad743c;--pipe-shine:#ffe2b7;--pipe-width:20;--stone-tone:#3c2025;--stone-light:#60383a;--stone-edge:#a56c61}
+[data-kd-preview="gold"]{--pipe-tone:#dfb56d;--stone-tone:#322c23;--stone-light:#514738;--stone-edge:#77664a}
+[data-kd-preview="ice"]{--pipe-tone:#8cbedc;--stone-tone:#202a35;--stone-light:#3a4a58;--stone-edge:#576d7c}
+[data-kd-preview="fire"]{--pipe-tone:#e0aa5e;--stone-tone:#46372a;--stone-light:#6a543c;--stone-edge:#98754d}
+[data-kd-preview="shadow"]{--pipe-tone:#ba9be5;--stone-tone:#2c2337;--stone-light:#493b57;--stone-edge:#766286}
+.kdLivePreview{position:relative;display:block;overflow:hidden;aspect-ratio:141/113;border-radius:10px;--pipe-width:13;--pipe-metal:#5b3c20;--pipe-shine:#fff3c0}
+.kdLivePreview[data-kd-preview="emerald"],.kdLivePreview[data-kd-preview="ruby"]{--pipe-width:20}
+.kdLivePreview>.kdThemePreview{position:absolute;inset:0;opacity:.4;filter:saturate(.85)}
+.kdMiniBoard{position:absolute;inset:7% 14%;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:4px;border:2px solid var(--stone-edge);border-radius:8px;background:#111;box-shadow:0 0 0 2px #baa37240,inset 0 0 8px #000}
+.kdMiniBoard .tile,html[data-kd-theme] #kdGame main>.board .tile{background:repeating-linear-gradient(13deg,#ffffff03 0 1px,transparent 1px 9px),radial-gradient(ellipse at 25% 15%,var(--stone-light),transparent 70%),linear-gradient(155deg,var(--stone-tone),#141619);border:1px solid var(--stone-edge);border-radius:5px;box-shadow:inset 0 2px 3px #fff2,inset 0 -3px 4px #0009}
+.kdMiniBoard svg{width:100%;height:100%;display:block}
+html[data-kd-theme] #kdGame .tile svg line,.kdMiniBoard svg line{stroke-linecap:round;filter:none}
+html[data-kd-theme] #kdGame .tile svg .kdPipeShell,.kdMiniBoard .kdPipeShell{stroke:var(--pipe-metal);stroke-width:calc(var(--pipe-width) + 8);filter:drop-shadow(0 2px 2px #000b)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeCore,.kdMiniBoard .kdPipeCore{stroke:var(--pipe-tone);stroke-width:var(--pipe-width)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeShine,.kdMiniBoard .kdPipeShine{stroke:var(--pipe-shine);stroke-width:3;opacity:.75;transform:translate(-1px,-2px);pointer-events:none}
+html[data-kd-theme] #kdGame .tile svg .kdPipeJoint,.kdMiniBoard .kdPipeJoint{fill:var(--pipe-tone);stroke:var(--pipe-metal);stroke-width:3;filter:drop-shadow(0 1px 1px #0008)}
+html[data-kd-theme] #kdGame .tile svg .kdPipeJointLight,.kdMiniBoard .kdPipeJointLight{fill:var(--pipe-shine);opacity:.7;filter:none}
+html[data-kd-theme="emerald"] #board,html[data-kd-theme="ruby"] #board{border:3px double var(--stone-edge);padding:6px;box-shadow:0 0 0 2px var(--pipe-metal),0 0 28px #0009,inset 0 0 12px #000;background:var(--stone-tone)}
+/* Board positions must stay LTR in RTL languages: mirrored puzzle coordinates change mechanics. */
+#board,.kdMiniBoard{direction:ltr}
+html:not([lang="tr"]) .kdMenuLabel{font-size:clamp(7px,2.2vw,11px);letter-spacing:0;white-space:normal}
+html:not([lang="tr"]) .kdRefSectionTitle{letter-spacing:1px;font-size:clamp(16px,4.5vw,24px)}
+html:not([lang="tr"]) .kdRefTheme strong{font-size:clamp(8px,2.2vw,11px);white-space:normal;min-height:24px}
+html:not([lang="tr"]) .kdRefWallet small{font-size:7px;letter-spacing:0}
+#kdLanguageControl{display:flex;align-items:center;justify-content:space-between;gap:12px;grid-column:1/-1;width:100%;margin-top:14px}
+html[dir="rtl"] .kdModernScreen,html[dir="rtl"] .kdWheelCard{text-align:right}
+.kdWheelDisc text{direction:ltr;unicode-bidi:plaintext}
+html[data-kd-theme] #kdGame{background:radial-gradient(ellipse at 50% 5%,color-mix(in srgb,var(--stone-tone) 65%,transparent),transparent 65%),#080a0b}
+html[data-kd-theme] #kdGame .kdTop,html[data-kd-theme] #kdGame .stat,html[data-kd-theme] #kdGame .kdBack,html[data-kd-theme] #kdGame .secondary{border-color:var(--stone-edge);background:color-mix(in srgb,var(--stone-tone) 40%,#111318)}
+html[data-kd-theme] #kdGame #kdModeRule{border-color:var(--stone-edge)!important;color:var(--pipe-tone)!important}
+html[data-kd-theme] #kdGame .stat b{color:var(--pipe-tone)}
+html[data-kd-theme] #kdGame main>.controls>button:not(.secondary){background:linear-gradient(120deg,var(--pipe-tone),var(--stone-edge));color:#111}

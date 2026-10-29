@@ -61,6 +61,7 @@ jobs:
           PY
           for script in /tmp/karadugum-script-*.js; do node --check "$script"; done
           node --check wheel.js
+          node --check localization.js
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -97,8 +98,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 75" not in workflow or "versionName '6.15'" not in workflow:
-              raise SystemExit('HATA: Surum 6.15 ayarlari uyusmuyor')
+          if "versionCode 76" not in workflow or "versionName '6.16'" not in workflow:
+              raise SystemExit('HATA: Surum 6.16 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -116,6 +117,7 @@ jobs:
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp index.html app/src/main/assets/index.html
           cp wheel.js app/src/main/assets/wheel.js
+          cp localization.js app/src/main/assets/localization.js
           cp screens.css app/src/main/assets/screens.css
           cp reference.css app/src/main/assets/reference.css
           mkdir -p app/src/main/assets/assets
@@ -176,8 +178,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 75
-              versionName '6.15'
+              versionCode 76
+              versionName '6.16'
             }
             signingConfigs {
               release {
@@ -257,7 +259,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.15-APK-AAB
+          name: KaraDugum-v6.16-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
