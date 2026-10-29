@@ -114,3 +114,6 @@ Yeniden ölçmek için `CHROMIUM_PATH=/usr/bin/chromium node tests/performance-b
 
 ### v6.21
 Ayarlar tanıtım metni ve yedekleme bağlantısı kaldırıldı, dikey/yatay ekrana sığan düzen eklendi. Mağazaya görünür +15 kristal reklam kartı geri eklendi. Tüm tahta boyutlarında boruların pahalı SVG gölge filtreleri kaldırıldı ve hücre boyamaları sınırlandı; tema dokuları ve metal borular korundu.
+
+### v6.22
+Bölüm 18 / Gece Tapınağı ekran kaydında görülen beyaz taş flaşı kaldırıldı. Dokulu arka planı her karede değiştiren animasyon ve basılı taş filtresi yerine sabit kenar vurgusu kullanılır; ışık izi ayarı korunur. Hamle sesleri bittikten sonra Web Audio düğümleri bağlantılarını bırakır.

@@ -54,3 +54,10 @@
 /* Avoid an offscreen filter surface for every pipe on Android, including 5x5. */
 html[data-kd-theme] #kdGame .tile svg .kdPipeEnergy,html[data-kd-theme] #kdGame .tile svg .kdPipeJoint{filter:none!important}
 #kdGame #board>.tile{contain:layout paint;touch-action:manipulation}
+
+/* Tap feedback must not erase/repaint the textured tile every animation frame. */
+html[data-kd-theme] #kdGame #board>.tile:active{filter:none;outline:1px solid var(--skin-metal);outline-offset:-2px}
+html[data-kd-theme] #kdGame #board>.tile.flash{animation:none!important}
+html[data-kd-theme] #kdGame #board>.tile.flash:after{content:"";position:absolute;inset:1px;border:2px solid var(--skin-metal);border-radius:inherit;pointer-events:none;opacity:.8}
+
+html[data-kd-theme] body.kdNoGlow #kdGame #board>.tile.flash:after{display:none}
