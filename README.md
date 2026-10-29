@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.18` (versionCode `78`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.18-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.19` (versionCode `79`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.19-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -84,3 +84,9 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - Katman etiketleri 25 dilde tamamlandı; dar ekranlarda uzun başlıklar geri ve duraklat düğmelerinin arasına sığar.
 - Tema aynı kaldığında boru ve çerçeve DOM öğeleri korunur; menü dönüşünde gereksiz çerçeve çizimi kaldırıldı.
 - Teste gerçek ikinci katmanda altı temaya geçiş, ilerlemenin birebir korunması, menü dönüşü, 25 dilde yeniden yükleme ve küçük ekran kontrolleri eklendi.
+
+## v6.19
+- Ana menünün dört alt düğmesine koyu taş ve işlenmiş altın çerçeveli kabartmalı simgeler: bağlantılı taşlar, mühürlü görev parşömeni, ışıklı sandık, mavi kristalli tüccar kesesi. Sinematik ana menü görseli ve yedi dokunma alanı korunur.
+- Görseller tek şeffaf WebP atlasından gösterilir; yükleme hatasında mevcut dört SVG simge görünür kalır. Yazılar ve erişilebilir düğme adları 25 dilde HTML olarak çevrilir.
+- Basılma geri bildirimi ve klavye odağı eklendi. Yalnızca alınabilir görev/sandık ödülünde üç kısa ışık geçişi; ödül alındığında kapanır. Hareket azaltma tercihinde animasyon kullanılmaz.
+- Dokuz tarayıcı paketi: yeni ana menü denetimi üç ekran boyutu, dört hedef, gerçek ödül alımı, rozet/ışık durumu, 25 dil, hareket azaltma ve eksik görsel durumunu kontrol eder.
