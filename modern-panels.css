@@ -61,3 +61,5 @@ html[data-kd-theme] #kdGame #board>.tile.flash{animation:none!important}
 html[data-kd-theme] #kdGame #board>.tile.flash:after{content:"";position:absolute;inset:1px;border:2px solid var(--skin-metal);border-radius:inherit;pointer-events:none;opacity:.8}
 
 html[data-kd-theme] body.kdNoGlow #kdGame #board>.tile.flash:after{display:none}
+
+.kdJourneyPrize{display:grid;gap:5px;padding:12px;margin:10px 0;border:1px solid #d6ae58;border-radius:12px;background:linear-gradient(120deg,#594018,#17140c);color:#ffe2a0;text-align:center}.kdJourneyPrize strong{font-size:17px}.kdJourneyPrize span{font-size:14px}.kdJourneyPrize small{font-size:10px}

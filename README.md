@@ -117,3 +117,11 @@ Ayarlar tanıtım metni ve yedekleme bağlantısı kaldırıldı, dikey/yatay ek
 
 ### v6.22
 Bölüm 18 / Gece Tapınağı ekran kaydında görülen beyaz taş flaşı kaldırıldı. Dokulu arka planı her karede değiştiren animasyon ve basılı taş filtresi yerine sabit kenar vurgusu kullanılır; ışık izi ayarı korunur. Hamle sesleri bittikten sonra Web Audio düğümleri bağlantılarını bırakır.
+
+### v6.23 — İlerleme ve ödül dengesi
+- Çözülebilirlik ve kayıt uyumluluğu için 300 bölümün taş dizilimi/özel kuralları korunur. Hamle sınırlı bölümlerde pay ilk 30 bölümde %50 (en az 12), 31–75 arası %40, devamında %30 (en az 10) olur; hedef hamle sayısı değişmez.
+- Bölüm 1–15 / 16–30 / 31–75 / 76–150 / 151–300 için taban kristal 2 / 3 / 6 / 8 / 10. İki yıldız +1, üç yıldız +3 verir. Reklam yalnızca o çözümün normal ödülünü ikiye katlar.
+- Her ardışık 50 bölüm için bir defa: 50=150 kristal+2 ipucu, 100=200+2, 150=250+2, 200=300+2, 250=350+2, 300=400+5. Alt bölümler eksikse ödül açılmaz. Eski kayıtlarda hak edilmiş ödüller sonraki bölüm çözümünde teslim edilir. Kayıt kesilirse hazırlanmış ödül işlemi sonraki açılışta tamamlanır.
+- Dört günlük görev grubu: 3 çözüm/40 hamle/1 kusursuz; 2 çözüm/30 hamle/3 dakika; 4 çözüm/60 hamle/5 dakika; 2 çözüm/1 kusursuz/25 hamle. Süre yalnızca tamamlanan bulmacalardan sayılır; görevler 40–55 kristal kazandırır. O gün başlamış eski görevler korunur; yeni günde grup ve başlangıç sayaçları yenilenir.
+- Altı tema fiyatı ve 5/15/30 ipucu paketlerinin 225/600/1050 kristal fiyatları değişmez. Üç yıldızla 300 ilk çözümün toplam normal kazancı 3345 (önce 2580), altı yolculuk ödülü 1650 kristal: toplam 4995; günlük/reklam/tekrar kazançları hariç. Bu hesap oyuncu davranışı ölçümü değildir; kapalı test geri bildirimleriyle yeniden değerlendirilmeli.
+- Yeni tarayıcı denetimi: `tests/progression-audit.cjs`; 50'lik ödüller, tekrar/yeniden açılış/yarım kayıt, dört görev grubu, eski tarihli ve yinelenen talepler.
