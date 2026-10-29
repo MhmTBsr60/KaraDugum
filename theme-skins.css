@@ -54,3 +54,6 @@ html[data-kd-theme] #kdGame main>.board .tile,.kdMiniBoard .tile{background-size
 html[data-kd-theme] #kdGame .tile svg .kdPipeEnergy,.kdMiniBoard .kdPipeEnergy{fill:none;stroke:var(--skin-energy);stroke-width:calc(var(--pipe-width) - 3);stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px var(--skin-energy))}
 html[data-kd-theme] #kdGame .tile svg .kdPipeLustre,.kdMiniBoard .kdPipeLustre{opacity:.5}
 @media(orientation:portrait){html[data-kd-theme] #kdGame:before{left:max(17px,calc((100vw - 590px)/2));right:max(17px,calc((100vw - 590px)/2))}html[data-kd-theme] #kdGame main{padding-left:30px;padding-right:30px}html[data-kd-theme] #kdGame>.kdTop{padding-left:26px;padding-right:26px}}
+/* Keep long translated layer headings between the two navigation controls. */
+html[data-kd-theme] #kdGame .kdTitle{min-width:0;flex:1;line-height:1.25;overflow-wrap:anywhere}
+html[data-kd-theme] #kdGame>.kdTop>.kdBack{flex-shrink:0}

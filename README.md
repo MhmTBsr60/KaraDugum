@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.17` (versionCode `77`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.17-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Sürüm: `6.18` (versionCode `78`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.18-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -78,3 +78,9 @@ Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, 
 - 4×4, 5×5, 6×6, 7×7 ve 8×8 tahtalarda aynı oyun maskeleri ve dokunma hedefleri kullanılır. Anahtarlar, hedefler, sis, buz, engel, portal ve çift enerji renkleri korunur. Görsel yenileme hamle veya kayıt değiştirmez.
 - Önizlemeler aynı boru çizimini kullanır; seçili tema tüm bölümlerde ve yeniden açılışta uygulanır. Yatay ekran için iki sütunlu oyun düzeni; dar telefonlarda kontroller görünür kalır.
 - Sekiz tarayıcı paketi: yeni denetim altı temanın her birinde 300 bölüm (1800 tahta), boru açıklıkları, sis/enerji renkleri, üç ekran boyutu, dokunma hedefleri ve tema kalıcılığını kontrol eder.
+
+## v6.18
+- Çift katmanlı bir bölümde menüye gidip dönünce başlıktan Katman 2 bilgisinin kaybolması düzeltildi. Bölüm başlığı artık tek bir oyun durumu işlevinden güncellenir.
+- Katman etiketleri 25 dilde tamamlandı; dar ekranlarda uzun başlıklar geri ve duraklat düğmelerinin arasına sığar.
+- Tema aynı kaldığında boru ve çerçeve DOM öğeleri korunur; menü dönüşünde gereksiz çerçeve çizimi kaldırıldı.
+- Teste gerçek ikinci katmanda altı temaya geçiş, ilerlemenin birebir korunması, menü dönüşü, 25 dilde yeniden yükleme ve küçük ekran kontrolleri eklendi.
