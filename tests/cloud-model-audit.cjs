@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),M=require('../c
 const root=(coins=1500)=>({id:'root_account',wallet:{coins,hintCoupons:3,xp:100},stats:{wins:4,time:20,moves:30,perfect:1,attempts:5},owned:['gold'],claims:{'achievement:first':true},dailyBase:{'2026-10-30':{wins:1}}});
 const save=()=>({schema:1,account:'alice',root:root(),ops:{},counters:{},state:{}}),op=(n,d,coins=0,hints=0,xp=0,theme)=>({n,d,coins,hintCoupons:hints,xp,...(theme?{theme}:{})});
 const fixtures=[];function merge(a,b){const expected=M.merge(a,b);fixtures.push(JSON.parse(JSON.stringify({a,b,expected})));return expected;}
-const opaque={...save(),account:'g:opaque/user+id=1'};assert.equal(merge(opaque,opaque).account,opaque.account);
+const opaque={...save(),account:'g:opaque/user+id=1'};opaque.state.activeGame={n:1,d:'d_a',v:{text:'</a> / \" \\ \n '+String.fromCharCode(0,8,12,9,0xd800)+' 🌙'}};assert.equal(merge(opaque,opaque).account,opaque.account);
 let a=save(),b=save();a.ops['purchase:a']=op(1,'d_a',-900,0,0,'emerald');b.ops['purchase:b']=op(1,'d_b',-1200,0,0,'ruby');let p=M.project(merge(a,b));assert.equal(p.wallet.coins,600);assert(p.owned.has('emerald'));assert(!p.owned.has('ruby'));assert(p.rejected.has('purchase:b'));assert.equal(M.canon(merge(a,b)),M.canon(merge(b,a)));
 for(let i=0;i<10;i++){const merged=merge(a,b);a=merged;b=merged;}assert.equal(M.project(a).wallet.coins,600,'repeated sync must not restore spent balance');
 a=save();b=save();a.ops['quest:2026-10-30:win']=op(1,'d_a',15);b.ops['quest:2026-10-30:win']=op(3,'d_b',15);assert.equal(M.project(merge(a,b)).wallet.coins,1515);a.ops['achievement:first']=op(2,'d_a',5);assert.equal(M.project(merge(a,b)).wallet.coins,1515,'legacy claimed reward is not paid twice');

@@ -24,7 +24,26 @@ public final class CloudMerge {
     private static boolean truth(Object v){return v!=null&&v!=JSONObject.NULL&&!Boolean.FALSE.equals(v)&&!"".equals(v)&&!"0".equals(String.valueOf(v));}
     private static Object copy(Object v)throws Exception{if(v instanceof JSONObject)return new JSONObject(v.toString());if(v instanceof JSONArray)return new JSONArray(v.toString());return v==null?JSONObject.NULL:v;}
     private static TreeSet<String> keys(JSONObject... values){TreeSet<String> out=new TreeSet<>();for(JSONObject v:values)if(v!=null)for(Iterator<String> i=v.keys();i.hasNext();)out.add(i.next());return out;}
-    public static String canonical(Object v)throws Exception{if(v==null||v==JSONObject.NULL)return "null";if(v instanceof JSONObject){JSONObject o=(JSONObject)v;List<String> parts=new ArrayList<>();for(String k:keys(o))parts.add(JSONObject.quote(k)+":"+canonical(o.opt(k)));return "{"+join(parts)+"}";}if(v instanceof JSONArray){JSONArray a=(JSONArray)v;List<String> parts=new ArrayList<>();for(int i=0;i<a.length();i++)parts.add(canonical(a.opt(i)));return "["+join(parts)+"]";}return JSONObject.valueToString(v);}
+    private static String quote(String value){
+        StringBuilder out=new StringBuilder("\"");
+        for(int i=0;i<value.length();i++){
+            char c=value.charAt(i);
+            switch(c){
+                case '\"':out.append("\\\"");break;
+                case '\\':out.append("\\\\");break;
+                case '\b':out.append("\\b");break;
+                case '\f':out.append("\\f");break;
+                case '\n':out.append("\\n");break;
+                case '\r':out.append("\\r");break;
+                case '\t':out.append("\\t");break;
+                default:
+                    boolean lone=Character.isSurrogate(c)&&!(Character.isHighSurrogate(c)&&i+1<value.length()&&Character.isLowSurrogate(value.charAt(i+1)))&&!(Character.isLowSurrogate(c)&&i>0&&Character.isHighSurrogate(value.charAt(i-1)));
+                    if(c<32||lone){out.append("\\u");String hex=Integer.toHexString(c);for(int n=hex.length();n<4;n++)out.append('0');out.append(hex);}else out.append(c);
+            }
+        }
+        return out.append('\"').toString();
+    }
+    public static String canonical(Object v)throws Exception{if(v==null||v==JSONObject.NULL)return "null";if(v instanceof JSONObject){JSONObject o=(JSONObject)v;List<String> parts=new ArrayList<>();for(String k:keys(o))parts.add(quote(k)+":"+canonical(o.opt(k)));return "{"+join(parts)+"}";}if(v instanceof JSONArray){JSONArray a=(JSONArray)v;List<String> parts=new ArrayList<>();for(int i=0;i<a.length();i++)parts.add(canonical(a.opt(i)));return "["+join(parts)+"]";}if(v instanceof String)return quote((String)v);if(v instanceof Number)return JSONObject.numberToString((Number)v);if(v instanceof Boolean)return v.toString();throw new IllegalArgumentException("Unsupported JSON value");}
     private static JSONObject maxMap(JSONObject a,JSONObject b)throws Exception{JSONObject r=new JSONObject();for(String k:keys(a,b))if(safe(k))r.put(k,Math.max(number(a==null?null:a.opt(k)),number(b==null?null:b.opt(k))));return r;}
     private static JSONObject counter(JSONObject a,JSONObject b)throws Exception{JSONObject r=maxMap(a,b),days=new JSONObject();r.remove("days");JSONObject x=a==null?null:a.optJSONObject("days"),y=b==null?null:b.optJSONObject("days");for(String date:keys(x,y))if(date.matches("\\d{4}-\\d{2}-\\d{2}"))days.put(date,maxMap(x==null?null:x.optJSONObject(date),y==null?null:y.optJSONObject(date)));r.put("days",days);return r;}
     private static JSONObject trueMap(JSONObject a,JSONObject b)throws Exception{JSONObject r=new JSONObject();for(String k:keys(a,b))if(safe(k)&&(a!=null&&Boolean.TRUE.equals(a.opt(k))||b!=null&&Boolean.TRUE.equals(b.opt(k))))r.put(k,true);return r;}
