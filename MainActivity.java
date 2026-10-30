@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Build;
 import android.media.AudioManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 import android.webkit.JavascriptInterface;
@@ -27,6 +29,9 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.ump.ConsentInformation;
+import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.UserMessagingPlatform;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
@@ -38,11 +43,9 @@ public class MainActivity extends Activity {
     private static final String ACH_STARS = "CgkI-ZiLnPgfEAIQAw";
     private static final String ACH_LEGEND = "CgkI-ZiLnPgfEAIQBA";
     private static final String LEADERBOARD_ID = "CgkI-ZiLnPgfEAIQAQ";
-    private static final String REWARDED_TEST_ID = "ca-app-pub-3940256099942544/5224354917";
-    private static final String INTERSTITIAL_TEST_ID = "ca-app-pub-3940256099942544/1033173712";
     private RewardedAd rewardedAd;
     private InterstitialAd interstitialAd;
-    private long lastInterstitialAt = 0;
+    private final InterstitialCadence adCadence = new InterstitialCadence(android.os.SystemClock.elapsedRealtime());
     private boolean interstitialLoading = false;
     private String rewardPurpose = "coins";
     private boolean rewardedInProgress = false;
@@ -56,6 +59,10 @@ public class MainActivity extends Activity {
     private boolean saving = false;
     private String pendingSave;
     private String installationId;
+    private AdConsentGate consentGate;
+    private boolean adsInitializing, adsInitialized, interstitialInProgress;
+    private int adGeneration;
+    private android.app.Dialog privacyDialog;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -77,9 +84,6 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
         PlayGamesSdk.initialize(this);
-        MobileAds.initialize(this, status -> {});
-        loadRewarded();
-        loadInterstitial();
         view = new WebView(this);
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
@@ -96,14 +100,117 @@ public class MainActivity extends Activity {
             @Override public boolean shouldOverrideUrlLoading(WebView v, String url) {
                 return !"file:///android_asset/index.html".equals(url);
             }
-            @Override public void onPageFinished(WebView v, String url) { checkSignIn(); deliverPendingRewards(); }
+            @Override public void onPageFinished(WebView v, String url) { checkSignIn(); deliverPendingRewards(); sendPrivacyState(); }
         });
         setContentView(view);
+        initializeConsent();
         view.loadUrl("file:///android_asset/index.html");
         if (Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, () -> handleGameBack());
         }
+    }
+
+    private void initializeConsent() {
+        final ConsentInformation information = UserMessagingPlatform.getConsentInformation(this);
+        consentGate = new AdConsentGate(new AdConsentGate.Driver() {
+            @Override public void update(Runnable success, AdConsentGate.Completion failure) {
+                information.requestConsentInfoUpdate(MainActivity.this, new ConsentRequestParameters.Builder().build(),
+                    success::run, error -> failure.complete(error.getMessage()));
+            }
+            @Override public void requiredForm(AdConsentGate.Completion completion) {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(MainActivity.this,
+                    error -> completion.complete(error == null ? null : error.getMessage()));
+            }
+            @Override public void optionsForm(AdConsentGate.Completion completion) {
+                UserMessagingPlatform.showPrivacyOptionsForm(MainActivity.this,
+                    error -> completion.complete(error == null ? null : error.getMessage()));
+            }
+            @Override public boolean canRequestAds() { return information.canRequestAds(); }
+            @Override public boolean privacyRequired() {
+                return information.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+            }
+        }, new AdConsentGate.Observer() {
+            @Override public void changed(boolean allowed, boolean required, boolean busy) {
+                if (isFinishing() || isDestroyed()) return;
+                if (!allowed) {
+                    adGeneration++;
+                    rewardedAd = null;
+                    interstitialAd = null;
+                    rewardedLoading = false;
+                    interstitialLoading = false;
+                    send("adReady", "false");
+                }
+                sendPrivacyState();
+                if (allowed) initializeAds();
+            }
+            @Override public void failed(String message) { Log.w(TAG, "Consent: " + message); }
+        });
+        consentGate.start();
+    }
+    private boolean adsAllowed() {
+        return consentGate != null && consentGate.canRequestAds() && !isFinishing() && !isDestroyed();
+    }
+    private void initializeAds() {
+        if (!adsAllowed()) return;
+        if (adsInitialized) { loadRewarded(); loadInterstitial(); return; }
+        if (adsInitializing) return;
+        adsInitializing = true;
+        MobileAds.initialize(this, status -> runOnUiThread(() -> {
+            if (isFinishing() || isDestroyed()) return;
+            adsInitializing = false;
+            adsInitialized = true;
+            loadRewarded();
+            loadInterstitial();
+        }));
+    }
+    private void sendPrivacyState() {
+        try {
+            JSONObject state = new JSONObject();
+            state.put("required", consentGate != null && consentGate.privacyRequired());
+            state.put("busy", consentGate != null && consentGate.busy());
+            send("privacyState", state.toString());
+        } catch (Exception error) { Log.w(TAG, "Privacy state", error); }
+    }
+    private void openPrivacyPolicy() {
+        if (isFinishing() || isDestroyed() || privacyDialog != null) return;
+        final android.app.Dialog dialog = new android.app.Dialog(this);
+        final WebView policy = new WebView(this);
+        policy.getSettings().setJavaScriptEnabled(false);
+        policy.getSettings().setAllowContentAccess(false);
+        policy.getSettings().setAllowFileAccessFromFileURLs(false);
+        policy.getSettings().setAllowUniversalAccessFromFileURLs(false);
+        policy.setWebViewClient(new WebViewClient() {
+            private boolean navigate(String url) {
+                if ("file:///android_asset/privacy-policy.html".equals(url)) return false;
+                Uri uri = Uri.parse(url);
+                if ("https".equals(uri.getScheme()) || "mailto".equals(uri.getScheme())) {
+                    try {
+                        Intent intent = new Intent("mailto".equals(uri.getScheme()) ? Intent.ACTION_SENDTO : Intent.ACTION_VIEW, uri);
+                        if ("https".equals(uri.getScheme())) intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                        startActivity(intent);
+                    }
+                    catch (android.content.ActivityNotFoundException error) { Log.w(TAG, "Privacy link unavailable", error); }
+                }
+                return true;
+            }
+            @Override public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest request) { return navigate(request.getUrl().toString()); }
+            @Override public boolean shouldOverrideUrlLoading(WebView v, String url) { return navigate(url); }
+        });
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        android.widget.Button close = new android.widget.Button(this);
+        close.setText("×");
+        close.setContentDescription("Gizlilik politikasını kapat");
+        close.setOnClickListener(v -> dialog.dismiss());
+        layout.addView(close, new android.widget.LinearLayout.LayoutParams(-1, -2));
+        layout.addView(policy, new android.widget.LinearLayout.LayoutParams(-1, 0, 1));
+        dialog.setContentView(layout);
+        dialog.setOnDismissListener(ignored -> { layout.removeView(policy); policy.stopLoading(); policy.destroy(); privacyDialog = null; });
+        privacyDialog = dialog;
+        dialog.show();
+        dialog.getWindow().setLayout(-1, -1);
+        policy.loadUrl("file:///android_asset/privacy-policy.html");
     }
 
     private void send(String event, String payload) {
@@ -279,17 +386,19 @@ public class MainActivity extends Activity {
         }
     }
     private void loadRewarded() {
-        if (rewardedLoading || rewardedInProgress || rewardedAd != null || isFinishing() || isDestroyed()) return;
+        if (!adsAllowed() || !adsInitialized || rewardedLoading || rewardedInProgress || rewardedAd != null) return;
+        final int generation = adGeneration;
         rewardedLoading = true;
-        RewardedAd.load(this, REWARDED_TEST_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
-            @Override public void onAdLoaded(RewardedAd ad) { rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
-            @Override public void onAdFailedToLoad(LoadAdError error) { rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
+        RewardedAd.load(this, BuildConfig.REWARDED_AD_UNIT_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
+            @Override public void onAdLoaded(RewardedAd ad) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
+            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
         });
     }
     private void showRewarded() {
         final String purpose = rewardPurpose.equals("coins")||rewardPurpose.equals("hint") ? rewardPurpose+":"+java.util.UUID.randomUUID().toString() : rewardPurpose;
         final String rewardOwner = currentPlayerId;
         if (rewardedInProgress) return;
+        if (!adsAllowed() || !adsInitialized || interstitialInProgress) { rewardUnavailable(purpose); return; }
         if (rewardedAd == null) { rewardUnavailable(purpose); loadRewarded(); return; }
         rewardedInProgress = true;
         RewardedAd ad = rewardedAd;
@@ -297,7 +406,9 @@ public class MainActivity extends Activity {
         send("adReady", "false");
         final boolean[] rewardEarned = {false};
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override public void onAdShowedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); }
             @Override public void onAdDismissedFullScreenContent() {
+                adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime());
                 rewardedInProgress = false;
                 if (!rewardEarned[0]) rewardUnavailable(purpose);
                 loadRewarded();
@@ -318,26 +429,33 @@ public class MainActivity extends Activity {
         }
     }
     private void loadInterstitial() {
-        if (interstitialLoading || interstitialAd != null || isFinishing() || isDestroyed()) return;
+        if (!adsAllowed() || !adsInitialized || interstitialLoading || interstitialAd != null) return;
+        final int generation = adGeneration;
         interstitialLoading = true;
-        InterstitialAd.load(this, INTERSTITIAL_TEST_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
-            @Override public void onAdLoaded(InterstitialAd ad) { interstitialLoading = false; interstitialAd = ad; }
-            @Override public void onAdFailedToLoad(LoadAdError error) { interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
+        InterstitialAd.load(this, BuildConfig.INTERSTITIAL_AD_UNIT_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
+            @Override public void onAdLoaded(InterstitialAd ad) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoading = false; interstitialAd = ad; }
+            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
         });
     }
     private void onLevelCompletedForAds(int level) {
-        if (level < 3 || level % 3 != 0 || interstitialAd == null || rewardedInProgress || System.currentTimeMillis()-lastInterstitialAt < 60000) return;
+        if (level < 3 || level > 300) return;
+        adCadence.transitioned(level);
+        if (!adsAllowed() || !adsInitialized || interstitialInProgress || !adCadence.eligible(android.os.SystemClock.elapsedRealtime()) || interstitialAd == null || rewardedInProgress) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
-        lastInterstitialAt = System.currentTimeMillis();
+        interstitialInProgress = true;
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
-            @Override public void onAdDismissedFullScreenContent() { loadInterstitial(); }
-            @Override public void onAdFailedToShowFullScreenContent(AdError error) { loadInterstitial(); }
+            @Override public void onAdShowedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); }
+            @Override public void onAdDismissedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); interstitialInProgress = false; loadInterstitial(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { interstitialInProgress = false; loadInterstitial(); }
         });
         try { ad.show(this); }
-        catch (RuntimeException e) { Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
+        catch (RuntimeException e) { interstitialInProgress = false; Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public void privacyState() { runOnUiThread(() -> sendPrivacyState()); }
+        @JavascriptInterface public void privacyOptions() { runOnUiThread(() -> { if (consentGate != null && !rewardedInProgress && !interstitialInProgress) consentGate.openOptions(); sendPrivacyState(); }); }
+        @JavascriptInterface public void openPrivacyPolicy() { runOnUiThread(() -> MainActivity.this.openPrivacyPolicy()); }
         @JavascriptInterface public String installationId() { return installationId; }
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
         @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
@@ -456,6 +574,9 @@ public class MainActivity extends Activity {
         if (view != null) { view.onResume(); checkSignIn(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
     }
     @Override protected void onDestroy() {
+        if (consentGate != null) consentGate.destroy();
+        adGeneration++;
+        if (privacyDialog != null) privacyDialog.dismiss();
         rewardedAd=null; interstitialAd=null;
         if(view!=null){view.removeJavascriptInterface("KaraNative");view.stopLoading();view.destroy();view=null;}
         super.onDestroy();

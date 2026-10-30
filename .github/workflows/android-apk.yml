@@ -4,15 +4,29 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
+    inputs:
+      ads_mode:
+        description: 'Reklam modu: test veya gercek AdMob birimleri'
+        type: choice
+        options: [test, live]
+        default: test
+        required: true
 
 jobs:
   build:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+    env:
+      KD_ADS_MODE: ${{ inputs.ads_mode || 'test' }}
+      ADMOB_REWARDED_AD_UNIT_ID: ${{ vars.ADMOB_REWARDED_AD_UNIT_ID }}
+      ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ vars.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
     steps:
       - name: Kaynaklari al
         uses: actions/checkout@v4
+
+      - name: Reklam modunu dogrula
+        run: node scripts/configure-ads.cjs app/kd-ads.json
 
       - name: Java 17 kur
         uses: actions/setup-java@v4
@@ -70,6 +84,8 @@ jobs:
           node --check cloud-model.js
           node --check cloud-sync.js
           node --check weekly-quests.js
+          node --check privacy-settings.js
+          node --check scripts/configure-ads.cjs
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -78,6 +94,7 @@ jobs:
           node tests/ui-regression.cjs
           node tests/full-solve-audit.cjs
           node tests/weekly-calendar-audit.cjs
+          node tests/ad-config-audit.cjs
 
       - name: Java ve JavaScript bulut birlestirme kontrolu
         shell: bash
@@ -86,9 +103,11 @@ jobs:
           curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
           node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
           mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
-          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java
+          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java AdConsentGate.java tests/AdConsentGateAudit.java InterstitialCadence.java tests/InterstitialCadenceAudit.java
           java -cp "$RUNNER_TEMP/kd-cloud-classes:$RUNNER_TEMP/kd-json.jar" com.orynexa.karadugum.CloudMergeAudit "$RUNNER_TEMP/kd-cloud-fixtures.json"
           java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InstallationIdentityAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AdConsentGateAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InterstitialCadenceAudit
 
       - name: Gercek tarayici testlerini kur ve calistir
         run: |
@@ -118,8 +137,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 93" not in workflow or "versionName '6.33'" not in workflow:
-              raise SystemExit('HATA: Surum 6.33 ayarlari uyusmuyor')
+          if "versionCode 94" not in workflow or "versionName '6.34'" not in workflow:
+              raise SystemExit('HATA: Surum 6.34 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -135,9 +154,13 @@ jobs:
           grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
+          cp AdConsentGate.java app/src/main/java/com/orynexa/karadugum/AdConsentGate.java
+          cp InterstitialCadence.java app/src/main/java/com/orynexa/karadugum/InterstitialCadence.java
           cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
           cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
           cp index.html app/src/main/assets/index.html
+          cp privacy-policy.html app/src/main/assets/privacy-policy.html
+          cp privacy-settings.js app/src/main/assets/privacy-settings.js
           cp wheel.js app/src/main/assets/wheel.js
           cp localization.js app/src/main/assets/localization.js
           cp screens.css app/src/main/assets/screens.css
@@ -209,15 +232,20 @@ jobs:
           plugins {
             id 'com.android.application'
           }
+          def ads = new groovy.json.JsonSlurper().parse(file('kd-ads.json'))
           android {
+            buildFeatures { buildConfig true }
             namespace 'com.orynexa.karadugum'
             compileSdk 36
             defaultConfig {
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 93
-              versionName '6.33'
+              versionCode 94
+              versionName '6.34'
+              buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
+              buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
+              buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
             }
             signingConfigs {
               release {
@@ -237,6 +265,7 @@ jobs:
           dependencies {
             implementation 'com.google.android.gms:play-services-games-v2:21.0.0'
             implementation 'com.google.android.gms:play-services-ads:24.5.0'
+            implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
           }
           EOF
 
@@ -297,7 +326,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.33-APK-AAB
+          name: KaraDugum-v6.34-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

@@ -55,3 +55,7 @@ check(java.includes('InstallationIdentity.load(getNoBackupFilesDir())')&&java.in
 
 check(html.includes('src="weekly-quests.js"'),'Weekly quests script missing');
 check(workflow.includes('cp weekly-quests.js app/src/main/assets/weekly-quests.js'),'APK weekly quests script missing');
+
+for(const file of ['privacy-settings.js','privacy-policy.html'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing privacy asset '+file);
+check(html.includes('src="privacy-settings.js"'),'Privacy controls must receive native consent status');
+check(html.includes('data-privacy-policy')&&html.includes('data-privacy-options'),'Settings privacy entry points missing');

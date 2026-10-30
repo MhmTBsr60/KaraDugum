@@ -1,12 +1,13 @@
-KARADÜĞÜM v6.33 — HD simgeli tam kaynak paket
+KARADÜĞÜM v6.34 — HD simgeli tam kaynak paket
 
 Bu paket daha önce Chrome testinde açılan düzeltilmiş index.html dosyasını, Android kaynak kodunu, APK/AAB GitHub Actions iş akışını ve yeni simgeyi içerir.
 
 GITHUB'A YÜKLEME
 1. ZIP dosyasını çıkartın.
-2. GitHub deposunun KÖK dizinine index.html, MainActivity.java, icon.png ve android-icons klasörünü yükleyin.
+2. Paketin tüm kaynak dosyalarını ve klasörlerini (assets, scripts, tests ve diğer destek dosyaları dahil) GitHub deposunun KÖK dizinine aynı yapıyla yükleyin.
 3. android-apk.yml dosyasını .github/workflows/android-apk.yml yoluna koyun (deponuzdaki eski iş akışını bununla değiştirin).
 4. Önceden var olan google-services.json dosyasını ve GitHub Actions Secrets/Variables değerlerini SİLMEYİN. Bu dosya gizli yapılandırma olduğundan pakete dahil değildir.
-5. Actions üzerinden APK/AAB oluşturun; yeni APK'yı yükleyip simgeyi ve oyun açılışını kontrol edin.
+5. Actions üzerinden APK/AAB oluşturun; varsayılan TEST paketidir ve Google test reklamlarını kullanır. Yeni APK'yı mevcut oyunu silmeden yükleyin.
+6. Canlı sürüm için Actions → KaraDugum Android APK → Run workflow → ads_mode: live seçin. Gerçek reklam birimleri admob-units.json içinde tanımlıdır. AdMob Gizlilik ve mesajlaşma ayarlarını hesapta tamamlayın; canlı reklamları test tıklamaları için kullanmayın.
 
 NOT: Bu bir kaynak kod paketidir, derlenmiş APK değildir. APK GitHub Actions ile oluşturulur.
