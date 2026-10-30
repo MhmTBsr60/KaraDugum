@@ -27,6 +27,7 @@ public final class AdConsentGate {
     public boolean canRequestAds() { return !destroyed && allowed && phase == 0 && driver.canRequestAds(); }
     public boolean privacyRequired() { return !destroyed && required; }
     public boolean busy() { return !destroyed && phase != 0; }
+    public boolean formOpen() { return !destroyed && (phase == 2 || phase == 3); }
     private void publish() { observer.changed(canRequestAds(), privacyRequired(), busy()); }
 
     public void start() {

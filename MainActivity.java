@@ -169,6 +169,7 @@ public class MainActivity extends Activity {
             JSONObject state = new JSONObject();
             state.put("required", consentGate != null && consentGate.privacyRequired());
             state.put("busy", consentGate != null && consentGate.busy());
+            state.put("formOpen", consentGate != null && consentGate.formOpen());
             send("privacyState", state.toString());
         } catch (Exception error) { Log.w(TAG, "Privacy state", error); }
     }

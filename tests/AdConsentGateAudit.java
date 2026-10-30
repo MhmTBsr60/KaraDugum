@@ -33,15 +33,15 @@ public final class AdConsentGateAudit {
         Driver d = new Driver(); Observer o = new Observer(); AdConsentGate gate = new AdConsentGate(d,o);
         check(!gate.canRequestAds() && !gate.openOptions(), "Nothing before consent update");
         gate.start(); gate.start();
-        check(d.updates==1 && gate.busy() && o.busy && !o.allowed, "One update per launch and no early ads");
+        check(d.updates==1 && gate.busy() && o.busy && !o.allowed && !gate.formOpen(), "One update per launch and no early ads; network update is not a visible form");
         d.required=true; d.success.run(); d.success.run();
-        check(d.forms==1 && gate.privacyRequired() && !gate.openOptions() && !gate.canRequestAds(), "Required form is exclusive");
+        check(d.forms==1 && gate.privacyRequired() && gate.formOpen() && !gate.openOptions() && !gate.canRequestAds(), "Required form is exclusive");
         d.allowed=true; d.form.complete(null);
-        check(gate.canRequestAds() && !gate.busy() && o.required, "SDK permits ads after form");
+        check(gate.canRequestAds() && !gate.busy() && !gate.formOpen() && o.required, "SDK permits ads after form");
         d.allowed=false;
         check(!gate.canRequestAds(), "Every permission check consults the SDK");
         d.allowed=true;
-        check(gate.openOptions() && gate.busy() && !gate.canRequestAds() && !gate.openOptions(), "Privacy options stop ad requests and cannot stack");
+        check(gate.openOptions() && gate.busy() && gate.formOpen() && !gate.canRequestAds() && !gate.openOptions(), "Privacy options stop ad requests and cannot stack");
         d.allowed=false; d.options.get(0).complete(null);
         check(!gate.canRequestAds() && !gate.busy(), "Withdrawn SDK permission blocks ads");
         check(gate.openOptions(), "Options can be reopened");
@@ -72,7 +72,7 @@ public final class AdConsentGateAudit {
             if(phase==1){dying.success.run();dying.failure.complete("late");}
             if(phase==2)dying.form.complete(null);
             if(phase==3)dying.options.get(0).complete(null);
-            check(!g.canRequestAds() && !g.openOptions() && changes==observer.changes, "Destroyed activity ignores callbacks in phase "+phase);
+            check(!g.canRequestAds() && !g.formOpen() && !g.openOptions() && changes==observer.changes, "Destroyed activity ignores callbacks in phase "+phase);
         }
         System.out.println("PASS: native consent gate, launch update, required form, SDK denial/cached permission, exclusive/repeated options, stale callbacks, failures and destroyed activities");
     }
