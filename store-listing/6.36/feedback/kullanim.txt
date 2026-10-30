@@ -1,0 +1,10 @@
+Geri bildirim kaydı kullanımı
+
+- geri-bildirimler.csv: yalnızca konuşmada gerçekten verilmiş genel olumlu kullanıcı bildirimi kaydedildi. Bu kayıt bütün test grubunun sonucu sayılmaz.
+- rapor-sablonu.csv: her yeni gerçek bildirim için bir satır ekle. Cihaz veya sürüm bilinmiyorsa Paylaşılmadı yaz.
+- yayin-durumu.csv: son ekranlar ve kullanıcının verdiği bilgiler kayıt altındadır. Kayıt tarihi bilgilerin güncelliğini gösterir; canlı panel takibi değildir.
+- testci-mesaji.txt: kendin paylaşabileceğin kısa geri bildirim metnidir. Bu görevde kimseye mesaj gönderilmedi.
+
+Önem: P0 veri kaybı/oyunu açamama; P1 sık çökme veya ilerleme/ödül hatası; P2 oynanabilirliği etkileyen sorun; P3 görünüm/öneri.
+Durum: Yeni → Tekrarlandı → Düzeltilecek → Düzeltildi → Yeniden kontrol edildi; tekrar edilemeyenler için Ek bilgi bekleniyor kullan.
+Her testçi kaydında yaklaşık oynama süresini ve denediği bölümleri tut. Üretim başvurusunda yalnızca gerçek geri bildirimleri ve uygulanmış değişiklikleri anlat.

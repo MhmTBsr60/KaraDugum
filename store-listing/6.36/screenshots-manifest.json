@@ -1,0 +1,159 @@
+{
+  "version": "6.36",
+  "versionCode": 96,
+  "appSourceCommit": "6c57c65aea9e6fbcb7e22ae75027687aa91794f1",
+  "indexSha256": "b242202ad1e7b0ce0a24874da42849918efb5578515dcffb9570711001daba64",
+  "rendering": "Unmodified packaged WebView UI, Chromium mobile rendering; not a physical-device capture",
+  "fixture": "Illustrative local demo save; no real tester or account data; no real ads requested",
+  "cssViewport": {
+    "width": 360,
+    "height": 640
+  },
+  "deviceScaleFactor": 3,
+  "files": [
+    {
+      "locale": "tr-TR",
+      "order": 1,
+      "path": "tr-TR/images/phoneScreenshots/01-home.jpg",
+      "caption": "Ana menü",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "7a18152c16c354c780d1d8ab62158fd15f6fdf270888893a68ca78c34516e0ef"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 2,
+      "path": "tr-TR/images/phoneScreenshots/02-night-temple.jpg",
+      "caption": "Gece Tapınağı · Aynalı düğümler",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "355ad6ce7eb70a072e8d18040a11bbc2ac0bcb075274f289f5558b4835fe74d9"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 3,
+      "path": "tr-TR/images/phoneScreenshots/03-emerald-temple.jpg",
+      "caption": "Zümrüt Mabedi · Enerji anahtarları",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "bb93689cda82a08342ed560cd12d258edd371d573662f6aba68c44435de78b13"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 4,
+      "path": "tr-TR/images/phoneScreenshots/04-ruby-fire.jpg",
+      "caption": "Yakut Ateşi · Çift katman",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "eaa502643f82f25681a88f27f8b4e4c9d78a530ede9ff45b984eae35ed9f9802"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 5,
+      "path": "tr-TR/images/phoneScreenshots/05-mechanic-mastery.jpg",
+      "caption": "Mekanik ustalığı",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "5676ecaa030bd8da82d4ef299577412060668bea3268a0a5319da7e2695f19ba"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 6,
+      "path": "tr-TR/images/phoneScreenshots/06-daily-challenge.jpg",
+      "caption": "Günün Bulmacası",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "5b3bee6b5a40765ba5fdb0cfd517ed995b3afd40984d15ceae28ef626cee81a2"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 7,
+      "path": "tr-TR/images/phoneScreenshots/07-weekly-quests.jpg",
+      "caption": "Haftalık görevler",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "164e5e1f23da6a46b99c8d8becb81db5efca8abe476a9fe22b8b72ea2902cf47"
+    },
+    {
+      "locale": "tr-TR",
+      "order": 8,
+      "path": "tr-TR/images/phoneScreenshots/08-six-themes.jpg",
+      "caption": "Altı tema",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "e8f4947b85c5e5e1a98b1c38493dfc51177770d7c0ea1d6a11526f2ba6f2f410"
+    },
+    {
+      "locale": "en-US",
+      "order": 1,
+      "path": "en-US/images/phoneScreenshots/01-home.jpg",
+      "caption": "Home",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "bcc921dc73d460e9de75e9d77afc5dc101df7d151b2cab13b34c0b3024aa4969"
+    },
+    {
+      "locale": "en-US",
+      "order": 2,
+      "path": "en-US/images/phoneScreenshots/02-night-temple.jpg",
+      "caption": "Night Temple · Mirrored nodes",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "2bc0696324f35bb9bb8da8a934e2534417cc89594e377fa986fcadf8afb2d8bf"
+    },
+    {
+      "locale": "en-US",
+      "order": 3,
+      "path": "en-US/images/phoneScreenshots/03-emerald-temple.jpg",
+      "caption": "Emerald Sanctuary · Energy switches",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "8eb6e979fbfab667c2a1520e3133908cbaec8da740bd01b6a8f32f704a9229d5"
+    },
+    {
+      "locale": "en-US",
+      "order": 4,
+      "path": "en-US/images/phoneScreenshots/04-ruby-fire.jpg",
+      "caption": "Ruby Fire · Two layers",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "5ac0a11eb3028a234b8128ad8d3564b43da0643a86bb84c8eca652d8d3bb760f"
+    },
+    {
+      "locale": "en-US",
+      "order": 5,
+      "path": "en-US/images/phoneScreenshots/05-mechanic-mastery.jpg",
+      "caption": "Mechanic mastery",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "c77be613ec645d7225a4e0ba55713d8e04b61956a4b630bb72de0e88d5ca5cd4"
+    },
+    {
+      "locale": "en-US",
+      "order": 6,
+      "path": "en-US/images/phoneScreenshots/06-daily-challenge.jpg",
+      "caption": "Daily puzzle",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "0f5fe0287c4a6412acccbb0e5a50fa6c4c41bd019e9b47b597a216dcc6e27e8a"
+    },
+    {
+      "locale": "en-US",
+      "order": 7,
+      "path": "en-US/images/phoneScreenshots/07-weekly-quests.jpg",
+      "caption": "Weekly quests",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "f01246907010854c2ee993a3b70973e4dcf81cf753cde42ae5bc30c184df0780"
+    },
+    {
+      "locale": "en-US",
+      "order": 8,
+      "path": "en-US/images/phoneScreenshots/08-six-themes.jpg",
+      "caption": "Six themes",
+      "width": 1080,
+      "height": 1920,
+      "sha256": "ad4b248c2e7180dc641121010ba061385d50bcfda2446d0295a1a3c48a444948"
+    }
+  ]
+}

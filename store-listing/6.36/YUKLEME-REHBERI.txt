@@ -1,0 +1,23 @@
+KARA DÜĞÜM — Google Play mağaza materyalleri — 6.36 / 96
+
+İÇERİK
+Türkçe tr-TR ve İngilizce en-US için başlık, kısa açıklama, tam açıklama ve dil başına 8 telefon ekran görüntüsü. feedback klasöründe gerçek bildirim kaydı ve boş rapor şablonu bulunur.
+
+METİNLERİ YÜKLE
+1. Play Console’da KARA DÜĞÜM uygulamasının Ana mağaza girişi ekranını aç.
+2. Türkçe için tr-TR/title.txt, short_description.txt ve full_description.txt içeriğini ilgili alanlara yapıştır.
+3. İngilizce mağaza yerelleştirmesini kullanacaksan en-US dosyalarını İngilizce (ABD) girişine uygula. Oyun içindeki 25 dil, mağazada otomatik 25 çeviri oluşturmaz.
+4. Telefon ekran görüntüleri alanına seçilen dilin images/phoneScreenshots klasöründeki 01–08 dosyalarını sırayla ekle. Bunlar 1080×1920 JPEG dosyalarıdır; uygulama simgesi veya özellik grafiği alanına yüklenmez.
+5. Önizlemede metinleri ve görsel sırasını kontrol edip kaydet. Mağaza değişikliklerinin incelemeye gönderilmesi Play Console’da ayrıca yapılır; bu görevde gönderilmemiştir.
+
+GÖRSEL KAYNAĞI
+Görseller, 6.36 paketinin aynı WebView arayüzünden mobil Chromium görünümünde alınmıştır. CSS alanı 360×640, piksel oranı 3’tür; gerçek telefon fotoğrafı değildir. Görsellerin üstüne yeni başlık, sahte puan veya tanıtım rozeti çizilmemiştir. Mağaza görüntüleri örnek yerel kayıtla hazırlanır; gerçek kullanıcı hesabı veya testçi sonuçları kullanılmaz. Açılmış temalar oyundaki kristal satın alma akışından uygulanır; kapalı temalar oyun içi kristallerle açılır.
+
+REKLAM VE KAYIT
+Bu paket mağaza içeriğidir; APK/AAB güncellemesi değildir. Reklam testleri için TEST paketi, Play yüklemesi için LIVE.aab kullanılır. AdMob gizlilik mesajlarının yayımlandığı kullanıcı tarafından bu görevde bildirilmiştir; hesap paneli bağımsız doğrulanmamıştır.
+
+DOSYALARIN DENETİMİ
+screenshots-manifest.json görsel sırası, boyutlar, kaynak commit ve SHA-256 değerlerini içerir. Depodaki scripts/validate-store-listing.cjs paket sınırlarını, görsel boyutlarını ve dosya bütünlüğünü kontrol eder.
+
+ÖNİZLEME
+ZIP dosyasını çıkardıktan sonra preview.html dosyasını tarayıcıda aç. İnternet bağlantısı gerekmez.

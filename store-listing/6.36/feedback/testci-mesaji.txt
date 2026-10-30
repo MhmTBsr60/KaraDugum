@@ -1,0 +1,16 @@
+KARA DÜĞÜM kapalı test geri bildirimi
+
+6.36 güncellemesi Google tarafından onaylanıp hesabına açıldıktan sonra oyunu Google Play üzerinden güncelle. Oyunu normal şekilde kullanıp aşağıdaki kısa bilgileri paylaşabilir misin?
+
+1. Telefon modeli, Android sürümü ve oyunda görünen sürüm.
+2. Yaklaşık kaç dakika oynadın, hangi bölümlere ve temalara baktın?
+3. Takılma, donma, kapanma veya dokunmanın algılanmaması oldu mu? Olduysa hangi ekranda/bölümde?
+4. Oyundan çıkıp dönünce ilerlemen, kristallerin, temaların ve yarım kalan bulmacan korundu mu?
+5. Bölümler ekranındaki tür filtresi ve mekanik ustalığı anlaşılır mı?
+6. En çok beğendiğin şey ve en çok geliştirilmesini istediğin şey nedir?
+
+Bir sorun varsa adımlarını ve mümkünse kişisel bilgileri kapattığın kısa bir ekran kaydını ekle. Hiç sorun yaşamadıysan bunu da belirt.
+
+Reklamların teknik tekrar/iptal/ödül kontrolleri Google test reklamlı TEST APK üzerinde yapılır. Bu mesaj testçilerden reklam gösterimi veya reklama tıklama istemez.
+
+Adın yerine bir takma ad kullanabilirsin. Şifre, Google hesap e-postası, reklam kimliği veya başka kişisel bilgi paylaşman gerekmiyor.

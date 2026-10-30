@@ -1,0 +1,25 @@
+KARA DÜĞÜM is a puzzle game about rotating stone nodes and completing pipe connections. Study the network, connect its paths and find your way to the next level.
+
+A journey through 300 levels
+Explore six regions, from compact 4×4 boards to intricate 8×8 networks. Replay completed levels to improve your stars.
+
+15 puzzle mechanics
+Discover reverse rotations, mirrored nodes, dual energy lines, portals, moving obstacles, two-layer boards and more. Optional mechanic demonstrations and star targets help explain each challenge.
+
+Track your mechanic mastery
+See your completed and three-star levels for each puzzle type. Combine the mechanic filter with Open, Completed and Missing stars to find the levels you want to practise.
+
+Six stone and light themes
+Change the board's appearance with Ancient Stone, Night Temple, Desert Ruins, Midnight Purple, Emerald Sanctuary and Ruby Fire. Use in-game crystals to unlock themes and hint packs.
+
+A fresh daily challenge
+Take on a daily 5×5 puzzle and improve your personal best move count and time. Complete daily and weekly quests to collect in-game rewards.
+
+Continue your journey
+Return to an unfinished puzzle. Use a Google Play Games account for cloud saves and progress sync across supported devices. Choose from 25 interface languages.
+
+Puzzles can be played offline. Ads, Google Play Games services, cloud sync and online leaderboards require an internet connection.
+
+The game contains ads. Optional rewarded ads can provide hint coupons or extra in-game rewards. Interstitial ads may appear between levels.
+
+Privacy policy: https://mhmtbsr60.github.io/KaraDugum/privacy-policy.html

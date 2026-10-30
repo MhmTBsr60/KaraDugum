@@ -1,0 +1,42 @@
+{
+  "version": "6.36",
+  "appSourceCommit": "6c57c65aea9e6fbcb7e22ae75027687aa91794f1",
+  "text": {
+    "tr-TR": {
+      "title": {
+        "characters": 10,
+        "limit": 30
+      },
+      "short_description": {
+        "characters": 71,
+        "limit": 80
+      },
+      "full_description": {
+        "characters": 1812,
+        "limit": 4000
+      }
+    },
+    "en-US": {
+      "title": {
+        "characters": 10,
+        "limit": 30
+      },
+      "short_description": {
+        "characters": 72,
+        "limit": 80
+      },
+      "full_description": {
+        "characters": 1634,
+        "limit": 4000
+      }
+    }
+  },
+  "images": {
+    "count": 16,
+    "width": 1080,
+    "height": 1920,
+    "format": "JPEG",
+    "sha256": "All matched"
+  },
+  "scope": "Store package only; no new game test run or Play Console upload"
+}

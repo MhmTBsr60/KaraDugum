@@ -1,0 +1,32 @@
+name: Google Play store package 6.36
+on:
+  push:
+    branches: ['release/store-listing-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate store copy and screenshots
+        run: node scripts/validate-store-listing.cjs
+      - name: Package store material
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          source = Path('store-listing/6.36')
+          Path('dist').mkdir(exist_ok=True)
+          with ZipFile('dist/KaraDugum-GooglePlay-6.36.zip', 'w', ZIP_DEFLATED) as archive:
+              for file in sorted(source.rglob('*')):
+                  if file.is_file():
+                      archive.write(file, str(Path('KaraDugum-GooglePlay-6.36') / file.relative_to(source)))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-GooglePlay-Magaza-6.36
+          path: dist/KaraDugum-GooglePlay-6.36.zip
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,8 @@
+﻿Kayit,Kayit tarihi,Surum,Konu,Durum,Kaynak ve sinir
+Y001,2026-10-30,6.36 / 96,Kaynak ve imzalı TEST/LIVE paketleri,Tamamlandı,GitHub Actions 41038391622 başarılı; gerçek telefon doğrulaması kullanıcı tarafından yapıldı.
+Y002,2026-10-30,6.36 / 96,AdMob gizlilik mesajları,Kullanıcı yayımlandığını bildirdi,Bu görevdeki yanıt: Yayımlandı. AdMob paneline doğrudan erişimle doğrulanmadı.
+Y003,2026-10-30,6.36 / 96,Google Play güncellemesi,Son ekranda incelemede,Son paylaşılan Play Console ekranı; onay sonucu bu kayıtta doğrulanmadı.
+Y004,2026-10-30,6.36 / 96,Kapalı test katılımı,Son ekranda 12 kişi / 4 gün,Sabit ekran bilgisi; otomatik takip değildir. 14 günlük koşul ve katılım güncel panelden kontrol edilir.
+Y005,2026-10-30,6.36 / 96,Kapalı test grubunun ayrıntılı geri bildirimleri,Bekleniyor,Cihaz/Android ve kullanım ayrıntıları paylaşılmadı; yanıtlar uydurulmadı.
+Y006,2026-10-30,6.36 / 96,Mağaza açıklaması ve görselleri,Dosyalar hazır; Console yüklemesi bekliyor,Bu materyaller Play Console’a bu görevde yüklenmedi.
+Y007,2026-10-30,6.36 / 96,Üretime erişim başvurusu,Henüz yapılmadı,Konsoldaki koşullar tamamlandığında gerçek kullanım ve geri bildirimlerle başvurulur.
