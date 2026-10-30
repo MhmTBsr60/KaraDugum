@@ -173,3 +173,8 @@ Test: `tests/daily-challenge-audit.cjs`; 45 günün gerçek kurallarla çözülm
 - Üç yıldız hedefi düğmesi üç simgenin genişliğini ayırır; yardım düğmesinin tek simgelik genişlik kuralından ayrılmıştır. Simgeler düğmenin veya ekranın dışına taşmaz.
 - Günlük görevler ekranı tam yüksekliğe yerleşir. Üç görev, son ödül ve dönüş düğmesi kaydırmadan görünür. Küçük dikey ekranda kompakt, yatay ekranda iki sütunlu düzen kullanılır; ödül hesapları ve alma koşulları korunur.
 - `tests/lesson-quest-layout-audit.cjs`: altı temada doku/boru eşitliği, beş tahta boyutu ve iki gösterim aşaması, oyun verisine dokunmama, altı ekran boyutunda yıldız düğmesi ve dört görev grubu, 25 dil/RTL yerleşimi, gerçek görev/son ödül butonları. Toplam 19 tarayıcı test paketi vardır.
+
+### v6.32 — Açık gösterimde tema güncellemesi
+- Mekanik gösterimi açıkken bulut kaydı seçili temayı değiştirirse gösterim de ana tahta ile birlikte güncellenir. Aynı tema çizim yolu yalnızca oyun tahtasını ve açık gösterimi yeniler; mağazadaki altı bağımsız tema önizlemesi kendi renklerini korur.
+- Gösterimin seçilmiş aşaması, kopyalanmış bağlantıları ve kare işaretleri korunur. Tema yenilemesi hamle, ipucu, puan/XP veya kristal değiştirmez ve gösterimi başa almaz.
+- Yeni test `tests/lesson-transition-audit.cjs`: mağazadan seçilen temanın yeniden açılışta korunması, açık gösterime gerçek `cloudSave` geri bildirimiyle altı tema uygulama, kopya taşlar/aşama/oyun verisinin korunması, bağımsız mağaza önizlemeleri, mobil dokunmatik ekran benzetiminde açık gösterim ve görev penceresiyle yatay/dikey geçiş, duraklatılmış süre ve geri hareketi. Toplam 20 tarayıcı test paketi vardır.

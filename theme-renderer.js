@@ -26,9 +26,13 @@ function frame(theme){const id=Object.hasOwn(themes,theme)?theme:current();retur
 function refresh(){
  const game=document.getElementById('kdGame');if(!game)return;
  const id=current();let label=document.getElementById('kdGameThemeLabel');if(!label){label=document.createElement('div');label.id='kdGameThemeLabel';label.className='kdGameThemeLabel';game.prepend(label);}const name=window.kdTranslate?.(themes[id].name)||themes[id].name;if(label.textContent!==name)label.textContent=name;
- const board=document.getElementById('board');if(!board)return;
- for(const tile of board.querySelectorAll('.tile[data-pipe]')){const svg=tile.querySelector('svg');if(svg&&svg.dataset.pipeTheme!==id)svg.outerHTML=pipe(Number(tile.dataset.pipe),Number(tile.dataset.i),id);}
- const ornament=board.querySelector('.kdBoardOrnament');if(ornament&&ornament.dataset.frameTheme!==id)ornament.outerHTML=frame(id);
+ const boards=[document.getElementById('board'),...document.querySelectorAll('.kdLessonBoard')];
+ for(const board of boards){
+  if(!board)continue;
+  if(board.classList.contains('kdLessonBoard')&&board.dataset.kdPreview!==id)board.dataset.kdPreview=id;
+  for(const tile of board.querySelectorAll('.tile[data-pipe]')){const svg=tile.querySelector('svg');if(svg&&svg.dataset.pipeTheme!==id)svg.outerHTML=pipe(Number(tile.dataset.pipe),Number(tile.dataset.i),id);}
+  const ornament=board.querySelector('.kdBoardOrnament');if(ornament&&ornament.dataset.frameTheme!==id)ornament.outerHTML=frame(id);
+ }
 }
 window.kdThemeArt={pipe,frame,refresh,themes};
 function mount(){const defs=document.createElementNS('http://www.w3.org/2000/svg','svg');defs.setAttribute('class','kdThemeDefinitions');defs.setAttribute('aria-hidden','true');defs.setAttribute('width','0');defs.setAttribute('height','0');defs.innerHTML='<defs>'+definitions()+'</defs>';document.body.prepend(defs);refresh();new MutationObserver(refresh).observe(document.documentElement,{attributes:true,attributeFilter:['data-kd-theme']});}
