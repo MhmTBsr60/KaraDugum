@@ -84,6 +84,7 @@ jobs:
           node --check cloud-model.js
           node --check cloud-sync.js
           node --check weekly-quests.js
+          node --check mechanic-progress.js
           node --check privacy-settings.js
           node --check scripts/configure-ads.cjs
 
@@ -95,6 +96,7 @@ jobs:
           node tests/full-solve-audit.cjs
           node tests/weekly-calendar-audit.cjs
           node tests/ad-config-audit.cjs
+          node tests/mechanic-progress-audit.cjs
 
       - name: Java ve JavaScript bulut birlestirme kontrolu
         shell: bash
@@ -159,6 +161,7 @@ jobs:
           cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
           cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
           cp index.html app/src/main/assets/index.html
+          cp mechanic-progress.js app/src/main/assets/mechanic-progress.js
           cp privacy-policy.html app/src/main/assets/privacy-policy.html
           cp privacy-settings.js app/src/main/assets/privacy-settings.js
           cp wheel.js app/src/main/assets/wheel.js

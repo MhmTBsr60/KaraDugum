@@ -59,3 +59,6 @@ check(workflow.includes('cp weekly-quests.js app/src/main/assets/weekly-quests.j
 for(const file of ['privacy-settings.js','privacy-policy.html'])check(workflow.includes('cp '+file+' app/src/main/assets/'+file),'APK missing privacy asset '+file);
 check(html.includes('src="privacy-settings.js"'),'Privacy controls must receive native consent status');
 check(html.includes('data-privacy-policy')&&html.includes('data-privacy-options'),'Settings privacy entry points missing');
+
+check(html.includes('src="mechanic-progress.js"'),'Mechanic progress projection must be loaded');
+check(workflow.includes('cp mechanic-progress.js app/src/main/assets/mechanic-progress.js'),'APK mechanic progress projection missing');

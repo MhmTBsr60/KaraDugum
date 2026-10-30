@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Sürüm: `6.20` (versionCode `80`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.20-APK-AAB` arşivi indirilir. Arşiv imzalı release APK ve Google Play için AAB içerir.
+- Son doğrulanmış sürüm: `6.35` (versionCode `95`).
+- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.35-TEST-APK-AAB` arşivi indirilir. Arşiv imzalı APK ve AAB içerir; **TEST** paketleri Google test reklamlarını kullanır. Canlı paket, iş akışında `ads_mode: live` seçilerek hazırlanır.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -21,7 +21,17 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - `npm ci && npx playwright install chromium && npm run test:browser`: gerçek tarayıcıda menü, mağaza, kayıt, bulut birleştirme, reklam olayları, ayarlar ve ekran boyutu kontrolleri.
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
-Bulut kayıtları bölüm, yıldız ve en iyi puanları birleştirir. Jetonlar, temalar, ayarlar ve yarım kalan tahta cihazda saklanır; cihazlar arasında aktarılmaz. Reklam birimleri halen Google test kimlikleridir. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## Geliştirme dalı: mekanik ustalığı (doğrulama bekliyor)
+
+Bu çalışma `feature/mechanic-progress` dalında hazırlanır; son doğrulanmış 6.35 paketine henüz dahil değildir. Kullanıcının isteğiyle toplu testler, APK/AAB derlemesi ve Google Play yüklemesi geliştirmelerin sonuna bırakılmıştır.
+
+- Bölümler ekranındaki açılır Mekanik Ustalığı kartı, 15 özel kural ailesinde tamamlanan ve üç yıldızla bitirilen bölümleri gösterir. Bir türdeki tüm bölümler üç yıldızlıysa o türde ustalık tamamlanır. İlk 10 öğretici ayrıdır; özel türler toplam 290 bölüm içerir.
+- `mechanic-progress.js` normal bölüm kayıtlarından salt okunur ilerleme çıkarır. Yeni sayaç, ödül, para hareketi veya bulut şeması eklenmez. Adlar ve açıklamalar mevcut oyun motorunun kendi mekanik tanımlarından alınır.
+- Bulmaca türü seçimi mevcut Tümü/Açık/Tamamlanan/Eksik yıldız filtreleriyle birlikte çalışır. Karttan seçim listeyi filtreler; bölüm başlatmaz veya yarım kalan tahtayı değiştirmez. Bölge kısayolu ve Filtreleri temizle, iki filtreyi de sıfırlar. Hesap değişince önceki mekanik seçimi taşınmaz.
+- Yeni etiketler 25 dilde hazırlanmıştır; seçenekler de açıkça yerelleştirilir. Kartlar varsayılan olarak kapalıdır ve yalnızca Bölümler ekranında hesaplanır; oyun sırasında zamanlayıcı/sorgulama çalışmaz.
+- Son doğrulama için `tests/mechanic-progress-audit.cjs` ve `tests/mechanic-progress-browser-audit.cjs` hazırlanmıştır. **Bu geliştirme dalının toplu testleri ve Android derlemesi henüz çalıştırılmamıştır.**
 
 ## v6.11
 

@@ -18,3 +18,38 @@
 @media(min-width:530px){.kdCollectionHero{height:245px}.kdHeroCopy h2{font-size:40px}.kdPackArt{height:110px}.kdPackCard>strong{font-size:13px}.kdPackCard p{font-size:10px}.kdValueBadge{font-size:9px}.kdUnitPrice{font-size:8px}.kdThemeInfo>strong{font-size:14px}.kdThemeInfo>small,.kdThemeBottom>span{font-size:10px}#kdShell .kdJourneyGrid .kdLevel{min-height:97px}.kdJourneyGrid .kdPuzzleType{font-size:9px}#kdShell .kdJourneyGrid .kdLevel>b{font-size:27px}.kdJourneyGrid .kdTileStars{font-size:13px}}
 @media(max-width:350px){#kdShell:has(.kdCollection){padding-left:12px;padding-right:12px}.kdHeroCopy{padding:22px 17px}.kdHeroCopy h2{font-size:30px}.kdPackGrid{gap:5px}.kdPackCard{padding-left:5px;padding-right:5px}.kdPackCard>strong{font-size:10px}.kdPackCard p{font-size:7px}.kdThemeBottom{align-items:stretch;flex-direction:column;gap:7px}.kdJourneyGrid{gap:5px}#kdShell .kdJourneyGrid .kdLevel{min-height:80px}.kdJourneyGrid .kdPuzzleType{font-size:6px}.kdLevelFilters button{padding:8px;font-size:8px}.kdJourneyMetrics{font-size:7px}.kdChapterHeading h3{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.kdCollection *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Mechanic mastery uses existing normal results and stays collapsed until requested. */
+.kdMechanicMastery{margin:0 0 18px;border:1px solid #78603a;border-radius:15px;background:radial-gradient(ellipse at 100% 0,#8b682027,transparent 70%),#111615;overflow:hidden}
+.kdMechanicMastery>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;cursor:pointer}
+.kdMechanicMastery>summary::-webkit-details-marker{display:none}
+.kdMechanicMastery>summary>span:first-child{flex:1;min-width:0}
+.kdMechanicMastery>summary strong{display:block;font:23px/1.15 Georgia,serif;color:#edcf91;margin:7px 0}
+.kdMechanicMastery>summary small{font-size:8px;letter-spacing:1px;color:#c3a970}
+.kdMechanicMastery>summary>span:first-child>span{display:block;font-size:10px;line-height:1.4;color:#aaa795}
+.kdMechanicCount{flex:none;text-align:center;min-width:60px}
+.kdMechanicCount>b{display:block;font:24px Georgia,serif;color:#f0ce81}
+.kdMechanicCount>small{display:block;max-width:90px;font-size:7px!important;overflow-wrap:anywhere;letter-spacing:0!important}
+.kdMechanicCount>i{display:block;font-style:normal;color:#ceb778;font-size:18px;line-height:1;margin-top:5px}
+.kdMechanicMastery[open] .kdMechanicCount>i{transform:rotate(180deg)}
+.kdMechanicBody{padding:0 12px 13px}.kdMechanicBody>p{font-size:10px;line-height:1.5;color:#b2b1a1;margin:0 0 12px}
+.kdMechanicTotals{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-top:10px;border-top:1px solid #8d764333;font-size:10px;color:#c2b594}.kdMechanicTotals>b{font-size:14px;color:#ebca85}
+.kdMechanicGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#kdShell .kdMechanicCard{min-width:0;min-height:148px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:10px;margin:0;padding:11px;border:1px solid #55513b;border-radius:11px;background:linear-gradient(145deg,#22261d,#111817);color:#d7d1b8;text-align:start}
+#kdShell .kdMechanicCard[aria-pressed="true"]{border-color:#e3bd6e;background:linear-gradient(145deg,#4c3d20,#171c17)}
+.kdMechanicCard>strong{font-size:10px;line-height:1.4;overflow-wrap:anywhere;color:#ecd294}
+.kdMechanicStats{display:flex;flex-wrap:wrap;gap:7px;justify-content:space-between;align-items:end}
+.kdMechanicStats b{display:block;font-size:11px;white-space:nowrap}.kdMechanicStats small{display:block;font-size:8px;color:#a2aa98;margin-top:3px}
+.kdMechanicTrack{display:block;height:4px;border-radius:5px;background:#060b0d;overflow:hidden}.kdMechanicTrack>i{display:block;height:100%;background:linear-gradient(90deg,#9c7737,#f0d18c);border-radius:inherit}
+.kdMechanicAction{display:block;font-size:8px;color:#bfaf88}
+.kdMechanicFilter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;align-items:center;margin:12px 0}
+.kdMechanicFilter>label{grid-column:1/-1;font-size:10px;color:#c2b18a}
+.kdMechanicFilter>select{min-width:0;width:100%;min-height:40px;padding:8px;border:1px solid #77613c;border-radius:9px;background:#151a1b;color:#ead2a1;font:12px system-ui,Arial,sans-serif}
+#kdShell .kdMechanicFilter>button{max-width:120px;min-width:0;min-height:40px;padding:7px 9px;border:1px solid #68563b;border-radius:9px;background:#1e1d15;color:#d0bc92;font-size:9px;line-height:1.4;overflow-wrap:anywhere}
+.kdMechanicRule{margin:0 0 12px;padding:10px 12px;border-inline-start:2px solid #b79759;border-radius:0 8px 8px 0;background:#a6853520;color:#dfc28a;font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+.kdMechanicFilter>[hidden],.kdMechanicRule[hidden]{display:none!important}
+.kdMechanicMastery>summary:focus-visible,.kdMechanicCard:focus-visible,.kdMechanicFilter>select:focus-visible,.kdMechanicFilter>button:focus-visible{outline:2px solid #f3d48f;outline-offset:2px}
+@media(min-width:530px){.kdMechanicGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:350px){.kdMechanicMastery>summary{padding:12px;gap:8px}.kdMechanicMastery>summary strong{font-size:21px}.kdMechanicBody{padding:0 9px 10px}.kdMechanicGrid{gap:6px}#kdShell .kdMechanicCard{padding:9px;min-height:150px}.kdMechanicCard>strong{font-size:9px}.kdMechanicFilter>button{max-width:96px}}
+
+@media(max-width:529px){.kdMechanicGrid>.kdMechanicCard:last-child:nth-child(odd){grid-column:1/-1}}
