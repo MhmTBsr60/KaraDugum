@@ -40,7 +40,7 @@ html[data-kd-theme="emerald"] #kdGame{--pipe-tone:#83ddb0;--stone-tone:#173b2f;-
 .kdRefHeader .kdRefWallet{max-width:102px}.kdRefHeader .kdWalletAmount{min-width:0;flex:1}.kdWalletAmount>span{max-width:54px;width:100%}
 @media(max-width:350px){.kdRefHeader .kdRefWallet{max-width:86px}.kdWalletAmount>span{max-width:36px}}
 /* v6.16: the shop miniatures and playable board share the same pipe/stone renderer. */
-html[data-kd-theme] #kdGame{--pipe-width:13;--pipe-metal:#5b3c20;--pipe-shine:#fff3c0}
+html[data-kd-theme] #kdGame,[data-kd-preview]{--pipe-width:13;--pipe-metal:#5b3c20;--pipe-shine:#fff3c0}
 html[data-kd-theme="emerald"] #kdGame,[data-kd-preview="emerald"]{--pipe-tone:#83ddb0;--pipe-metal:#a77c36;--pipe-shine:#edffcf;--pipe-width:20;--stone-tone:#173b2f;--stone-light:#315e48;--stone-edge:#6b9d73}
 html[data-kd-theme="ruby"] #kdGame,[data-kd-preview="ruby"]{--pipe-tone:#f18d7b;--pipe-metal:#ad743c;--pipe-shine:#ffe2b7;--pipe-width:20;--stone-tone:#3c2025;--stone-light:#60383a;--stone-edge:#a56c61}
 [data-kd-preview="gold"]{--pipe-tone:#dfb56d;--stone-tone:#322c23;--stone-light:#514738;--stone-edge:#77664a}
