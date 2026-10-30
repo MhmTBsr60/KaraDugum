@@ -2,6 +2,7 @@
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8');
 const workflow=fs.readFileSync('.github/workflows/android-apk.yml','utf8');
+const java=fs.readFileSync('MainActivity.java','utf8');
 const check=(condition,message)=>assert(condition,message);
 check(fs.existsSync('assets/kara-dugum-menu.png'),'Main menu image missing');
 check(html.includes('src="assets/kara-dugum-menu.png"'),'Menu image path mismatch');
@@ -48,3 +49,6 @@ for(const file of ['learning.js','learning.css']){assert(html.includes(file),fil
 for(const file of ['daily-challenge.js','daily-challenge.css']){check(html.includes(file),file+' not loaded');check(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' not packaged');}
 
 for(const file of ['cloud-model.js','cloud-sync.js']){check(html.includes(file),file+' not loaded');check(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' not packaged');}check(workflow.includes('cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java'),'Native cloud merge missing');
+
+check(workflow.includes('cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java'),'Native installation identity must be packaged');
+check(java.includes('InstallationIdentity.load(getNoBackupFilesDir())')&&java.includes('@JavascriptInterface public String installationId()'),'Device counters must use an identity excluded from Android backup');

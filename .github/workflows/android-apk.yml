@@ -84,8 +84,9 @@ jobs:
           curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
           node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
           mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
-          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java
+          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java
           java -cp "$RUNNER_TEMP/kd-cloud-classes:$RUNNER_TEMP/kd-json.jar" com.orynexa.karadugum.CloudMergeAudit "$RUNNER_TEMP/kd-cloud-fixtures.json"
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InstallationIdentityAudit
 
       - name: Gercek tarayici testlerini kur ve calistir
         run: |
@@ -115,8 +116,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 88" not in workflow or "versionName '6.28'" not in workflow:
-              raise SystemExit('HATA: Surum 6.28 ayarlari uyusmuyor')
+          if "versionCode 89" not in workflow or "versionName '6.29'" not in workflow:
+              raise SystemExit('HATA: Surum 6.29 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -133,6 +134,7 @@ jobs:
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
+          cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
           cp index.html app/src/main/assets/index.html
           cp wheel.js app/src/main/assets/wheel.js
           cp localization.js app/src/main/assets/localization.js
@@ -211,8 +213,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 88
-              versionName '6.28'
+              versionCode 89
+              versionName '6.29'
             }
             signingConfigs {
               release {
@@ -292,7 +294,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.28-APK-AAB
+          name: KaraDugum-v6.29-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

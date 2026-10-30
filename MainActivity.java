@@ -55,9 +55,17 @@ public class MainActivity extends Activity {
     private boolean manualSigningIn = false;
     private boolean saving = false;
     private String pendingSave;
+    private String installationId;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        try {
+            installationId = InstallationIdentity.load(getNoBackupFilesDir());
+        } catch (java.io.IOException e) {
+            // A fresh actor preserves counter isolation even if durable storage is unavailable.
+            installationId = InstallationIdentity.fresh();
+            Log.e(TAG, "Installation identity unavailable", e);
+        }
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         getWindow().getDecorView().setSystemUiVisibility(
             android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
@@ -330,6 +338,7 @@ public class MainActivity extends Activity {
         catch (RuntimeException e) { Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public String installationId() { return installationId; }
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
         @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
         @JavascriptInterface public void rewardedWheel(String requestId) {
