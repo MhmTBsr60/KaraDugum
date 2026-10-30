@@ -17,7 +17,7 @@ assert(workflow.includes('user-messaging-platform:4.0.0'));
 for(const file of ['privacy-policy.html','privacy-settings.js','AdConsentGate.java'])assert(workflow.includes('cp '+file+' app/src/main/'),'APK missing '+file);
 for(const name of ['REWARDED_AD_UNIT_ID','INTERSTITIAL_AD_UNIT_ID'])assert(java.includes('BuildConfig.'+name));
 assert(!java.includes('3940256099942544'),'Main activity must not hard-code sample units');
-for(const method of ['loadRewarded()','showRewarded()','loadInterstitial()','onLevelCompletedForAds(int level)']){
+for(const method of ['loadRewarded()','showRewarded(final String purpose, final String rewardOwner)','loadInterstitial()','onLevelCompletedForAds(int level)']){
  const start=java.indexOf('private void '+method),end=java.indexOf('\n    private ',start+1);assert(start>=0);assert(java.slice(start,end<0?undefined:end).includes('!adsAllowed()'),method+' must check UMP permission');
 }
 assert(java.includes('generation != adGeneration || !adsAllowed()'),'Late ad-load callbacks must not restore stale ads');

@@ -397,7 +397,9 @@ public class MainActivity extends Activity {
     }
     private void showRewarded() {
         final String purpose = rewardPurpose.equals("coins")||rewardPurpose.equals("hint") ? rewardPurpose+":"+java.util.UUID.randomUUID().toString() : rewardPurpose;
-        final String rewardOwner = currentPlayerId;
+        showRewarded(purpose, currentPlayerId);
+    }
+    private void showRewarded(final String purpose, final String rewardOwner) {
         if (rewardedInProgress) return;
         if (!adsAllowed() || !adsInitialized || interstitialInProgress) { rewardUnavailable(purpose); return; }
         if (rewardedAd == null) { rewardUnavailable(purpose); loadRewarded(); return; }
@@ -454,6 +456,14 @@ public class MainActivity extends Activity {
         catch (RuntimeException e) { interstitialInProgress = false; Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public void rewardedAccountRequest(String kind, String requestId, String owner) {
+            if ((!"coins".equals(kind) && !"hint".equals(kind)) || requestId == null || !requestId.matches("[a-zA-Z0-9_-]{1,100}") || owner == null || !owner.matches("[^\\x00-\\x1f\\x7f]{0,256}")) return;
+            // Bind to the account shown by the game before the UI-thread hop or SDK auth refresh.
+            runOnUiThread(() -> {
+                if (rewardedInProgress) { rewardUnavailable(kind + ":" + requestId); return; }
+                showRewarded(kind + ":" + requestId, owner);
+            });
+        }
         @JavascriptInterface public void privacyState() { runOnUiThread(() -> sendPrivacyState()); }
         @JavascriptInterface public void privacyOptions() { runOnUiThread(() -> { if (consentGate != null && !rewardedInProgress && !interstitialInProgress) consentGate.openOptions(); sendPrivacyState(); }); }
         @JavascriptInterface public void openPrivacyPolicy() { runOnUiThread(() -> MainActivity.this.openPrivacyPolicy()); }
