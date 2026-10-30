@@ -69,6 +69,7 @@ jobs:
           node --check daily-challenge.js
           node --check cloud-model.js
           node --check cloud-sync.js
+          node --check weekly-quests.js
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -76,6 +77,7 @@ jobs:
           node tests/hint-runtime-audit.cjs
           node tests/ui-regression.cjs
           node tests/full-solve-audit.cjs
+          node tests/weekly-calendar-audit.cjs
 
       - name: Java ve JavaScript bulut birlestirme kontrolu
         shell: bash
@@ -116,8 +118,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 92" not in workflow or "versionName '6.32'" not in workflow:
-              raise SystemExit('HATA: Surum 6.32 ayarlari uyusmuyor')
+          if "versionCode 93" not in workflow or "versionName '6.33'" not in workflow:
+              raise SystemExit('HATA: Surum 6.33 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -148,6 +150,7 @@ jobs:
           cp daily-challenge.js app/src/main/assets/daily-challenge.js
           cp cloud-model.js app/src/main/assets/cloud-model.js
           cp cloud-sync.js app/src/main/assets/cloud-sync.js
+          cp weekly-quests.js app/src/main/assets/weekly-quests.js
           cp learning.js app/src/main/assets/learning.js
           cp board-renderer.js app/src/main/assets/board-renderer.js
           cp reward-receipts.js app/src/main/assets/reward-receipts.js
@@ -213,8 +216,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 92
-              versionName '6.32'
+              versionCode 93
+              versionName '6.33'
             }
             signingConfigs {
               release {
@@ -294,7 +297,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.32-APK-AAB
+          name: KaraDugum-v6.33-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab

@@ -52,3 +52,6 @@ for(const file of ['cloud-model.js','cloud-sync.js']){check(html.includes(file),
 
 check(workflow.includes('cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java'),'Native installation identity must be packaged');
 check(java.includes('InstallationIdentity.load(getNoBackupFilesDir())')&&java.includes('@JavascriptInterface public String installationId()'),'Device counters must use an identity excluded from Android backup');
+
+check(html.includes('src="weekly-quests.js"'),'Weekly quests script missing');
+check(workflow.includes('cp weekly-quests.js app/src/main/assets/weekly-quests.js'),'APK weekly quests script missing');
