@@ -46,3 +46,5 @@ for(const file of ['board-renderer.js','reward-receipts.js','modern-panels.css']
 for(const file of ['learning.js','learning.css']){assert(html.includes(file),file+' must be loaded');assert(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' must be packaged');}
 
 for(const file of ['daily-challenge.js','daily-challenge.css']){check(html.includes(file),file+' not loaded');check(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' not packaged');}
+
+for(const file of ['cloud-model.js','cloud-sync.js']){check(html.includes(file),file+' not loaded');check(workflow.includes('cp '+file+' app/src/main/assets/'+file),file+' not packaged');}check(workflow.includes('cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java'),'Native cloud merge missing');

@@ -2,8 +2,8 @@
   "name": "karadugum-audits",
   "private": true,
   "scripts": {
-    "test": "node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs",
-    "test:browser": "node tests/browser-audit.cjs && node tests/wheel-audio-audit.cjs && node tests/rewards-menu-audit.cjs && node tests/collections-audit.cjs && node tests/reference-panels-audit.cjs && node tests/crystal-shop-audit.cjs && node tests/expansion-audit.cjs && node tests/theme-gameplay-audit.cjs && node tests/home-icons-audit.cjs && node tests/reward-performance-audit.cjs && node tests/progression-audit.cjs && node tests/goals-finale-audit.cjs && node tests/achievements-audit.cjs && node tests/learning-audit.cjs && node tests/daily-challenge-audit.cjs"
+    "test": "node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs && node tests/cloud-model-audit.cjs",
+    "test:browser": "node tests/browser-audit.cjs && node tests/wheel-audio-audit.cjs && node tests/rewards-menu-audit.cjs && node tests/collections-audit.cjs && node tests/reference-panels-audit.cjs && node tests/crystal-shop-audit.cjs && node tests/expansion-audit.cjs && node tests/theme-gameplay-audit.cjs && node tests/home-icons-audit.cjs && node tests/reward-performance-audit.cjs && node tests/progression-audit.cjs && node tests/goals-finale-audit.cjs && node tests/achievements-audit.cjs && node tests/learning-audit.cjs && node tests/daily-challenge-audit.cjs && node tests/full-cloud-audit.cjs"
   },
   "devDependencies": {
     "playwright": "1.56.1"

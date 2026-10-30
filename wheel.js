@@ -25,8 +25,10 @@ function settle(s,force=false){
  const prize=prizes[pending.prizeIndex],multiplier=pending.multiplier===2?2:1;
  // Remove the receipt before applying it so repeated callbacks cannot pay twice.
  s.pending=null;s.lastResult={id:pending.id,label:prize.label,prizeIndex:pending.prizeIndex,multiplier};write(key,s);
+ if(window.kdEconomy?.active())window.kdEconomy.transact('wheel:'+s.date+':'+(multiplier===2?'bonus':'free'),{coins:(prize.coins||0)*multiplier,hintCoupons:(prize.hints||0)*multiplier});else{
  if(prize.coins)write('kd64_coins',amount(read('kd64_coins',0))+prize.coins*multiplier);
  if(prize.hints)write('kd64_hintCoupons',amount(read('kd64_hintCoupons',0))+prize.hints*multiplier);
+ }
  window.kdRefreshShop?.();window.kdCloudSync?.();render();return true;
 }
 function finishPending(){const s=state();if(s.pending){if(!settle(s)){clearTimeout(settleTimer);settleTimer=setTimeout(finishPending,Math.max(1,s.pending.readyAt-Date.now()));}}}

@@ -67,6 +67,8 @@ jobs:
           node --check reward-receipts.js
           node --check learning.js
           node --check daily-challenge.js
+          node --check cloud-model.js
+          node --check cloud-sync.js
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -74,6 +76,16 @@ jobs:
           node tests/hint-runtime-audit.cjs
           node tests/ui-regression.cjs
           node tests/full-solve-audit.cjs
+
+      - name: Java ve JavaScript bulut birlestirme kontrolu
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/org/json/json/20240303/json-20240303.jar --output "$RUNNER_TEMP/kd-json.jar"
+          node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
+          mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
+          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java
+          java -cp "$RUNNER_TEMP/kd-cloud-classes:$RUNNER_TEMP/kd-json.jar" com.orynexa.karadugum.CloudMergeAudit "$RUNNER_TEMP/kd-cloud-fixtures.json"
 
       - name: Gercek tarayici testlerini kur ve calistir
         run: |
@@ -103,8 +115,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 87" not in workflow or "versionName '6.27'" not in workflow:
-              raise SystemExit('HATA: Surum 6.27 ayarlari uyusmuyor')
+          if "versionCode 88" not in workflow or "versionName '6.28'" not in workflow:
+              raise SystemExit('HATA: Surum 6.28 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -120,6 +132,7 @@ jobs:
           grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
+          cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
           cp index.html app/src/main/assets/index.html
           cp wheel.js app/src/main/assets/wheel.js
           cp localization.js app/src/main/assets/localization.js
@@ -131,6 +144,8 @@ jobs:
           cp learning.css app/src/main/assets/learning.css
           cp daily-challenge.css app/src/main/assets/daily-challenge.css
           cp daily-challenge.js app/src/main/assets/daily-challenge.js
+          cp cloud-model.js app/src/main/assets/cloud-model.js
+          cp cloud-sync.js app/src/main/assets/cloud-sync.js
           cp learning.js app/src/main/assets/learning.js
           cp board-renderer.js app/src/main/assets/board-renderer.js
           cp reward-receipts.js app/src/main/assets/reward-receipts.js
@@ -196,8 +211,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 87
-              versionName '6.27'
+              versionCode 88
+              versionName '6.28'
             }
             signingConfigs {
               release {
@@ -277,7 +292,7 @@ jobs:
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.27-APK-AAB
+          name: KaraDugum-v6.28-APK-AAB
           path: |
             app/build/outputs/apk/release/app-release.apk
             app/build/outputs/bundle/release/app-release.aab
