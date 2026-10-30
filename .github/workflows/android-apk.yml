@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       ads_mode:
-        description: 'Reklam modu: test veya gercek AdMob birimleri'
+        description: 'both: test ve canli paket; test/live: yalniz secilen paket'
         type: choice
-        options: [test, live]
-        default: test
+        options: [both, test, live]
+        default: both
         required: true
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
     env:
-      KD_ADS_MODE: ${{ inputs.ads_mode || 'test' }}
+      KD_ADS_MODE: ${{ inputs.ads_mode == 'live' && 'live' || 'test' }}
       ADMOB_REWARDED_AD_UNIT_ID: ${{ vars.ADMOB_REWARDED_AD_UNIT_ID }}
       ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ vars.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
     steps:
@@ -87,6 +87,8 @@ jobs:
           node --check mechanic-progress.js
           node --check privacy-settings.js
           node --check scripts/configure-ads.cjs
+          node --check scripts/stage-release.cjs
+          bash -n scripts/verify-apk-signature.sh
 
       - name: 300 bolum otomatik denetimi
         run: |
@@ -97,6 +99,7 @@ jobs:
           node tests/weekly-calendar-audit.cjs
           node tests/ad-config-audit.cjs
           node tests/mechanic-progress-audit.cjs
+          node tests/release-package-audit.cjs
 
       - name: Java ve JavaScript bulut birlestirme kontrolu
         shell: bash
@@ -139,8 +142,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 95" not in workflow or "versionName '6.35'" not in workflow:
-              raise SystemExit('HATA: Surum 6.35 ayarlari uyusmuyor')
+          if "versionCode 96" not in workflow or "versionName '6.36'" not in workflow:
+              raise SystemExit('HATA: Surum 6.36 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -244,8 +247,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 95
-              versionName '6.35'
+              versionCode 96
+              versionName '6.36'
               buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
               buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
               buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
@@ -310,28 +313,39 @@ jobs:
         run: gradle --no-daemon --stacktrace :app:assembleRelease :app:bundleRelease
 
       - name: APK imzasini kontrol et
-        shell: bash
-        run: |
-          set -euo pipefail
-          APK=app/build/outputs/apk/release/app-release.apk
-          test -f "$APK"
-          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
-          APKSIGNER=$(find "$SDK/build-tools" -type f -name apksigner | sort -V | tail -n 1)
-          test -n "$APKSIGNER"
-          "$APKSIGNER" verify --print-certs "$APK" | tee /tmp/apk-cert.txt
-          ACTUAL=$(grep -i 'certificate SHA-256 digest:' /tmp/apk-cert.txt | head -n 1 | sed 's/.*digest: //' | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]')
-          EXPECTED=$(cat /tmp/expected-cert-sha256)
-          echo "APK sertifikasi: $ACTUAL"
-          echo "Anahtar sertifikasi: $EXPECTED"
-          test -n "$ACTUAL" && test "$ACTUAL" = "$EXPECTED" || { echo 'HATA: APK sertifikasi imza anahtariyla eslesmiyor.'; exit 1; }
-          echo 'APK imzasi dogrulandi.'
+        run: bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
+
+      - name: Paketin surum ve reklam modunu dogrula
+        run: node scripts/stage-release.cjs 6.36 96
 
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.35-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
-          path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
+          name: KaraDugum-v6.36-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
+          path: dist/${{ env.KD_ADS_MODE }}/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Canli reklamli APK ve AAB derle
+        if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' }}
+        shell: bash
+        env:
+          KD_ADS_MODE: live
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          node scripts/configure-ads.cjs app/kd-ads.json
+          gradle --no-daemon --stacktrace :app:clean :app:assembleRelease :app:bundleRelease
+          bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
+          node scripts/stage-release.cjs 6.36 96
+
+      - name: Canli APK ve AAB dosyalarini yukle
+        if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-v6.36-LIVE-APK-AAB
+          path: dist/live/*
           if-no-files-found: error
           retention-days: 30

@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Son doğrulanmış sürüm: `6.35` (versionCode `95`).
-- Başarılı çalışmanın **Artifacts** bölümünden `KaraDugum-v6.35-TEST-APK-AAB` arşivi indirilir. Arşiv imzalı APK ve AAB içerir; **TEST** paketleri Google test reklamlarını kullanır. Canlı paket, iş akışında `ads_mode: live` seçilerek hazırlanır.
+- Paket sürümü: `6.36` (versionCode `96`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.36-TEST-APK-AAB` ve `KaraDugum-v6.36-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -23,15 +23,17 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
 
-## Geliştirme dalı: mekanik ustalığı (doğrulama bekliyor)
+## v6.36 — Mekanik ustalığı ve yayın paketleri
 
-Bu çalışma `feature/mechanic-progress` dalında hazırlanır; son doğrulanmış 6.35 paketine henüz dahil değildir. Kullanıcının isteğiyle toplu testler, APK/AAB derlemesi ve Google Play yüklemesi geliştirmelerin sonuna bırakılmıştır.
+Mekanik ustalığı geliştirmesi bu sürüme alınmıştır. Son doğrulama, `npm test`, 24 tarayıcı paketi, 641 Java/JavaScript bulut örneği ve yerel Java kimlik/onay/reklam sıklığı kontrollerini kapsar.
 
 - Bölümler ekranındaki açılır Mekanik Ustalığı kartı, 15 özel kural ailesinde tamamlanan ve üç yıldızla bitirilen bölümleri gösterir. Bir türdeki tüm bölümler üç yıldızlıysa o türde ustalık tamamlanır. İlk 10 öğretici ayrıdır; özel türler toplam 290 bölüm içerir.
 - `mechanic-progress.js` normal bölüm kayıtlarından salt okunur ilerleme çıkarır. Yeni sayaç, ödül, para hareketi veya bulut şeması eklenmez. Adlar ve açıklamalar mevcut oyun motorunun kendi mekanik tanımlarından alınır.
 - Bulmaca türü seçimi mevcut Tümü/Açık/Tamamlanan/Eksik yıldız filtreleriyle birlikte çalışır. Karttan seçim listeyi filtreler; bölüm başlatmaz veya yarım kalan tahtayı değiştirmez. Bölge kısayolu ve Filtreleri temizle, iki filtreyi de sıfırlar. Hesap değişince önceki mekanik seçimi taşınmaz.
 - Yeni etiketler 25 dilde hazırlanmıştır; seçenekler de açıkça yerelleştirilir. Kartlar varsayılan olarak kapalıdır ve yalnızca Bölümler ekranında hesaplanır; oyun sırasında zamanlayıcı/sorgulama çalışmaz.
-- Son doğrulama için `tests/mechanic-progress-audit.cjs` ve `tests/mechanic-progress-browser-audit.cjs` hazırlanmıştır. **Bu geliştirme dalının toplu testleri ve Android derlemesi henüz çalıştırılmamıştır.**
+- Mekanik kontrolleri `tests/mechanic-progress-audit.cjs` ve `tests/mechanic-progress-browser-audit.cjs` içindedir. Filtreler, kilitler, yarım kalan tahta/kaynaklara dokunmama, hesap değişimi ve 25 dilde yerleşim denetlenir.
+- Otomatik ana dal derlemesinde test paketi önce hazırlanır ve yüklenir; ardından canlı yapılandırmayla temiz Android derlemesi yapılır. Her iki APK aynı mevcut sertifikayla ayrı ayrı doğrulanır. `scripts/stage-release.cjs`, üretilen BuildConfig içindeki paket adı, sürüm, sürüm kodu, reklam modu ve birim kimliklerini kontrol eder; farklı mod veya eski derleme yanlış etiketle paketlenmez. Arşivdeki build-info.json, kaynak commitini ve dosya SHA-256 değerlerini içerir. `tests/release-package-audit.cjs` iki modun ayrılığını ve hatalı yapılandırmaların reddini denetler.
+- Gerçek telefon, gerçek Google Play Oyunlar/AdMob sunumu ve AdMob panelindeki mesaj yayını bu otomatik kontrollerle doğrulanmaz. Google Play yayını panel üzerinden ayrıca yapılır.
 
 ## v6.11
 

@@ -2,7 +2,7 @@
   "name": "karadugum-audits",
   "private": true,
   "scripts": {
-    "test": "node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs && node tests/cloud-model-audit.cjs && node tests/weekly-calendar-audit.cjs && node tests/ad-config-audit.cjs && node tests/mechanic-progress-audit.cjs",
+    "test": "node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs && node tests/cloud-model-audit.cjs && node tests/weekly-calendar-audit.cjs && node tests/ad-config-audit.cjs && node tests/mechanic-progress-audit.cjs && node tests/release-package-audit.cjs",
     "test:browser": "node tests/browser-audit.cjs && node tests/wheel-audio-audit.cjs && node tests/rewards-menu-audit.cjs && node tests/collections-audit.cjs && node tests/reference-panels-audit.cjs && node tests/crystal-shop-audit.cjs && node tests/expansion-audit.cjs && node tests/theme-gameplay-audit.cjs && node tests/home-icons-audit.cjs && node tests/reward-performance-audit.cjs && node tests/progression-audit.cjs && node tests/goals-finale-audit.cjs && node tests/achievements-audit.cjs && node tests/learning-audit.cjs && node tests/daily-challenge-audit.cjs && node tests/full-cloud-audit.cjs && node tests/installation-restore-audit.cjs && node tests/cloud-reconnect-audit.cjs && node tests/lesson-quest-layout-audit.cjs && node tests/lesson-transition-audit.cjs && node tests/weekly-quests-audit.cjs && node tests/privacy-settings-audit.cjs && node tests/ad-owner-audit.cjs && node tests/mechanic-progress-browser-audit.cjs"
   },
   "devDependencies": {

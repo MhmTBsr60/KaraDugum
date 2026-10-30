@@ -1,4 +1,4 @@
-KARADÜĞÜM v6.35 — HD simgeli tam kaynak paket
+KARADÜĞÜM v6.36 — HD simgeli tam kaynak paket
 
 Bu paket daha önce Chrome testinde açılan düzeltilmiş index.html dosyasını, Android kaynak kodunu, APK/AAB GitHub Actions iş akışını ve yeni simgeyi içerir.
 
@@ -7,7 +7,10 @@ GITHUB'A YÜKLEME
 2. Paketin tüm kaynak dosyalarını ve klasörlerini (assets, scripts, tests ve diğer destek dosyaları dahil) GitHub deposunun KÖK dizinine aynı yapıyla yükleyin.
 3. android-apk.yml dosyasını .github/workflows/android-apk.yml yoluna koyun (deponuzdaki eski iş akışını bununla değiştirin).
 4. Önceden var olan google-services.json dosyasını ve GitHub Actions Secrets/Variables değerlerini SİLMEYİN. Bu dosya gizli yapılandırma olduğundan pakete dahil değildir.
-5. Actions üzerinden APK/AAB oluşturun; varsayılan TEST paketidir ve Google test reklamlarını kullanır. Yeni APK'yı mevcut oyunu silmeden yükleyin.
-6. Canlı sürüm için Actions → KaraDugum Android APK → Run workflow → ads_mode: live seçin. Gerçek reklam birimleri admob-units.json içinde tanımlıdır. AdMob Gizlilik ve mesajlaşma ayarlarını hesapta tamamlayın; canlı reklamları test tıklamaları için kullanmayın.
+5. Actions → KaraDugum Android APK → Run workflow → ads_mode: both ile TEST ve LIVE APK/AAB paketlerini birlikte oluşturun. Ana dala gönderimler de iki paketi oluşturur. Yalnız bir mod için test veya live seçilebilir.
+6. Telefonda deneme için KaraDugum-v6.36-TEST.apk dosyasını mevcut oyunu silmeden yükleyin; Google test reklamlarını kullanır.
+7. Google Play güncellemesi için KaraDugum-v6.36-LIVE.aab dosyasını kullanın. Gerçek reklam birimleri admob-units.json içinde tanımlıdır. AdMob Gizlilik ve mesajlaşma ayarları hesapta tamamlanmış olmalıdır.
+8. İki arşivde sürüm 6.36 ve sürüm kodu 96'dır. Build-info dosyası reklam modunu, kaynak commitini ve dosya SHA-256 değerlerini gösterir.
+
 
 NOT: Bu bir kaynak kod paketidir, derlenmiş APK değildir. APK GitHub Actions ile oluşturulur.

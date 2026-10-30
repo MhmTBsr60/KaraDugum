@@ -1,4 +1,4 @@
-// Prepared for the final verification pass; this projection must never write progress.
+// Mechanic progress is a read-only projection of existing normal results.
 'use strict';
 const assert=require('node:assert/strict'),P=require('../mechanic-progress.js');
 for(const [level,mode]of [[1,'tutorial'],[10,'tutorial'],[11,'0'],[25,'14'],[26,'0'],[300,'4']])assert.equal(P.modeOf(level),mode);

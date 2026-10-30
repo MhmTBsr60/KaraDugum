@@ -1,1 +1,6 @@
 node_modules/
+/dist/
+/app/build/
+/app/kd-ads.json
+/app/karadugum.jks
+/.gradle/
