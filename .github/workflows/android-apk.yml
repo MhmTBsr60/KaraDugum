@@ -100,6 +100,8 @@ jobs:
           node tests/ad-config-audit.cjs
           node tests/mechanic-progress-audit.cjs
           node tests/release-package-audit.cjs
+          node tests/mechanic-quests-audit.cjs
+          node tests/workshop-audit.cjs
 
       - name: Java ve JavaScript bulut birlestirme kontrolu
         shell: bash
@@ -142,8 +144,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 96" not in workflow or "versionName '6.36'" not in workflow:
-              raise SystemExit('HATA: Surum 6.36 ayarlari uyusmuyor')
+          if "versionCode 97" not in workflow or "versionName '6.37'" not in workflow:
+              raise SystemExit('HATA: Surum 6.37 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -177,6 +179,17 @@ jobs:
           cp learning.css app/src/main/assets/learning.css
           cp daily-challenge.css app/src/main/assets/daily-challenge.css
           cp daily-challenge.js app/src/main/assets/daily-challenge.js
+          cp save-health.js app/src/main/assets/save-health.js
+          cp save-health.css app/src/main/assets/save-health.css
+          cp onboarding.js app/src/main/assets/onboarding.js
+          cp onboarding.css app/src/main/assets/onboarding.css
+          cp workshop.js app/src/main/assets/workshop.js
+          cp workshop.css app/src/main/assets/workshop.css
+          cp xp-cosmetics.js app/src/main/assets/xp-cosmetics.js
+          cp xp-cosmetics.css app/src/main/assets/xp-cosmetics.css
+          cp board-focus.js app/src/main/assets/board-focus.js
+          cp board-focus.css app/src/main/assets/board-focus.css
+          cp mechanic-quests.js app/src/main/assets/mechanic-quests.js
           cp cloud-model.js app/src/main/assets/cloud-model.js
           cp cloud-sync.js app/src/main/assets/cloud-sync.js
           cp weekly-quests.js app/src/main/assets/weekly-quests.js
@@ -247,8 +260,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 96
-              versionName '6.36'
+              versionCode 97
+              versionName '6.37'
               buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
               buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
               buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
@@ -316,12 +329,12 @@ jobs:
         run: bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
 
       - name: Paketin surum ve reklam modunu dogrula
-        run: node scripts/stage-release.cjs 6.36 96
+        run: node scripts/stage-release.cjs 6.37 97
 
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.36-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
+          name: KaraDugum-v6.37-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
           path: dist/${{ env.KD_ADS_MODE }}/*
           if-no-files-found: error
           retention-days: 30
@@ -339,13 +352,13 @@ jobs:
           node scripts/configure-ads.cjs app/kd-ads.json
           gradle --no-daemon --stacktrace :app:clean :app:assembleRelease :app:bundleRelease
           bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
-          node scripts/stage-release.cjs 6.36 96
+          node scripts/stage-release.cjs 6.37 97
 
       - name: Canli APK ve AAB dosyalarini yukle
         if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' }}
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.36-LIVE-APK-AAB
+          name: KaraDugum-v6.37-LIVE-APK-AAB
           path: dist/live/*
           if-no-files-found: error
           retention-days: 30

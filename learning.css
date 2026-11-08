@@ -8,3 +8,5 @@
 /* Reserve the width of all three stars; the shared help-button rule is 25px wide. */
 html[data-kd-theme] #kdGame #kdModeRule>.kdStarGoalButton{box-sizing:border-box;flex:0 0 auto;width:auto!important;min-width:50px;height:29px!important;min-height:29px;display:grid;place-items:center;padding:4px!important;font-size:12px!important;line-height:1!important;letter-spacing:0;white-space:nowrap}
 #kdGame #kdModeRule{gap:6px!important}#kdModeRule>span{overflow-wrap:anywhere}
+/* Long translated star targets and lesson actions wrap without covering the close control. */
+.kdLearningCard h2{overflow-wrap:anywhere;margin-inline-end:34px}.kdLearningCard .kdEyebrow{display:block;padding-inline-end:36px;overflow-wrap:anywhere}.kdLearningCard button{overflow-wrap:anywhere}.kdStarGoals p,.kdStarFeedback span{overflow-wrap:anywhere}.kdLearningClose{min-width:44px;min-height:44px}.kdLessonNotice button{min-height:44px;min-width:44px}.kdLessonNotice small{overflow-wrap:anywhere}

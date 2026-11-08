@@ -1,0 +1,71 @@
+/* Shared statistic labels remain inside their half of the connection/time card. */
+#kdGame .kdProgressPair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3px;align-items:center;width:100%}
+#kdGame .kdProgressPair>div{min-width:0;width:100%;padding-inline:1px}
+#kdGame .kdProgressPair span{display:block;max-width:100%;overflow-wrap:anywhere;word-break:normal;font-size:clamp(7px,1.9vw,9px)!important;line-height:1.2!important;letter-spacing:0!important}
+#kdGame .kdProgressPair b{font-size:clamp(14px,3.6vw,25px)!important;line-height:1.1}
+#kdGame .kdProgressPair .kdProgressTime{padding-inline-start:4px}
+.kdBoardFocusButton[hidden]{display:none!important}
+#kdGame .kdBoardFocusButton{min-height:44px;min-width:44px;max-width:110px;padding:6px 7px;border:1px solid var(--skin-metal,#ba9755);border-radius:9px;background:#11181be6;color:var(--skin-ink,#f5dfa8);font:600 10px/1.2 system-ui;text-align:center;overflow-wrap:anywhere;cursor:pointer;touch-action:manipulation}
+#kdGame.kdCanFocusBoard main>.instructions{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:3px 6px}
+#kdGame.kdCanFocusBoard #challenge{grid-column:1;grid-row:1}
+#kdGame.kdCanFocusBoard .kdBoardFocusButton{grid-column:2;grid-row:1}
+#kdGame.kdCanFocusBoard #kdModeRule,#kdGame.kdCanFocusBoard .kdLessonNotice{grid-column:1/-1}
+/* Focus uses the full available width, never a second board or a pan gesture. */
+html[data-kd-theme] #kdGame.kdBoardFocus>.kdGameThemeLabel{display:none}
+html[data-kd-theme] #kdGame.kdBoardFocus:before{inset:3px 5px;border-radius:12px}
+html[data-kd-theme] #kdGame.kdBoardFocus>.kdTop{padding:3px 10px;min-height:44px;gap:7px}
+html[data-kd-theme] #kdGame.kdBoardFocus>.kdTop .kdBack{min-width:44px;min-height:44px;padding:5px}
+html[data-kd-theme] #kdGame.kdBoardFocus .kdTitle{font-size:11px;letter-spacing:0;line-height:1.15}
+html[data-kd-theme] #kdGame.kdBoardFocus main{max-width:740px;padding:2px 12px 9px;gap:4px;justify-content:space-between!important}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.stats{gap:4px}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.stats .stat{padding:3px 2px}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.stats .stat b{font-size:18px;line-height:1.1}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.stats .stat>span{font-size:8px}
+html[data-kd-theme] #kdGame.kdBoardFocus #kdModeRule{margin:2px 0!important;padding:3px!important;min-height:31px;font-size:10px!important}
+html[data-kd-theme] #kdGame.kdBoardFocus #challenge{font-size:9px!important}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.board{width:min(calc(100% - 8px),calc(100dvh - 302px))!important;max-height:calc(100dvh - 302px)!important;padding:5px!important;gap:2px}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.controls{gap:7px}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.controls button{min-height:40px;padding:5px 2px;font-size:10px}
+html[data-kd-theme] #kdGame.kdBoardFocus main>.status{font-size:9px}
+/* Actual 44px settings controls avoid pseudo-element overflow in compact cards. */
+#kdShell:has(.kdSettingsScreen)>.kdTop>.kdBack{min-width:44px;min-height:44px;display:grid;place-items:center}
+#kdShell .kdSettingsScreen .kdSettingToggle{min-height:44px!important;min-width:44px;position:relative;isolation:isolate}
+#kdShell:has(.kdSettingsScreen)>.kdTop>.kdBack::after,#kdShell .kdSettingsScreen .kdSettingToggle::after{content:none}
+@media(orientation:landscape) and (max-height:550px){html[data-kd-theme] #kdGame.kdBoardFocus main{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:auto auto 1fr auto auto;gap:3px 20px;padding:4px 16px 10px;align-content:center}html[data-kd-theme] #kdGame.kdBoardFocus main>.board{width:min(100%,calc(100dvh - 70px))!important;max-height:calc(100dvh - 70px)!important}html[data-kd-theme] #kdGame.kdBoardFocus main>.controls button{min-height:38px}html[data-kd-theme] #kdGame.kdBoardFocus .kdBoardFocusButton{font-size:9px}}
+/* The optional first-encounter prompt is available again when returning to normal view. */
+#kdGame.kdBoardFocus .kdLessonNotice{display:none}
+/* Short landscape windows keep the same 44px hit area without a taller instruction row. */
+@media(orientation:landscape) and (max-height:550px){#kdGame.kdCanFocusBoard main>.instructions{row-gap:9px}#kdGame .kdBoardFocusButton{position:relative;min-height:32px}#kdGame .kdBoardFocusButton::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}}
+@media(orientation:landscape) and (max-height:550px){#kdGame .kdTopProgress{padding:5px 3px!important}#kdGame.kdCanFocusBoard main>.instructions{row-gap:6px}}
+/* A first-encounter lesson occupies real space: let the square board use the remaining row. */
+@media(orientation:portrait){
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main{display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto auto;justify-content:stretch!important;align-content:stretch;gap:4px}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.stats{grid-row:1}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.instructions{grid-row:2}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.board{grid-row:3;justify-self:center;align-self:center;width:auto!important;height:min(100%,calc(100vw - 76px),500px)!important;max-height:100%!important;aspect-ratio:1}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.status{grid-row:4}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.controls:has(#restart){grid-row:5}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.controls:has(#undo){grid-row:6}
+}
+@media(orientation:landscape) and (max-height:550px){
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) #kdModeRule{font-size:9px!important;line-height:1.25!important;padding:3px!important;margin:2px 0!important}
+ #kdGame.kdCanFocusBoard:not(.kdBoardFocus) .kdLessonNotice{padding:2px 4px}
+ #kdGame.kdCanFocusBoard:not(.kdBoardFocus) .kdLessonNotice small{display:none}
+ #kdGame.kdCanFocusBoard:not(.kdBoardFocus) .kdLessonNotice button{position:relative;min-height:32px;padding:6px}
+ #kdGame.kdCanFocusBoard:not(.kdBoardFocus) .kdLessonNotice button::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}
+}
+@media(orientation:landscape) and (max-height:550px){
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main{gap:3px 24px;padding-top:4px;padding-bottom:10px}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.stats .stat{padding:3px 2px!important}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) .kdProgressPair b{font-size:17px!important}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) .kdProgressPair span{font-size:7px!important}
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.controls button{min-height:32px!important;padding:5px 2px;font-size:9px}
+}
+@media(max-height:710px){
+ #kdShell .kdSettingsScreen{row-gap:4px}
+ #kdShell .kdSettingsScreen>.kdSettingCard,#kdShell .kdSettingsScreen>.kdLanguageSetting{padding:6px!important;row-gap:6px}
+}
+@media(orientation:landscape) and (max-height:550px){
+ #kdShell .kdSettingsScreen{row-gap:3px}
+ #kdShell .kdSettingsScreen>.kdSettingCard,#kdShell .kdSettingsScreen>.kdLanguageSetting{padding:4px!important;row-gap:4px}
+}

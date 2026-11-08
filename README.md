@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.36` (versionCode `96`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.36-TEST-APK-AAB` ve `KaraDugum-v6.36-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.37` (versionCode `97`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.37-TEST-APK-AAB` ve `KaraDugum-v6.37-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,20 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.37 — Oynanış düzeltmeleri ve yeni hedefler
+
+- Anahtar etkinleştirmesi artık tamamlanma kontrolünü de çalıştırır. Bağlantıları son anahtardan önce biten 156/201 gibi bölümler aynı dokunuşta sonuçlanır; ödül bir kez verilir. Mevcut 300 bölümün üretim tohumları, çözüm düzenleri ve kayıt biçimi korunur.
+- İlk oyuncu için oyunu engellemeyen GÖSTER/ATLA daveti ve bağımsız, üç hamlelik 2×2 uygulama eklenir. Ayarlar başlığındaki yardım düğmesi örneği yeniden açar. Tamamlanmış veya yarım oynanmış kaydı olan oyuncuya zorla gösterilmez.
+- Günün Bulmacası, bugünkü ilk zafer için 10 kristal ve 25 XP verir. Tarih ve hesap başına immutable `dailyfirst` makbuzu kullanılır; tekrar, eski tarih veya mevcut geçmiş kayıtları geriye dönük ödül üretmez. Günlük kayıt/cüzdan kesintileri sahipli journal ile onarılır. Normal bölüm ilerlemesi ve günlük/haftalık normal galibiyet sayaçları değişmez. Son 30 gün takvimi ve 7/30 farklı tamamlanan gün rozetleri vardır.
+- Uygun yeni günlerde, yalnızca erişilebilir mekaniklerle iki farklı tür çözme ve mevcut eksik yıldızını geliştirme görevleri seçilebilir. Gün içinde mevcut görev değiştirilmez. Yeni ilerleme sıfır kaynaklı, tekil kazanım makbuzlarıyla bulutta birleştirilir; öğretici yıldız gelişimi tür çeşitliliğine sayılmaz.
+- Mevcut XP ile 5/10/20/35 seviyelerinde kalıcı unvan/çerçeve seçenekleri açılır. Açılımlar mevcut XP'den türetilir; envanter veya bulut şeması değişmez. Görünüm seçimi, başlangıç örneği tercihi ve atölye ilerlemesi bu cihazda hesap başına ayrıdır; normal oyun ilerlemesi gibi bulutla taşınmaz.
+- Bölümler içindeki Mekanik Atölyesi, iki ayrı enerji kaynağını doğru hedeflere bağlama ve tek yönlü akış için toplam altı ayrı 3×3–5×5 bulmaca sunar. Kampanya kayıtlarını, kristal/XP'yi veya sıralamayı değiştirmez; reklam içermez. Mevcut ana bölümlerdeki kurallar korunur.
+- 7×7/8×8 tahtalarda isteğe bağlı odak görünümü tahtaya daha çok yer ayırır. Hücreler, hamle/geri alma geçmişi, süre ve kaynaklar korunur; görünüm değişikliği ilerlemeye yazılmaz. Bağlantı/süre etiketleri ve ayar dokunma alanları iyileştirilir; öğretim ve yeni arayüz metinleri 25 dilde sağlanır.
+- UI kayıt yazması başarısızsa görünür Kayıt bekliyor durumu, sınırlı bellek kuyruğu ve tekrar kaydetme sunulur. Kuyruk yalnız aynı sahibin anahtarlarına yazılır; daha yeni kayıt ezilmez. Bekleyen bellek yazısı uygulama kapanınca kalıcı sayılmaz; kullanıcıya tekrar denemesi bildirilir. Kritik bulut işlem journal'ları, kalıcı yazma başarısızken işlemi durduran sözleşmesini korur. Kişisel veri içermeyen tanı raporu yalnız cihazda oluşturulur.
+- Reklamla kazanılan mevcut puan/XP/kristal davranışı korunur. Dünya sıralaması puanının yalnız beceriyi ölçmesi, ayrı bir puan geçişi ve mevcut skorlar için ürün kararı gerektirir.
+
+Yeni kontroller: `key-completion`, `daily-growth`, `onboarding-save`, `learning-focus`, `workshop` ve `mechanic-quests` testleri. Kaynak testleri, tarayıcı senaryoları ve native Java karşılaştırmaları GitHub Actions'ta çalışır. Gerçek telefon, gerçek Google hesabı/reklam sunumu ve Google Play yayını ayrıca doğrulanır.
 
 ## v6.36 — Mekanik ustalığı ve yayın paketleri
 
