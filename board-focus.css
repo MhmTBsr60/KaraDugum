@@ -55,7 +55,8 @@ html[data-kd-theme] #kdGame.kdBoardFocus main>.status{font-size:9px}
  #kdGame.kdCanFocusBoard:not(.kdBoardFocus) .kdLessonNotice button::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,44px);transform:translateY(-50%)}
 }
 @media(orientation:landscape) and (max-height:550px){
- html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main{gap:3px 24px;padding-top:4px;padding-bottom:10px}
+ /* Keep the header outside grid overflow; wider text and a real top gap leave font-metric headroom. */
+ html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-rows:auto auto minmax(0,1fr) auto auto;align-content:start!important;justify-content:stretch!important;gap:2px 24px;padding-top:6px;padding-bottom:4px}
  html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.stats .stat{padding:3px 2px!important}
  html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) .kdProgressPair b{font-size:17px!important}
  html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) .kdProgressPair span{font-size:7px!important}
