@@ -25,6 +25,7 @@ Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuç
 
 ## v6.37 — Oynanış düzeltmeleri ve yeni hedefler
 
+- Cihaz saati geriye kaydığında oyun süresi sıfırın altına düşmez; günlük sonuç ve ilk zafer ödülü geçerli kalır. Gerçek saat geri çekme regresyonları bulunur.
 - Anahtar etkinleştirmesi artık tamamlanma kontrolünü de çalıştırır. Bağlantıları son anahtardan önce biten 156/201 gibi bölümler aynı dokunuşta sonuçlanır; ödül bir kez verilir. Mevcut 300 bölümün üretim tohumları, çözüm düzenleri ve kayıt biçimi korunur.
 - İlk oyuncu için oyunu engellemeyen GÖSTER/ATLA daveti ve bağımsız, üç hamlelik 2×2 uygulama eklenir. Ayarlar başlığındaki yardım düğmesi örneği yeniden açar. Tamamlanmış veya yarım oynanmış kaydı olan oyuncuya zorla gösterilmez.
 - Günün Bulmacası, bugünkü ilk zafer için 10 kristal ve 25 XP verir. Tarih ve hesap başına immutable `dailyfirst` makbuzu kullanılır; tekrar, eski tarih veya mevcut geçmiş kayıtları geriye dönük ödül üretmez. Günlük kayıt/cüzdan kesintileri sahipli journal ile onarılır. Normal bölüm ilerlemesi ve günlük/haftalık normal galibiyet sayaçları değişmez. Son 30 gün takvimi ve 7/30 farklı tamamlanan gün rozetleri vardır.
