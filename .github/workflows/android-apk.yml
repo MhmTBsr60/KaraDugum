@@ -116,11 +116,12 @@ jobs:
           curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
           node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
           mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
-          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java AdConsentGate.java tests/AdConsentGateAudit.java InterstitialCadence.java tests/InterstitialCadenceAudit.java
+          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java AdConsentGate.java tests/AdConsentGateAudit.java InterstitialCadence.java tests/InterstitialCadenceAudit.java AdLoadGate.java tests/AdLoadGateAudit.java
           java -cp "$RUNNER_TEMP/kd-cloud-classes:$RUNNER_TEMP/kd-json.jar" com.orynexa.karadugum.CloudMergeAudit "$RUNNER_TEMP/kd-cloud-fixtures.json"
           java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InstallationIdentityAudit
           java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AdConsentGateAudit
           java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InterstitialCadenceAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AdLoadGateAudit
 
       - name: Gercek tarayici testlerini kur ve calistir
         run: |
@@ -169,6 +170,7 @@ jobs:
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp AdConsentGate.java app/src/main/java/com/orynexa/karadugum/AdConsentGate.java
           cp InterstitialCadence.java app/src/main/java/com/orynexa/karadugum/InterstitialCadence.java
+          cp AdLoadGate.java app/src/main/java/com/orynexa/karadugum/AdLoadGate.java
           cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
           cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
           cp index.html app/src/main/assets/index.html

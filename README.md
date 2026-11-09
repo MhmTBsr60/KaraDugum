@@ -23,6 +23,12 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
 
+## Sonraki sürüm için hazırlanan reklam yükleme düzeltmesi
+
+- İlk yüklemede hata alan ödüllü/geçiş reklamları, uygulamaya dönüşte ve normal bölüm geçişlerinde yeniden hazırlanır. Hatalı istekler 30 saniyeden başlayıp en fazla 5 dakikaya çıkan bekleme ile sınırlanır; arka planda sürekli sorgulama yapılmaz. Gösterim sıklığı ve ödül hak ediş kuralları değişmez.
+- `AdLoadGateAudit` bekleme sınırlarını, tekrarlı olayları, iki reklam türünün bağımsızlığını ve başarı sonrası sıfırlamayı denetler. Bu değişiklik `fix/ad-load-recovery` dalında hazırlanmıştır; mevcut 103 yayın paketinin bir parçası değildir.
+- `app-ads.txt` doğru yayıncı satırını içerir. AdMob doğrulaması için bu dosya Google Play mağaza girişinde yazan geliştirici web sitesinin kökünde sunulmalıdır. Proje altındaki bir GitHub Pages URL'sine koymak tek başına kök alan adı doğrulamasını sağlamaz. Hesaptaki uygulama hazırlık/onay ve app-ads.txt doğrulama durumu ayrıca kontrol edilmelidir.
+
 ## v6.43 — AD_ID doğrulaması ve imzalı paket
 
 - Sürüm kodu 103. Kaynak manifestteki açık AD_ID izni, birleştirilmiş manifestte ve imzalı AAB içinde doğrulanır. Ham manifest birleştirme raporu da paket arşivine eklenir.

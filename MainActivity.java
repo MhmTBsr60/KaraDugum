@@ -62,6 +62,8 @@ public class MainActivity extends Activity {
     private AdConsentGate consentGate;
     private boolean adsInitializing, adsInitialized, interstitialInProgress;
     private int adGeneration;
+    private final AdLoadGate rewardedLoadGate = new AdLoadGate();
+    private final AdLoadGate interstitialLoadGate = new AdLoadGate();
     private android.app.Dialog privacyDialog;
 
     @Override public void onCreate(Bundle state) {
@@ -387,12 +389,12 @@ public class MainActivity extends Activity {
         }
     }
     private void loadRewarded() {
-        if (!adsAllowed() || !adsInitialized || rewardedLoading || rewardedInProgress || rewardedAd != null) return;
+        if (!adsAllowed() || !adsInitialized || rewardedLoading || rewardedInProgress || interstitialInProgress || rewardedAd != null || !rewardedLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
         final int generation = adGeneration;
         rewardedLoading = true;
         RewardedAd.load(this, BuildConfig.REWARDED_AD_UNIT_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
-            @Override public void onAdLoaded(RewardedAd ad) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
-            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
+            @Override public void onAdLoaded(RewardedAd ad) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoadGate.loaded(); rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
+            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoadGate.failed(android.os.SystemClock.elapsedRealtime()); rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
         });
     }
     private void showRewarded() {
@@ -432,17 +434,20 @@ public class MainActivity extends Activity {
         }
     }
     private void loadInterstitial() {
-        if (!adsAllowed() || !adsInitialized || interstitialLoading || interstitialAd != null) return;
+        if (!adsAllowed() || !adsInitialized || interstitialLoading || interstitialInProgress || rewardedInProgress || interstitialAd != null || !interstitialLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
         final int generation = adGeneration;
         interstitialLoading = true;
         InterstitialAd.load(this, BuildConfig.INTERSTITIAL_AD_UNIT_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
-            @Override public void onAdLoaded(InterstitialAd ad) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoading = false; interstitialAd = ad; }
-            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
+            @Override public void onAdLoaded(InterstitialAd ad) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoadGate.loaded(); interstitialLoading = false; interstitialAd = ad; }
+            @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoadGate.failed(android.os.SystemClock.elapsedRealtime()); interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
         });
     }
     private void onLevelCompletedForAds(int level) {
         if (level < 3 || level > 300) return;
         adCadence.transitioned(level);
+        // Recover from an earlier load failure; loading never triggers a late display.
+        loadRewarded();
+        loadInterstitial();
         if (!adsAllowed() || !adsInitialized || interstitialInProgress || !adCadence.eligible(android.os.SystemClock.elapsedRealtime()) || interstitialAd == null || rewardedInProgress) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
@@ -582,6 +587,8 @@ public class MainActivity extends Activity {
     }
     @Override protected void onResume() {
         super.onResume();
+        loadRewarded();
+        loadInterstitial();
         if (view != null) { view.onResume(); checkSignIn(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
     }
     @Override protected void onDestroy() {
