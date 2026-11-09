@@ -13,6 +13,10 @@ test -s "$kd_merged"
 test -s "$kd_aab"
 mkdir -p "$kd_report_dir"
 cp "$kd_merged" "$kd_report_dir/merged-manifest.xml"
+cp app/build/outputs/logs/manifest-merger-release-report.txt "$kd_report_dir/manifest-merger-release-report.txt"
+if [ -s app/build/outputs/mapping/release/mapping.txt ]; then
+  cp app/build/outputs/mapping/release/mapping.txt "$kd_report_dir/mapping.txt"
+fi
 java -jar "$kd_bundletool" validate --bundle="$kd_aab" > "$kd_report_dir/bundle-validation.txt"
 java -jar "$kd_bundletool" dump manifest --bundle="$kd_aab" --module=base > "$kd_report_dir/bundle-manifest.xml"
 python3 scripts/verify-android-manifests.py \

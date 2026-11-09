@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.42` (versionCode `102`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.42-TEST-APK-AAB` ve `KaraDugum-v6.42-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.43` (versionCode `103`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.43-TEST-APK-AAB` ve `KaraDugum-v6.43-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,12 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.43 — AD_ID doğrulaması ve imzalı paket
+
+- Sürüm kodu 103. Kaynak manifestteki açık AD_ID izni, birleştirilmiş manifestte ve imzalı AAB içinde doğrulanır. Ham manifest birleştirme raporu da paket arşivine eklenir.
+- R8 mevcut yapılandırmada kapalıdır. Etkinleştirildiğinde oluşan mapping.txt dosyası paket raporlarıyla birlikte alınır.
+- Oyun, kayıt ve reklam ödülü mantığı korunur. Yeni paket, eski etkin kanallardaki izin eksikliğinin giderildiğini tek başına kanıtlamaz.
 
 ## v6.42 — Reklam kimliği izni ve paket denetimi
 

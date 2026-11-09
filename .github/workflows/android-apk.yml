@@ -150,8 +150,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 102" not in workflow or "versionName '6.42'" not in workflow:
-              raise SystemExit('HATA: Surum 6.42 ayarlari uyusmuyor')
+          if "versionCode 103" not in workflow or "versionName '6.43'" not in workflow:
+              raise SystemExit('HATA: Surum 6.43 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -251,8 +251,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 102
-              versionName '6.42'
+              versionCode 103
+              versionName '6.43'
               buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
               buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
               buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
@@ -303,7 +303,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.42-SDK-REPORTS
+          name: KaraDugum-v6.43-SDK-REPORTS
           path: build/reports/sdk/*
           if-no-files-found: ignore
           retention-days: 30
@@ -357,7 +357,7 @@ jobs:
           aapt = sorted(sdk.glob('build-tools/*/aapt2'))[-1]
           apk = Path('app/build/outputs/apk/release/app-release.apk')
           info = subprocess.check_output([str(aapt), 'dump', 'badging', str(apk)], text=True)
-          for token in ["name='com.orynexa.karadugum'", "versionCode='102'", "versionName='6.42'", "targetSdkVersion:'36'", "uses-permission: name='com.google.android.gms.permission.AD_ID'"]:
+          for token in ["name='com.orynexa.karadugum'", "versionCode='103'", "versionName='6.43'", "targetSdkVersion:'36'", "uses-permission: name='com.google.android.gms.permission.AD_ID'"]:
               if token not in info:
                   raise SystemExit('APK manifest mismatch: ' + token)
           if not re.search(r"^(?:minSdkVersion|sdkVersion):'24'$", info, re.M):
@@ -373,18 +373,18 @@ jobs:
         run: bash scripts/verify-aab-signature.sh app/build/outputs/bundle/release/app-release.aab /tmp/expected-cert-sha256
 
       - name: Birlesmis ve paketlenmis AAB manifestlerini dogrula
-        run: bash scripts/inspect-release-manifests.sh "${{ env.KD_ADS_MODE }}" 6.42 102 "$RUNNER_TEMP/kd-bundletool.jar"
+        run: bash scripts/inspect-release-manifests.sh "${{ env.KD_ADS_MODE }}" 6.43 103 "$RUNNER_TEMP/kd-bundletool.jar"
 
       - name: Paketin surum ve reklam modunu dogrula
         run: |
-          node scripts/stage-release.cjs 6.42 102
-          cp build/reports/sdk/release-sdk-dependencies.json dist/${{ env.KD_ADS_MODE }}/KaraDugum-v6.42-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-sdk-dependencies.json
+          node scripts/stage-release.cjs 6.43 103
+          cp build/reports/sdk/release-sdk-dependencies.json dist/${{ env.KD_ADS_MODE }}/KaraDugum-v6.43-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-sdk-dependencies.json
           cp build/reports/manifests/${{ env.KD_ADS_MODE }}/* dist/${{ env.KD_ADS_MODE }}/
 
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.42-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
+          name: KaraDugum-v6.43-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
           path: dist/${{ env.KD_ADS_MODE }}/*
           if-no-files-found: error
           retention-days: 30
@@ -403,16 +403,16 @@ jobs:
           gradle --no-daemon --stacktrace :app:clean :app:assembleRelease :app:bundleRelease
           bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
           bash scripts/verify-aab-signature.sh app/build/outputs/bundle/release/app-release.aab /tmp/expected-cert-sha256
-          bash scripts/inspect-release-manifests.sh live 6.42 102 "$RUNNER_TEMP/kd-bundletool.jar"
-          node scripts/stage-release.cjs 6.42 102
-          cp build/reports/sdk/release-sdk-dependencies.json dist/live/KaraDugum-v6.42-LIVE-sdk-dependencies.json
+          bash scripts/inspect-release-manifests.sh live 6.43 103 "$RUNNER_TEMP/kd-bundletool.jar"
+          node scripts/stage-release.cjs 6.43 103
+          cp build/reports/sdk/release-sdk-dependencies.json dist/live/KaraDugum-v6.43-LIVE-sdk-dependencies.json
           cp build/reports/manifests/live/* dist/live/
 
       - name: Canli APK ve AAB dosyalarini yukle
         if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' }}
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.42-LIVE-APK-AAB
+          name: KaraDugum-v6.43-LIVE-APK-AAB
           path: dist/live/*
           if-no-files-found: error
           retention-days: 30
@@ -421,7 +421,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.42-MANIFEST-REPORTS
+          name: KaraDugum-v6.43-MANIFEST-REPORTS
           path: build/reports/manifests/**/*
           if-no-files-found: ignore
           retention-days: 30
