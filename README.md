@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.37` (versionCode `97`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.37-TEST-APK-AAB` ve `KaraDugum-v6.37-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.38` (versionCode `98`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.38-TEST-APK-AAB` ve `KaraDugum-v6.38-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,15 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.38 — Uzun oturum ve telefon uyumluluğu kontrolü
+
+- Hareketli engeli takip eden dokunuşlar da diğer hamleler gibi en fazla 120 geri alma kaydı tutar. Önceden bu dalda sınır yoktu; uzun oturumda bellek gereksiz büyüyebiliyordu. Bölüm 22 ve 292 için 500 engel takibi, 500 normal dönüş ve iki farklı geri alma yolu regresyon testine alındı. Bölüm üretimi ve kayıt biçimi değişmez.
+- Yatay tabletlerde tahtanın alt düğmeleri gerçek kalan alana göre yerleştirilir. Çok kısa yatay ekranlarda ayarlar/görevler ve günlük giriş ödülü erişilebilir kalır; metin ve eylemler korunur. Tablet regresyonu dokuz boyutta, üç dil ve üç yazı tipiyle 542 geometri kontrolü yapar.
+- `npm run test:performance`: 320×568 / DPR 1 / 6×, 360×800 / DPR 2 / 4× ve 412×915 / DPR 3 / 1× sentetik işlemci profilleri; altı tema, 4×4–8×8 tahtalar, 15 mekanik, efekt tercihleri, menü geçişleri ve 2000 dokunuş sonrası kayıt/bellek kontrolleri. `PERF_PROFILES=standard-mid` tek profili seçer. Çıktı varsayılan `/tmp/kd-mobile-performance/report.json`; `PERF_OUT` ile değişir. Süre ölçümleri sabit bir CI geçme eşiği değildir.
+- `npm run test:mobile-layout`: dokuz ekran boyutu, Türkçe/İngilizce/Arapça ve dört ışık/hareket tercihiyle 108 yerleşim kombinasyonu. Farklı yazı tipleri, dokunma hedefleri, ekran döndürme, ayarlar/görevlerin ekrana sığması ve mağaza/profilde kaydırarak erişim denetlenir.
+- `npm run test:workshop-performance`: 5×5 çift enerji/yönlü akış atölyelerinin gerçek dokunuş maliyetini üç işlemci/DPR profilinde ayrı ölçer.
+- Bu kontroller resmi Playwright Chromium üzerinde yapılır. CPU yavaşlatması gerçek telefon, Android WebView, RAM/GPU, ısınma veya ANR ölçümü değildir. En az Android 7 gerekir; eski veya güncellenmemiş WebView sürümleri modern JavaScript/CSS özelliklerini desteklemeyebilir. Gerçek reklam/Google hesabı ve fiziksel cihaz doğrulaması ayrıca yapılmalıdır.
 
 ## v6.37 — Oynanış düzeltmeleri ve yeni hedefler
 

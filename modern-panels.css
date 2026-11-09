@@ -103,3 +103,18 @@ html[data-kd-theme] body.kdNoGlow #kdGame #board>.tile.flash:after{display:none}
 @media(max-height:710px){#kdShell .kdSettingsScreen>.kdSettingCard{padding:8px!important}.kdSettingsScreen .kdVolumeRow{margin-top:6px!important;padding-top:6px!important}}
 
 @media(orientation:landscape) and (max-height:550px){.kdSettingsScreen{gap:4px 8px}}
+
+/* Short landscape: keep privacy actions beside the appearance link, in the unused column. */
+@media(orientation:landscape) and (max-height:360px){#kdShell .kdSettingsScreen>.kdPrivacyLinks{grid-column:auto}}
+/* Short landscape quest cards keep labels, progress and rewards fully visible. */
+@media (orientation:landscape) and (max-height:360px){
+ .kdQuestsFull .kdModernExtraHero{height:110px}
+ html[dir="rtl"] .kdQuestsFull .kdPanelArt{right:auto;left:9px}
+ .kdQuestsFull #v9Rows{grid-template-rows:repeat(3,minmax(0,1fr)) max-content}
+ .kdQuestsFull .kdV9Row,.kdQuestsFull .kdQuestFinale{padding-block:3px}
+ .kdQuestsFull .kdV9Row>span{grid-template-columns:auto minmax(0,1fr) auto;gap:3px 5px}
+ .kdQuestsFull .kdV9Row small{grid-row:2;grid-column:1}
+ .kdQuestsFull .kdModernQuestTrack{grid-row:2;grid-column:2}
+ .kdQuestsFull .kdQuestReward{grid-row:2;grid-column:3}
+ .kdQuestsFull .kdQuestFinale p{margin:2px 0;line-height:1.2}
+}

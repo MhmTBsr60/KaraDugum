@@ -144,8 +144,8 @@ jobs:
                   raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
           if 'id="backup"' in html:
               raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
-          if "versionCode 97" not in workflow or "versionName '6.37'" not in workflow:
-              raise SystemExit('HATA: Surum 6.37 ayarlari uyusmuyor')
+          if "versionCode 98" not in workflow or "versionName '6.38'" not in workflow:
+              raise SystemExit('HATA: Surum 6.38 ayarlari uyusmuyor')
           java = Path('MainActivity.java').read_text(encoding='utf-8')
           if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
               raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
@@ -260,8 +260,8 @@ jobs:
               applicationId 'com.orynexa.karadugum'
               minSdk 24
               targetSdk 36
-              versionCode 97
-              versionName '6.37'
+              versionCode 98
+              versionName '6.38'
               buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
               buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
               buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
@@ -329,12 +329,12 @@ jobs:
         run: bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
 
       - name: Paketin surum ve reklam modunu dogrula
-        run: node scripts/stage-release.cjs 6.37 97
+        run: node scripts/stage-release.cjs 6.38 98
 
       - name: APK ve AAB dosyalarini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.37-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
+          name: KaraDugum-v6.38-${{ env.KD_ADS_MODE == 'live' && 'LIVE' || 'TEST' }}-APK-AAB
           path: dist/${{ env.KD_ADS_MODE }}/*
           if-no-files-found: error
           retention-days: 30
@@ -352,13 +352,13 @@ jobs:
           node scripts/configure-ads.cjs app/kd-ads.json
           gradle --no-daemon --stacktrace :app:clean :app:assembleRelease :app:bundleRelease
           bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
-          node scripts/stage-release.cjs 6.37 97
+          node scripts/stage-release.cjs 6.38 98
 
       - name: Canli APK ve AAB dosyalarini yukle
         if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' }}
         uses: actions/upload-artifact@v4
         with:
-          name: KaraDugum-v6.37-LIVE-APK-AAB
+          name: KaraDugum-v6.38-LIVE-APK-AAB
           path: dist/live/*
           if-no-files-found: error
           retention-days: 30

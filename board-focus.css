@@ -70,3 +70,14 @@ html[data-kd-theme] #kdGame.kdBoardFocus main>.status{font-size:9px}
  #kdShell .kdSettingsScreen{row-gap:3px}
  #kdShell .kdSettingsScreen>.kdSettingCard,#kdShell .kdSettingsScreen>.kdLanguageSetting{padding:4px!important;row-gap:4px}
 }
+/* Landscape tablets reserve the controls' actual height instead of a fixed viewport subtraction. */
+@media(orientation:landscape) and (min-height:551px){
+ html[data-kd-theme] #kdGame main{display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto auto;justify-content:stretch!important;align-content:stretch;gap:4px}
+ html[data-kd-theme] #kdGame main>.stats{grid-row:1}
+ html[data-kd-theme] #kdGame main>.instructions{grid-row:2}
+ html[data-kd-theme] #kdGame main>.board,html[data-kd-theme] #kdGame.kdBoardFocus main>.board{grid-row:3;justify-self:center;align-self:center;width:auto!important;height:min(100%,calc(100vw - 76px),var(--kd-flow-board-max,546px))!important;max-height:100%!important;aspect-ratio:1}
+ html[data-kd-theme] #kdGame main>.status{grid-row:4}
+ html[data-kd-theme] #kdGame main>.controls:has(#restart){grid-row:5}
+ html[data-kd-theme] #kdGame main>.controls:has(#undo){grid-row:6}
+ html[data-kd-theme] #kdGame.kdBoardFocus{--kd-flow-board-max:708px}
+}
