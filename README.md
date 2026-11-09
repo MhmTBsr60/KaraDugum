@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.38` (versionCode `98`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.38-TEST-APK-AAB` ve `KaraDugum-v6.38-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.39` (versionCode `99`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.39-TEST-APK-AAB` ve `KaraDugum-v6.39-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,12 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.39 — Alınabilir ödül göstergeleri
+
+- Mağazanın günlük ödülü, ücretsiz çark hakkı ve tamamlanmış reklamlarla zaten kazanılmış ek çark hakkı görünür sayaçlarla belirtilir. Ana menüdeki mağaza girişi de hazır ödül sayısını gösterir.
+- Günlük/haftalık görevler ve son hazineleri, alınabilir başarımlar ve yolculuk ödülleri ilgili giriş ve ekranlarda sayılır. Yalnızca gerçekten alınabilir, henüz alınmamış ödüller gösterilir; ücretli ürünler ve tamamlanmamış reklam teklifleri hazır ödül sayılmaz. Ödül miktarları ve kayıt biçimi korunur.
+- Göstergeler ödül alımı, hesap/kayıt değişimi ve ekran dönüşlerinde yenilenir. Gün değişimi için sonraki yerel gece yarısına tek zamanlayıcı kurulur; sürekli sorgulama eklenmez. Yeni rozet metinleri mevcut 25 dilin tamamında karşılık bulur.
 
 ## v6.38 — Uzun oturum ve telefon uyumluluğu kontrolü
 

@@ -20,6 +20,11 @@ function state(){
  s.adCount=Math.min(3,amount(s.adCount));return s;
 }
 function validPrize(index){return Number.isInteger(index)&&index>=0&&index<prizes.length;}
+ // Badge reads must never settle an old spin, roll over storage, or grant currency.
+ function availability(){const today=day(),raw=read(key,null),s=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},current=s.date===today,pending=!!s.pending,freeUsed=current&&!!s.freeUsed||read('kd64_shopWheelDate','')===today,freeReady=!pending&&!freeUsed,bonusReady=!pending&&current&&!!s.freeUsed&&amount(s.adCount)>=3&&!s.bonusUsed;return {freeReady,bonusReady,pending,total:Number(freeReady)+Number(bonusReady)};}
+ const changed=()=>window.dispatchEvent(new Event('kd:rewards-changed'));
+ function changedIf(before){const after=availability();if(['freeReady','bonusReady','pending','total'].some(k=>before[k]!==after[k]))changed();}
+ window.kdWheel={availability};
 function settle(s,force=false){
  const pending=s.pending;if(!pending||!validPrize(pending.prizeIndex)||(!force&&Date.now()<pending.readyAt))return false;
  const prize=prizes[pending.prizeIndex],multiplier=pending.multiplier===2?2:1;
@@ -29,7 +34,7 @@ function settle(s,force=false){
  if(prize.coins)write('kd64_coins',amount(read('kd64_coins',0))+prize.coins*multiplier);
  if(prize.hints)write('kd64_hintCoupons',amount(read('kd64_hintCoupons',0))+prize.hints*multiplier);
  }
- window.kdRefreshShop?.();window.kdCloudSync?.();render();return true;
+ window.kdRefreshShop?.();window.kdCloudSync?.();render();changed();return true;
 }
 function finishPending(){const s=state();if(s.pending){if(!settle(s)){clearTimeout(settleTimer);settleTimer=setTimeout(finishPending,Math.max(1,s.pending.readyAt-Date.now()));}}}
 function prizeLabel(prize,multiplier=1){return prize.coins?`${prize.coins*multiplier} kristal`:prize.hints?`${prize.hints*multiplier} ipucu`:prize.label;}
@@ -60,7 +65,7 @@ function spin(){
  else return;
  const duration=matchMedia('(prefers-reduced-motion:reduce)').matches?200:4200;
  s.lastResult=null;s.pending={id:id(),date:day(),prizeIndex:Math.floor(Math.random()*prizes.length),multiplier,readyAt:Date.now()+duration};
- write(key,s);write('kd64_shopWheelDate',day());
+ write(key,s);write('kd64_shopWheelDate',day());changed();
  const disc=document.querySelector('.kdWheelDisc');if(disc){disc.style.transition='none';disc.style.transform='rotate(0deg)';disc.getBoundingClientRect();}
  render();finishPending();
 }
@@ -70,7 +75,7 @@ function requestAd(){
  const request={id:id(),date:day(),at:Date.now()};write(pendingAdKey,request);render();
  try{KaraNative.rewardedWheel(request.id)}catch(e){localStorage.removeItem(pendingAdKey);render();document.querySelector('.kdWheelStatus').textContent='Reklam hazır değil. Tekrar dene.';}
 }
-window.kdCloseWheel=()=>document.getElementById('kdWheelOverlay')?.remove();
+window.kdCloseWheel=()=>{document.getElementById('kdWheelOverlay')?.remove();changed();};
 window.kdOpenWheel=()=>{
  if(document.getElementById('kdWheelOverlay'))return;
  const overlay=document.createElement('div');overlay.id='kdWheelOverlay';overlay.className='kdWheelOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','kdWheelTitle');
@@ -82,12 +87,12 @@ window.kdNativeEvent=function(event,payload){
  const request=read(pendingAdKey,null);
  if(event==='adReward'&&typeof payload==='string'&&payload.startsWith('wheel:')){
   if(!request||payload!=='wheel:'+request.id)return;
-  localStorage.removeItem(pendingAdKey);
-  const s=state();if(request.date===day()&&s.freeUsed&&!s.bonusUsed){s.adCount=Math.min(3,s.adCount+1);write(key,s);}render();return;
+  const before=availability();localStorage.removeItem(pendingAdKey);
+  const s=state();if(request.date===day()&&s.freeUsed&&!s.bonusUsed){s.adCount=Math.min(3,s.adCount+1);write(key,s);}render();changedIf(before);return;
  }
- if((event==='adUnavailable'||event==='wheelAdUnavailable'&&request&&payload===request.id)&&request){localStorage.removeItem(pendingAdKey);render();const status=document.querySelector('.kdWheelStatus');if(status)status.textContent='Reklam hazır değil. Tekrar dene.';return;}
+ if((event==='adUnavailable'||event==='wheelAdUnavailable'&&request&&payload===request.id)&&request){const before=availability();localStorage.removeItem(pendingAdKey);render();changedIf(before);const status=document.querySelector('.kdWheelStatus');if(status)status.textContent='Reklam hazır değil. Tekrar dene.';return;}
  if(typeof previous==='function')return previous.apply(this,arguments);
 };
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){finishPending();render();}});
-finishPending();
+finishPending();changed();
 })();

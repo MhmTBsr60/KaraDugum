@@ -14,8 +14,25 @@
 #kdShell .kdExactHome .kdHotBottom:focus-visible{outline:2px solid #f7dc9b!important;outline-offset:-2px;background:#d9aa3512!important}
 #kdShell .kdExactHome .kdHotBottom .kdRewardBadge{top:4%;right:9%;min-width:18px;min-height:18px;padding:3px 5px;border:1px solid #edca7d;background:linear-gradient(#765122,#30210f);color:#fff2c5;font-size:9px;line-height:1;text-align:center;box-shadow:0 2px 7px #000a,0 0 9px #f6bd2e33;pointer-events:none}
 .kdMenuGleam{position:absolute;z-index:2;inset:9%;display:block;pointer-events:none;opacity:0;border-radius:8px;background:linear-gradient(105deg,transparent 20%,#fff4c35c 50%,transparent 80%);transform:translateX(-130%)}
-.kdExactHome .kdHotTasks.kdRewardAvailable .kdMenuGleam,.kdExactHome .kdHotChest.kdRewardAvailable .kdMenuGleam{animation:kdMenuRewardGleam 3.6s ease-in-out 3}
+.kdExactHome .kdHotBottom.kdRewardAvailable .kdMenuGleam{animation:kdMenuRewardGleam 3.6s ease-in-out 3}
 @keyframes kdMenuRewardGleam{0%,5%{opacity:0;transform:translateX(-130%)}12%{opacity:.8}29%{opacity:0;transform:translateX(130%)}100%{opacity:0;transform:translateX(130%)}}
 @media(hover:hover){.kdExactHome .kdHotBottom:hover .kdMenuIcon{filter:brightness(1.12)}}
 @media(max-height:500px){.kdExactHome .kdHotBottom{gap:2px;padding:0}.kdExactHome .kdHotBottom .kdMenuIcon{width:38px;border-radius:7px}.kdExactHome .kdHotBottom .kdMenuLabel{font-size:9px;line-height:1.1}#kdShell .kdExactHome .kdHotBottom .kdRewardBadge{top:0;right:15%;font-size:8px;min-width:14px;min-height:14px;padding:2px 4px}}
 @media(prefers-reduced-motion:reduce){.kdExactHome .kdHotBottom .kdMenuIcon{transition:none}.kdExactHome .kdMenuGleam{animation:none!important;opacity:0!important}}
+/* Reward counts stay visible over detailed artwork; no continuous reward animation. */
+#kdShell .kdRewardAvailable{animation:none!important}
+#kdShell .kdRewardAvailable:not(.kdHot){position:relative}
+#kdShell .kdExactHome .kdHotBottom .kdRewardBadge,#kdShell .kdExactHome .kdHotStats .kdRewardBadge{background:#b53027;color:#fff9df;border:1px solid #ffda88;font:800 11px/1 system-ui;min-width:21px;min-height:21px;padding:4px 6px;box-shadow:0 2px 6px #000c;display:grid;place-items:center}
+#kdShell .kdExactHome .kdHotStats .kdRewardBadge{top:0;right:0}
+#kdShell .kdProfileTabs .kdRewardAvailable,.kdQuestTabs .kdRewardAvailable{display:inline-flex;align-items:center;justify-content:center;gap:4px}
+#kdShell .kdProfileTabs .kdRewardBadge,.kdQuestTabs .kdRewardBadge{position:static;display:inline-block;min-width:16px;padding:3px 4px;border:1px solid #ffda88;border-radius:12px;background:#a92c23;color:#fff9df;font:800 9px/1 system-ui;box-shadow:none;white-space:nowrap}
+#kdShell .kdShopRewards{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;padding:11px 8px;margin:10px 0 14px;border:1px solid #d3ab60;border-radius:12px;background:#382814}
+#kdShell .kdShopRewards[hidden]{display:none}
+.kdShopRewards>strong{flex-basis:100%;font-size:13px;color:#ffe1a0;text-align:center}
+#kdShell .kdShopRewards>button{min-height:40px;padding:8px 12px;border:1px solid #b38f51;border-radius:9px;background:#171511;color:#fff0cd;font-size:11px;line-height:1.3}
+#kdShell .kdShopRewards>button[hidden]{display:none}
+#kdShell .kdClaimableReward,.kdModernOverlay [data-reward-state="ready"]{border-color:#efc875;box-shadow:inset 0 0 0 1px #e4b65155,0 0 9px #d6a53b25}
+#kdShell .kdReadyTag{display:block;width:fit-content;max-width:100%;padding:3px 5px;margin-top:6px;border:1px solid #b88d42;border-radius:5px;background:#3b2a16;color:#ffe2a0;font:700 9px/1.3 system-ui;letter-spacing:0;white-space:normal;overflow-wrap:anywhere}
+.kdModernOverlay [data-reward-state="ready"]>button{outline:1px solid #f9da93;outline-offset:2px}
+#kdShell .kdGoalCard:has([data-journey-claim]){border-color:#efc875;box-shadow:inset 0 0 0 1px #e4b65155}
+@media(max-height:500px){#kdShell .kdExactHome .kdHotBottom .kdRewardBadge{min-width:17px;min-height:17px;font-size:9px;padding:3px 4px}}
