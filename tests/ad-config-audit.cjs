@@ -13,7 +13,8 @@ for(const env of [
  {...live,ADMOB_INTERSTITIAL_AD_UNIT_ID:rewarded}, {...live,ADMOB_REWARDED_AD_UNIT_ID:rewarded+' '}
 ])assert.throws(()=>configure(env,{}),'Invalid live configuration must stop the build');
 const workflow=fs.readFileSync('.github/workflows/android-apk.yml','utf8'),java=fs.readFileSync('MainActivity.java','utf8');
-assert(workflow.includes('user-messaging-platform:4.0.0'));
+assert(workflow.includes("apply from: rootProject.file('android-dependencies.gradle')"));
+assert(fs.readFileSync('android-dependencies.gradle','utf8').includes('user-messaging-platform:4.0.0'));
 for(const file of ['privacy-policy.html','privacy-settings.js','AdConsentGate.java'])assert(workflow.includes('cp '+file+' app/src/main/'),'APK missing '+file);
 for(const name of ['REWARDED_AD_UNIT_ID','INTERSTITIAL_AD_UNIT_ID'])assert(java.includes('BuildConfig.'+name));
 assert(!java.includes('3940256099942544'),'Main activity must not hard-code sample units');

@@ -593,6 +593,8 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
+    // API 33+ uses the registered OnBackInvokedCallback; this is the API 24-32 fallback.
+    @android.annotation.SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
         handleGameBack();

@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.40` (versionCode `100`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.40-TEST-APK-AAB` ve `KaraDugum-v6.40-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.41` (versionCode `101`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.41-TEST-APK-AAB` ve `KaraDugum-v6.41-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,14 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.41 — Android SDK yenilemesi
+
+- Google Mobile Ads **25.5.0** ve Play Games v2 **22.1.0** kullanılır; UMP **4.0.0** korunur. Geçişli AndroidX Fragment bağımlılığı **1.9.1** kısıtıyla güncellenir. Sürüm pinleri ve kısıt `android-dependencies.gradle` içindedir; aktif iş akışının ürettiği uygulama Gradle dosyası bunu uygular. Resmî sürüm notları: [Mobile Ads](https://developers.google.com/admob/android/rel-notes), [AndroidX Fragment](https://developer.android.com/jetpack/androidx/releases/fragment).
+- Önceki bağımlılık yolları UMP 4.0.0 → Play Services Basement 18.9.0 → Fragment 1.1.0 ve Games 21.0.0 → Play Services Base 18.5.0 → Fragment 1.0.0 idi. Yalnızca doğrudan SDK sürümünü değiştirmek yerine derlemede gerçekten seçilen Fragment sürümü de denetlenir; eski sürüm seçilirse CI durur.
+- Araç zinciri AGP **8.13.2**, Gradle **8.13** ve JDK **17** olarak güncellenir. `compileSdk`/`targetSdk` **36**, `minSdk` **24** (Android 7) olarak korunur.
+- CI, çözümlenen bağımlılık grafiğini, `dependencyInsight` çıktısını ve SDK doğrulama raporunu `KaraDugum-v6.41-SDK-REPORTS` artifact'ında saklar. TEST/LIVE paket arşivlerinde de `*-sdk-dependencies.json` raporu bulunur; bu raporlar AAB'nin içine eklenmez. Play Console'daki 6.36/96 paketine ait uyarı, etkin paket yenisiyle değiştirildiğinde Console tarafından yeniden değerlendirilir.
+- Oyun kaynağında üç görünür sürüm metni dışında değişiklik yapılmaz; bölümler, yerel/bulut kayıt biçimi ve kazanılmış ödüller korunur. Native SDK API kullanımı incelenmiştir; Android derlemesi ve SDK güncellemesinin gerçek reklam sunumu, Google hesabı ve mevcut kurulumun üzerine güncelleme davranışı ayrıca doğrulanmalıdır.
 
 ## v6.40 — Ekrana uyarlanan tahta ve Kadim Taş kontrastı
 

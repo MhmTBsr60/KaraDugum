@@ -1,0 +1,45 @@
+// Applied by the generated Android app; keep the shipped SDK versions in one place.
+dependencies {
+    implementation 'com.google.android.gms:play-services-games-v2:22.1.0'
+    implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+
+    constraints {
+        implementation('androidx.fragment:fragment:1.9.1') {
+            because 'UMP and Play Services still request obsolete Fragment 1.1.0/1.0.0; use the compatible stable release.'
+        }
+    }
+}
+
+// Report the resolved graph, not just the requested version strings above.
+tasks.register('exportReleaseSdkDependencies') {
+    group = 'verification'
+    description = 'Export the exact release SDK graph for the Play Console SDK audit.'
+    doLast {
+        def result = configurations.releaseRuntimeClasspath.incoming.resolutionResult
+        def unresolved = result.allDependencies.findAll {
+            it instanceof org.gradle.api.artifacts.result.UnresolvedDependencyResult
+        }
+        if (!unresolved.empty) {
+            throw new GradleException('Unresolved release dependencies: ' + unresolved.collect { it.requested.displayName }.join(', '))
+        }
+        def modules = result.allComponents.findAll { it.moduleVersion != null && it.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier }.collect {
+            [group: it.moduleVersion.group, name: it.moduleVersion.name, version: it.moduleVersion.version]
+        }.sort { a, b -> (a.group + ':' + a.name) <=> (b.group + ':' + b.name) }
+        def edges = result.allDependencies.findAll {
+            it instanceof org.gradle.api.artifacts.result.ResolvedDependencyResult && it.selected.moduleVersion != null && it.selected.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
+        }.collect {
+            [from: it.from.id.displayName, requested: it.requested.displayName,
+             selected: it.selected.moduleVersion.toString(), constraint: it.constraint]
+        }.sort { a, b -> (a.from + '>' + a.requested) <=> (b.from + '>' + b.requested) }
+        def report = [schemaVersion: 1, applicationId: android.defaultConfig.applicationId,
+                      versionName: android.defaultConfig.versionName, versionCode: android.defaultConfig.versionCode,
+                      minSdk: android.defaultConfig.minSdkVersion.apiLevel,
+                      targetSdk: android.defaultConfig.targetSdkVersion.apiLevel,
+                      compileSdk: android.compileSdk, modules: modules, edges: edges]
+        def file = rootProject.file('build/reports/sdk/release-sdk-dependencies.json')
+        file.parentFile.mkdirs()
+        file.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(report)) + '\n'
+        println 'Exported ' + modules.size() + ' resolved release modules to ' + file
+    }
+}
