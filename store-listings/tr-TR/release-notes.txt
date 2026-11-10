@@ -1,1 +1,2 @@
+Sağdan sola dillerde görev kartı görselinin yazıyla çakışması düzeltildi.
 Dört dilde arayüz ve erişilebilirlik metinleri iyileştirildi. Tarafsız yaş ekranı ve çocuklar için G dereceli, kişiselleştirilmemiş ödüllü reklam ayarları eklendi; çocuklarda geçiş reklamları kapalıdır. Gizlilik ve hesap/veri silme bağlantıları güncellendi. 300 bölüm ve kayıt biçimi korundu.
