@@ -1,1 +1,1 @@
-Improved UI and accessibility text in four languages. Added a neutral age screen: players under 18 or with unstated age use local play without ads. Updated privacy and account/data deletion access. Added controlled ad-load recovery. Preserved 300 levels and the save format.
+Improved UI and accessibility text in four languages. Added a neutral age screen and G-rated, non-personalized rewarded-ad settings for children; child interstitials stay disabled. Updated privacy and account/data deletion access. Preserved all 300 levels and the save format.

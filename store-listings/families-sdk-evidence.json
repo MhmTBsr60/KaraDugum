@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-11-10",
+  "sdk": "com.google.android.gms:play-services-ads",
+  "version": "25.5.0",
+  "officialFamiliesTable": {
+    "url": "https://support.google.com/googleplay/android-developer/answer/12955712?hl=en",
+    "publishedRange": "Google AdMob: 19.0.0 or later"
+  },
+  "sdkIndex": {
+    "url": "https://play.google.com/sdks/details/com-google-android-gms-play-services-ads",
+    "observedVersion": "25.5.0 - latest version",
+    "expandedVersionMinimumApi": 24,
+    "note": "The public version row was expanded in Chromium; it did not show a separate per-version Families badge. The certification range comes from the official Families table."
+  },
+  "apiCompatibility": "The actual pinned 25.5.0 AAR was inspected: AgeRestrictedTreatment.CHILD, setAgeRestrictedTreatment and PublisherPrivacyPersonalizationState.DISABLED are present. Android compilation in CI is required too.",
+  "configuredFormats": {
+    "childTeenUnstated": [
+      "optional rewarded"
+    ],
+    "adult": [
+      "optional rewarded",
+      "cadence-limited interstitial"
+    ]
+  },
+  "mediation": "Only the configured Google Mobile Ads SDK; no third-party ad mediation adapter dependency is added. Recheck any future adapter against the official Families list.",
+  "remainingAccountChecks": [
+    "Confirm AdMob/Play target audience settings and content restrictions",
+    "Use registered test devices to inspect child treatment, G content rating and non-personalized requests",
+    "Verify serving restrictions, app readiness and app-ads.txt",
+    "Review actual creatives and any new SDK version before publication"
+  ],
+  "limit": "SDK listing and code settings are not a guarantee about every served creative, local legal requirements or Google review approval."
+}

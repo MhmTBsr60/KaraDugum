@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.45` (versionCode `105`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.45-TEST-APK-AAB` ve `KaraDugum-v6.45-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.46` (versionCode `106`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.46-TEST-APK-AAB` ve `KaraDugum-v6.46-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,13 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.46 — Çocuklara uygun ödüllü reklam akışı
+
+- Yayıncının tercihiyle çocuklara da uygun ödüllü reklam akışı hazırlanır. Yaş ekranı yanıtlanmadan reklam istenmez. 18 yaş altı ve yaşını belirtmeyenler için CHILD yaş işlemi, AAID iletimini engelleyen TFCD işareti, G içerik sınırı, kişiselleştirme kapalı durumu ve `npa=1` uygulanır. UMP isteğinde yaş altı işareti ayrıca gönderilir; SDK izin vermeden reklam yüklenmez. Çocuklara standart yetişkin rıza formu istenmez.
+- Bu gruplarda geçiş reklamı yüklenmez/gösterilmez; yalnız açıkça seçilen ödüllü videolar kullanılabilir. Tamamlanan ipucu videosu mevcut tek kupon makbuzunu üretir; hata, erken kapatma ve tekrar olayları ödülü artırmaz. Uygun reklam bulunamazsa çocuk kısıtları kaldırılmaz. Yetişkinlerde önceki UMP ve geçiş sıklığı kuralları devam eder.
+- Play Games hesap çağrıları 18 yaş altı/yaşı belirtilmeyenlerde kapalı kalır; yerel bölüm, ipucu ve kayıtlar korunur. Tam doğum tarihi veya seçilen yaş bandı kalıcı kayda yazılmaz; reklam SDK'sına türetilen yaş kısıtlaması sinyali iletilir.
+- Resmî Families listesi Google AdMob için 19.0.0 ve sonrasını listeler; SDK Index'te 25.5.0 güncel sürüm olarak kontrol edilmiştir. Kanıt kapsamı ve panel/gerçek cihazda tamamlanacak kontroller `store-listings/families-sdk-evidence.json` içindedir. Reklam hesabı ayarları ve gerçek kreatifler ayrıca doğrulanmalıdır.
 
 ## v6.45 — Çocuklar dahil karma yaş kitlesi
 

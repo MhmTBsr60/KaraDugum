@@ -24,4 +24,10 @@ for(const method of ['loadRewarded()','showRewarded(final String purpose, final 
 assert(java.includes('generation != adGeneration || !adsAllowed()'),'Late ad-load callbacks must not restore stale ads');
 assert(java.includes('policy.getSettings().setJavaScriptEnabled(false)'),'Policy viewer must not run scripts');
 assert(java.includes('consentGate.destroy()'),'Consent callbacks must stop with the activity');
+for(const token of ['setAgeRestrictedTreatment(audience.restrictedAds()', 'PublisherPrivacyPersonalizationState.DISABLED', 'MAX_AD_CONTENT_RATING_G', 'TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE', 'extras.putString("npa", "1")', '.setTagForUnderAgeOfConsent(audience.restrictedAds())'])assert(java.includes(token),'Restricted child/unknown ad wiring is missing: '+token);
+assert(!java.includes('TAG_FOR_UNDER_AGE_OF_CONSENT_TRUE'),'Use age treatment/TFCD in Ads; do not simultaneously enable legacy TFCD and TFUA');
+for(const method of ['loadInterstitial()','onLevelCompletedForAds(int level)']){
+ const start=java.indexOf('private void '+method),end=java.indexOf('\n    private ',start+1);
+ assert(java.slice(start,end<0?undefined:end).includes('!audience.allowInterstitials()'),'Restricted audiences must neither preload nor show interstitials');
+}
 console.log('PASS: explicit test/live ad builds; absent/malformed/sample/wrong-publisher/duplicate units rejected; UMP permission checks, stale ad guards and offline policy packaging');

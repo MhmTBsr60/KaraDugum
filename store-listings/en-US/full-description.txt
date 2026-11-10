@@ -13,4 +13,4 @@ The game contains ads. Interstitial ads may appear between levels. Complete an o
 
 Support: vorynexagames@gmail.com
 
-The Android app includes a neutral age-range screen. Players under 18 or who prefer not to state their age play locally without ads; Google Play Games features are available to adults. No full birth date is saved.
+After the Android app’s neutral age screen, under-18 and unstated ages use only optional, non-personalized rewarded ads restricted to G content; these groups receive no interstitials. Play Games account features are available to adults. No full birth date is saved.

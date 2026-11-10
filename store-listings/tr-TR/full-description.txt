@@ -13,4 +13,4 @@ Oyun reklam içerir. Bölüm geçişlerinde geçiş reklamları gösterilebilir.
 
 Destek: vorynexagames@gmail.com
 
-Android uygulamasında tarafsız yaş aralığı ekranı bulunur. 18 yaş altı veya yaşını belirtmeyen oyuncular yerel modda reklamsız oynar; Google Play Oyunlar özellikleri yetişkinlere sunulur. Tam doğum tarihi kaydedilmez.
+Android uygulamasındaki tarafsız yaş ekranından sonra, 18 yaş altı ve yaşını belirtmeyenler yalnız G dereceli, kişiselleştirilmemiş isteğe bağlı ödüllü reklam akışını kullanır; bu gruplara geçiş reklamı gösterilmez. Play Games hesap özellikleri yetişkinlere sunulur. Tam doğum tarihi kaydedilmez.

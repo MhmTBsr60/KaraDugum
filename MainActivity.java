@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
             android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
-        // Safe defaults before any explicit ad initialization; children/unknown never initialize ads.
+        // Safe child defaults before any explicit ad initialization; wait for the age screen.
         configureAudienceAds();
         view = new WebView(this);
         view.setBackgroundColor(Color.BLACK);
@@ -122,14 +122,23 @@ public class MainActivity extends Activity {
 
     private void configureAudienceAds() {
         com.google.android.gms.ads.RequestConfiguration.Builder configuration = new com.google.android.gms.ads.RequestConfiguration.Builder();
-        configuration.setTagForChildDirectedTreatment(audience.allowAds()
-            ? com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_FALSE
-            : com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
-        configuration.setTagForUnderAgeOfConsent(audience.allowAds()
-            ? com.google.android.gms.ads.RequestConfiguration.TAG_FOR_UNDER_AGE_OF_CONSENT_FALSE
-            : com.google.android.gms.ads.RequestConfiguration.TAG_FOR_UNDER_AGE_OF_CONSENT_TRUE);
-        if (!audience.allowAds()) configuration.setMaxAdContentRating(com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_G);
+        configuration.setAgeRestrictedTreatment(audience.restrictedAds()
+            ? com.google.android.gms.ads.AgeRestrictedTreatment.CHILD : com.google.android.gms.ads.AgeRestrictedTreatment.UNSPECIFIED);
+        if (audience.restrictedAds()) {
+            // Keep the documented AAID-suppression flag for compatible SDK/service paths too.
+            configuration.setTagForChildDirectedTreatment(com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
+            configuration.setMaxAdContentRating(com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_G);
+            configuration.setPublisherPrivacyPersonalizationState(com.google.android.gms.ads.RequestConfiguration.PublisherPrivacyPersonalizationState.DISABLED);
+        }
         MobileAds.setRequestConfiguration(configuration.build());
+    }
+    private AdRequest createAdRequest() {
+        AdRequest.Builder request = new AdRequest.Builder();
+        if (audience.restrictedAds()) {
+            Bundle extras = new Bundle(); extras.putString("npa", "1");
+            request.addNetworkExtrasBundle(com.google.ads.mediation.admob.AdMobAdapter.class, extras);
+        }
+        return request.build();
     }
     private void showAudienceScreen() {
         if (audienceAnswered || audienceDialog != null || isFinishing() || isDestroyed()) return;
@@ -144,7 +153,7 @@ public class MainActivity extends Activity {
                 audience = AudiencePolicy.choose(codes[position]); audienceAnswered = true;
             })
             .create();
-        audienceDialog.setOnCancelListener(dialog -> { audience = AudiencePolicy.choose(null); audienceAnswered = true; });
+        audienceDialog.setOnCancelListener(dialog -> { audience = AudiencePolicy.choose("unknown"); audienceAnswered = true; });
         audienceDialog.setOnDismissListener(dialog -> {
             audienceDialog = null;
             sendPrivacyState();
@@ -157,20 +166,21 @@ public class MainActivity extends Activity {
     private void startEligibleServices() {
         if (!audienceAnswered || isFinishing() || isDestroyed()) return;
         configureAudienceAds();
-        if (!audience.allowOnlineAccounts()) { send("adReady", "false"); return; }
-        PlayGamesSdk.initialize(this);
-        checkSignIn();
-        if (consentGate == null) initializeConsent();
+        if (audience.allowOnlineAccounts()) { PlayGamesSdk.initialize(this); checkSignIn(); }
+        if (audience.allowAds() && consentGate == null) initializeConsent();
     }
     private void initializeConsent() {
         if (!audience.allowAds()) return;
         final ConsentInformation information = UserMessagingPlatform.getConsentInformation(this);
         consentGate = new AdConsentGate(new AdConsentGate.Driver() {
             @Override public void update(Runnable success, AdConsentGate.Completion failure) {
-                information.requestConsentInfoUpdate(MainActivity.this, new ConsentRequestParameters.Builder().build(),
+                information.requestConsentInfoUpdate(MainActivity.this, new ConsentRequestParameters.Builder()
+                    .setTagForUnderAgeOfConsent(audience.restrictedAds()).build(),
                     success::run, error -> failure.complete(error.getMessage()));
             }
             @Override public void requiredForm(AdConsentGate.Completion completion) {
+                // Child requests were tagged in the SDK update; never ask them for adult consent.
+                if (audience.restrictedAds()) { completion.complete(null); return; }
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(MainActivity.this,
                     error -> completion.complete(error == null ? null : error.getMessage()));
             }
@@ -180,7 +190,7 @@ public class MainActivity extends Activity {
             }
             @Override public boolean canRequestAds() { return information.canRequestAds(); }
             @Override public boolean privacyRequired() {
-                return information.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+                return !audience.restrictedAds() && information.getPrivacyOptionsRequirementStatus() == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
             }
         }, new AdConsentGate.Observer() {
             @Override public void changed(boolean allowed, boolean required, boolean busy) {
@@ -449,7 +459,7 @@ public class MainActivity extends Activity {
         if (!adsAllowed() || !adsInitialized || rewardedLoading || rewardedInProgress || interstitialInProgress || rewardedAd != null || !rewardedLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
         final int generation = adGeneration;
         rewardedLoading = true;
-        RewardedAd.load(this, BuildConfig.REWARDED_AD_UNIT_ID, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
+        RewardedAd.load(this, BuildConfig.REWARDED_AD_UNIT_ID, createAdRequest(), new RewardedAdLoadCallback() {
             @Override public void onAdLoaded(RewardedAd ad) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoadGate.loaded(); rewardedLoading = false; rewardedAd = ad; send("adReady", "true"); }
             @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; rewardedLoadGate.failed(android.os.SystemClock.elapsedRealtime()); rewardedLoading = false; rewardedAd = null; send("adReady", "false"); Log.w(TAG, "Rewarded load: " + error); }
         });
@@ -491,10 +501,10 @@ public class MainActivity extends Activity {
         }
     }
     private void loadInterstitial() {
-        if (!adsAllowed() || !adsInitialized || interstitialLoading || interstitialInProgress || rewardedInProgress || interstitialAd != null || !interstitialLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
+        if (!audience.allowInterstitials() || !adsAllowed() || !adsInitialized || interstitialLoading || interstitialInProgress || rewardedInProgress || interstitialAd != null || !interstitialLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
         final int generation = adGeneration;
         interstitialLoading = true;
-        InterstitialAd.load(this, BuildConfig.INTERSTITIAL_AD_UNIT_ID, new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this, BuildConfig.INTERSTITIAL_AD_UNIT_ID, createAdRequest(), new InterstitialAdLoadCallback() {
             @Override public void onAdLoaded(InterstitialAd ad) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoadGate.loaded(); interstitialLoading = false; interstitialAd = ad; }
             @Override public void onAdFailedToLoad(LoadAdError error) { if (generation != adGeneration || !adsAllowed()) return; interstitialLoadGate.failed(android.os.SystemClock.elapsedRealtime()); interstitialLoading = false; interstitialAd = null; Log.w(TAG, "Interstitial load: " + error); }
         });
@@ -505,7 +515,7 @@ public class MainActivity extends Activity {
         // Recover from an earlier load failure; loading never triggers a late display.
         loadRewarded();
         loadInterstitial();
-        if (!adsAllowed() || !adsInitialized || interstitialInProgress || !adCadence.eligible(android.os.SystemClock.elapsedRealtime()) || interstitialAd == null || rewardedInProgress) return;
+        if (!audience.allowInterstitials() || !adsAllowed() || !adsInitialized || interstitialInProgress || !adCadence.eligible(android.os.SystemClock.elapsedRealtime()) || interstitialAd == null || rewardedInProgress) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
         interstitialInProgress = true;

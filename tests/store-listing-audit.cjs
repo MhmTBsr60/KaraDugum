@@ -18,5 +18,5 @@ for(const locale of checklist.listingLocales){
  }
 }
 assert.equal(checklist.release.applicationId,'com.orynexa.karadugum');
-assert(checklist.operatorActions.some(task=>task.area==='Target audience / Families'&&task.status==='children-local-only'),'Confirmed children require the protected local-only audience behavior');
+assert(checklist.operatorActions.some(task=>task.area==='Target audience / Families'&&task.status==='children-restricted-rewarded'),'Confirmed children require the restricted rewarded-ad audience behavior');
 console.log('PASS: four Play listing locales, title/short/full/release-note limits, real localized content and explicit unresolved operator declarations');

@@ -1,8 +1,8 @@
 {
   "release": {
     "applicationId": "com.orynexa.karadugum",
-    "versionName": "6.45",
-    "versionCode": 105,
+    "versionName": "6.46",
+    "versionCode": 106,
     "checkedAt": "2026-11-10"
   },
   "listingLocales": [
@@ -24,8 +24,8 @@
     },
     {
       "area": "Target audience / Families",
-      "status": "children-local-only",
-      "required": "Under-13 children were confirmed by the owner. The Android app uses a neutral process-local age screen: under-18 and unstated age receive no ads and no Google Play Games initialization/account exchange. Adults retain consent-gated ads and optional accounts. Confirm exact Console age groups and Families/Data safety declarations; do not enable child ads without a separate verified implementation and review."
+      "status": "children-restricted-rewarded",
+      "required": "Owner confirmed under-13 inclusion and requested suitable ads for children. Under-18/unstated use child-restricted, G-rated, personalization-disabled opt-in rewarded ads; no interstitials or Play Games account exchange. Pending age response permits no ads. Confirm exact Console ages and Families/Data safety declarations; validate child request settings on a registered test device. Do not introduce uncertified mediation adapters."
     },
     {
       "area": "Advertising ID",
@@ -73,7 +73,7 @@
     "manifest": "AD_ID explicitly declared in canonical source manifest; CI must check merged manifest and bundletool output from the signed LIVE AAB. Use the artifact verification report and SHA-256 for the actual binary, not this checklist.",
     "sdk": "Resolved SDK graph is pinned and exported by CI; no claim about every future SDK policy notice or private Console warning.",
     "minification": "R8 is disabled. No mapping.txt is expected; the release collector includes it if R8 is enabled later.",
-    "audience": "Play Games auto-init provider removed. Adult eligibility is explicit; unknown/cancel/under13/teen do not initialize consent/ads or Play Games services. No DOB/age category is written to game saves. Previously stored game records are not deleted."
+    "audience": "Neutral process-local age screen; child/teen/unstated receive CHILD treatment, TFCD AAID-suppression flag, G content limit, disabled personalization and npa=1 ad requests. UMP under-age flag is separately set. Every ad still requires SDK canRequestAds. Only adults may load/show interstitials or initialize Play Games; no DOB or selected band is persisted."
   },
   "referenceUrls": [
     "https://developers.google.com/admob/android/privacy",
@@ -81,7 +81,10 @@
     "https://developers.google.com/admob/android/targeting",
     "https://support.google.com/googleplay/android-developer/answer/13327111",
     "https://support.google.com/googleplay/android-developer/answer/9893335",
-    "https://support.google.com/admob/answer/9363762"
+    "https://support.google.com/admob/answer/9363762",
+    "https://support.google.com/googleplay/android-developer/answer/12955712?hl=en",
+    "https://play.google.com/sdks/details/com-google-android-gms-play-services-ads",
+    "https://developers.google.com/admob/android/privacy/gdpr"
   ],
   "reviewLimit": "Technical checks are evidence, not a Google policy approval, account access, physical-device certification or a revenue guarantee.",
   "publicChecksBeforeDeployment": {
@@ -93,5 +96,5 @@
     "note": "Public legal documents were reachable before this release; translations must be rechecked after Pages deployment. Production access approval does not make the store listing public."
   },
   "targetAudienceIncludesChildren": true,
-  "releaseReadiness": "Technical candidate: child/unknown audience protections implemented; physical-device, Console declarations and AdMob account checks still required."
+  "releaseReadiness": "Technical candidate: requested child-restricted rewarded ads implemented; physical-device, Console declarations and AdMob account checks still required."
 }
