@@ -1,1 +1,1 @@
-Improved Turkish, English, Arabic and Simplified Chinese text. Updated Arabic text direction, privacy pages and account/data deletion access. Added controlled recovery after failed ad loads. Preserved the existing 300 levels and save format.
+Improved UI and accessibility text in four languages. Added a neutral age screen: players under 18 or with unstated age use local play without ads. Updated privacy and account/data deletion access. Added controlled ad-load recovery. Preserved 300 levels and the save format.

@@ -22,6 +22,10 @@ public final class NativeStringsAudit {
             check(!translated.startsWith("Bulut"), "Translated native error: " + code);
             check(translated.endsWith(": external-status-42"), "Preserved SDK details: " + code);
         }
+        for (String code : new String[]{"en", "ar", "zh"}) {
+            check(!NativeStrings.text("Yaş aralığın nedir?", code).equals("Yaş aralığın nedir?"), "Translated neutral age screen: " + code);
+            check(!NativeStrings.text("Belirtmek istemiyorum", code).equals("Belirtmek istemiyorum"), "Translated opt-out: " + code);
+        }
         check(NativeStrings.text(null, "zh") == null, "Null passthrough");
         check(NativeStrings.text("SDK-specific detail", "ar").equals("SDK-specific detail"), "Unknown SDK text preserved");
         System.out.println("PASS: native TR/EN/AR/ZH dialogs, locale normalization, accessibility and SDK error details");

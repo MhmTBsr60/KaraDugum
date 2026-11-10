@@ -12,3 +12,5 @@ Play puzzles with local saves. Optional Google Play Games sign-in provides cloud
 The game contains ads. Interstitial ads may appear between levels. Complete an optional rewarded video to earn in-game rewards such as a hint coupon. An unfinished ad does not grant a hint coupon. Crystals and other in-game rewards are virtual and have no cash value.
 
 Support: vorynexagames@gmail.com
+
+The Android app includes a neutral age-range screen. Players under 18 or who prefer not to state their age play locally without ads; Google Play Games features are available to adults. No full birth date is saved.

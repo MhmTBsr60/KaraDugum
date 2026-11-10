@@ -1,1 +1,1 @@
-Türkçe, İngilizce, Arapça ve Basitleştirilmiş Çince metinleri iyileştirildi. Arapça metin düzeni, gizlilik ve hesap/veri silme bağlantıları güncellendi. Başarısız reklam yüklemeleri için kontrollü yeniden hazırlama eklendi. Mevcut 300 bölüm ve kayıt biçimi korundu.
+Dört dilde arayüz ve erişilebilirlik metinleri iyileştirildi. Tarafsız yaş ekranı eklendi; 18 yaş altı ve yaşını belirtmeyenler reklamsız yerel modda oynar. Gizlilik ve hesap/veri silme bağlantıları güncellendi. Reklam yükleme hatalarından kontrollü kurtarma eklendi. 300 bölüm ve kayıt biçimi korundu.

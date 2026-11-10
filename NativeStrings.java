@@ -8,6 +8,12 @@ public final class NativeStrings {
         return value.equals("tr") || value.equals("ar") || value.equals("zh") ? value : "en";
     }
     private static final String[][] TEXT = {
+        {"Bu oturum yerel oyun modunda. Kayıtların cihazında korunur.", "This session uses local play. Your saves stay on this device.", "هذه الجلسة في وضع اللعب المحلي. تبقى ملفات الحفظ على هذا الجهاز.", "本次会话使用本地游玩模式，存档会保留在此设备上。"},
+        {"Yaş aralığın nedir?", "What is your age range?", "ما فئتك العمرية؟", "你的年龄范围是？"},
+        {"13 yaşından küçüğüm", "Under 13", "أقل من 13 عامًا", "未满 13 岁"},
+        {"13–17 yaşındayım", "13–17", "من 13 إلى 17 عامًا", "13–17 岁"},
+        {"18 yaş ve üzerindeyim", "18 or older", "18 عامًا أو أكثر", "18 岁及以上"},
+        {"Belirtmek istemiyorum", "Prefer not to say", "أفضل عدم الإفصاح", "不愿透露"},
         {"Play Games girişini tamamlayamadı. Test kullanıcısı ve Play Oyunlar hesabını kontrol edin.", "Play Games sign-in did not complete. Check the account and its access to this release.", "لم يكتمل تسجيل الدخول إلى ألعاب Play. تحقّق من الحساب وإمكانية وصوله إلى هذا الإصدار.", "未能完成 Play 游戏登录。请检查账号及其对此版本的访问权限。"},
         {"Play Games hesabını Google Play Oyunlar ayarlarından değiştirebilirsin.", "You can change your account in Google Play Games settings.", "يمكنك تغيير حسابك من إعدادات ألعاب Google Play.", "你可以在 Google Play 游戏设置中切换账号。"},
         {"Bulut kayıt çakışması çözülemedi. Tekrar giriş yaparak eşitle.", "Could not resolve cloud save conflict. Sign in again to sync.", "تعذر حل تعارض الحفظ السحابي. سجّل الدخول مجددًا للمزامنة.", "无法解决云存档冲突。请重新登录以同步。"},

@@ -12,3 +12,5 @@ Bulmacaları yerel kayıtla oynayabilirsin. İsteğe bağlı Google Play Oyunlar
 Oyun reklam içerir. Bölüm geçişlerinde geçiş reklamları gösterilebilir. İsteğe bağlı ödüllü videoyu tamamlayarak ipucu kuponu gibi oyun içi ödüller kazanabilirsin. Tamamlanmayan reklam ipucu kuponu vermez. Kristaller ve diğer oyun içi ödüller sanaldır; nakit karşılıkları yoktur.
 
 Destek: vorynexagames@gmail.com
+
+Android uygulamasında tarafsız yaş aralığı ekranı bulunur. 18 yaş altı veya yaşını belirtmeyen oyuncular yerel modda reklamsız oynar; Google Play Oyunlar özellikleri yetişkinlere sunulur. Tam doğum tarihi kaydedilmez.

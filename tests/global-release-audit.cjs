@@ -35,6 +35,13 @@ const server=http.createServer((req,res)=>{
      if(/[çğıöşüÇĞİÖŞÜ]/.test(s)&&!/^KARA DÜĞÜM/.test(s))leaked.push(s);
      if(/\{\d+\}/.test(s))leaked.push(s);
     }
+    for(const e of document.querySelectorAll('[aria-label],[title],[placeholder]')){
+     if(!e.getClientRects().length||e.closest('[aria-hidden="true"],#kdLanguageControl,[data-no-translate]'))continue;
+     for(const attr of ['aria-label','title','placeholder']){
+      const text=e.getAttribute(attr)||'';
+      if(/[çğıöşüÇĞİÖŞÜ]/.test(text)&&!/^KARA DÜĞÜM/.test(text))leaked.push(attr+': '+text);
+     }
+    }
     return {leaked:[...new Set(leaked)],lang:document.documentElement.lang,dir:document.documentElement.dir,overflow:document.documentElement.scrollWidth>innerWidth+2};
    });
    assert.equal(state.lang,code,route);assert.equal(state.dir,code==='ar'?'rtl':'ltr',route);assert.equal(state.overflow,false,`${code}/${route}: horizontal overflow`);
@@ -53,6 +60,7 @@ const server=http.createServer((req,res)=>{
     assert.deepEqual(missing,[],`${code}: requested-locale dictionary coverage`);
     assert.notEqual(await p.evaluate(()=>kdTranslate('◇ GÜNÜN BULMACASI')),'◇ GÜNÜN BULMACASI');
     assert.notEqual(await p.evaluate(()=>kdTranslate('25 bölüm kaldı')),'25 bölüm kaldı');
+    assert.notEqual(await p.evaluate(()=>kdTranslate('Kara Kule')),'Kara Kule');
    }
    await p.locator('[data-privacy-policy]').click();await p.locator('[data-delete-account]').click();
    assert.deepEqual(await p.evaluate(()=>legalCalls.slice(-2)),['privacy','deletion']);

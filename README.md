@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.44` (versionCode `104`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.44-TEST-APK-AAB` ve `KaraDugum-v6.44-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.45` (versionCode `105`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.45-TEST-APK-AAB` ve `KaraDugum-v6.45-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,13 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.45 — Çocuklar dahil karma yaş kitlesi
+
+- Yayıncı 13 yaş altının da hedef kitlede olduğunu doğruladı. Android uygulama işlemi başladığında tarafsız, varsayılan seçim içermeyen bir yaş aralığı ekranı açılır. Tam doğum tarihi istenmez; seçim yalnız işlem belleğinde kalır. Arka plandan dönüşte tekrar sorulmaz.
+- 18 yaş altı ve yaşını belirtmeyenler için reklam/rıza SDK başlatma ve Google Play Oyunlar hesap çağrıları kapalıdır. Play Games otomatik başlatma sağlayıcısı manifest birleştirmesinde kaldırılır; yetişkin seçiminden sonra açıkça başlatılır. Google Mobile Ads için başlangıçta çocuk/yaş altı güvenli istek bayrakları ve ölçüm geciktirmesi tanımlanır; yetişkin reklamları ayrıca UMP izni gerektirir.
+- 300 bölüm, mevcut ipuçları ve yerel oyun erişilebilir. Eski yerel/bulut kayıtlar silinmez ve kayıt biçimi değişmez. Yetişkinlerde mevcut isteğe bağlı hesap, bulut ve sıralama özellikleri korunur. Yaş ekranı açıkken oyun saati diğer native formlar gibi durur. Çocuklara reklam sunumu bu sürümde etkin değildir.
+- Ekran okuyucu etiketleri dahil ek dört dil çevirileri tamamlanır. Politika ve mağaza metinleri gerçek yaş davranışını açıklar. Google Play Families/Data safety beyanları, fiziksel cihaz SDK davranışı ve hesap ayarları yayıncı tarafından ayrıca doğrulanmalıdır.
 
 ## v6.44 — Dört dil ve dünya geneli yayın hazırlığı
 

@@ -66,6 +66,9 @@ public class MainActivity extends Activity {
     private final AdLoadGate rewardedLoadGate = new AdLoadGate();
     private final AdLoadGate interstitialLoadGate = new AdLoadGate();
     private android.app.Dialog privacyDialog;
+    private android.app.AlertDialog audienceDialog;
+    private static volatile AudiencePolicy audience = AudiencePolicy.choose(null);
+    private static boolean audienceAnswered;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -86,7 +89,8 @@ public class MainActivity extends Activity {
             android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
-        PlayGamesSdk.initialize(this);
+        // Safe defaults before any explicit ad initialization; children/unknown never initialize ads.
+        configureAudienceAds();
         view = new WebView(this);
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
@@ -103,10 +107,12 @@ public class MainActivity extends Activity {
             @Override public boolean shouldOverrideUrlLoading(WebView v, String url) {
                 return !"file:///android_asset/index.html".equals(url);
             }
-            @Override public void onPageFinished(WebView v, String url) { checkSignIn(); deliverPendingRewards(); sendPrivacyState(); }
+            @Override public void onPageFinished(WebView v, String url) {
+                if (!audienceAnswered) showAudienceScreen(); else startEligibleServices();
+                deliverPendingRewards(); sendPrivacyState();
+            }
         });
         setContentView(view);
-        initializeConsent();
         view.loadUrl("file:///android_asset/index.html");
         if (Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -114,7 +120,50 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void configureAudienceAds() {
+        com.google.android.gms.ads.RequestConfiguration.Builder configuration = new com.google.android.gms.ads.RequestConfiguration.Builder();
+        configuration.setTagForChildDirectedTreatment(audience.allowAds()
+            ? com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_FALSE
+            : com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
+        configuration.setTagForUnderAgeOfConsent(audience.allowAds()
+            ? com.google.android.gms.ads.RequestConfiguration.TAG_FOR_UNDER_AGE_OF_CONSENT_FALSE
+            : com.google.android.gms.ads.RequestConfiguration.TAG_FOR_UNDER_AGE_OF_CONSENT_TRUE);
+        if (!audience.allowAds()) configuration.setMaxAdContentRating(com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_G);
+        MobileAds.setRequestConfiguration(configuration.build());
+    }
+    private void showAudienceScreen() {
+        if (audienceAnswered || audienceDialog != null || isFinishing() || isDestroyed()) return;
+        final String[] codes = {"under13", "teen", "adult", "unknown"};
+        final String[] labels = {
+            NativeStrings.text("13 yaşından küçüğüm", uiLanguage), NativeStrings.text("13–17 yaşındayım", uiLanguage),
+            NativeStrings.text("18 yaş ve üzerindeyim", uiLanguage), NativeStrings.text("Belirtmek istemiyorum", uiLanguage)
+        };
+        audienceDialog = new android.app.AlertDialog.Builder(this)
+            .setTitle(NativeStrings.text("Yaş aralığın nedir?", uiLanguage))
+            .setItems(labels, (dialog, position) -> {
+                audience = AudiencePolicy.choose(codes[position]); audienceAnswered = true;
+            })
+            .create();
+        audienceDialog.setOnCancelListener(dialog -> { audience = AudiencePolicy.choose(null); audienceAnswered = true; });
+        audienceDialog.setOnDismissListener(dialog -> {
+            audienceDialog = null;
+            sendPrivacyState();
+            if (audienceAnswered && !isFinishing() && !isDestroyed()) startEligibleServices();
+        });
+        audienceDialog.show();
+        audienceDialog.getWindow().getDecorView().setLayoutDirection("ar".equals(uiLanguage) ? android.view.View.LAYOUT_DIRECTION_RTL : android.view.View.LAYOUT_DIRECTION_LTR);
+        sendPrivacyState();
+    }
+    private void startEligibleServices() {
+        if (!audienceAnswered || isFinishing() || isDestroyed()) return;
+        configureAudienceAds();
+        if (!audience.allowOnlineAccounts()) { send("adReady", "false"); return; }
+        PlayGamesSdk.initialize(this);
+        checkSignIn();
+        if (consentGate == null) initializeConsent();
+    }
     private void initializeConsent() {
+        if (!audience.allowAds()) return;
         final ConsentInformation information = UserMessagingPlatform.getConsentInformation(this);
         consentGate = new AdConsentGate(new AdConsentGate.Driver() {
             @Override public void update(Runnable success, AdConsentGate.Completion failure) {
@@ -152,7 +201,7 @@ public class MainActivity extends Activity {
         consentGate.start();
     }
     private boolean adsAllowed() {
-        return consentGate != null && consentGate.canRequestAds() && !isFinishing() && !isDestroyed();
+        return audience.allowAds() && consentGate != null && consentGate.canRequestAds() && !isFinishing() && !isDestroyed();
     }
     private void initializeAds() {
         if (!adsAllowed()) return;
@@ -171,8 +220,8 @@ public class MainActivity extends Activity {
         try {
             JSONObject state = new JSONObject();
             state.put("required", consentGate != null && consentGate.privacyRequired());
-            state.put("busy", consentGate != null && consentGate.busy());
-            state.put("formOpen", consentGate != null && consentGate.formOpen());
+            state.put("busy", audienceDialog != null || (consentGate != null && consentGate.busy()));
+            state.put("formOpen", audienceDialog != null || (consentGate != null && consentGate.formOpen()));
             send("privacyState", state.toString());
         } catch (Exception error) { Log.w(TAG, "Privacy state", error); }
     }
@@ -235,6 +284,7 @@ public class MainActivity extends Activity {
         send("error", JSONObject.quote(NativeStrings.text(message, uiLanguage)));
     }
     private void checkSignIn() {
+        if (!audience.allowOnlineAccounts()) return;
         if(manualSigningIn)return;
         final int generation = ++authGeneration;
         currentPlayerId = "";
@@ -253,6 +303,7 @@ public class MainActivity extends Activity {
         });
     }
     private void announceUser() {
+        if (!audience.allowOnlineAccounts()) return;
         if (!signedIn) { send("user", "null"); return; }
         final int generation = authGeneration;
         PlayGames.getPlayersClient(this).getCurrentPlayer().addOnSuccessListener(player -> {
@@ -288,7 +339,7 @@ public class MainActivity extends Activity {
         return result;
     }
     private void syncSave(String raw) {
-        if (!signedIn) return;
+        if (!audience.allowOnlineAccounts() || !signedIn) return;
         if (raw == null || raw.length()>2800000) { error("Kayıt boyutu geçersiz"); return; }
         try {
             JSONObject incoming=new JSONObject(raw);
@@ -499,6 +550,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void login() {
             runOnUiThread(() -> {
+                if (!audience.allowOnlineAccounts()) { error("Bu oturum yerel oyun modunda. Kayıtların cihazında korunur."); return; }
                 if(manualSigningIn)return;manualSigningIn=true;signedIn=false;currentPlayerId="";authGeneration++;
                 PlayGames.getGamesSignInClient(MainActivity.this).signIn()
                 .addOnCompleteListener(task -> {
@@ -526,7 +578,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void syncSave(String raw) { runOnUiThread(() -> MainActivity.this.syncSave(raw)); }
         @JavascriptInterface public void achievements(int completed, int stars) {
             runOnUiThread(() -> {
-                if (!signedIn) return;
+                if (!audience.allowOnlineAccounts() || !signedIn) return;
                 if (completed >= 10) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_FIRST);
                 if (stars >= 50) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_STARS);
                 if (completed >= 100) PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_LEGEND);
@@ -534,13 +586,13 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void uploadForAccount(String owner,long points) {
             runOnUiThread(() -> {
-                if(!signedIn||owner==null||!owner.equals(currentPlayerId))return;
+                if(!audience.allowOnlineAccounts()||!signedIn||owner==null||!owner.equals(currentPlayerId))return;
                 PlayGames.getLeaderboardsClient(MainActivity.this).submitScore(LEADERBOARD_ID,Math.max(0L,Math.min(3000000000L,points)));
             });
         }
         @JavascriptInterface public void achievementsForAccount(String owner,int completed,int stars) {
             runOnUiThread(() -> {
-                if(!signedIn||owner==null||!owner.equals(currentPlayerId))return;
+                if(!audience.allowOnlineAccounts()||!signedIn||owner==null||!owner.equals(currentPlayerId))return;
                 if(completed>=10)PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_FIRST);
                 if(stars>=50)PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_STARS);
                 if(completed>=100)PlayGames.getAchievementsClient(MainActivity.this).unlock(ACH_LEGEND);
@@ -548,12 +600,13 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void upload(int points) {
             runOnUiThread(() -> {
-                if (!signedIn) return;
+                if (!audience.allowOnlineAccounts() || !signedIn) return;
                 PlayGames.getLeaderboardsClient(MainActivity.this).submitScore(LEADERBOARD_ID, Math.max(0, points));
             });
         }
         @JavascriptInterface public void ranking() {
             runOnUiThread(() -> {
+                if (!audience.allowOnlineAccounts()) { error("Bu oturum yerel oyun modunda. Kayıtların cihazında korunur."); return; }
                 if (!signedIn) { error("Önce Play Games hesabına giriş yap."); return; }
                 PlayGames.getLeaderboardsClient(MainActivity.this).getLeaderboardIntent(LEADERBOARD_ID)
                     .addOnSuccessListener(intent -> startActivityForResult(intent, 9001))
@@ -601,6 +654,7 @@ public class MainActivity extends Activity {
         if (view != null) { view.onResume(); checkSignIn(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
     }
     @Override protected void onDestroy() {
+        if (audienceDialog != null) { audienceDialog.setOnDismissListener(null); audienceDialog.dismiss(); audienceDialog = null; }
         if (consentGate != null) consentGate.destroy();
         adGeneration++;
         if (privacyDialog != null) privacyDialog.dismiss();
