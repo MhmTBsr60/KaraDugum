@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),assert=require('node:assert/strict'),{chromium}=require('playwright');
 const root=path.resolve(__dirname,'..');
+assert.match(fs.readFileSync(path.join(root,'AndroidManifest.xml'),'utf8'),/<application\b[^>]*android:supportsRtl="true"/,'Android RTL APIs require the manifest opt-in as well as HTML direction');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8').replace("const savedGame=get64('activeGame',null);","window.__globalSnapshot=()=>({level,tiles:tiles.slice(),moves,hints,usedHints,undos,layer:window.kdExtra.layer});const savedGame=get64('activeGame',null);");
 assert(html.includes('window.__globalSnapshot'), 'Read-only save inspection hook');
 const server=http.createServer((req,res)=>{
