@@ -427,7 +427,12 @@ jobs:
 
       - name: Guncel Play Store gorsellerini hazirla
         if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' || inputs.ads_mode == 'live' }}
-        run: node scripts/capture-store-media.cjs app/build/outputs/bundle/release/app-release.aab 6.47 107
+        run: |
+          if ! command -v magick >/dev/null && ! command -v convert >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends imagemagick
+          fi
+          node scripts/capture-store-media.cjs app/build/outputs/bundle/release/app-release.aab 6.47 107
 
       - name: Play Store gorsellerini yukle
         if: ${{ github.event_name == 'push' || inputs.ads_mode == 'both' || inputs.ads_mode == 'live' }}
