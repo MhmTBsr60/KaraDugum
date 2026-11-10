@@ -1,0 +1,94 @@
+{
+  "release": {
+    "applicationId": "com.orynexa.karadugum",
+    "versionName": "6.44",
+    "versionCode": 104,
+    "checkedAt": "2026-11-10"
+  },
+  "listingLocales": [
+    "tr-TR",
+    "en-US",
+    "ar",
+    "zh-CN"
+  ],
+  "languageScope": "Four requested locales checked in actual screens; other existing game languages preserved. Chinese means Simplified Chinese, not a Traditional Chinese review.",
+  "productionAccess": "Approved according to owner; this is not proof that a production release is published.",
+  "operatorActions": [
+    {
+      "area": "Google Play production",
+      "required": "Upload only the signed LIVE .aab from the verified release artifact. Choose supported countries/regions, release notes and rollout percentage. Review pre-launch reports before rollout."
+    },
+    {
+      "area": "Store translations",
+      "required": "Add the four locale listings from these text files; review screenshots and localize their text without changing game/shop design. zh-CN does not establish availability in mainland China. Other store languages are not prepared in this change."
+    },
+    {
+      "area": "Target audience / Families",
+      "status": "unconfirmed",
+      "required": "Confirm actual target age groups. Current code does not implement an age screen or child-directed / under-age ad flags. If children are included, review Families rules and implement the appropriate ad/consent handling before worldwide publication."
+    },
+    {
+      "area": "Advertising ID",
+      "required": "Declare advertising ID use truthfully. Inspect all active tracks, including older internal-test packages; an old package can keep the global warning present even when the new AAB has AD_ID. Remove/replace invalid old active artifacts as appropriate. Re-enable release-error protection after every active package is compliant."
+    },
+    {
+      "area": "Data safety / app content",
+      "required": "Confirm data collection/sharing, purpose, encryption/deletion disclosures against actual Google Mobile Ads, UMP and Play Games behavior and account configuration. Declare contains ads; complete content rating, app access and target audience truthfully. Virtual-crystal shop is not proof of real-money IAP."
+    },
+    {
+      "area": "Privacy and deletion URLs",
+      "required": "Confirm the public URLs respond without login after Pages deploy. Test support mailbox and complete a real deletion request; a mail link alone does not establish that the operational deletion workflow has been fulfilled."
+    },
+    {
+      "area": "AdMob readiness",
+      "required": "Link the public Play store listing, complete app readiness review, check Policy center/serving restrictions, and configure payment identity/tax/payment method in the account."
+    },
+    {
+      "area": "Regional consent messages",
+      "required": "Verify the published UMP messages and languages for applicable EEA/UK/Swiss and US-state requirements in AdMob. Test choices/reopening on registered test devices; code tests do not prove which regional messages are published."
+    },
+    {
+      "area": "app-ads.txt",
+      "required": "Serve the exact publisher line at https://mhmtbsr60.github.io/app-ads.txt (domain root), then trigger/check AdMob verification. The repository file under /KaraDugum/ alone is insufficient."
+    },
+    {
+      "area": "Developer declarations",
+      "required": "Resolve Console policy tasks including trader/non-trader status for applicable distribution regions; provide accurate support details."
+    },
+    {
+      "area": "Device acceptance",
+      "required": "Install the TEST APK as an update over an existing save, validate cloud account/reward video/consent on a physical device, and review Play pre-launch crash/ANR reports. Never click live ads for testing."
+    }
+  ],
+  "publicUrls": {
+    "developerWebsite": "https://mhmtbsr60.github.io/KaraDugum/",
+    "privacyPolicy": "https://mhmtbsr60.github.io/KaraDugum/privacy-policy.html",
+    "accountDeletion": "https://mhmtbsr60.github.io/KaraDugum/delete-account.html",
+    "requiredAppAdsRoot": "https://mhmtbsr60.github.io/app-ads.txt"
+  },
+  "appAdsPublisherLine": "google.com, pub-6340528165840202, DIRECT, f08c47fec0942fa0",
+  "sourceChecks": {
+    "ads": "UMP SDK controls ad eligibility; required consent/options forms block ad requests, rewarded coupons originate only from completed durable receipts, interstitials only at next-level transitions with a minimum two-minute / three-transition cadence.",
+    "saveCompatibility": "No changes to the 300-level generator, save keys/schema, hint accounting, cloud merge or economy. Locale affects display text only.",
+    "manifest": "AD_ID explicitly declared in canonical source manifest; CI must check merged manifest and bundletool output from the signed LIVE AAB. Use the artifact verification report and SHA-256 for the actual binary, not this checklist.",
+    "sdk": "Resolved SDK graph is pinned and exported by CI; no claim about every future SDK policy notice or private Console warning.",
+    "minification": "R8 is disabled. No mapping.txt is expected; the release collector includes it if R8 is enabled later."
+  },
+  "referenceUrls": [
+    "https://developers.google.com/admob/android/privacy",
+    "https://developers.google.com/admob/android/privacy/play-data-disclosure",
+    "https://developers.google.com/admob/android/targeting",
+    "https://support.google.com/googleplay/android-developer/answer/13327111",
+    "https://support.google.com/googleplay/android-developer/answer/9893335",
+    "https://support.google.com/admob/answer/9363762"
+  ],
+  "reviewLimit": "Technical checks are evidence, not a Google policy approval, account access, physical-device certification or a revenue guarantee.",
+  "publicChecksBeforeDeployment": {
+    "checkedAt": "2026-11-10",
+    "appAdsRootHttpStatus": 404,
+    "playPublicListingHttpStatus": 404,
+    "privacyPolicyHttpStatus": 200,
+    "accountDeletionHttpStatus": 200,
+    "note": "Public legal documents were reachable before this release; translations must be rechecked after Pages deployment. Production access approval does not make the store listing public."
+  }
+}

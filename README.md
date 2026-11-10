@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.43` (versionCode `103`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.43-TEST-APK-AAB` ve `KaraDugum-v6.43-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.44` (versionCode `104`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.44-TEST-APK-AAB` ve `KaraDugum-v6.44-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -23,10 +23,17 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
 
-## Sonraki sürüm için hazırlanan reklam yükleme düzeltmesi
+## v6.44 — Dört dil ve dünya geneli yayın hazırlığı
+
+- Türkçe, İngilizce, Arapça ve Basitleştirilmiş Çince gerçek ekranlarda denetlenir. Günlük bulmaca, hedefler, bölüm adları, eşitleme ve reklam düğmelerindeki eksikler tamamlanır. Native hata/çıkış metinleri seçilen dili izler. Arapça metin sağdan sola; oyun tahtasının koordinatları soldan sağa kalır. Diğer mevcut dil seçenekleri korunur.
+- Gizlilik ve hesap/veri silme belgeleri çevrimdışı, JavaScript gerektirmeyen dört dilde paketlenir. Ayarlardaki mevcut yasal bağlantılara hesap/veri silme erişimi eklenir; silme işleminin e-posta ve Google Play Oyunlar tarafındaki operasyonel takibi yayıncı tarafından doğrulanmalıdır.
+- `store-listings/` altında tr-TR, en-US, ar ve zh-CN için başlık, kısa/tam açıklama ve sürüm notları; `release-checklist.json` içinde ülke, yaş kitlesi, veri güvenliği, AdMob ve app-ads.txt için tamamlanması gereken hesap adımları bulunur. Bu dosyalar Console'a otomatik gönderilmez.
+- 300 bölüm üretimi, kayıt anahtarları/biçimi, ekonomi ve ipucu hesabı değişmez. Tasarım ve mağaza yapısı korunur. Kaynak testlerine mağaza limit denetimi; tarayıcı testlerine dört dilde gerçek gezinme/kayıt koruma ve yasal belge kontrolü eklenir.
+
+### Reklam yükleme düzeltmesi
 
 - İlk yüklemede hata alan ödüllü/geçiş reklamları, uygulamaya dönüşte ve normal bölüm geçişlerinde yeniden hazırlanır. Hatalı istekler 30 saniyeden başlayıp en fazla 5 dakikaya çıkan bekleme ile sınırlanır; arka planda sürekli sorgulama yapılmaz. Gösterim sıklığı ve ödül hak ediş kuralları değişmez.
-- `AdLoadGateAudit` bekleme sınırlarını, tekrarlı olayları, iki reklam türünün bağımsızlığını ve başarı sonrası sıfırlamayı denetler. Bu değişiklik `fix/ad-load-recovery` dalında hazırlanmıştır; mevcut 103 yayın paketinin bir parçası değildir.
+- `AdLoadGateAudit` bekleme sınırlarını, tekrarlı olayları, iki reklam türünün bağımsızlığını ve başarı sonrası sıfırlamayı denetler. Bu düzeltme 6.44/104 paketine dahildir.
 - `app-ads.txt` doğru yayıncı satırını içerir. AdMob doğrulaması için bu dosya Google Play mağaza girişinde yazan geliştirici web sitesinin kökünde sunulmalıdır. Proje altındaki bir GitHub Pages URL'sine koymak tek başına kök alan adı doğrulamasını sağlamaz. Hesaptaki uygulama hazırlık/onay ve app-ads.txt doğrulama durumu ayrıca kontrol edilmelidir.
 
 ## v6.43 — AD_ID doğrulaması ve imzalı paket

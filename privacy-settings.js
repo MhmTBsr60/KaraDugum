@@ -24,8 +24,16 @@ window.kdNativeEvent=function(event,payload){
  return previous?.apply(this,arguments);
 };
 document.addEventListener('click',event=>{
- const control=event.target.closest('[data-privacy-policy],[data-privacy-options]');
+ const control=event.target.closest('[data-privacy-policy],[data-privacy-options],[data-delete-account]');
  if(!control||control.disabled)return;
+ if(control.matches('[data-privacy-policy],[data-delete-account]')){
+  const language=document.documentElement.lang;
+  control.hash=['tr','en','ar','zh'].includes(language)?language:'en';
+ }
+ if(control.hasAttribute('data-delete-account')){
+  if(typeof window.KaraNative?.openAccountDeletion==='function'){event.preventDefault();window.KaraNative.openAccountDeletion();}
+  return;
+ }
  if(control.hasAttribute('data-privacy-policy')){
   if(typeof window.KaraNative?.openPrivacyPolicy==='function'){event.preventDefault();window.KaraNative.openPrivacyPolicy();}
   return;

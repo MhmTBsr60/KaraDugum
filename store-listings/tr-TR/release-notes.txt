@@ -1,0 +1,1 @@
+Türkçe, İngilizce, Arapça ve Basitleştirilmiş Çince metinleri iyileştirildi. Arapça metin düzeni, gizlilik ve hesap/veri silme bağlantıları güncellendi. Başarısız reklam yüklemeleri için kontrollü yeniden hazırlama eklendi. Mevcut 300 bölüm ve kayıt biçimi korundu.

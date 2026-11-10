@@ -62,6 +62,7 @@ public class MainActivity extends Activity {
     private AdConsentGate consentGate;
     private boolean adsInitializing, adsInitialized, interstitialInProgress;
     private int adGeneration;
+    private volatile String uiLanguage = NativeStrings.language(java.util.Locale.getDefault().getLanguage());
     private final AdLoadGate rewardedLoadGate = new AdLoadGate();
     private final AdLoadGate interstitialLoadGate = new AdLoadGate();
     private android.app.Dialog privacyDialog;
@@ -175,7 +176,10 @@ public class MainActivity extends Activity {
             send("privacyState", state.toString());
         } catch (Exception error) { Log.w(TAG, "Privacy state", error); }
     }
-    private void openPrivacyPolicy() {
+    private void openPrivacyPolicy() { openLegalPage("privacy-policy.html"); }
+    private void openLegalPage(String filename) {
+        if (!"privacy-policy.html".equals(filename) && !"delete-account.html".equals(filename)) return;
+        final String legalUrl = "file:///android_asset/" + filename;
         if (isFinishing() || isDestroyed() || privacyDialog != null) return;
         final android.app.Dialog dialog = new android.app.Dialog(this);
         final WebView policy = new WebView(this);
@@ -185,7 +189,7 @@ public class MainActivity extends Activity {
         policy.getSettings().setAllowUniversalAccessFromFileURLs(false);
         policy.setWebViewClient(new WebViewClient() {
             private boolean navigate(String url) {
-                if ("file:///android_asset/privacy-policy.html".equals(url)) return false;
+                if (legalUrl.equals(url) || url.startsWith(legalUrl + "#")) return false;
                 Uri uri = Uri.parse(url);
                 if ("https".equals(uri.getScheme()) || "mailto".equals(uri.getScheme())) {
                     try {
@@ -202,9 +206,10 @@ public class MainActivity extends Activity {
         });
         android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
         layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setLayoutDirection("ar".equals(uiLanguage) ? android.view.View.LAYOUT_DIRECTION_RTL : android.view.View.LAYOUT_DIRECTION_LTR);
         android.widget.Button close = new android.widget.Button(this);
         close.setText("×");
-        close.setContentDescription("Gizlilik politikasını kapat");
+        close.setContentDescription(NativeStrings.text("Sayfayı kapat", uiLanguage));
         close.setOnClickListener(v -> dialog.dismiss());
         layout.addView(close, new android.widget.LinearLayout.LayoutParams(-1, -2));
         layout.addView(policy, new android.widget.LinearLayout.LayoutParams(-1, 0, 1));
@@ -213,7 +218,8 @@ public class MainActivity extends Activity {
         privacyDialog = dialog;
         dialog.show();
         dialog.getWindow().setLayout(-1, -1);
-        policy.loadUrl("file:///android_asset/privacy-policy.html");
+        policy.getSettings().setDefaultTextEncodingName("UTF-8");
+        policy.loadUrl(legalUrl + "#" + uiLanguage);
     }
 
     private void send(String event, String payload) {
@@ -225,8 +231,8 @@ public class MainActivity extends Activity {
     }
     private void error(String message) {
         Log.e(TAG, message);
-        runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
-        send("error", JSONObject.quote(message));
+        runOnUiThread(() -> Toast.makeText(this, NativeStrings.text(message, uiLanguage), Toast.LENGTH_LONG).show());
+        send("error", JSONObject.quote(NativeStrings.text(message, uiLanguage)));
     }
     private void checkSignIn() {
         if(manualSigningIn)return;
@@ -461,6 +467,8 @@ public class MainActivity extends Activity {
         catch (RuntimeException e) { interstitialInProgress = false; Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public void setLanguage(String code) { runOnUiThread(() -> uiLanguage = NativeStrings.language(code)); }
+        @JavascriptInterface public void openAccountDeletion() { runOnUiThread(() -> openLegalPage("delete-account.html")); }
         @JavascriptInterface public void rewardedAccountRequest(String kind, String requestId, String owner) {
             if ((!"coins".equals(kind) && !"hint".equals(kind)) || requestId == null || !requestId.matches("[a-zA-Z0-9_-]{1,100}") || owner == null || !owner.matches("[^\\x00-\\x1f\\x7f]{0,256}")) return;
             // Bind to the account shown by the game before the UI-thread hop or SDK auth refresh.
@@ -511,7 +519,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void logout() {
             runOnUiThread(() -> Toast.makeText(MainActivity.this,
-                "Play Games hesabını Google Play Oyunlar ayarlarından değiştirebilirsin.",
+                NativeStrings.text("Play Games hesabını Google Play Oyunlar ayarlarından değiştirebilirsin.", uiLanguage),
                 Toast.LENGTH_LONG).show());
         }
         @JavascriptInterface public void state() { runOnUiThread(() -> checkSignIn()); }
@@ -573,12 +581,13 @@ public class MainActivity extends Activity {
     }
 
     private void showExitConfirmation() {
-        new android.app.AlertDialog.Builder(this)
+        android.app.AlertDialog confirmation = new android.app.AlertDialog.Builder(this)
             .setTitle("KARA DÜĞÜM")
-            .setMessage("Oyundan çıkmak istiyor musun?")
-            .setNegativeButton("Vazgeç", null)
-            .setPositiveButton("Çıkış", (dialog, which) -> finish())
+            .setMessage(NativeStrings.text("Oyundan çıkmak istiyor musun?", uiLanguage))
+            .setNegativeButton(NativeStrings.text("Vazgeç", uiLanguage), null)
+            .setPositiveButton(NativeStrings.text("Çıkış", uiLanguage), (dialog, which) -> finish())
             .show();
+        confirmation.getWindow().getDecorView().setLayoutDirection("ar".equals(uiLanguage) ? android.view.View.LAYOUT_DIRECTION_RTL : android.view.View.LAYOUT_DIRECTION_LTR);
     }
 
     @Override protected void onPause() {

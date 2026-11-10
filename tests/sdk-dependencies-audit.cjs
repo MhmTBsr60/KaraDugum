@@ -17,7 +17,7 @@ function fixture() {
     }).concat([{ group: 'com.google.android.gms', name: 'play-services-basement', version: '18.9.0' }]),
     edges: [
       { from: 'com.google.android.gms:play-services-basement:18.9.0', requested: 'androidx.fragment:fragment:1.1.0', selected: 'androidx.fragment:fragment:1.9.1', constraint: false },
-      { from: 'com.orynexa.karadugum:app:6.43', requested: 'androidx.fragment:fragment:1.9.1', selected: 'androidx.fragment:fragment:1.9.1', constraint: true }
+      { from: 'com.orynexa.karadugum:app:6.44', requested: 'androidx.fragment:fragment:1.9.1', selected: 'androidx.fragment:fragment:1.9.1', constraint: true }
     ]
   };
 }
@@ -33,8 +33,8 @@ const original = JSON.stringify(accepted);
 const summary = verify(accepted);
 assert.equal(summary.moduleCount, 5);
 assert.equal(summary.edgeCount, 2);
-assert.equal(summary.versionName, '6.43');
-assert.equal(summary.versionCode, 103);
+assert.equal(summary.versionName, '6.44');
+assert.equal(summary.versionCode, 104);
 assert.deepEqual(summary.sdkVersions, SDK_PINS);
 assert.equal(JSON.stringify(accepted), original, 'Verification must not alter the exported graph');
 assert.equal(verify({ ...fixture(), edges: [] }).edgeCount, 0, 'Small fixtures do not need a complete graph');
@@ -43,11 +43,11 @@ assert.throws(() => verify(null), /JSON object/);
 assert.throws(() => verify([]), /JSON object/);
 rejects(r => { r.schemaVersion = 2; }, /schemaVersion/);
 rejects(r => { r.schemaVersion = '1'; }, /schemaVersion/);
-for (const [key, bad] of Object.entries({ applicationId: 'com.other.game', versionName: '6.42', versionCode: 102, minSdk: 25, targetSdk: 35, compileSdk: 35 })) {
+for (const [key, bad] of Object.entries({ applicationId: 'com.other.game', versionName: '6.43', versionCode: 103, minSdk: 25, targetSdk: 35, compileSdk: 35 })) {
   rejects(r => { r[key] = bad; }, new RegExp(key), `${key} mismatch must fail`);
 }
 rejects(r => { r.minSdk = 23; }, /minSdk/);
-rejects(r => { r.versionCode = '103'; }, /versionCode/);
+rejects(r => { r.versionCode = '104'; }, /versionCode/);
 rejects(r => { r.modules = []; }, /non-empty array/);
 rejects(r => { r.modules = {}; }, /non-empty array/);
 rejects(r => { r.edges = null; }, /edges must be an array/);
@@ -80,7 +80,7 @@ try {
   fs.writeFileSync(reportFile, JSON.stringify(fixture()));
   let result = spawnSync(process.execPath, [cli, reportFile], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /PASS: Android 6\.43 \(103\)/);
+  assert.match(result.stdout, /PASS: Android 6\.44 \(104\)/);
   assert.match(result.stdout, /fragment=1\.9\.1/);
   assert.match(result.stdout, /play-services-ads=25\.5\.0/);
 

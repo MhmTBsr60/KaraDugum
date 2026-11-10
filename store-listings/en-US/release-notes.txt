@@ -1,0 +1,1 @@
+Improved Turkish, English, Arabic and Simplified Chinese text. Updated Arabic text direction, privacy pages and account/data deletion access. Added controlled recovery after failed ad loads. Preserved the existing 300 levels and save format.
