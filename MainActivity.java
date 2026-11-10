@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
     private String currentPlayerId = "";
     private int authGeneration = 0;
     private boolean manualSigningIn = false;
+    private boolean checkingSignIn, gamesInitialized;
     private boolean saving = false;
     private String pendingSave;
     private String installationId;
@@ -69,9 +70,15 @@ public class MainActivity extends Activity {
     private android.app.AlertDialog audienceDialog;
     private static volatile AudiencePolicy audience = AudiencePolicy.choose(null);
     private static boolean audienceAnswered;
+    private AudienceChoiceStore audienceChoices;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        audienceChoices = new AudienceChoiceStore(getNoBackupFilesDir());
+        if (!audienceAnswered) {
+            audience = audienceChoices.load();
+            audienceAnswered = audience.allowAds();
+        }
         try {
             installationId = InstallationIdentity.load(getNoBackupFilesDir());
         } catch (java.io.IOException e) {
@@ -151,6 +158,7 @@ public class MainActivity extends Activity {
             .setTitle(NativeStrings.text("Yaş aralığın nedir?", uiLanguage))
             .setItems(labels, (dialog, position) -> {
                 audience = AudiencePolicy.choose(codes[position]); audienceAnswered = true;
+                if (!audienceChoices.save(codes[position])) Log.w(TAG, "Age choice could not be saved on this device");
             })
             .create();
         audienceDialog.setOnCancelListener(dialog -> { audience = AudiencePolicy.choose("unknown"); audienceAnswered = true; });
@@ -166,7 +174,10 @@ public class MainActivity extends Activity {
     private void startEligibleServices() {
         if (!audienceAnswered || isFinishing() || isDestroyed()) return;
         configureAudienceAds();
-        if (audience.allowOnlineAccounts()) { PlayGamesSdk.initialize(this); checkSignIn(); }
+        if (audience.allowOnlineAccounts()) {
+            if (!gamesInitialized) { PlayGamesSdk.initialize(this); gamesInitialized = true; }
+            checkSignIn();
+        }
         if (audience.allowAds() && consentGate == null) initializeConsent();
     }
     private void initializeConsent() {
@@ -294,39 +305,62 @@ public class MainActivity extends Activity {
         send("error", JSONObject.quote(NativeStrings.text(message, uiLanguage)));
     }
     private void checkSignIn() {
-        if (!audience.allowOnlineAccounts()) return;
-        if(manualSigningIn)return;
+        if (!audience.allowOnlineAccounts() || !gamesInitialized || manualSigningIn || checkingSignIn || isFinishing() || isDestroyed()) return;
+        checkingSignIn = true;
         final int generation = ++authGeneration;
-        currentPlayerId = "";
+        signedIn = false; currentPlayerId = "";
         PlayGames.getGamesSignInClient(this).isAuthenticated().addOnCompleteListener(task -> {
-            if(generation!=authGeneration)return;
+            if (generation != authGeneration || isFinishing() || isDestroyed()) return;
             if (!task.isSuccessful()) {
-                signedIn = false; currentPlayerId = "";
-                Log.e(TAG, "Play Games kimlik kontrolu basarisiz", task.getException());
-                send("user", "null");
-                error("Play Games kimlik kontrolü başarısız: " + (task.getException() == null ? "bilinmeyen" : task.getException().getMessage()));
+                signInFailed("Automatic Play Games authentication failed", task.getException(), false);
                 return;
             }
             signedIn = task.getResult() != null && task.getResult().isAuthenticated();
-            Log.i(TAG, "Play Games authenticated=" + signedIn);
-            announceUser();
+            if (!signedIn) { checkingSignIn = false; send("user", "null"); return; }
+            announceUser(false);
         });
     }
-    private void announceUser() {
+    private void signInFailed(String context, Exception failure, boolean interactive) {
+        checkingSignIn = false; manualSigningIn = false;
+        signedIn = false; currentPlayerId = "";
+        Log.w(TAG, context, failure);
+        send("user", "null");
+        if (interactive) error("Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.");
+    }
+    private void signIn() {
+        if (!audience.allowOnlineAccounts()) { error("Bu oturum yerel oyun modunda. Kayıtların cihazında korunur."); return; }
+        if (!gamesInitialized || manualSigningIn || isFinishing() || isDestroyed()) return;
+        manualSigningIn = true; checkingSignIn = false; signedIn = false; currentPlayerId = "";
+        final int generation = ++authGeneration;
+        PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener(task -> {
+            if (generation != authGeneration || isFinishing() || isDestroyed()) return;
+            if (!task.isSuccessful()) { signInFailed("Manual Play Games authentication failed", task.getException(), true); return; }
+            if (task.getResult() == null || !task.getResult().isAuthenticated()) { signInFailed("Manual Play Games authentication was not completed", null, true); return; }
+            signedIn = true; checkingSignIn = true;
+            announceUser(true);
+        });
+    }
+    private void announceUser(boolean interactive) {
         if (!audience.allowOnlineAccounts()) return;
-        if (!signedIn) { send("user", "null"); return; }
         final int generation = authGeneration;
         PlayGames.getPlayersClient(this).getCurrentPlayer().addOnSuccessListener(player -> {
-            if(generation!=authGeneration)return;
+            if (generation != authGeneration || isFinishing() || isDestroyed()) return;
             try {
+                if (player == null || player.getPlayerId() == null || player.getPlayerId().isEmpty()) {
+                    signInFailed("Play Games returned an empty player profile", null, interactive); return;
+                }
                 JSONObject data = new JSONObject();
                 data.put("name", player.getDisplayName());
                 currentPlayerId = player.getPlayerId();
                 data.put("uid", currentPlayerId);
+                checkingSignIn = false; manualSigningIn = false;
                 send("user", data.toString());
                 deliverPendingRewards();
-            } catch (Exception e) { error("Oyuncu profili okunamadı"); }
-        }).addOnFailureListener(e -> error("Play Games profili alınamadı: " + e.getMessage()));
+            } catch (Exception e) { signInFailed("Play Games profile could not be read", e, interactive); }
+        }).addOnFailureListener(e -> {
+            if (generation != authGeneration || isFinishing() || isDestroyed()) return;
+            signInFailed("Play Games profile could not be loaded", e, interactive);
+        });
     }
     private JSONObject mergeSave(JSONObject a, JSONObject b) throws Exception {
         JSONObject result = new JSONObject(), completed = new JSONObject(), best = new JSONObject();
@@ -559,25 +593,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void login() {
-            runOnUiThread(() -> {
-                if (!audience.allowOnlineAccounts()) { error("Bu oturum yerel oyun modunda. Kayıtların cihazında korunur."); return; }
-                if(manualSigningIn)return;manualSigningIn=true;signedIn=false;currentPlayerId="";authGeneration++;
-                PlayGames.getGamesSignInClient(MainActivity.this).signIn()
-                .addOnCompleteListener(task -> {
-                    manualSigningIn=false;
-                    if (!task.isSuccessful()) {
-                        Log.e(TAG, "Play Games giris hatasi", task.getException());
-                        error("Play Games giriş hatası: " + (task.getException() == null ? "bilinmeyen" : task.getException().getMessage()));
-                        return;
-                    }
-                    if (task.getResult() == null || !task.getResult().isAuthenticated()) {
-                        error("Play Games girişini tamamlayamadı. Test kullanıcısı ve Play Oyunlar hesabını kontrol edin.");
-                        checkSignIn();
-                        return;
-                    }
-                    checkSignIn();
-                });
-            });
+            runOnUiThread(() -> MainActivity.this.signIn());
         }
         @JavascriptInterface public void logout() {
             runOnUiThread(() -> Toast.makeText(MainActivity.this,

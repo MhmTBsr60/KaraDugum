@@ -23,6 +23,8 @@ public final class NativeStringsAudit {
             check(translated.endsWith(": external-status-42"), "Preserved SDK details: " + code);
         }
         for (String code : new String[]{"en", "ar", "zh"}) {
+            String connection = "Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.";
+            check(!NativeStrings.text(connection, code).equals(connection), "Translated manual sign-in message: " + code);
             check(!NativeStrings.text("Yaş aralığın nedir?", code).equals("Yaş aralığın nedir?"), "Translated neutral age screen: " + code);
             check(!NativeStrings.text("Belirtmek istemiyorum", code).equals("Belirtmek istemiyorum"), "Translated opt-out: " + code);
         }

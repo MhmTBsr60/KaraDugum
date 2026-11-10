@@ -1,2 +1,3 @@
-Sağdan sola dillerde görev kartı görselinin yazıyla çakışması düzeltildi.
-Dört dilde arayüz ve erişilebilirlik metinleri iyileştirildi. Tarafsız yaş ekranı ve çocuklar için G dereceli, kişiselleştirilmemiş ödüllü reklam ayarları eklendi; çocuklarda geçiş reklamları kapalıdır. Gizlilik ve hesap/veri silme bağlantıları güncellendi. 300 bölüm ve kayıt biçimi korundu.
+Yaş aralığı seçimi artık bu cihazda hatırlanıyor.
+Açılıştaki teknik Play Games hata mesajları giderildi; elle giriş açıklamaları iyileştirildi.
+Bölümler, oyun kayıtları ve ipuçları korundu.

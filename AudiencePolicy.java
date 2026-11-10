@@ -1,6 +1,6 @@
 package com.orynexa.karadugum;
 
-/** Process-local age choice; only derived restricted-ad signals go to the ads SDK. */
+/** Immutable age-choice policy; only derived restricted-ad signals go to the ads SDK. */
 public final class AudiencePolicy {
     public enum Band { UNKNOWN, UNDER_13, TEEN, ADULT }
     private final Band band;

@@ -1,8 +1,8 @@
 {
   "release": {
     "applicationId": "com.orynexa.karadugum",
-    "versionName": "6.47",
-    "versionCode": 107,
+    "versionName": "6.48",
+    "versionCode": 108,
     "checkedAt": "2026-11-10"
   },
   "listingLocales": [
@@ -58,6 +58,10 @@
     {
       "area": "Device acceptance",
       "required": "Install the TEST APK as an update over an existing save, validate cloud account/reward video/consent on a physical device, and review Play pre-launch crash/ANR reports. Never click live ads for testing."
+    },
+    {
+      "area": "Play Games authentication",
+      "required": "For direct GitHub APKs link the package and signing SHA-1 from play-games-setup.md in Play Games configuration. Separately associate the Play App Signing certificate for Play installs; publish PGS settings or grant PGS tester access. Error 10 is a configuration error; quiet automatic checks do not establish working sign-in."
     }
   ],
   "publicUrls": {
@@ -73,7 +77,7 @@
     "manifest": "AD_ID explicitly declared in canonical source manifest; CI must check merged manifest and bundletool output from the signed LIVE AAB. Use the artifact verification report and SHA-256 for the actual binary, not this checklist.",
     "sdk": "Resolved SDK graph is pinned and exported by CI; no claim about every future SDK policy notice or private Console warning.",
     "minification": "R8 is disabled. No mapping.txt is expected; the release collector includes it if R8 is enabled later.",
-    "audience": "Neutral process-local age screen; child/teen/unstated receive CHILD treatment, TFCD AAID-suppression flag, G content limit, disabled personalization and npa=1 ad requests. UMP under-age flag is separately set. Every ad still requires SDK canRequestAds. Only adults may load/show interstitials or initialize Play Games; no DOB or selected band is persisted."
+    "audience": "Neutral age screen when no valid device-local answer exists; explicit age band is stored in Android no-backup files only, never in cloud saves. No DOB is stored. Cancel stays session-local. Child/teen/unstated receive CHILD treatment, TFCD AAID-suppression flag, G content limit, disabled personalization and npa=1 ad requests. UMP under-age flag is separately set. Every ad still requires SDK canRequestAds. Only adults may load/show interstitials or initialize Play Games."
   },
   "referenceUrls": [
     "https://developers.google.com/admob/android/privacy",

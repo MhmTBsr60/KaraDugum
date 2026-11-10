@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.47` (versionCode `107`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.47-TEST-APK-AAB` ve `KaraDugum-v6.47-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.48` (versionCode `108`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.48-TEST-APK-AAB` ve `KaraDugum-v6.48-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -23,6 +23,12 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
 
+## v6.48 — Yaş seçimini hatırlama ve giriş hata akışı
+
+- Açıkça seçilen yaş aralığı yalnız cihazdaki Android yedeğine dahil edilmeyen küçük bir dosyada hatırlanır. Yeni açılışlarda geçerli seçim varsa tekrar sorulmaz; eksik/bozuk dosyada yeniden sorulur. Tam doğum tarihi, zaman damgası veya bulut alanı eklenmez. İptal edilen ekranın güvenli oturum seçimi kalıcılaştırılmaz.
+- Otomatik Play Games kimlik/profil kontrolü başarısız olduğunda teknik hata kodu oyuncuya Toast/uyarı olarak gösterilmez. Oyuncu yalnız doğrulanmış profil kimliğiyle bağlanır; eski/kapalı etkinliğe ait yanıtlar yok sayılır. Elle girişte başarısızlık anlaşılır dört dilde mesaj verir. Bu değişiklik Google hesabındaki OAuth/PGS yapılandırmasını düzelttiği anlamına gelmez; paket ve imza eşleştirme adımları `store-listings/play-games-setup.md` içindedir.
+- Yaş seçiminin süreç yeniden başlamasında korunması, bozuk/yazılamayan kayıtlar ve gerçek native giriş metotlarıyla asenkron başarısızlık/hesap değişimi kontrolleri eklenir. 300 bölüm, oyun kaydı, ipucu, ekonomi ve mevcut reklam sınırları korunur.
+
 ## v6.47 — RTL kart görseli hizalaması
 
 - Sağdan sola dillerde görev/sandık/başarım kartının dekoratif görseli metnin karşı tarafına alınır. Görev başlığının görselin üzerine binmesi giderilir; Türkçe, İngilizce ve Çince görünüm korunur.
@@ -32,12 +38,12 @@ Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuç
 
 - Yayıncının tercihiyle çocuklara da uygun ödüllü reklam akışı hazırlanır. Yaş ekranı yanıtlanmadan reklam istenmez. 18 yaş altı ve yaşını belirtmeyenler için CHILD yaş işlemi, AAID iletimini engelleyen TFCD işareti, G içerik sınırı, kişiselleştirme kapalı durumu ve `npa=1` uygulanır. UMP isteğinde yaş altı işareti ayrıca gönderilir; SDK izin vermeden reklam yüklenmez. Çocuklara standart yetişkin rıza formu istenmez.
 - Bu gruplarda geçiş reklamı yüklenmez/gösterilmez; yalnız açıkça seçilen ödüllü videolar kullanılabilir. Tamamlanan ipucu videosu mevcut tek kupon makbuzunu üretir; hata, erken kapatma ve tekrar olayları ödülü artırmaz. Uygun reklam bulunamazsa çocuk kısıtları kaldırılmaz. Yetişkinlerde önceki UMP ve geçiş sıklığı kuralları devam eder.
-- Play Games hesap çağrıları 18 yaş altı/yaşı belirtilmeyenlerde kapalı kalır; yerel bölüm, ipucu ve kayıtlar korunur. Tam doğum tarihi veya seçilen yaş bandı kalıcı kayda yazılmaz; reklam SDK'sına türetilen yaş kısıtlaması sinyali iletilir.
+- Play Games hesap çağrıları 18 yaş altı/yaşı belirtilmeyenlerde kapalı kalır; yerel bölüm, ipucu ve kayıtlar korunur. Tam doğum tarihi kaydedilmez; reklam SDK'sına türetilen yaş kısıtlaması sinyali iletilir. 6.48 ile yalnız seçilen yaş bandı Android yedeği ve bulut kayıtlarının dışında cihazda hatırlanır.
 - Resmî Families listesi Google AdMob için 19.0.0 ve sonrasını listeler; SDK Index'te 25.5.0 güncel sürüm olarak kontrol edilmiştir. Kanıt kapsamı ve panel/gerçek cihazda tamamlanacak kontroller `store-listings/families-sdk-evidence.json` içindedir. Reklam hesabı ayarları ve gerçek kreatifler ayrıca doğrulanmalıdır.
 
 ## v6.45 — Çocuklar dahil karma yaş kitlesi
 
-- Yayıncı 13 yaş altının da hedef kitlede olduğunu doğruladı. Android uygulama işlemi başladığında tarafsız, varsayılan seçim içermeyen bir yaş aralığı ekranı açılır. Tam doğum tarihi istenmez; seçim yalnız işlem belleğinde kalır. Arka plandan dönüşte tekrar sorulmaz.
+- Yayıncı 13 yaş altının da hedef kitlede olduğunu doğruladı. Android uygulama işlemi başladığında tarafsız, varsayılan seçim içermeyen bir yaş aralığı ekranı açılır. Tam doğum tarihi istenmez. İlk uygulamada seçim yalnız işlem belleğindeydi; 6.48 ile açık seçim cihazda hatırlanır ve sonraki açılışlarda tekrar sorulmaz.
 - 18 yaş altı ve yaşını belirtmeyenler için reklam/rıza SDK başlatma ve Google Play Oyunlar hesap çağrıları kapalıdır. Play Games otomatik başlatma sağlayıcısı manifest birleştirmesinde kaldırılır; yetişkin seçiminden sonra açıkça başlatılır. Google Mobile Ads için başlangıçta çocuk/yaş altı güvenli istek bayrakları ve ölçüm geciktirmesi tanımlanır; yetişkin reklamları ayrıca UMP izni gerektirir.
 - 300 bölüm, mevcut ipuçları ve yerel oyun erişilebilir. Eski yerel/bulut kayıtlar silinmez ve kayıt biçimi değişmez. Yetişkinlerde mevcut isteğe bağlı hesap, bulut ve sıralama özellikleri korunur. Yaş ekranı açıkken oyun saati diğer native formlar gibi durur. Çocuklara reklam sunumu bu sürümde etkin değildir.
 - Ekran okuyucu etiketleri dahil ek dört dil çevirileri tamamlanır. Politika ve mağaza metinleri gerçek yaş davranışını açıklar. Google Play Families/Data safety beyanları, fiziksel cihaz SDK davranışı ve hesap ayarları yayıncı tarafından ayrıca doğrulanmalıdır.

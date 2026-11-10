@@ -1,2 +1,3 @@
-Fixed quest card text overlapping its illustration in right-to-left languages.
-Improved UI and accessibility text in four languages. Added a neutral age screen and G-rated, non-personalized rewarded-ad settings for children; child interstitials stay disabled. Updated privacy and account/data deletion access. Preserved all 300 levels and the save format.
+Your age-range choice is now remembered on this device.
+Removed technical Play Games alerts at startup and improved manual sign-in messages.
+Levels, game saves and hints are preserved.
