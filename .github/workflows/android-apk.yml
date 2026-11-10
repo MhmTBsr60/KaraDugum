@@ -117,7 +117,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131109.vaadin1/android-json-0.0.20131109.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
+          curl --fail --silent --show-error --location https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
           node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
           mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
           javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java AdConsentGate.java tests/AdConsentGateAudit.java InterstitialCadence.java tests/InterstitialCadenceAudit.java AdLoadGate.java tests/AdLoadGateAudit.java NativeStrings.java tests/NativeStringsAudit.java AudiencePolicy.java tests/AudiencePolicyAudit.java AudienceChoiceStore.java tests/AudienceChoiceStoreAudit.java
