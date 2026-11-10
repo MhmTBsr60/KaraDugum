@@ -1,0 +1,90 @@
+{
+  "sourceVersion": "6.47",
+  "versionCode": 107,
+  "sourceCommit": "276b57224ab3e305e2e81e96451e976988c2f0e7",
+  "sourceAabSha256": "852f1e4403029f098ed5d7809575afa3c4b299295363fdfb04899fd11a9193ca",
+  "method": "Unmodified HTML/CSS/JS assets extracted from the signed LIVE AAB, rendered in Chromium. Isolated representative test profile; no real player/account data or live ads.",
+  "files": [
+    {
+      "file": "icon-512.png",
+      "width": 512,
+      "height": 512,
+      "bitDepth": 32,
+      "bytes": 519647,
+      "sha256": "d0ba8da1b848513692fb77f256c9e02f4e27280f4e084554c67c2f61e7a273f5"
+    },
+    {
+      "file": "feature-1024x500.png",
+      "width": 1024,
+      "height": 500,
+      "bitDepth": 24,
+      "bytes": 528845,
+      "sha256": "4a0738d54fbb94c5e7e6fa6e74cba896dc58c7c2f4c6401f8ce33a07b6cac99b"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/01-home.jpg",
+      "route": "home",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 500844,
+      "sha256": "8a8633bc4418fc7ac589b47f77ae833ebc3b41b656ed3a1d06ed3f6c18aa4706"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/02-gameplay.jpg",
+      "route": "game",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 838489,
+      "sha256": "7379de0474d49ae1e62581ff49fde0829b55d0842138fd0711fac3f178fb357e"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/03-levels.jpg",
+      "route": "levels",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 357023,
+      "sha256": "bb6e519269a1f7d7a0f4b678e4cdbc7a599a4b1e3c184dc2d68dd3eb7aedc3a9"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/04-daily-quests.jpg",
+      "route": "quests",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 298749,
+      "sha256": "2ef863d8d8239b31471751307da2b6ce782039a361147fac3337510c4c0c0645"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/05-shop.jpg",
+      "route": "shop",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 476744,
+      "sha256": "c489bd325aa689e61e1224af7d0aa088eda4b176b66713c60a7ef8747a2ce747"
+    },
+    {
+      "locale": "tr-TR",
+      "language": "tr",
+      "file": "tr-TR/06-workshop.jpg",
+      "route": "workshop",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 636138,
+      "sha256": "de85d1784560fa43682d5a0d8e69648a2f3e01b19241ce9ab6929132873df532"
+    }
+  ],
+  "zip": {
+    "file": "KaraDugum-6.47-Guncel-Magaza-Gorselleri-TR.zip",
+    "bytes": 4020755,
+    "sha256": "989effb5e94977c1c5365d416aee3c170e287461029f9db3689f3cdfe5ef5325"
+  }
+}
