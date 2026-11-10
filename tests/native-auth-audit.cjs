@@ -16,8 +16,10 @@ import java.util.function.Consumer;
 public class NativeAuthAudit {
     private static final String TAG="NativeAuthAudit";
     private AudiencePolicy audience=AudiencePolicy.choose("adult");
-    private boolean gamesInitialized=true,manualSigningIn,checkingSignIn,signedIn,finishing,destroyed;
-    private int authGeneration,delivered;
+    private boolean gamesInitialized=true,gamesLifecycleReady=true,gamesStartupPending,gamesStartupFailed,pendingInteractiveLogin,manualSigningIn,checkingSignIn,signedIn,finishing,destroyed;
+    private Object audienceDialog;
+    private int authGeneration,delivered,preparationRequests,reviewRequests;
+    private boolean lastReviewing,lastLoginRequested;
     private String currentPlayerId="";
     final SignInClient signInClient=new SignInClient();
     final PlayersClient playersClient=new PlayersClient();
@@ -27,6 +29,9 @@ public class NativeAuthAudit {
     private void error(String value){errors.add(value);}
     private void send(String event,String payload){events.add(event+":"+payload);}
     private void deliverPendingRewards(){delivered++;}
+    // These integration boundaries are exercised with actual lifecycle methods in the separate lifecycle audit.
+    private void prepareGamesLifecycle(){preparationRequests++;}
+    private void showAudienceScreen(boolean reviewing,boolean loginRequested){reviewRequests++;lastReviewing=reviewing;lastLoginRequested=loginRequested;}
 
 ${methods}
 
@@ -61,9 +66,34 @@ ${methods}
             NativeAuthAudit h=new NativeAuthAudit();h.audience=AudiencePolicy.choose(age);h.checkSignIn();h.signIn();
             require(h.signInClient.automatic.isEmpty()&&h.signInClient.manual.isEmpty()&&h.playersClient.tasks.isEmpty(),"Restricted/pending age never calls account SDK: "+age);
             require(h.events.isEmpty()&&h.currentPlayerId.isEmpty(),"Restricted/pending age never publishes a user");
+            require(h.reviewRequests==1&&h.lastReviewing&&h.lastLoginRequested,"Restricted/pending manual login requests a neutral age review with explicit login intent");
+            require(h.preparationRequests==0&&h.errors.isEmpty(),"Age review does not initialize Google or show an account error");
         }
         NativeAuthAudit uninitialized=new NativeAuthAudit();uninitialized.gamesInitialized=false;uninitialized.checkSignIn();uninitialized.signIn();
         require(uninitialized.signInClient.automatic.isEmpty()&&uninitialized.signInClient.manual.isEmpty(),"No auth call before explicit SDK initialization");
+        require(uninitialized.preparationRequests==0,"Inconsistent ready state cannot silently bypass the SDK-init guard");
+
+        NativeAuthAudit preparing=new NativeAuthAudit();preparing.gamesInitialized=false;preparing.gamesLifecycleReady=false;
+        preparing.checkSignIn();require(preparing.preparationRequests==0,"Automatic auth does not force lifecycle preparation");
+        preparing.signIn();require(preparing.pendingInteractiveLogin&&preparing.preparationRequests==1,"Adult explicit login defers intent to controlled lifecycle preparation");
+        preparing.checkSignIn();preparing.checkSignIn();
+        require(preparing.signInClient.automatic.isEmpty()&&preparing.signInClient.manual.isEmpty()&&preparing.playersClient.tasks.isEmpty(),"No premature account request before created/resumed lifecycle readiness");
+        require(preparing.pendingInteractiveLogin&&preparing.preparationRequests==1,"Pending interactive login survives coalesced automatic probes");
+        preparing.gamesInitialized=true;preparing.gamesStartupPending=false;preparing.gamesLifecycleReady=true;preparing.pendingInteractiveLogin=false;
+        preparing.signIn();require(preparing.signInClient.manual.size()==1,"Explicit auth can start after lifecycle readiness");
+
+        NativeAuthAudit retry=new NativeAuthAudit();retry.gamesLifecycleReady=false;retry.gamesStartupFailed=true;
+        retry.checkSignIn();require(retry.gamesStartupFailed&&retry.preparationRequests==0,"Automatic probe preserves failed startup without reopening it");
+        retry.signIn();require(!retry.gamesStartupFailed&&retry.pendingInteractiveLogin&&retry.preparationRequests==1,"Manual retry clears failed startup and requests lifecycle preparation again");
+        require(retry.signInClient.automatic.isEmpty()&&retry.signInClient.manual.isEmpty(),"Manual startup retry still waits for lifecycle before account SDK calls");
+
+        NativeAuthAudit startupPending=new NativeAuthAudit();startupPending.gamesStartupPending=true;startupPending.checkSignIn();startupPending.signIn();
+        require(startupPending.signInClient.automatic.isEmpty()&&startupPending.signInClient.manual.isEmpty(),"Pending games startup blocks automatic and manual account calls");
+        require(startupPending.preparationRequests==0&&startupPending.events.isEmpty()&&startupPending.errors.isEmpty(),"Pending startup does not launch duplicate initialization or error UI");
+
+        NativeAuthAudit reviewing=new NativeAuthAudit();reviewing.audienceDialog=new Object();reviewing.checkSignIn();reviewing.signIn();
+        require(reviewing.signInClient.automatic.isEmpty()&&reviewing.signInClient.manual.isEmpty(),"Open neutral age screen blocks account SDK calls even for a previously adult choice");
+        require(reviewing.preparationRequests==0&&reviewing.reviewRequests==0,"Open age review does not duplicate the dialog or lifecycle startup");
 
         NativeAuthAudit automatic=new NativeAuthAudit();automatic.checkSignIn();automatic.checkSignIn();automatic.checkSignIn();
         require(automatic.signInClient.automatic.size()==1,"Concurrent automatic checks coalesce");

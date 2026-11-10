@@ -12,8 +12,8 @@ const SDK_PINS = Object.freeze({
 });
 const RELEASE = Object.freeze({
   applicationId: 'com.orynexa.karadugum',
-  versionName: '6.48',
-  versionCode: 108,
+  versionName: '6.49',
+  versionCode: 109,
   minSdk: 24,
   targetSdk: 36,
   compileSdk: 36

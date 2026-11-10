@@ -56,7 +56,9 @@ public class MainActivity extends Activity {
     private String currentPlayerId = "";
     private int authGeneration = 0;
     private boolean manualSigningIn = false;
-    private boolean checkingSignIn, gamesInitialized;
+    private boolean checkingSignIn, gamesInitialized, gamesLifecycleReady, gamesStartupPending, gamesStartupFailed;
+    private boolean pendingInteractiveLogin;
+    private static final int GAMES_STARTUP_REQUEST = 9002;
     private boolean saving = false;
     private String pendingSave;
     private String installationId;
@@ -73,12 +75,18 @@ public class MainActivity extends Activity {
     private AudienceChoiceStore audienceChoices;
 
     @Override public void onCreate(Bundle state) {
-        super.onCreate(state);
         audienceChoices = new AudienceChoiceStore(getNoBackupFilesDir());
         if (!audienceAnswered) {
             audience = audienceChoices.load();
             audienceAnswered = audience.allowAds();
         }
+        // super.onCreate dispatches onActivityCreated: eligible SDK listeners must exist first.
+        if (audience.allowOnlineAccounts()) {
+            PlayGamesSdk.initialize(getApplicationContext());
+            gamesInitialized = true;
+            gamesLifecycleReady = true;
+        }
+        super.onCreate(state);
         try {
             installationId = InstallationIdentity.load(getNoBackupFilesDir());
         } catch (java.io.IOException e) {
@@ -147,8 +155,39 @@ public class MainActivity extends Activity {
         }
         return request.build();
     }
-    private void showAudienceScreen() {
-        if (audienceAnswered || audienceDialog != null || isFinishing() || isDestroyed()) return;
+    private void discardLoadedAds() {
+        adGeneration++;
+        rewardedAd = null; interstitialAd = null;
+        rewardedLoading = false; interstitialLoading = false;
+        send("adReady", "false");
+    }
+    private boolean audienceOptionsBusy() {
+        return audienceDialog != null || gamesStartupPending || rewardedInProgress || interstitialInProgress
+            || adsInitializing || privacyDialog != null || (consentGate != null && consentGate.busy());
+    }
+    private void applyAudienceChoice(String code) {
+        AudiencePolicy selected = AudiencePolicy.choose(code);
+        if (!selected.allowAds()) return;
+        if (!audienceChoices.save(code)) error("Yaş seçimi bu cihazda kaydedilemedi. Bu oturumda seçimin uygulanacak.");
+        if (!audienceAnswered || selected.band() != audience.band()) {
+            discardLoadedAds();
+            if (consentGate != null) { consentGate.destroy(); consentGate = null; }
+            authGeneration++; signedIn = false; currentPlayerId = "";
+            checkingSignIn = false; manualSigningIn = false;
+            pendingInteractiveLogin = false;
+            saving = false; pendingSave = null;
+            send("user", "null");
+        }
+        audience = selected; audienceAnswered = true;
+        if (audience.allowOnlineAccounts() && !gamesLifecycleReady) gamesStartupFailed = false;
+        configureAudienceAds();
+    }
+    private void showAudienceScreen() { showAudienceScreen(false, false); }
+    private void showAudienceScreen(boolean reviewing, boolean loginRequested) {
+        if ((!reviewing && audienceAnswered) || isFinishing() || isDestroyed()) return;
+        if (audienceOptionsBusy()) { sendAudienceState(); return; }
+        final boolean previouslyAnswered = audienceAnswered;
+        discardLoadedAds();
         final String[] codes = {"under13", "teen", "adult", "unknown"};
         final String[] labels = {
             NativeStrings.text("13 yaşından küçüğüm", uiLanguage), NativeStrings.text("13–17 yaşındayım", uiLanguage),
@@ -157,11 +196,13 @@ public class MainActivity extends Activity {
         audienceDialog = new android.app.AlertDialog.Builder(this)
             .setTitle(NativeStrings.text("Yaş aralığın nedir?", uiLanguage))
             .setItems(labels, (dialog, position) -> {
-                audience = AudiencePolicy.choose(codes[position]); audienceAnswered = true;
-                if (!audienceChoices.save(codes[position])) Log.w(TAG, "Age choice could not be saved on this device");
+                applyAudienceChoice(codes[position]);
+                if (loginRequested && audience.allowOnlineAccounts()) pendingInteractiveLogin = true;
             })
             .create();
-        audienceDialog.setOnCancelListener(dialog -> { audience = AudiencePolicy.choose("unknown"); audienceAnswered = true; });
+        audienceDialog.setOnCancelListener(dialog -> {
+            if (!previouslyAnswered) { audience = AudiencePolicy.choose("unknown"); audienceAnswered = true; }
+        });
         audienceDialog.setOnDismissListener(dialog -> {
             audienceDialog = null;
             sendPrivacyState();
@@ -175,10 +216,32 @@ public class MainActivity extends Activity {
         if (!audienceAnswered || isFinishing() || isDestroyed()) return;
         configureAudienceAds();
         if (audience.allowOnlineAccounts()) {
-            if (!gamesInitialized) { PlayGamesSdk.initialize(this); gamesInitialized = true; }
-            checkSignIn();
+            if (!gamesLifecycleReady) {
+                if (!gamesStartupFailed) prepareGamesLifecycle();
+                if (gamesStartupPending) return;
+            }
+            else if (pendingInteractiveLogin) { pendingInteractiveLogin = false; signIn(); }
+            else checkSignIn();
         }
         if (audience.allowAds() && consentGate == null) initializeConsent();
+        else if (adsAllowed()) initializeAds();
+        sendAudienceState();
+    }
+    private void prepareGamesLifecycle() {
+        if (!audience.allowOnlineAccounts() || gamesLifecycleReady || gamesStartupPending || gamesStartupFailed || isFinishing() || isDestroyed()) return;
+        if (!gamesInitialized) { PlayGamesSdk.initialize(getApplicationContext()); gamesInitialized = true; }
+        gamesStartupPending = true;
+        sendAudienceState();
+        try {
+            // A real Activity supplies the missed Created/Resumed events without replacing the game WebView.
+            startActivityForResult(new Intent(this, GamesStartupActivity.class), GAMES_STARTUP_REQUEST);
+        } catch (RuntimeException failure) {
+            gamesStartupPending = false;
+            gamesStartupFailed = true; pendingInteractiveLogin = false;
+            Log.e(TAG, "Play Games lifecycle start failed", failure);
+            error("Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.");
+            sendAudienceState();
+        }
     }
     private void initializeConsent() {
         if (!audience.allowAds()) return;
@@ -222,17 +285,19 @@ public class MainActivity extends Activity {
         consentGate.start();
     }
     private boolean adsAllowed() {
-        return audience.allowAds() && consentGate != null && consentGate.canRequestAds() && !isFinishing() && !isDestroyed();
+        return audienceDialog == null && !gamesStartupPending && audience.allowAds() && consentGate != null && consentGate.canRequestAds() && !isFinishing() && !isDestroyed();
     }
     private void initializeAds() {
         if (!adsAllowed()) return;
         if (adsInitialized) { loadRewarded(); loadInterstitial(); return; }
         if (adsInitializing) return;
         adsInitializing = true;
+        sendAudienceState();
         MobileAds.initialize(this, status -> runOnUiThread(() -> {
             if (isFinishing() || isDestroyed()) return;
             adsInitializing = false;
             adsInitialized = true;
+            sendAudienceState();
             loadRewarded();
             loadInterstitial();
         }));
@@ -245,6 +310,18 @@ public class MainActivity extends Activity {
             state.put("formOpen", audienceDialog != null || (consentGate != null && consentGate.formOpen()));
             send("privacyState", state.toString());
         } catch (Exception error) { Log.w(TAG, "Privacy state", error); }
+        sendAudienceState();
+    }
+    private void sendAudienceState() {
+        try {
+            JSONObject state = new JSONObject();
+            String band = !audienceAnswered ? "pending" : audience.band() == AudiencePolicy.Band.ADULT ? "adult"
+                : audience.band() == AudiencePolicy.Band.UNDER_13 ? "under13" : audience.band() == AudiencePolicy.Band.TEEN ? "teen" : "unknown";
+            state.put("band", band);
+            state.put("accountsAllowed", audienceAnswered && audience.allowOnlineAccounts());
+            state.put("busy", audienceOptionsBusy());
+            send("audienceState", state.toString());
+        } catch (Exception error) { Log.w(TAG, "Audience state", error); }
     }
     private void openPrivacyPolicy() { openLegalPage("privacy-policy.html"); }
     private void openLegalPage(String filename) {
@@ -284,8 +361,9 @@ public class MainActivity extends Activity {
         layout.addView(close, new android.widget.LinearLayout.LayoutParams(-1, -2));
         layout.addView(policy, new android.widget.LinearLayout.LayoutParams(-1, 0, 1));
         dialog.setContentView(layout);
-        dialog.setOnDismissListener(ignored -> { layout.removeView(policy); policy.stopLoading(); policy.destroy(); privacyDialog = null; });
+        dialog.setOnDismissListener(ignored -> { layout.removeView(policy); policy.stopLoading(); policy.destroy(); privacyDialog = null; sendAudienceState(); });
         privacyDialog = dialog;
+        sendAudienceState();
         dialog.show();
         dialog.getWindow().setLayout(-1, -1);
         policy.getSettings().setDefaultTextEncodingName("UTF-8");
@@ -305,7 +383,7 @@ public class MainActivity extends Activity {
         send("error", JSONObject.quote(NativeStrings.text(message, uiLanguage)));
     }
     private void checkSignIn() {
-        if (!audience.allowOnlineAccounts() || !gamesInitialized || manualSigningIn || checkingSignIn || isFinishing() || isDestroyed()) return;
+        if (!audience.allowOnlineAccounts() || !gamesInitialized || !gamesLifecycleReady || gamesStartupPending || audienceDialog != null || manualSigningIn || checkingSignIn || isFinishing() || isDestroyed()) return;
         checkingSignIn = true;
         final int generation = ++authGeneration;
         signedIn = false; currentPlayerId = "";
@@ -328,8 +406,10 @@ public class MainActivity extends Activity {
         if (interactive) error("Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.");
     }
     private void signIn() {
-        if (!audience.allowOnlineAccounts()) { error("Bu oturum yerel oyun modunda. Kayıtların cihazında korunur."); return; }
-        if (!gamesInitialized || manualSigningIn || isFinishing() || isDestroyed()) return;
+        if (!audience.allowOnlineAccounts()) { showAudienceScreen(true, true); return; }
+        if (manualSigningIn || audienceDialog != null || isFinishing() || isDestroyed()) return;
+        if (!gamesLifecycleReady) { gamesStartupFailed = false; pendingInteractiveLogin = true; prepareGamesLifecycle(); return; }
+        if (!gamesInitialized || gamesStartupPending) return;
         manualSigningIn = true; checkingSignIn = false; signedIn = false; currentPlayerId = "";
         final int generation = ++authGeneration;
         PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener(task -> {
@@ -382,50 +462,94 @@ public class MainActivity extends Activity {
         if(full!=null)result.put("full",full);
         return result;
     }
+    private static final class CloudSaveOperation {
+        final int generation;
+        final String owner;
+        CloudSaveOperation(int generation, String owner) { this.generation = generation; this.owner = owner; }
+    }
+    private CloudSaveOperation activeCloudSave;
+    private boolean cloudSaveCurrent(CloudSaveOperation operation) {
+        return operation != null && activeCloudSave == operation && operation.generation == authGeneration
+            && operation.owner.equals(currentPlayerId) && audience.allowOnlineAccounts() && signedIn
+            && !isFinishing() && !isDestroyed();
+    }
+    private void finishCloudSave(CloudSaveOperation operation, String message) {
+        if (!cloudSaveCurrent(operation)) return;
+        activeCloudSave = null; saving = false;
+        if (message != null) error(message);
+        flushPending();
+    }
+    private void discardCloudSnapshot(SnapshotsClient client, Snapshot snapshot) {
+        if (snapshot == null) return;
+        try { client.discardAndClose(snapshot); }
+        catch (RuntimeException error) { Log.w(TAG, "Cloud snapshot cleanup failed", error); }
+    }
+    private void discardCloudResult(SnapshotsClient client, SnapshotsClient.DataOrConflict<Snapshot> result) {
+        if (result == null) return;
+        if (result.isConflict()) {
+            SnapshotsClient.SnapshotConflict conflict = result.getConflict();
+            if (conflict != null) {
+                discardCloudSnapshot(client, conflict.getSnapshot());
+                if (conflict.getConflictingSnapshot() != conflict.getSnapshot()) discardCloudSnapshot(client, conflict.getConflictingSnapshot());
+            }
+        } else discardCloudSnapshot(client, result.getData());
+    }
     private void syncSave(String raw) {
-        if (!audience.allowOnlineAccounts() || !signedIn) return;
+        if (!audience.allowOnlineAccounts() || !signedIn || currentPlayerId.isEmpty() || isFinishing() || isDestroyed()) return;
         if (raw == null || raw.length()>2800000) { error("Kayıt boyutu geçersiz"); return; }
+        CloudSaveOperation operation = null;
         try {
             JSONObject incoming=new JSONObject(raw);
             JSONObject full=incoming.optJSONObject("full");
-            if(full!=null&&(currentPlayerId.isEmpty()||!currentPlayerId.equals(full.optString("account")))){Log.w(TAG,"Stale cloud account request ignored");return;}
+            if(full!=null&&!currentPlayerId.equals(full.optString("account"))){Log.w(TAG,"Stale cloud account request ignored");return;}
             if(incoming.optJSONObject("completed")==null || incoming.optJSONObject("best")==null) return;
-            if(saving) { pendingSave=raw; return; }
-            saving=true;
-            final int generation = authGeneration;
+            if(saving && cloudSaveCurrent(activeCloudSave)) { pendingSave=raw; return; }
+            // A finished auth probe or age/account change invalidates the previous native queue.
+            // The account-scoped JavaScript outbox remains durable and sends its current model again.
+            pendingSave = null;
+            operation = new CloudSaveOperation(authGeneration, currentPlayerId);
+            activeCloudSave = operation; saving = true;
             SnapshotsClient client=PlayGames.getSnapshotsClient(this);
-            if(full!=null&&!full.has("root")) importLegacyAndOpen(client,incoming,generation);
-            else openCloudSnapshot(client,incoming,generation);
-        } catch(Exception e) { saving=false; error("Kayıt verisi geçersiz"); }
+            if(full!=null&&!full.has("root")) importLegacyAndOpen(client,incoming,operation);
+            else openCloudSnapshot(client,incoming,operation);
+        } catch(Exception e) {
+            if (operation != null) finishCloudSave(operation, "Kayıt verisi geçersiz");
+            else error("Kayıt verisi geçersiz");
+        }
     }
-    private void openCloudSnapshot(SnapshotsClient client,JSONObject incoming,int generation) {
-        if(generation!=authGeneration){saving=false;flushPending();return;}
+    private void openCloudSnapshot(SnapshotsClient client,JSONObject incoming,CloudSaveOperation operation) {
+        if (!cloudSaveCurrent(operation)) return;
         String slot=incoming.optJSONObject("full")==null?SAVE_NAME:FULL_SAVE_NAME;
-        client.open(slot,true,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
-            .addOnSuccessListener(result -> handleSnapshot(client,result,incoming,0,generation))
-            .addOnFailureListener(e -> {saving=false;flushPending();error("Bulut kayda erişilemedi: "+e.getMessage());});
+        try {
+            client.open(slot,true,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
+                .addOnSuccessListener(result -> handleSnapshot(client,result,incoming,0,operation))
+                .addOnFailureListener(e -> finishCloudSave(operation,"Bulut kayda erişilemedi: "+e.getMessage()));
+        } catch (RuntimeException e) { finishCloudSave(operation,"Bulut kayda erişilemedi: "+e.getMessage()); }
     }
-    private void importLegacyAndOpen(SnapshotsClient client,JSONObject incoming,int generation) {
-        client.open(SAVE_NAME,false,SnapshotsClient.RESOLUTION_POLICY_MANUAL).addOnSuccessListener(result -> {
-            JSONObject enriched=incoming;
-            try {
-                JSONObject legacy;
-                if(result.isConflict()) {
-                    SnapshotsClient.SnapshotConflict conflict=result.getConflict();
-                    if(conflict==null)throw new IllegalStateException("Eski kayıt çakışması boş");
-                    legacy=mergeSave(readSnapshot(conflict.getSnapshot()),readSnapshot(conflict.getConflictingSnapshot()));
-                    client.discardAndClose(conflict.getSnapshot());client.discardAndClose(conflict.getConflictingSnapshot());
-                } else {
-                    Snapshot old=result.getData();legacy=old==null?new JSONObject():readSnapshot(old);
-                    if(old!=null)client.discardAndClose(old);
-                }
-                legacy.remove("full");
-                enriched=mergeSave(legacy,incoming);
-                // Only the new slot may confirm the initial wallet; legacy data imports progression.
-                enriched.put("full",incoming.getJSONObject("full"));
-            } catch(Exception e){Log.w(TAG,"Legacy cloud import unavailable",e);}
-            openCloudSnapshot(client,enriched,generation);
-        }).addOnFailureListener(e -> openCloudSnapshot(client,incoming,generation));
+    private void importLegacyAndOpen(SnapshotsClient client,JSONObject incoming,CloudSaveOperation operation) {
+        if (!cloudSaveCurrent(operation)) return;
+        try {
+            client.open(SAVE_NAME,false,SnapshotsClient.RESOLUTION_POLICY_MANUAL).addOnSuccessListener(result -> {
+                if (!cloudSaveCurrent(operation)) { discardCloudResult(client,result); return; }
+                JSONObject enriched=incoming;
+                try {
+                    JSONObject legacy;
+                    if(result.isConflict()) {
+                        SnapshotsClient.SnapshotConflict conflict=result.getConflict();
+                        if(conflict==null)throw new IllegalStateException("Eski kayıt çakışması boş");
+                        legacy=mergeSave(readSnapshot(conflict.getSnapshot()),readSnapshot(conflict.getConflictingSnapshot()));
+                    } else {
+                        Snapshot old=result.getData();legacy=old==null?new JSONObject():readSnapshot(old);
+                    }
+                    legacy.remove("full");
+                    enriched=mergeSave(legacy,incoming);
+                    // Only the new slot may confirm the initial wallet; legacy data imports progression.
+                    enriched.put("full",incoming.getJSONObject("full"));
+                } catch(Exception e){Log.w(TAG,"Legacy cloud import unavailable",e);}
+                finally { discardCloudResult(client,result); }
+                openCloudSnapshot(client,enriched,operation);
+            }).addOnFailureListener(e -> { if (cloudSaveCurrent(operation)) openCloudSnapshot(client,incoming,operation); });
+        } catch (RuntimeException e) { if (cloudSaveCurrent(operation)) openCloudSnapshot(client,incoming,operation); }
     }
     private byte[] snapshotBytes(JSONObject value)throws Exception {
         byte[] bytes=value.toString().getBytes(StandardCharsets.UTF_8);
@@ -436,35 +560,48 @@ public class MainActivity extends Activity {
         byte[] bytes=snapshot.getSnapshotContents().readFully();
         return bytes.length==0?new JSONObject():new JSONObject(new String(bytes,StandardCharsets.UTF_8));
     }
-    private void handleSnapshot(SnapshotsClient client, SnapshotsClient.DataOrConflict<Snapshot> result, JSONObject incoming, int depth, int generation) {
-        if(generation!=authGeneration || incoming.optJSONObject("full")!=null&&!currentPlayerId.equals(incoming.optJSONObject("full").optString("account"))) {
-            if(result.isConflict()){SnapshotsClient.SnapshotConflict conflict=result.getConflict();if(conflict!=null){client.discardAndClose(conflict.getSnapshot());client.discardAndClose(conflict.getConflictingSnapshot());}}
-            else if(result.getData()!=null)client.discardAndClose(result.getData());
-            saving=false;flushPending();return;
+    private void handleSnapshot(SnapshotsClient client, SnapshotsClient.DataOrConflict<Snapshot> result, JSONObject incoming, int depth, CloudSaveOperation operation) {
+        if (!cloudSaveCurrent(operation)) { discardCloudResult(client,result); return; }
+        if (incoming.optJSONObject("full")!=null&&!operation.owner.equals(incoming.optJSONObject("full").optString("account"))) {
+            discardCloudResult(client,result); finishCloudSave(operation,null); return;
         }
+        if (result == null) { finishCloudSave(operation,"Bulut kayıt açılamadı"); return; }
         if(result.isConflict()) {
             SnapshotsClient.SnapshotConflict conflict=result.getConflict();
-            if(conflict==null || depth>=5) { saving=false; error("Bulut kayıt çakışması çözülemedi. Tekrar giriş yaparak eşitle."); return; }
+            if(conflict==null || depth>=5) {
+                discardCloudResult(client,result);
+                finishCloudSave(operation,"Bulut kayıt çakışması çözülemedi. Tekrar giriş yaparak eşitle."); return;
+            }
             Snapshot chosen=conflict.getSnapshot();
             Snapshot other=conflict.getConflictingSnapshot();
             try {
                 JSONObject merged=mergeSave(mergeSave(readSnapshot(chosen),readSnapshot(other)),incoming);
                 chosen.getSnapshotContents().writeBytes(snapshotBytes(merged));
+                if (other != chosen) discardCloudSnapshot(client,other);
                 client.resolveConflict(conflict.getConflictId(),chosen)
-                    .addOnSuccessListener(next -> handleSnapshot(client,next,merged,depth+1,generation))
-                    .addOnFailureListener(e -> { saving=false; flushPending(); error("Bulut kayıt çakışması: "+e.getMessage()); });
-            } catch(Exception e) { client.discardAndClose(chosen); saving=false; flushPending(); error("Bulut kayıt birleştirilemedi: "+e.getMessage()); }
+                    .addOnSuccessListener(next -> handleSnapshot(client,next,merged,depth+1,operation))
+                    .addOnFailureListener(e -> {
+                        discardCloudSnapshot(client,chosen);
+                        finishCloudSave(operation,"Bulut kayıt çakışması: "+e.getMessage());
+                    });
+            } catch(Exception e) { discardCloudResult(client,result); finishCloudSave(operation,"Bulut kayıt birleştirilemedi: "+e.getMessage()); }
             return;
         }
         Snapshot snapshot=result.getData();
-        if(snapshot==null) { saving=false; flushPending(); error("Bulut kayıt açılamadı"); return; }
+        if(snapshot==null) { finishCloudSave(operation,"Bulut kayıt açılamadı"); return; }
         try {
             JSONObject merged=mergeSave(readSnapshot(snapshot),incoming);
             snapshot.getSnapshotContents().writeBytes(snapshotBytes(merged));
             client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE)
-                .addOnSuccessListener(meta -> { send("cloudSave",merged.toString()); saving=false; flushPending(); })
-                .addOnFailureListener(e -> { saving=false; flushPending(); error("Bulut kayıt yazılamadı: "+e.getMessage()); });
-        } catch(Exception e) { client.discardAndClose(snapshot); saving=false; flushPending(); error("Bulut kayıt okunamadı: "+e.getMessage()); }
+                .addOnSuccessListener(meta -> {
+                    if (!cloudSaveCurrent(operation)) return;
+                    send("cloudSave",merged.toString()); finishCloudSave(operation,null);
+                })
+                .addOnFailureListener(e -> {
+                    discardCloudSnapshot(client,snapshot);
+                    finishCloudSave(operation,"Bulut kayıt yazılamadı: "+e.getMessage());
+                });
+        } catch(Exception e) { discardCloudSnapshot(client,snapshot); finishCloudSave(operation,"Bulut kayıt okunamadı: "+e.getMessage()); }
     }
     private void flushPending() {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
@@ -506,7 +643,7 @@ public class MainActivity extends Activity {
         if (rewardedInProgress) return;
         if (!adsAllowed() || !adsInitialized || interstitialInProgress) { rewardUnavailable(purpose); return; }
         if (rewardedAd == null) { rewardUnavailable(purpose); loadRewarded(); return; }
-        rewardedInProgress = true;
+        rewardedInProgress = true; sendAudienceState();
         RewardedAd ad = rewardedAd;
         rewardedAd = null;
         send("adReady", "false");
@@ -515,11 +652,11 @@ public class MainActivity extends Activity {
             @Override public void onAdShowedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); }
             @Override public void onAdDismissedFullScreenContent() {
                 adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime());
-                rewardedInProgress = false;
+                rewardedInProgress = false; sendAudienceState();
                 if (!rewardEarned[0]) rewardUnavailable(purpose);
                 loadRewarded();
             }
-            @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; rewardUnavailable(purpose); loadRewarded(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { rewardedInProgress = false; sendAudienceState(); rewardUnavailable(purpose); loadRewarded(); }
         });
         try {
             ad.show(this, reward -> {
@@ -528,7 +665,7 @@ public class MainActivity extends Activity {
                 recordReward(purpose,rewardOwner);
             });
         } catch (RuntimeException error) {
-            rewardedInProgress = false;
+            rewardedInProgress = false; sendAudienceState();
             Log.e(TAG, "Rewarded display failed", error);
             rewardUnavailable(purpose);
             loadRewarded();
@@ -552,14 +689,14 @@ public class MainActivity extends Activity {
         if (!audience.allowInterstitials() || !adsAllowed() || !adsInitialized || interstitialInProgress || !adCadence.eligible(android.os.SystemClock.elapsedRealtime()) || interstitialAd == null || rewardedInProgress) return;
         InterstitialAd ad = interstitialAd;
         interstitialAd = null;
-        interstitialInProgress = true;
+        interstitialInProgress = true; sendAudienceState();
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override public void onAdShowedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); }
-            @Override public void onAdDismissedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); interstitialInProgress = false; loadInterstitial(); }
-            @Override public void onAdFailedToShowFullScreenContent(AdError error) { interstitialInProgress = false; loadInterstitial(); }
+            @Override public void onAdDismissedFullScreenContent() { adCadence.fullScreenShown(android.os.SystemClock.elapsedRealtime()); interstitialInProgress = false; sendAudienceState(); loadInterstitial(); }
+            @Override public void onAdFailedToShowFullScreenContent(AdError error) { interstitialInProgress = false; sendAudienceState(); loadInterstitial(); }
         });
         try { ad.show(this); }
-        catch (RuntimeException e) { interstitialInProgress = false; Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
+        catch (RuntimeException e) { interstitialInProgress = false; sendAudienceState(); Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
         @JavascriptInterface public void setLanguage(String code) { runOnUiThread(() -> uiLanguage = NativeStrings.language(code)); }
@@ -573,6 +710,8 @@ public class MainActivity extends Activity {
             });
         }
         @JavascriptInterface public void privacyState() { runOnUiThread(() -> sendPrivacyState()); }
+        @JavascriptInterface public void audienceState() { runOnUiThread(() -> sendAudienceState()); }
+        @JavascriptInterface public void ageOptions() { runOnUiThread(() -> showAudienceScreen(true, false)); }
         @JavascriptInterface public void privacyOptions() { runOnUiThread(() -> { if (consentGate != null && !rewardedInProgress && !interstitialInProgress) consentGate.openOptions(); sendPrivacyState(); }); }
         @JavascriptInterface public void openPrivacyPolicy() { runOnUiThread(() -> MainActivity.this.openPrivacyPolicy()); }
         @JavascriptInterface public String installationId() { return installationId; }
@@ -677,7 +816,17 @@ public class MainActivity extends Activity {
         super.onResume();
         loadRewarded();
         loadInterstitial();
-        if (view != null) { view.onResume(); checkSignIn(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
+        if (view != null) { view.onResume(); if (audienceAnswered && audienceDialog == null) startEligibleServices(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }
+    }
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GAMES_STARTUP_REQUEST) {
+            gamesStartupPending = false;
+            gamesLifecycleReady = resultCode == RESULT_OK;
+            gamesStartupFailed = !gamesLifecycleReady;
+            if (gamesStartupFailed) pendingInteractiveLogin = false;
+            sendAudienceState();
+        }
     }
     @Override protected void onDestroy() {
         if (audienceDialog != null) { audienceDialog.setOnDismissListener(null); audienceDialog.dismiss(); audienceDialog = null; }

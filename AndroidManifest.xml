@@ -6,8 +6,9 @@
     <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-6340528165840202~8704733869" />
     <meta-data android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT" android:value="true" />
     <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
-    <!-- Initialize Play Games explicitly only after the neutral age screen. -->
+    <!-- Register SDK lifecycle listeners only for an explicitly eligible age choice. -->
     <provider android:name="com.google.android.gms.games.provider.PlayGamesInitProvider" tools:node="remove" />
+    <activity android:name=".GamesStartupActivity" android:exported="false" android:noHistory="true" android:excludeFromRecents="true" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     <activity android:name=".MainActivity" android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

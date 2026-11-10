@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.48` (versionCode `108`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.48-TEST-APK-AAB` ve `KaraDugum-v6.48-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.49` (versionCode `109`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.49-TEST-APK-AAB` ve `KaraDugum-v6.49-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,13 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.49 — Play Games başlangıcı ve yaş seçimini gözden geçirme
+
+- Play Games 22.1.0 geç başlatıldığında `onActivityCreated` olayını kaçırıp yerel `UNINITIALIZED` durumundan 10 kodu üretebiliyordu. Kayıtlı yetişkin seçimi SDK yaşam döngüsü dinleyicilerini `super.onCreate` öncesinde kaydeder. İlk yetişkin seçiminde dışa kapalı, şeffaf bir yardımcı Activity gerekli gerçek açılış olaylarını tamamlar; asıl oyun WebView'i yeniden yüklenmez, tahta ve geri alma geçmişi korunur. Başlatma iptal edilirse otomatik tekrar döngüsü açılmaz. Resmî AAR inceleme kanıtı `store-listings/play-games-lifecycle-evidence.md` içindedir.
+- Ayarlar kayıtlı yaş aralığını gösterir ve kayıtları silmeden tarafsız seçim ekranını yeniden açar. Profilden/sıralamadan kısıtlı oturum için aynı seçim gözden geçirilebilir; yetişkin ön seçimi veya otomatik yaş yükseltme yoktur. Düzenleme iptali önceki seçimi korur. Yeni metinler 25 oyun dilinde hazırlanır; native açıklamalar TR/EN/AR/ZH olarak korunur.
+- Yaş değişiminde eski reklamlar/rıza kapısı ve hesap istekleri geçersizleştirilir; yeni SDK kısıtları isteklerden önce uygulanır. Gecikmiş bulut açma/çakışma/yazma yanıtları kendi hesap ve işlem kimliklerine sabitlenir; başka veya kısıtlı oturuma veri/ödül aktarmaz. Mevcut birleştirme, ekonomi, 300 bölüm ve ipucu kuralları değişmez.
+- Native başlangıç, gerçek auth metotları, gecikmiş bulut yanıtları ve dört dilde yaş/hesap kontrolleri test edilir. Kullanıcının bildirdiği GitHub APK paket/SHA-1 bilgisi kaynak imzayla eşleşir; Google hesabına gerçek girişin fiziksel cihazda doğrulanması, gerekirse Play dağıtım imzası/test erişiminin kontrolü ayrıca gereklidir.
 
 ## v6.48 — Yaş seçimini hatırlama ve giriş hata akışı
 

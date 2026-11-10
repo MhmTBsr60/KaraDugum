@@ -1,6 +1,8 @@
 # KARA DÜĞÜM — Play Games bağlantı kontrolü
 
-Google Play Games `10` (`DEVELOPER_ERROR`) kodu uygulama yapılandırması hatasıdır. Hangi özel hesap ayarının yanlış olduğu, Play Console ve bağlı Google Cloud projesi incelenmeden kesinleşmez. Açılıştaki hata mesajının kaldırılması, Google bağlantısının düzeldiğini kanıtlamaz. Yerel oyun kayıtlarını veya uygulama verilerini silmeyin.
+Google Play Games `10` kodu genel hata listesinde `DEVELOPER_ERROR` olarak adlandırılır; ancak her `10` sonucunu yalnız OAuth veya SHA-1 panel ayarına bağlamak doğru değildir. İncelenen 22.1.0 SDK'sında, Activity başlangıç olaylarından sonra yapılan geç başlatma otomatik kimlik doğrulamasını henüz başlatmamış olabilir; `isAuthenticated()` bu durumda Google hesap ayarları denetlenmeden de yerel olarak `10` üretebilir. Çağrı zinciri ve gerçek SDK incelemesi [Play Games başlangıç sırası kanıtında](play-games-lifecycle-evidence.md) açıklanır.
+
+6.49 kaynak değişikliği, yetişkin seçimi için SDK başlatma ve gerçek Activity yaşam döngüsü sırasını düzenler; yaş seçimi yapılmamış veya kısıtlı gruplarda hesap hizmetleri başlatılmaz. Bu düzeltme veya açılıştaki hata mesajının kaldırılması, Google bağlantısının gerçek cihazda çalıştığını ya da özel Play Console ayarlarının doğru olduğunu kanıtlamaz. Güncel düzeltmeyle hata sürerse aşağıdaki paket, imza, OAuth bağlantısı ve test erişimi kontrollerini uygulayın. Yerel oyun kayıtlarını veya uygulama verilerini silmeyin.
 
 ## Kimlik bilgilerini karşılaştırın
 

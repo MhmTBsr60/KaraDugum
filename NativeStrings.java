@@ -8,6 +8,7 @@ public final class NativeStrings {
         return value.equals("tr") || value.equals("ar") || value.equals("zh") ? value : "en";
     }
     private static final String[][] TEXT = {
+        {"Yaş seçimi bu cihazda kaydedilemedi. Bu oturumda seçimin uygulanacak.", "Your age choice could not be saved on this device. It will apply for this session.", "تعذر حفظ اختيار الفئة العمرية على هذا الجهاز. سيُطبَّق في هذه الجلسة.", "无法在此设备上保存年龄选择。本次会话仍会采用此选择。"},
         {"Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.", "Could not connect to Google Play Games. Your local saves are safe; you can try again later.", "تعذر الاتصال بألعاب Google Play. ملفات الحفظ المحلية محفوظة؛ يمكنك المحاولة لاحقًا.", "无法连接 Google Play 游戏。本地存档已保留，你可以稍后重试。"},
         {"Bu oturum yerel oyun modunda. Kayıtların cihazında korunur.", "This session uses local play. Your saves stay on this device.", "هذه الجلسة في وضع اللعب المحلي. تبقى ملفات الحفظ على هذا الجهاز.", "本次会话使用本地游玩模式，存档会保留在此设备上。"},
         {"Yaş aralığın nedir?", "What is your age range?", "ما فئتك العمرية؟", "你的年龄范围是？"},
