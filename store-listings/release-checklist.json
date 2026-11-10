@@ -1,8 +1,8 @@
 {
   "release": {
     "applicationId": "com.orynexa.karadugum",
-    "versionName": "6.49",
-    "versionCode": 109,
+    "versionName": "6.50",
+    "versionCode": 110,
     "checkedAt": "2026-11-10"
   },
   "listingLocales": [
@@ -78,7 +78,8 @@
     "sdk": "Resolved SDK graph is pinned and exported by CI; no claim about every future SDK policy notice or private Console warning.",
     "minification": "R8 is disabled. No mapping.txt is expected; the release collector includes it if R8 is enabled later.",
     "audience": "Neutral age screen when no valid device-local answer exists; explicit age band is stored in Android no-backup files only, never in cloud saves. No DOB is stored. Cancel stays session-local. Child/teen/unstated receive CHILD treatment, TFCD AAID-suppression flag, G content limit, disabled personalization and npa=1 ad requests. UMP under-age flag is separately set. Every ad still requires SDK canRequestAds. Only adults may load/show interstitials or initialize Play Games. Settings can review the stored band without clearing saves; editing cancellation preserves the previous choice. Stale ad/auth/cloud callbacks cannot affect a later owner or restricted session.",
-    "playGamesStartup": "SDK22.1 bytecode confirms missed Created lifecycle can generate local10. Persisted adult registers lifecycle before MainActivity super.onCreate; first adult selection uses nonexported GamesStartupActivity without recreating game WebView. No auth probe before lifecycle-ready result and Main resume. Child/pending do not initialize games SDK."
+    "playGamesStartup": "SDK22.1 bytecode confirms missed Created lifecycle can generate local10. Persisted adult registers lifecycle before MainActivity super.onCreate; first adult selection uses nonexported GamesStartupActivity without recreating game WebView. No auth probe before lifecycle-ready result and Main resume. Child/pending do not initialize games SDK.",
+    "accountHelp": "Connected profile has one truthful account-switching help action; no fake sign-out or claimed in-app account picker. Native help displays current official Android Google Play Games settings instructions and an optional official help-page link. No auth/save state is changed by opening help."
   },
   "referenceUrls": [
     "https://developers.google.com/admob/android/privacy",

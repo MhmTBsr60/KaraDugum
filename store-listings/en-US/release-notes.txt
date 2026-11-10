@@ -1,3 +1,3 @@
-Fixed the Google Play Games startup sequence.
-Review your age-range choice in Settings without deleting game saves.
-Improved sign-in explanations and safe handling of delayed cloud responses.
+Clarified the account controls on connected profiles.
+Account switching steps now appear in a readable help dialog.
+Google sign-in, game saves and existing progress are preserved.

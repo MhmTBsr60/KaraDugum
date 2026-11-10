@@ -7,8 +7,8 @@ KARA DÜĞÜM, 300 bölümlük HTML/WebView tabanlı Android bulmaca oyunudur.
 - GitHub Actions > **KaraDugum Android APK** > **Run workflow** ile derleme başlatılır. `main` dalına gönderilen değişiklikler de derlemeyi tetikler.
 - Aktif iş akışı: `.github/workflows/android-apk.yml`.
 - Paket adı: `com.orynexa.karadugum`.
-- Paket sürümü: `6.49` (versionCode `109`).
-- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.49-TEST-APK-AAB` ve `KaraDugum-v6.49-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
+- Paket sürümü: `6.50` (versionCode `110`).
+- Başarılı ana dal derlemesi **Artifacts** bölümüne `KaraDugum-v6.50-TEST-APK-AAB` ve `KaraDugum-v6.50-LIVE-APK-AAB` arşivlerini yükler. **TEST** APK Google test reklamlarını, **LIVE** AAB gerçek reklam birimlerini kullanır. Dosya adlarında da TEST/LIVE yazılıdır. Elle çalıştırmada `ads_mode: both`, `test` veya `live` seçilebilir.
 - Derleme için GitHub Secrets içinde `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD` gereklidir. Gizli anahtarları depoya eklemeyin.
 
 Kök dizindeki `android-apk.yml` ve iç içe `.github/workflows/.github/workflows/android-apk.yml` aktif iş akışı değildir; derlemeler için yalnızca yukarıdaki aktif dosyayı düzenleyin.
@@ -22,6 +22,12 @@ Not: Başarılı derleme, oyun içi bütün işlevlerin cihazda hatasız çalı�
 - Sistem Chromium kullanmak için `CHROMIUM_PATH=/usr/bin/chromium npm run test:browser`.
 
 Bulut kaydı hesaba bağlı bölüm/yıldız/puan ilerlemesini, kristal/XP/ipuçlarını, tema sahipliğini, görevleri ve yarım kalan tahtayı mevcut işlem/sayaç modeliyle birleştirir. Desteklenen kayıt alanları ve sınırlar aşağıdaki sürüm notlarında açıklanır. Gerçek reklam birimleri canlı moda bağlıdır; test derlemelerinde Google test birimleri kullanılır. Play Games ve reklamların gerçek cihaz/account doğrulaması ayrıca yapılmalıdır.
+
+## v6.50 — Hesap değiştirme yardımını doğru adlandırma
+
+- Bağlı profilde işlem yapmayan “ÇIKIŞ YAP” ve hesap seçici açmayan “GOOGLE HESABINI DEĞİŞTİR” yerine tek “HESAP DEĞİŞTİRME YARDIMI” kontrolü bulunur. Bağlı olmayan yetişkinin Google giriş düğmesi ve yaş seçimini gözden geçirme akışı korunur.
+- Play Games v2 public API'sinde uygulama içi sign-out veya eski GamesClient ayar API'si yoktur. Native yardım penceresi Android Google ayarlarındaki resmi oyun bazlı hesap seçimi adımlarını dört dilde gösterir ve Google'ın yardım sayfasını açabilir. Kısa Toast'a sığmayan açıklama bu pencerede okunabilir. Hesap/profil/kayıt durumu yardım açılırken değiştirilmez.
+- Menü metni 25 dilde hazırlanır; gerçek tarayıcı denetimi bağlı/bağlı olmayan/kısıtlı oturumları, doğru native yardım çağrısını, eski köprüleri ve değişmeyen tahta/kayıt/kaynakları doğrular.
 
 ## v6.49 — Play Games başlangıcı ve yaş seçimini gözden geçirme
 

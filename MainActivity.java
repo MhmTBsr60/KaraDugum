@@ -324,6 +324,25 @@ public class MainActivity extends Activity {
         } catch (Exception error) { Log.w(TAG, "Audience state", error); }
     }
     private void openPrivacyPolicy() { openLegalPage("privacy-policy.html"); }
+    private void showAccountHelp() {
+        if (isFinishing() || isDestroyed()) return;
+        if (audienceOptionsBusy()) { sendAudienceState(); return; }
+        final android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+            .setTitle(NativeStrings.text("Hesap değiştirme yardımı", uiLanguage))
+            .setMessage(NativeStrings.text(NativeStrings.ACCOUNT_HELP, uiLanguage))
+            .setNegativeButton(NativeStrings.text("Kapat", uiLanguage), null)
+            .setPositiveButton(NativeStrings.text("Google yardımını aç", uiLanguage), (ignored, which) -> {
+                String language = "zh".equals(uiLanguage) ? "zh-CN" : uiLanguage;
+                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://support.google.com/googleplay/answer/14754238?hl=" + language))); }
+                catch (android.content.ActivityNotFoundException failure) { Log.w(TAG, "Account help browser unavailable", failure); }
+            })
+            .create();
+        dialog.setOnDismissListener(ignored -> { privacyDialog = null; sendAudienceState(); });
+        privacyDialog = dialog;
+        sendAudienceState();
+        dialog.show();
+        dialog.getWindow().getDecorView().setLayoutDirection("ar".equals(uiLanguage) ? android.view.View.LAYOUT_DIRECTION_RTL : android.view.View.LAYOUT_DIRECTION_LTR);
+    }
     private void openLegalPage(String filename) {
         if (!"privacy-policy.html".equals(filename) && !"delete-account.html".equals(filename)) return;
         final String legalUrl = "file:///android_asset/" + filename;
@@ -735,10 +754,9 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> MainActivity.this.signIn());
         }
         @JavascriptInterface public void logout() {
-            runOnUiThread(() -> Toast.makeText(MainActivity.this,
-                NativeStrings.text("Play Games hesabını Google Play Oyunlar ayarlarından değiştirebilirsin.", uiLanguage),
-                Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> showAccountHelp());
         }
+        @JavascriptInterface public void accountHelp() { runOnUiThread(() -> showAccountHelp()); }
         @JavascriptInterface public void state() { runOnUiThread(() -> checkSignIn()); }
         @JavascriptInterface public void syncSave(String raw) { runOnUiThread(() -> MainActivity.this.syncSave(raw)); }
         @JavascriptInterface public void achievements(int completed, int stars) {

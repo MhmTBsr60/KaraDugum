@@ -16,6 +16,10 @@ public final class NativeStringsAudit {
         check(NativeStrings.text(prompt, "ar").equals("هل تريد الخروج من اللعبة؟"), "Arabic dialog");
         check(NativeStrings.text(prompt, "zh").equals("要退出游戏吗？"), "Chinese dialog");
         for (String code : new String[]{"en", "ar", "zh"}) {
+            check(!NativeStrings.text(NativeStrings.ACCOUNT_HELP, code).equals(NativeStrings.ACCOUNT_HELP), "Translated complete account help: " + code);
+            for (String help : new String[]{"Hesap değiştirme yardımı", "Kapat", "Google yardımını aç"}) {
+                check(!NativeStrings.text(help, code).equals(help), "Translated account help: " + code + " / " + help);
+            }
             check(!NativeStrings.text("Vazgeç", code).equals("Vazgeç"), "Translated cancel: " + code);
             check(!NativeStrings.text("Sayfayı kapat", code).equals("Sayfayı kapat"), "Translated accessibility: " + code);
             String translated = NativeStrings.text("Bulut kayıt açılamadı: external-status-42", code);
