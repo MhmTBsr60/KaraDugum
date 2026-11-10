@@ -1,0 +1,31 @@
+KARA DÜĞÜM 6.50 / 110 — Tek yayın ve gelir kontrol listesi
+
+TEKNİK PAKET
+İmzalı LIVE AAB ve TEST APK hazır. 18 kaynak,39 tarayıcı,8 native Java test paketi geçti. Nihai LIVE AAB içinde AD_ID ve imza doğrulandı. 300 bölüm,kayıtlar,ipuçları ve mevcut tasarım korunuyor. Bu denetimde yeni APK gerektiren ek kaynak hatası bulunmadı.
+
+YAYINDAN ÖNCE
+1. Play Console > Uygulama bütünlüğü > Uygulama imzalama: Uygulama imzalama anahtarı sertifikasının SHA-1 değerini alın. GitHub APK SHA-1: A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A. Farklıysa aynı paket için ikinci Android OAuth istemcisini Play Games projesine bağlayın; eski istemciyi silmeyin. Henüz uyuşmazlık saptanmış değildir; Play dağıtım imzası bilinmiyor.
+2. 110 LIVE AAB'yi Play test kanalına yükleyin. Yayın özeti ve uygulama içeriğinde engelleyici hata/eksik görev olup olmadığını görün. Eski aktif kanallardaki AD_ID sorunlarını da kontrol edin. R8 kapalı olduğundan mapping.txt beklenmez.
+3. Hedef yaşları (çocuklar dahil karma kitle),reklam beyanını,IARC içerik derecesini,SDK'lara uygun veri güvenliği/uygulama erişimi açıklamalarını doğru doldurun. Dört mağaza dili,güncel görseller ve hedef ülkeleri kaydedin. Sadece gerekli olmayan form kutularını rastgele işaretlemeyin.
+4. AdMob > KARA DÜĞÜM > Engelleme kontrolleri: tüm yaşlarda G içerik sınırını ayarlayın; Cinselliğe atıfta bulunma ve Flört kategorilerini engelleyin. Reklam İnceleme Merkezi'nde Start over rise reklamını engelleyip bildirin. Çocuk G sınırı kodda var; yetişkin panel ayarlarının uygulandığı henüz doğrulanmadı.
+5. Play'den kurulan 110 sürümünde gerçek profil ve bulut kayıt dönüşünü,eski ilerlemenin korunmasını ve ön lansman raporunu kontrol edin. Reklam denemelerinde Google test reklamlarını/kayıtlı test cihazını kullanın. Tamamlanan ipucu videosu1 kupon; başarısız/erken kapatılan video0 ödül vermeli. Yaş/UMP seçimlerini de doğrulayın.
+6. Bu kontrollerden sonra aynı LIVE AAB'yi üretim sürümüne yükseltip Google incelemesine gönderin. Yeni sürüm üretmek veya uygulama verilerini silmek gerekmez.
+
+MAĞAZA HERKESE AÇILDIKTAN SONRA
+AdMob'da herkese açık Play mağaza kaydını bağlayın; Hazır durumunu,Politika Merkezi'ni ve app-ads.txt doğrulama rozetini kontrol edin. Google mağaza kaydı henüz aranabilir değilken AdMob'da bulunmaması tek başına kod hatası değildir. İnceleme ve gelir/payout hazırlığı yayımlamadan ayrı aşamalardır.
+Ödeme alabilmek için hesap kimlik/vergi/ödeme yöntemi görevlerini tamamlayın. Destek e-postasının ve veri silme taleplerinin gerçek operasyonel takibini doğrulayın.
+
+HAZIR WEB ADRESLERİ
+Geliştirici sitesi: https://vorynexagames.com/
+Gizlilik: https://vorynexagames.com/KaraDugum/privacy-policy.html
+Veri silme: https://vorynexagames.com/KaraDugum/delete-account.html
+app-ads: https://vorynexagames.com/app-ads.txt
+Dosya ve yasal sayfalar doğrudan HTTPS200 çalışıyor. Eski GitHub alanı HTTP'ye yönleniyor; Console'da doğrudan HTTPS adreslerini kullanın. GitHub publisher Pages ayarlarında Enforce HTTPS açılması önerilir. app-ads dosyasının doğru olması AdMob hesabındaki Doğrulandı rozetinin görüldüğü anlamına gelmez.
+
+ÖNCEDEN DOĞRULANAN BİLGİLER
+Üretim erişimi onaylandı ve UMP mesajları yayımlandı (yayıncı beyanı). GitHub APK'nın paket/proje/OAuth/SHA-1 bilgileri eşleşiyor. Bunları yeniden temel kurulum sorusu olarak sormaya gerek yok. App Signing ve hesap içi güncel durumlar ayrıca görülmelidir.
+
+DOSYALAR
+TEST arşivi: https://github.com/MhmTBsr60/KaraDugum/actions/runs/42875715900/artifacts/13793045363
+LIVE arşivi: https://github.com/MhmTBsr60/KaraDugum/actions/runs/42875715900/artifacts/13790859655
+Google Play'e yalnız LIVE arşivindeki .aab dosyası yüklenir; ZIP/APK/JSON yüklenmez.

@@ -1,0 +1,144 @@
+{
+  "checkedAtUtc": "2026-11-10T18:49:00.327357+00:00",
+  "release": {
+    "versionName": "6.50",
+    "versionCode": 110,
+    "sourceCommit": "c84b6eaf0c6e16b6e48bf736b3534f3c11da2110",
+    "aabSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+    "technicalCandidateVerified": true,
+    "productionConsoleState": "needs_owner_evidence",
+    "monetizationAccountState": "needs_owner_evidence"
+  },
+  "verified": {
+    "ci": "success",
+    "sourceSuites": 18,
+    "browserSuites": 39,
+    "nativeJavaSuites": 8,
+    "liveAabAdIdUncapped": true,
+    "originalSigningCertificate": true,
+    "fourLocaleListingsAndLegalDocuments": true,
+    "rootAppAdsFile": "200; exact publisher line present",
+    "httpsPrivacyAndDeletion": "200; matches packaged6.50 files",
+    "ownerPreviouslyConfirmed": [
+      "Production access approved",
+      "UMP messages published",
+      "Direct APK Android OAuth package/project/SHA1 match"
+    ],
+    "ownerScreenshot": "Connected-looking profile; not proof of Play-distributed cloud roundtrip"
+  },
+  "directHttpsConsoleUrls": {
+    "developerWebsite": "https://vorynexagames.com/",
+    "privacyPolicy": "https://vorynexagames.com/KaraDugum/privacy-policy.html",
+    "accountDeletion": "https://vorynexagames.com/KaraDugum/delete-account.html",
+    "appAdsRoot": "https://vorynexagames.com/app-ads.txt"
+  },
+  "publicEvidence": [
+    {
+      "url": "https://mhmtbsr60.github.io/app-ads.txt",
+      "status": 200,
+      "finalUrl": "http://vorynexagames.com/app-ads.txt",
+      "bytes": 59,
+      "publisherLinePresent": true,
+      "text": "google.com, pub-6340528165840202, DIRECT, f08c47fec0942fa0\n"
+    },
+    {
+      "url": "https://mhmtbsr60.github.io/KaraDugum/app-ads.txt",
+      "status": 200,
+      "finalUrl": "http://vorynexagames.com/KaraDugum/app-ads.txt",
+      "bytes": 59,
+      "publisherLinePresent": true,
+      "text": "google.com, pub-6340528165840202, DIRECT, f08c47fec0942fa0\n"
+    },
+    {
+      "url": "https://mhmtbsr60.github.io/KaraDugum/privacy-policy.html",
+      "status": 200,
+      "finalUrl": "http://vorynexagames.com/KaraDugum/privacy-policy.html",
+      "bytes": 21440
+    },
+    {
+      "url": "https://mhmtbsr60.github.io/KaraDugum/delete-account.html",
+      "status": 200,
+      "finalUrl": "http://vorynexagames.com/KaraDugum/delete-account.html",
+      "bytes": 6798
+    },
+    {
+      "url": "https://play.google.com/store/apps/details?id=com.orynexa.karadugum&hl=en&gl=US",
+      "status": 404,
+      "finalUrl": "https://play.google.com/store/apps/details?id=com.orynexa.karadugum&hl=en&gl=US",
+      "bytes": 1673
+    },
+    {
+      "url": "https://api.github.com/repos/MhmTBsr60/mhmtbsr60.github.io",
+      "status": 200,
+      "finalUrl": "https://api.github.com/repos/MhmTBsr60/mhmtbsr60.github.io",
+      "bytes": 5928,
+      "repo": {
+        "full_name": "MhmTBsr60/MhmTBsr60.github.io",
+        "default_branch": "main",
+        "has_pages": true,
+        "html_url": "https://github.com/MhmTBsr60/MhmTBsr60.github.io"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/MhmTBsr60/KaraDugum/pages",
+      "status": 200,
+      "finalUrl": "https://api.github.com/repos/MhmTBsr60/KaraDugum/pages",
+      "bytes": 475,
+      "repo": {
+        "html_url": "http://vorynexagames.com/KaraDugum/",
+        "status": "built",
+        "build_type": "legacy",
+        "source": {
+          "branch": "main",
+          "path": "/"
+        }
+      }
+    }
+  ],
+  "remainingBeforeProduction": [
+    {
+      "id": "play_signing",
+      "action": "Read App signing key certificate SHA1 (not Upload key) from App integrity. Compare with direct APK SHA1. If different, link a second Android OAuth client for that package and certificate in PGS; retain existing direct APK client.",
+      "status": "unknown_not_known_mismatch"
+    },
+    {
+      "id": "console_release",
+      "action": "Upload110 LIVE AAB to Play test track and later promote the same artifact. Review publication overview, active old-track AD_ID errors, app-content/policy tasks, countries, four listing languages and current screenshots.",
+      "status": "needs_private_console_review"
+    },
+    {
+      "id": "truthful_forms",
+      "action": "Confirm exact mixed age groups including children, ads declaration, IARC content rating, data safety using actual SDK data and optional account access; set direct HTTPS policy/deletion/developer URLs.",
+      "status": "needs_publisher_attestation"
+    },
+    {
+      "id": "ad_content",
+      "action": "In AdMob set app-level maximum ad content rating G for all ages; block References to sex and Dating; find Start over rise creative and block/report it. Child G is verified in code; adult panel settings are not verified.",
+      "status": "needs_private_admob_review"
+    },
+    {
+      "id": "play_acceptance",
+      "action": "Install Play-distributed110 over an existing save. Verify real Google profile, cloud roundtrip, preserved progress and no pre-launch blocking crashes/ANRs. Test reward completion/early close and age/UMP flows on registered test devices.",
+      "status": "needs_physical_play_test"
+    }
+  ],
+  "afterPublicPublication": [
+    {
+      "id": "admob_store_readiness",
+      "action": "When public store link is discoverable, link the Play listing in AdMob, request/complete app review and confirm Ready / Policy center / app-ads verified. Do not demand public listing before app publication.",
+      "status": "needs_owner_evidence_after_listing_available"
+    },
+    {
+      "id": "payout",
+      "action": "Complete truthful identity, tax and payment-method requirements in the account; verify support mailbox and actual deletion-request handling.",
+      "status": "needs_account_owner_operation"
+    }
+  ],
+  "httpsRecommendation": "GitHub Pages certificates are approved but https_enforced=false. Prefer direct HTTPS URLs and enable Enforce HTTPS on the publisher root Pages settings. This does not require a new Android build.",
+  "availableAccess": "No Play Console or AdMob management plugin found; no shared desktop capability or Google credential binding in this task. Do not claim private account edits.",
+  "downloads": {
+    "test": "https://github.com/MhmTBsr60/KaraDugum/actions/runs/42875715900/artifacts/13793045363",
+    "live": "https://github.com/MhmTBsr60/KaraDugum/actions/runs/42875715900/artifacts/13790859655"
+  },
+  "noAdditionalCodeDefectFoundInThisAudit": true
+}

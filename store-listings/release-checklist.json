@@ -41,7 +41,7 @@
     },
     {
       "area": "AdMob readiness",
-      "required": "Link the public Play store listing, complete app readiness review, check Policy center/serving restrictions, and configure payment identity/tax/payment method in the account."
+      "required": "After public Play listing availability/indexing, link it in AdMob, complete app review, inspect Policy center/serving restrictions and payment identity/tax/payment method. Public listing availability is a post-publication sequence, not a prerequisite loop."
     },
     {
       "area": "Regional consent messages",
@@ -49,7 +49,7 @@
     },
     {
       "area": "app-ads.txt",
-      "required": "Serve the exact publisher line at https://mhmtbsr60.github.io/app-ads.txt (domain root), then trigger/check AdMob verification. The repository file under /KaraDugum/ alone is insufficient."
+      "required": "Direct HTTPS publisher-root file now verified200 with exact publisher line at https://vorynexagames.com/app-ads.txt. Confirm the configured Play developer website and AdMob app-ads verification badge in the account; no new Android build is needed."
     },
     {
       "area": "Developer declarations",
@@ -65,10 +65,10 @@
     }
   ],
   "publicUrls": {
-    "developerWebsite": "https://mhmtbsr60.github.io/KaraDugum/",
-    "privacyPolicy": "https://mhmtbsr60.github.io/KaraDugum/privacy-policy.html",
-    "accountDeletion": "https://mhmtbsr60.github.io/KaraDugum/delete-account.html",
-    "requiredAppAdsRoot": "https://mhmtbsr60.github.io/app-ads.txt"
+    "developerWebsite": "https://vorynexagames.com/",
+    "privacyPolicy": "https://vorynexagames.com/KaraDugum/privacy-policy.html",
+    "accountDeletion": "https://vorynexagames.com/KaraDugum/delete-account.html",
+    "requiredAppAdsRoot": "https://vorynexagames.com/app-ads.txt"
   },
   "appAdsPublisherLine": "google.com, pub-6340528165840202, DIRECT, f08c47fec0942fa0",
   "sourceChecks": {
@@ -94,13 +94,13 @@
   ],
   "reviewLimit": "Technical checks are evidence, not a Google policy approval, account access, physical-device certification or a revenue guarantee.",
   "publicChecksBeforeDeployment": {
-    "checkedAt": "2026-11-10",
-    "appAdsRootHttpStatus": 404,
+    "checkedAt": "2026-11-10T18:49:00.327357+00:00",
+    "appAdsRootHttpStatus": 200,
     "playPublicListingHttpStatus": 404,
     "privacyPolicyHttpStatus": 200,
     "accountDeletionHttpStatus": 200,
-    "note": "Public legal documents were reachable before this release; translations must be rechecked after Pages deployment. Production access approval does not make the store listing public."
+    "note": "Direct HTTPS custom-domain URLs verified200 and legal bytes match6.50; public Play US request404 does not establish status in every region/private Console. Old GitHub URLs redirect viaHTTP; prefer directHTTPS."
   },
   "targetAudienceIncludesChildren": true,
-  "releaseReadiness": "Technical candidate: requested child-restricted rewarded ads implemented; physical-device, Console declarations and AdMob account checks still required."
+  "releaseReadiness": "6.50 technical package verified; current public HTTPS legal/app-ads files verified; private Console forms/Play signing/Play installation and AdMob settings remain evidence-dependent."
 }
