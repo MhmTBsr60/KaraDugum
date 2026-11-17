@@ -1,0 +1,13 @@
+{
+  "versionName": "6.50-tutorial-test2",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "26955addee3c7c6e8fb822854989d3413e5fd1a4",
+  "adsMode": "test",
+  "sha256": "2b5ee640f1d98cc81ff0a64945754e770c007673915268e48312c2563cb2a525",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "runtimeSourceCommit": "441d3f7199d86b7197d68571ba2357eebd717383",
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}

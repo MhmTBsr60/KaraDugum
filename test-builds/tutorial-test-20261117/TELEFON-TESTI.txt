@@ -1,0 +1,20 @@
+KARA DÜĞÜM — 6.50-tutorial-test2 — yalnızca geliştirme önizlemesi
+
+Google Play 6.50, AdMob hesabı ve mağaza görselleri değiştirilmez. Bu APK Google'ın TEST reklam kimlikleriyle derlenir. Paket ve imza TEST3 ile uyumlu olmalıdır; CI bunu doğrular.
+
+Mevcut ilerlemeni silme veya uygulama verilerini temizleme. Güncelleme olarak kur.
+Mevcut oyuncularda öğreticinin otomatik açılmaması beklenen davranıştır.
+Ayarlar → Öğreticiyi Tekrar Göster ile dört adımı deneyebilirsin.
+
+1. Oyun ekranında bölüm başlığı ve açıklama ortalanmalı; yardım/yıldız düğmeleri çalışmalı.
+2. Altın ampul, İPUCU yazısı ve sağ üst hak rozeti okunmalı. Dört alt kontrol aynı sırada kalmalı.
+3. Öğretici hedefe dokunmadan İleri'yi açmamalı. Hedefe dokun, İleri/Geri/Atla'yı dene.
+4. Düğüm döndürme ve bağlantı örneği gerçek tahtanın üzerinde gösterilir; alıştırma görüntüsüdür.
+5. Ampulle ipucu ve Geri Al denemeleri gerçek hak, kristal, hamle veya ödül tüketmemeli.
+6. Tamamla/Atla sonrası bulmaca aynı kalmalı; önceki gerçek hamlenin Geri Al işlemi hâlâ çalışmalı.
+7. Öğreticiden çıkınca Ayarlar'a dönülmeli. Oyuna dönerek kaldığın yerden devam et.
+8. Ses/titreşim tercihlerinin kapalı/açık durumlarını ayrı ayrı dene. Hareketi azalt tercihi korunmalı.
+9. Telefonu yatay/dikey çevir; kart hedefi kapatmamalı, düğmeler taşmamalı.
+10. İlk oyuncu otomatik açılışı izole tarayıcı testleriyle kontrol edildi; kendi kayıtlarını silerek deneme.
+
+Bu ortamda fiziksel telefon/emülatör yoktu. Gerçek POCO ses/titreşim hissi veya cihaz performansı doğrulanmadı.
