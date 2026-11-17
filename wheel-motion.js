@@ -1,6 +1,9 @@
 /* Presentation only. One timer per segment, no frame loop, RNG, storage or reward APIs. */
 (() => {
  'use strict';
+ const limited=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;
+ if(limited)document.documentElement.setAttribute('data-kd-wheel-low-motion','');
+ const baseRotation=limited?720:1800;
  const easing='cubic-bezier(.42,0,.18,1)';
  const curve=(t,a,b)=>3*(1-t)*(1-t)*t*a+3*(1-t)*t*t*b+t*t*t;
  function crossingTimes(degrees,duration){
@@ -21,5 +24,5 @@
  }
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});window.addEventListener('pagehide',stop);
  matchMedia('(prefers-reduced-motion:reduce)').addEventListener('change',stop);
- window.kdWheelMotion={easing,crossingTimes,start,stop};
+ window.kdWheelMotion={easing,baseRotation,crossingTimes,start,stop};
 })();

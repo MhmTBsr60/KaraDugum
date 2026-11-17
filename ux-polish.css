@@ -113,3 +113,10 @@
 #kdWheelOverlay .kdWheelPointer{top:0}
 #kdWheelOverlay .kdWheelDisc{display:block}
 #kdWheelOverlay .kdWheelCard>button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+
+/* Larger two-row reward labels keep amounts prominent without shrinking units. */
+#kdWheelOverlay .kdWheelPrize{fill:#fff3d0;font-size:16.5px;font-weight:700}
+#kdWheelOverlay .kdWheelValue{fill:#fff8e6;font-size:22px;font-weight:800}
+#kdWheelOverlay .kdWheelUnit{fill:#fff3d0;font-size:16.5px;font-weight:650}
+html[data-kd-wheel-low-motion] #kdShell *,html[data-kd-wheel-low-motion] .kdV9Overlay *,
+html[data-kd-wheel-low-motion] #kdWheelOverlay .kdWheelResult{animation:none!important}

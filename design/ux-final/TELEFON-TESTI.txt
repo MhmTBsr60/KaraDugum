@@ -1,0 +1,15 @@
+KARA DÜĞÜM 6.50-ux-test2 — TELEFON KONTROLÜ
+Paket: com.orynexa.karadugum / sürüm kodu 110
+Bu APK yalnızca Google'ın resmi ödüllü/geçiş test reklam birimlerini kullanır.
+Mevcut oyunu silmeden üzerine yükleyin. Güncelleme, önceki GitHub TEST APK ile aynı imzaya sahiptir. Kayıt verisini veya uygulamayı silmeyin.
+Telefonda kurulu Play sürümünün imzası farklıysa Android güncellemeyi reddeder. Böyle bir durumda uygulamayı kaldırmayın; önce mevcut kayıtların güvenli aktarımı ve Play imzası kontrol edilmeli.
+
+1. Bölüm, kristal, ipucu, tema, başarımlar ve Google/bulut durumunun korunduğunu kontrol edin.
+2. Ayarlar: Ses efektleri ile titreşimi ayrı ayrı açın/kapatın. Birini kapatınca diğeri çalışabilmeli. Ses düzeyi 0 olunca efekt susmalı. Arka plan müziği bulunmamalı.
+3. Sistem sessiz, DND ve sistem dokunma titreşimi kapalı durumlarını deneyin. Uygulama arka planda ses/titreşim üretmemeli.
+4. Dar/yatay ekranda sekiz çark etiketini, göstergeyi ve butonları kontrol edin. Çok kısa ekranda kart içi kaydırma kullanılabilir.
+5. Ücretsiz çevirmede animasyon/durma/sonuç ve tek ödeme; aynı gün tekrar ücretsiz hak verilmemesi. Üç tamamlanan test reklamından sonra 2× ödüllü ek hak.
+6. Çark sırasında geri dönüp açmayı ve uygulamayı kapatıp açmayı deneyin; seçilen ödül bir kez ödenmeli. Yerel cihaz tarihine dayalı günlük sınırlar sunucu düzeyinde hile koruması değildir.
+7. Hareketi azalt seçeneğinde döngüsel animasyonlar kapanmalı. Düşük donanımda çark daha az tur atar; ödül ve ödeme süresi değişmez.
+8. 7×7/8×8 oynarken dokunma, bağlantı, ipucu, ödül ve tamamlama seslerini dinleyin. Isınma, takılma veya rahatsız edici ses/titreşim olursa cihaz modeli ve ekranı not edin.
+Bu çalışma kapsamında fiziksel Android testi yapılmadı. Reklam rızası ve yaş kuralları korunur; rıza/ağ uygun değilse test reklamı gelmeyebilir.
