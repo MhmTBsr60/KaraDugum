@@ -31,3 +31,7 @@ for(const method of ['loadInterstitial()','onLevelCompletedForAds(int level)']){
  assert(java.slice(start,end<0?undefined:end).includes('!audience.allowInterstitials()'),'Restricted audiences must neither preload nor show interstitials');
 }
 console.log('PASS: explicit test/live ad builds; absent/malformed/sample/wrong-publisher/duplicate units rejected; UMP permission checks, stale ad guards and offline policy packaging');
+
+const configureBody=java.slice(java.indexOf('private void configureAudienceAds()'),java.indexOf('private AdRequest createAdRequest()'));
+assert.equal((configureBody.match(/setMaxAdContentRating/g)||[]).length,1);
+assert(configureBody.indexOf('setMaxAdContentRating')<configureBody.indexOf('if (audience.restrictedAds())'),'G cap must apply to adult and restricted requests');
