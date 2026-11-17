@@ -1,0 +1,73 @@
+KARA DÜĞÜM — OBSİDYEN/ALTIN TEST APK RAPORU
+17 Kasım 2026
+
+MAIN VE PAKET
+Main ve APK kaynak commit'i: c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4
+Onaylanan görsel referans:0fd4419
+Entegrasyon dalı:design/obsidian-gold-integration-20261117
+Sürüm:6.50-obsidian-test1 · kod110 · com.orynexa.karadugum
+APK:KaraDugum-6.50-obsidian-TEST.apk
+APK SHA256:f4d6212c7e9d48f551ec482f3f952487af5aceab4009d13e43522f847f2d467e
+
+YAPILANLAR
+Onaylanan obsidyen/altın tasarım çalışan oyuna entegre edildi. Altın borular,
+metalik yansımalar ve koyu taş yüzeyler korunarak iyileştirildi. Öğretici mini
+tahtalar aynı yüzeyi kullanır; sabit düğümlerin kilit görünümü doğru aktarılır.
+SVG yolları, bağlantı yönleri, enerji renkleri ve buton dikdörtgenleri korunur.
+Tahta içi boşluklar ve kenar dolgusu en yakın gerçek düğüme tek tıklama üretir;
+doğrudan tıklama iki kez işlenmez, tahta dışındaki dokunuşlar hamle üretmez.
+Tahta renderer'ı sadece değişen düğüm/komşuların görsel durumunu günceller;
+tahta MutationObserver'ı ve yeni parçacık/büyük görsel bağımlılığı yoktur.
+Normal hareket:140ms düğüm,160ms bağlantı,450ms tamamlanma,220ms panel.
+7×7–8×8 ve360px altındaki6×6: statik dokunma vurgusu. Düşük donanım bildirimi,
+sistem hareketi azalt ve oyun ışık ayarları ek animasyonları sınırlar.
+300 bölüm, mekanikler, ilerleme, kayıt modeli, ipuçları, ödüller ve reklam akışı
+korundu. Index'teki bütün mevcut JavaScript blokları önceki main ile aynı özete
+sahiptir; yeni kod yalnız harici görsel modül ve görsel renderer bağlantısıdır.
+
+TEST SONUÇLARI
+- npm test:18 kaynak denetimi başarılı;300 bölüm yasal ipucu hamleleriyle çözüldü.
+- npm run test:browser:43 test dosyası başarılı. Mağaza, günlük ödül, hesap/yaş,
+  ipucu/reklam rızası, bulut, çevrimdışı kayıt, reload, görevler, başarılar,
+ 300 bölüm×6 tema,25 dil ve tablet/yatay düzen kontrolleri dahil.
+- Yeni tasarım:400 durum/geometri/dil karşılaştırması ve1200 hizalanma durumu.
+  TR/EN/AR/ZH;320×568,390×844,768×1024,1024×768,844×390. Kaynaklar, kayıtlar,
+  SVG yolları, enerji renkleri ve buton konumları eşit; yatay taşma yok.
+- Gerçek Chromium fare olaylarıyla boşluk, kenar dolgusu, doğrudan ve tahta dışı
+  tıklamalar; en yakın düğüm ve tek hamle doğrulandı. Yasal kazanma, tek ödül,
+  hareketi azalt ve güçlü/düşük donanım profilleri ayrı test edildi.
+- GitHub CI:Java,JavaScript,tarayıcı,Android imzalı release derlemesi ve lint geçti.
+  https://github.com/MhmTBsr60/KaraDugum/actions/runs/44093756217
+- Gerçek APK:aapt ile paket/sürüm/API36/AD_ID;apksigner ile imza;DEX içinde
+  Google örnek ödüllü/geçiş reklam kimlikleri ve canlı birim yokluğu doğrulandı.
+- İndirilen ZIP'in GitHub SHA256 özeti ve APK'nın build-info özeti eşleşti.
+ 12 oyun/kayıt/tasarım dosyası APK içinden kaynakla byte-byte karşılaştırıldı.
+ Önizleme JPEG'leri ve özel imzalama anahtarları APK'da yok.
+- APK sertifikası mevcut6.50 TEST APK ile aynı:
+ A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A
+
+PERFORMANS
+2 profil×3 tahta×3 sürüm×40 gerçek giriş=720 giriş. Sentetik Chromium CPU
+ölçümüdür;iki RAF'a kadar süre FPS veya tek kare süresi değildir.
+6×CPU/dar ekran,önceki onaylı önizleme→entegrasyon medyanı:
+6×6:59.0→38.9ms;7×7:50.1→37.8ms;8×8:49.7→46.6ms.
+4×CPU/standart ekran,8×8:38.9→33.1ms.
+Kayıt/kaynak/hamle sonuçları ve hücre DOM kimlikleri tüm varyantlarda eşit.
+Bazı sahnelerde eski6.50 kaynak görünümüne göre ek maliyet ve p95 sıçramaları
+sürüyor;60FPS veya bütün telefonlarda kayıpsız performans garantisi verilmez.
+Ham ölçümler PERFORMANS.json içindedir.
+
+GERÇEK TELEFONDA DOĞRULANMAYANLAR
+Bu ortamda fiziksel Android veya emülatör yoktur. GPU/termal davranış, gerçek
+dokunma rahatlığı, uzun oturum ANR ve gerçek Google hesabı bağlantısı henüz
+cihazda doğrulanmadı. TEST APK bunları değerlendirmek içindir.
+320px8×8 düğümleri yaklaşık25px kalır. Boş aralıkları hit alanına kazandırmak
+rahatlığı artırır;düzeni değiştirmeden hepsini44px yapmak mümkün değildir.
+Telefon adımları TELEFON-TESTI.txt dosyasındadır. Aynı imzalı APK'yı oyunu
+kaldırmadan kur;imza çakışması olursa oyunu silme/veri temizleme yapma.
+
+ÜRETİM KORUMASI
+Google Play'e yükleme/yayınlama yapılmadı. Bu iş akışı AAB oluşturmadı.
+Google Play üretim6.50,AdMob hesabı ve mevcut mağaza görsellerine işlem yapılmadı.
+Önceki LIVE AAB'nın SHA256 değeri aynı:
+9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf

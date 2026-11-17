@@ -1,0 +1,42 @@
+{
+  "versionName": "6.50-obsidian-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4",
+  "adsMode": "test",
+  "sha256": "f4d6212c7e9d48f551ec482f3f952487af5aceab4009d13e43522f847f2d467e",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "apkBytes": 14848586,
+  "signer": {
+    "sha1": "A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A",
+    "sha256": "35:1B:49:B7:2B:FC:09:EB:B3:17:76:98:32:31:9E:AD:CA:9D:ED:6D:AE:70:9D:AE:B8:31:47:19:A5:3D:EE:9E",
+    "block": "0x7109871a"
+  },
+  "sameSignerAsExisting650Test": true,
+  "exactGameAssets": [
+    "index.html",
+    "obsidian-gold.css",
+    "obsidian-gold.js",
+    "board-renderer.js",
+    "learning.js",
+    "theme-renderer.js",
+    "localization.js",
+    "cloud-model.js",
+    "cloud-sync.js",
+    "reward-receipts.js",
+    "board-focus.css",
+    "board-focus.js"
+  ],
+  "previewImagesExcluded": true,
+  "privateKeysExcluded": true,
+  "officialSampleAdUnitsOnly": true,
+  "workflowRun": "https://github.com/MhmTBsr60/KaraDugum/actions/runs/44093756217",
+  "jobConclusion": "success",
+  "sourceTests": 18,
+  "browserTestFiles": 43,
+  "newMatrixChecks": 400,
+  "alignmentStates": 1200,
+  "physicalAndroidTested": false,
+  "productionAabSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf"
+}

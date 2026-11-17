@@ -1,0 +1,10 @@
+{
+  "versionName": "6.50-obsidian-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4",
+  "adsMode": "test",
+  "sha256": "f4d6212c7e9d48f551ec482f3f952487af5aceab4009d13e43522f847f2d467e",
+  "noAabBuilt": true,
+  "noPlayUpload": true
+}

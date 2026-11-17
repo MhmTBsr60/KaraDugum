@@ -1,0 +1,22 @@
+KARA DÜĞÜM — OBSİDYEN/ALTIN TEST APK
+Version name:6.50-obsidian-test1; version code:110.
+Bu paket Google Play'e gönderilmez. Yalnızca Google'ın örnek reklam birimlerini kullanır.
+
+Önceki GitHub APK ile aynı paket ve imzayı kullanır; üzerine kurulum oyuncu kayıtlarını
+korur. Kurulum imza çakışması gösterirse oyunu SİLME veya verileri temizleme.
+Google Play kopyası farklı uygulama imzası kullanıyor olabilir; çakışma kaydı silerek
+çözülmemelidir. Test sırasında gerçek ilerleme aynı yerel kayda yazılır.
+
+Kontrol:
+1. Kurulumdan sonra mevcut ilerleme, jetonlar, ipuçları ve satın alınmış temaları kontrol et.
+2. 4×4–6×6 ve7×7–8×8 tahtalarda düğüm/gap/kenar dokunuşlarını dene; her dokunuş tek hamle.
+3. Yoğun tahtada Tahtaya odaklan seçeneğini ve yatay/dikey dönüşü dene.
+4. Ayarlardan ışıkları kapat/aç ve Android hareketi azalt tercihini dene.
+5. Bir bölüm tamamla; sonuç panelini, tek ödülü ve sonraki bölümü kontrol et.
+6. Oyunu kapat/aç, çevrimdışı başlat; kayıtlar korunmalı.
+7. Test reklamı üzerinde TEST ibaresini doğrula; gerçek reklam gelirse testi durdur.
+8. Google Play Games hesabı ve bulut için gerçek cihaz kontrolü gerekir.
+
+Fiziksel telefonda henüz doğrulanmayanlar: GPU/termal davranış, dokunma rahatlığı,
+Android sürümüne göre kurulum ve gerçek Google hesap bağlantısı. Gerçek telefonda
+hız/akıcılık iddiası bu denemeden sonra yapılabilir.

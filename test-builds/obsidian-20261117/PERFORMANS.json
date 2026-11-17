@@ -1,0 +1,295 @@
+{
+  "scope": "Chromium CPU4/CPU6, 40 dispatches per scene, forced layout + two RAF; not Android FPS or ANR",
+  "scenes": [
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 13.5,
+        "p95Ms": 21.600000001490116,
+        "maxMs": 29.199999999254942
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.40000000037253,
+        "p95Ms": 54,
+        "maxMs": 126.29999999888241
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 18.799999998882413,
+        "p95Ms": 30.899999998509884,
+        "maxMs": 32.29999999888241
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 59,
+        "p95Ms": 107.79999999888241,
+        "maxMs": 123.40000000037253
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 15.800000000745058,
+        "p95Ms": 32.79999999888241,
+        "maxMs": 45.29999999888241
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 38.90000000037253,
+        "p95Ms": 82.79999999888241,
+        "maxMs": 149.2999999988824
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 18.5,
+        "p95Ms": 29.800000000745058,
+        "maxMs": 30.300000000745058
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 43.69999999925494,
+        "p95Ms": 78.09999999962747,
+        "maxMs": 124.69999999925494
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 18.40000000037253,
+        "p95Ms": 41.19999999925494,
+        "maxMs": 43.09999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 50.09999999962747,
+        "p95Ms": 69.10000000149012,
+        "maxMs": 80.09999999962747
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 15.900000000372529,
+        "p95Ms": 26.100000001490116,
+        "maxMs": 33.19999999925494
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 37.79999999888241,
+        "p95Ms": 61.09999999962747,
+        "maxMs": 121.19999999925494
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 16.600000001490116,
+        "p95Ms": 30,
+        "maxMs": 177.19999999925494
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 43.90000000037253,
+        "p95Ms": 151.2000000011176,
+        "maxMs": 262.19999999925494
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 18.09999999962747,
+        "p95Ms": 28.40000000037253,
+        "maxMs": 32
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 49.69999999925494,
+        "p95Ms": 86,
+        "maxMs": 107.90000000037253
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 18.5,
+        "p95Ms": 52.70000000111759,
+        "maxMs": 174.09999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 46.59999999962747,
+        "p95Ms": 99.60000000149012,
+        "maxMs": 236
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 8.400000000372529,
+        "p95Ms": 11.899999998509884,
+        "maxMs": 17.200000001117587
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.29999999888241,
+        "p95Ms": 37.19999999925494,
+        "maxMs": 144.2999999988824
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 11.599999999627471,
+        "p95Ms": 21,
+        "maxMs": 27.699999999254942
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.79999999888241,
+        "p95Ms": 59,
+        "maxMs": 139.2000000011176
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 10.699999999254942,
+        "p95Ms": 17.5,
+        "maxMs": 19.09999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.100000001490116,
+        "p95Ms": 51.30000000074506,
+        "maxMs": 118.90000000037253
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 9.5,
+        "p95Ms": 24.700000001117587,
+        "maxMs": 74.59999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.30000000074506,
+        "p95Ms": 112.40000000037253,
+        "maxMs": 117.30000000074506
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 9.900000000372529,
+        "p95Ms": 19,
+        "maxMs": 22.199999999254942
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.20000000111759,
+        "p95Ms": 54.100000001490116,
+        "maxMs": 63.59999999962747
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 10,
+        "p95Ms": 15.199999999254942,
+        "maxMs": 21.09999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.19999999925494,
+        "p95Ms": 65.80000000074506,
+        "maxMs": 72.79999999888241
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "main-40b165e",
+      "handler": {
+        "medianMs": 11.800000000745058,
+        "p95Ms": 28.399999998509884,
+        "maxMs": 85.10000000149012
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33,
+        "p95Ms": 125.30000000074506,
+        "maxMs": 135.40000000037253
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "approved-0fd4419",
+      "handler": {
+        "medianMs": 12.199999999254942,
+        "p95Ms": 20,
+        "maxMs": 25.09999999962747
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 38.899999998509884,
+        "p95Ms": 53.69999999925494,
+        "maxMs": 54.5
+      },
+      "nodeIdentityPreserved": true
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "integrated",
+      "handler": {
+        "medianMs": 12.599999999627471,
+        "p95Ms": 19.199999999254942,
+        "maxMs": 93.29999999888241
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.09999999962747,
+        "p95Ms": 84.09999999962747,
+        "maxMs": 131.59999999962747
+      },
+      "nodeIdentityPreserved": true
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}
