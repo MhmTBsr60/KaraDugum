@@ -5,7 +5,7 @@
  const returningAtBoot=(()=>{try{return ['kd64_activeGame','kd64_level','kd64_completed','kd64_best','kd64_attempts','kd64_wins'].some(k=>localStorage.getItem(k)!==null);}catch{return true;}})();
  const seenThisSession=new Set(),titles=['Düğümü döndür','Bağlantıları birleştir','İpucu kullan','Geri Al'];
  const descriptions=['Vurgulanan düğüme dokun. Her dokunuşta saat yönünde döner.','Altın çerçevedeki düğüme dokun ve iki boruyu birleştir.','Takıldığında ipucu alabilirsin. Ampule dokunarak dene.','Geri Al, son hamleni geri çevirir. Şimdi dene.'];
- let overlay=null,opening=false,navigating=false,pendingStart=0,frame=0,sessionOwner=null,step=0,turns=0,actions=new Set(),demo=null,paint=[],returnToSettings=false,previousFocus=null,inertStates=[],cardResize=null;
+ let overlay=null,opening=false,navigating=false,autoEntryChecked=false,pendingStart=0,frame=0,sessionOwner=null,step=0,turns=0,actions=new Set(),demo=null,paint=[],returnToSettings=false,previousFocus=null,inertStates=[],cardResize=null;
  const owner=()=>String(window.kdStorage?.owner?.()||window.kdEconomy?.owner?.()||'guest');
  function hash(value){let a=2166136261,b=2246822519;for(let i=0;i<value.length;i++){a=Math.imul(a^value.charCodeAt(i),16777619);b=Math.imul(b^value.charCodeAt(i),3266489917);}return (a>>>0).toString(16).padStart(8,'0')+(b>>>0).toString(16).padStart(8,'0');}
  const flagKey=()=> 'kd_onboarding_v1_'+hash(owner());
@@ -56,7 +56,7 @@
   for(let i=0;i<4;i++){const shade=document.createElement('div');shade.className='kdTutorialShade';overlay.append(shade);}const spotlight=document.createElement('div');spotlight.className='kdTutorialSpotlight';spotlight.setAttribute('aria-hidden','true');const target=document.createElement('button');target.type='button';target.className='kdTutorialTarget';const card=document.createElement('section');card.className='kdOnboardingCard';overlay.append(spotlight,target,card);document.body.append(overlay);cardResize=new ResizeObserver(requestPlace);cardResize.observe(card);
   inertStates=[game,byId('kdShell')].filter(Boolean).map(e=>[e,e.inert]);for(const [e]of inertStates)e.inert=true;opening=false;window.kdSetPaused?.(true);mark(false);draw();return true;
  }
- function enteredGame(){if(overlay||opening||pendingStart||navigating||!eligible()||byId('kdGame')?.hidden!==false)return false;opening=true;window.kdSetPaused?.(true);pendingStart=requestAnimationFrame(()=>{pendingStart=0;opening=false;if(byId('kdGame')?.hidden===false&&eligible())open(false);else resume();});return true;}
+ function enteredGame(){if(overlay||opening||pendingStart||navigating||autoEntryChecked||byId('kdGame')?.hidden!==false)return false;autoEntryChecked=true;if(!eligible())return false;opening=true;window.kdSetPaused?.(true);pendingStart=requestAnimationFrame(()=>{pendingStart=0;opening=false;if(byId('kdGame')?.hidden===false&&eligible())open(false);else resume();});return true;}
  window.kdOnboarding={beforePlay:next=>{if(typeof next!=='function')throw new TypeError('Game continuation is required');next();enteredGame();return false;},enteredGame,replay:()=>open(true),back:()=>overlay?finish(false):close(true),leave:()=>navigating?false:close(false),isOpen:()=>!!overlay||opening};
  window.addEventListener('kd:storage-owner',()=>close(false));window.addEventListener('resize',requestPlace,{passive:true});document.addEventListener('visibilitychange',requestPlace);
  // Synthetic clicks, shortcuts or a stale accessibility focus cannot spend a campaign resource.
