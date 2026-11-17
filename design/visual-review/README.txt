@@ -48,3 +48,10 @@ node design/visual-review/benchmark.cjs
 Onay kapısı:
 Karşılaştırma kullanıcı tarafından değerlendirilmeden bu tasarım main'e alınmaz.
 AdMob hesabı, Google Play dağıtımı ve incelemedeki mağaza görselleri değiştirilmez.
+
+BÜYÜK İNCELEME GÖRSELLERİ
+- comparison-large.jpg:2700×3303; aynı bölümün büyük yan yana görünümü.
+- board-comparison-large.jpg:2700×1968; düğüm ve bağlantı yakın görünümü.
+Tarayıcı3× piksel yoğunluğuyla tekrar yakalandı;60 durum/ölçü koruma kontrolü
+geçti. Bunlar inceleme çıktılarıdır; oyundan yüklenmez ve mağazaya gönderilmedi.
+Görsel CSS kodu 0d56339 ile aynıdır; yalnızca büyük inceleme çıktıları eklendi.

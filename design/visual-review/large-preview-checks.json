@@ -1,0 +1,505 @@
+{
+  "scope": "Isolated Chromium only; design approval required; proposal CSS is not imported by production",
+  "checks": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 11,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 12,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 13,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 14,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 15,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 16,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 17,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 18,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 19,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 20,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 21,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 22,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 23,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 24,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 25,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 53,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 91,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 151,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 156,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "level": 201,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 11,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 12,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 13,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 14,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 15,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 16,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 17,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 18,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 19,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 20,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 21,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 22,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 23,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 24,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 25,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 53,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 91,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 151,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 156,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "level": 201,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 11,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 12,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 13,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 14,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 15,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 16,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 17,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 18,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 19,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 20,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 21,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 22,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 23,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 24,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 25,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 53,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 91,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 151,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 156,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "level": 201,
+      "stateAndSvgAndEnergyAndGeometryUnchanged": true
+    }
+  ],
+  "errors": [],
+  "cssBytes": 2688,
+  "cssSha256": "15e5dfbb3873fedccfd0dc2f9c077ddc0600651b04a4de0f8b8dd6500da4208a",
+  "reducedMotion": true,
+  "denseBoardMotionGuard": true,
+  "status": "pass",
+  "baseMainCommit": "40b165edf3cd6fad7bc43f7a812c31fa872b79f1",
+  "visualCodeCommit": "0d5633981e6c7d63b3e0df714f328c23a6f003fb",
+  "deviceScaleFactor": 3,
+  "images": {
+    "comparison-large.jpg": [
+      2700,
+      3303
+    ],
+    "board-comparison-large.jpg": [
+      2700,
+      1968
+    ]
+  },
+  "approvalRequired": true
+}
