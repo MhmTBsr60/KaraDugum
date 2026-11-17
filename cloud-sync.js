@@ -1,5 +1,5 @@
 /* Account-scoped cloud state. Mutations have durable IDs; raw balances are never merged. */
-(()=>{'use strict';const M=window.KdCloudModel,store=localStorage,rawSet=Storage.prototype.setItem,rawRemove=Storage.prototype.removeItem;
+(()=>{'use strict';const M=window.KdCloudModel,store=localStorage,rawGet=Storage.prototype.getItem,rawSet=Storage.prototype.setItem,rawRemove=Storage.prototype.removeItem;
 const read=(key,d)=>{try{return JSON.parse(store.getItem(key))??d}catch{return d}},put=(key,v)=>rawSet.call(store,key,JSON.stringify(v)),get=(k,d)=>read('kd64_'+k,d),uidOK=v=>typeof v==='string'&&/^([^\u0000-\u001f\u007f]){1,256}$/.test(v),id=()=>('d_'+(window.crypto?.randomUUID?.()||Date.now().toString(36)+'_'+Math.random().toString(36).slice(2))).replace(/[^a-zA-Z0-9_-]/g,'');
 const validActor=v=>typeof v==='string'&&/^d_[a-zA-Z0-9_-]{1,180}$/.test(v),storedActor=read('kdCloud_device',null);
 let nativeActor=null;try{nativeActor=window.KaraNative?.installationId?.();}catch{}
@@ -60,7 +60,18 @@ function recoverJournals(){
 }
 function transact(key,delta,options={}){if(!model)return false;if(projection.claims.has(key)){projection=M.project(model);muted=true;try{for(const k of M.wallet)put(stateRaw(k),projection.wallet[k]);applyClaim(key);window.kdRefreshHint?.();}finally{muted=false;}schedule();return false;}const cost=M.wallet.some(k=>Number(delta[k]||0)<0);if(cost&&!ready){status='Satın alma için ilk bulut eşitlemesini tamamla.';renderStatus();return false;}if(options.theme&&projection.owned.has(options.theme)||M.wallet.some(k=>projection.wallet[k]+Number(delta[k]||0)<0))return false;const op={n:M.clock(model)+1,d:actor,coins:Math.trunc(delta.coins||0),hintCoupons:Math.trunc(delta.hintCoupons||0),xp:Math.trunc(delta.xp||0),...(options.theme?{theme:options.theme}:{})};M.normalize({schema:1,account:uid,ops:{[key]:op}});const j=read(journalKey(uid),{});j[key]=op;put(journalKey(uid),j);model.ops[key]=op;projection.claims.add(key);projection.accepted.add(key);muted=true;try{for(const k of M.wallet){projection.wallet[k]+=op[k];if(op[k])put(stateRaw(k),projection.wallet[k]);}if(op.theme){projection.owned.add(op.theme);put('kd64_shopTheme_'+op.theme,true);put('kd64_v9_'+op.theme,true);}applyClaim(key);if(op.hintCoupons)window.kdRefreshHint?.();}finally{muted=false;}schedule();return true;}
 function addStat(k,n){if(!model||!M.stats.includes(k))return false;const counter={...(model.counters[actor]||{})};counter[k]=M.num(counter[k])+M.num(n);const date=new Date().toLocaleDateString('en-CA');counter.days={...(counter.days||{})};counter.days[date]={...(counter.days[date]||{})};counter.days[date][k]=M.num(counter.days[date][k])+M.num(n);put(counterKey(uid),{actor,values:counter});model.counters[actor]=counter;projection.stats[k]+=M.num(n);put(stateRaw(k),projection.stats[k]);schedule();return true;}
-function recoverGuest(){const j=read('kdCloud_guestReward',null);if(!j)return;put(j.key,Math.max(M.num(read(j.key,0)),j.target));if(j.shopDailyDate){const last=get('shopDailyDate','');put('kd64_shopDailyDate',j.shopDailyDate>last?j.shopDailyDate:last);}else put('kd64_guestAd_'+j.token,true);rawRemove.call(store,'kdCloud_guestReward');}
+const guestWalletKeys=new Set(['kd64_coins','kd64_hintCoupons','kd64_xp']);
+let recoveringGuest=false;
+function recoverGuest(){
+ const j=read('kdCloud_guestReward',null);if(!j||recoveringGuest)return;
+ recoveringGuest=true;
+ try{put(j.key,Math.max(M.num(read(j.key,0)),j.target));if(j.shopDailyDate){const last=get('shopDailyDate','');put('kd64_shopDailyDate',j.shopDailyDate>last?j.shopDailyDate:last);}else put('kd64_guestAd_'+j.token,true);rawRemove.call(store,'kdCloud_guestReward');}
+ finally{recoveringGuest=false;}
+}
+// Settle prepared guest credits before a later wallet read computes a purchase or reward.
+// If durable recovery still fails, block writes too; a fallback read must not overwrite the journal's balance.
+function settleGuestWallet(key){if(!model&&!recoveringGuest&&guestWalletKeys.has(key)&&rawGet.call(store,'kdCloud_guestReward')!==null)recoverGuest();}
+
 // ISO calendar high-water mark: offline rollback/repeated dates cannot pay again.
 // This is not trusted time: forward clock jumps and cleared/edited local data require a server to prevent.
 function shopDailyAvailable(date=new Date().toLocaleDateString('en-CA')) {
@@ -93,7 +104,8 @@ function dayStat(date,k){if(!model)return 0;let n=M.num((model.root||model.propo
 function requestAd(kind){if(!['coins','hint'].includes(kind))return false;const native=window.KaraNative;if(typeof native?.rewardedAccountRequest==='function'){native.rewardedAccountRequest(kind,id(),uid||'');return true;}const legacy=kind==='hint'?'rewardedHint':'rewardedAd';if(typeof native?.[legacy]!=='function')return false;native[legacy]();return true;}
 window.kdSafeUpload=points=>{const n=window.KaraNative;if(n?.uploadForAccount&&uid)n.uploadForAccount(uid,points);else if(!n?.uploadForAccount&&n?.upload)n.upload(points);};
 window.kdEconomy={device:()=>actor,dayStat,active:()=>!!model,owner:()=>uid,ready:()=>ready,transact,addStat,newId:prefix=>prefix+':'+id(),creditFor,requestAd,shopDailyAvailable,claimShopDaily};window.kdCloud={activate,receive,exportFull,bind,statusCard,canSync,requestSync:()=>reconnectNeeded?reconnect():window.kdCloudSync?.(),changed:schedule,project:()=>projection,model:()=>model};
-Storage.prototype.setItem=function(key,value){const before=store.getItem(key);rawSet.call(this,key,value);if(this===store&&!muted&&model&&before!==String(value)){if(['kd64_activeGame','kd64_dailyActiveGame'].includes(key)){if(Date.now()-lastBoardSchedule>=30000){lastBoardSchedule=Date.now();schedule();}}else if(M.stateKeys.some(k=>key===stateRaw(k))||['kd64_completed','kd64_best','kd64_level'].includes(key))schedule();}};
+Storage.prototype.getItem=function(key){if(this===store)settleGuestWallet(String(key));return rawGet.call(this,key);};
+Storage.prototype.setItem=function(key,value){if(this===store)settleGuestWallet(String(key));const before=store.getItem(key);rawSet.call(this,key,value);if(this===store&&!muted&&model&&before!==String(value)){if(['kd64_activeGame','kd64_dailyActiveGame'].includes(key)){if(Date.now()-lastBoardSchedule>=30000){lastBoardSchedule=Date.now();schedule();}}else if(M.stateKeys.some(k=>key===stateRaw(k))||['kd64_completed','kd64_best','kd64_level'].includes(key))schedule();}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&model){window.kdSetPaused?.(true);checkpoint();if(window.kdSignedIn)window.kdCloudSync?.();}else if(reconnectNeeded)reconnect();});window.addEventListener('pagehide',()=>{if(model){window.kdSetPaused?.(true);checkpoint();}});
 recoverGuest();const prior=read('kdCloud_activeAccount',null);if(uidOK(prior)){const saved=read(accountKey(prior),null);if(saved?.model){uid=prior;window.kdStorage?.setOwner(prior);model=M.normalize(saved.model);ready=!!saved.ready&&!!model.root;lastSync=saved.lastSync||0;recoverJournals();capture();projection=M.project(model);applyAll();}}
 })();

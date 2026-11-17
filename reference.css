@@ -83,5 +83,5 @@ html:not([lang="tr"]) .kdRefBanner::after{content:"";position:absolute;inset:0 4
 html:not([lang="tr"]) .kdLocalizedShopBanner{display:flex;align-items:center;position:absolute;z-index:1;inset:12% 53% 12% 5%;margin:0;font:clamp(11px,3.5vw,18px)/1.4 Georgia,serif;color:#f4dda2;overflow-wrap:anywhere}
 /* Keep all 300 real buttons; defer layout/paint of off-screen chapters, with cached intrinsic sizes. */
 @supports(content-visibility:auto){
- .kdChapterSection{content-visibility:auto;contain-intrinsic-size:auto 1000px}
+ .kdChapterSection{content-visibility:auto;contain-intrinsic-size:1000px;contain-intrinsic-size:auto 1000px}
 }
