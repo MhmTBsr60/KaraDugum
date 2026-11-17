@@ -36,3 +36,14 @@ uygulamalar için hiçbir hesap değişikliği yapılmadı.
 Main push'u normal Android CI işini başlatabilir. İş akışı GitHub artefaktı üretir;
 Play'e yükleme veya yayınlama adımı yoktur. Çıktılar mevcut Play paketinin yerine
 geçmez; ileride yeni yayın için ayrıca yeni sürüm numarası ve kabul testi gerekir.
+
+CI FONT DÜZELTMESİ
+İlk main CI çalışması 44069365282, Fransızca görev finali kartında taşma buldu;
+yerel varsayılan font koşusu bunu göstermemişti. Son kartın eşit yükseklikli
+satıra sıkışması ve inline başlığın font satır kutusu sebep oldu. Final satırı
+içeriğe göre boyutlanır; başlık bloktur; uzun alım düğmesi en çok78px genişler.
+Yazı boyutu veya test eşikleri küçültülmedi/gevşetilmedi. Artık 25 dilde üç font
+(system-ui, Arial, DejaVu Sans) denetlenir. Bu genişletilmiş test ile haftalık
+görev ve ödül işareti testleri yerelde geçti. Güncel tam CI sonucu Actions'tan
+izlenmelidir. Bu, ayrı görsel önerinin değil mevcut yerelleştirme hatasının
+onarımıdır; bulmaca ekranı tasarımına yeni görsel uygulanmaz.
