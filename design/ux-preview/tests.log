@@ -1,0 +1,140 @@
+17 Kasım 2026 — son başarılı sonuçlar; tarayıcı testleri düzeltmelerden sonra kaldığı yerden yeniden çalıştırıldı.
+Eski müzik kontrolünü bekleyen ilk koşu hatası güncellenen gereksinimle düzeltildi.
+
+source.log
+Audited 300 levels
+Difficulty 4x4: 15 levels, estimated moves 5-37, mean 22.3
+Difficulty 5x5: 15 levels, estimated moves 7-64, mean 33.5
+Difficulty 6x6: 45 levels, estimated moves 10-109, mean 46.5
+Difficulty 7x7: 75 levels, estimated moves 10-140, mean 62.0
+Difficulty 8x8: 150 levels, estimated moves 10-200, mean 78.2
+PASS: board sizes, tile bits, fixed tiles and solved target connectivity
+PASS: hint handler, reward path, coupon accounting and restart hint bands present
+PASS: hints invoke real moves and charge only after state changes
+PASS: menu image, APK packaging, navigation and game controls
+PASS: cloud transaction/counter/claim migration; repeated sync, concurrent overspend, 100 merge convergence cases, daily records and account rejection (641 Java parity fixtures)
+PASS: local Monday weeks across year/leap/DST boundaries, current-week filtering, duplicate run IDs, daily/invalid rejection and 160-crystal weekly reward budget
+PASS: explicit test/live ad builds; absent/malformed/sample/wrong-publisher/duplicate units rejected; UMP permission checks, stale ad guards and offline policy packaging
+PASS: resolved SDK pins, legacy request selection, release identity/API compatibility, duplicate/unresolved rejection and CLI failures
+Ran 17 tests in 0.518s
+PASS: 15 mechanic families, 290 normal levels, tutorial separation, existing stars, unlock bounds, read-only aggregates and safe mechanic filters
+PASS: test/live release separation, compiled configuration and version validation, content hashes, stale-mode rejection and empty-output protection
+PASS: eligible immutable mechanic quests, legal normal-run receipts, distinct mechanics/star improvements, duplicate/date rejection and cloud no-resource merge
+PASS: six reachable unsolved fixed puzzles, separate energy channel targets, mixing rejection, true one-way valve validation, invalid input rejection and campaign/economy isolation
+PASS: pure free/bonus readiness, legacy daily consumption, pending/midnight suppression, no wallet writes or polling, readiness-change events, duplicate/failed-ad handling and existing exactly-once lifecycle settlement
+PASS: four Play listing locales, title/short/full/release-note limits, real localized content and explicit unresolved operator declarations
+PASS: 172 assertions against actual MainActivity auth methods; quiet startup errors, explicit generic failures, real profile ownership, age/init/coalescing and stale/lifecycle callbacks
+PASS: 65 assertions against actual MainActivity startup/lifecycle and actual GamesStartupActivity; old late-init code10 contract, adult-before-Created ordering, restricted gates, real helper/result/resume sequence, cancelled/rejected starts and retained game WebView
+PASS: 77 assertions against actual native cloud methods; stale open/import/resolve/commit callbacks cannot publish, clear or flush another owner/epoch; current queue, cleanup and legacy boundaries preserved
+
+browser.log
+PASS: 300 real buttons; last chapter click, first chapter keyboard focus/Enter and completion filters in TR/EN/AR
+PASS: guest rollback/reload/direct duplicates, legacy/account claims, forward-clock limit, four durable-write interruptions, interleaved purchase/reload and persistent-failure recovery
+PASS: 25 locales, complete key/placeholder coverage, 75 localized-caption viewport checks; Turkish artwork preserved
+PASS: 4 real TR/EN/AR/ZH connected/disconnected account-help flows; native help and legacy alias only, no fake sign-out/relogin or owner/save/resource/board mutation; age/busy guards and 25-language label coverage
+PASS: 24 TR/EN/AR/ZH age/account layouts; native-only read-only age status, neutral recovery, adult-only Google dispatch, four keyboard-accessible GDPR/age controls, busy/malformed/old bridges, 25 translation dictionaries and untouched game/storage/board nodes
+PASS: 18 real hero layouts across six locales/three phone sizes, including Arabic/Urdu/Persian; text does not overlap quest art
+PASS: 72 TR/EN/AR/ZH screens; actual language selection/reload preserves board and resources; native language/deletion bridge; RTL text/LTR square board; eight offline legal-language sections
+PASS: only Gold stone backing changes in gameplay, lesson, onboarding, workshop and shop previews; all SVG pipe colors/masks/frame/gradients, other five themes and game resources preserved. /tmp/kd-gold-contrast
+PASS: edge gameplay content/painted frame, 4x4–8x8 square boards and original hit targets across nine phone/tablet/landscape viewports, asymmetric safe-inset/RTL simulation, normal-width fill, focus and live-rotation state/save isolation; 255 geometry checks
+
+browser-core.log
+PASS: real browser menu, all shop controls, save/reload, cloud merge, settings, pause, 17 level completions, final level, 3 viewports, all-mode save/reload and corrupt save recovery
+
+browser-remaining.log
+RUN: node tests/wheel-audio-audit.cjs
+PASS: independent short effects/haptics, no music, volume/mute, 8 visible wheel prizes, animation, free/bonus limits, 3 completed ads, duplicate/cancel protection, next day, reload and exactly-once payout
+RUN: node tests/rewards-menu-audit.cjs
+PASS: level 16 cloud/legacy completion pays coins, replay/reload rewards, per-run double rewards, duplicate prevention, vibration removal, home tasks/chest, daily claims, seven-day bonus and next-day reset
+RUN: node tests/collections-audit.cjs
+PASS: legacy vibration ignored; native haptics opt-in without VIBRATE permission; premium store assets, reference artwork, 5/15/30 pack prices and purchases/theme persistence; 300 levels, six chapters, all filters, locked levels, continue without reset and three viewports
+RUN: node tests/reference-panels-audit.cjs
+PASS: original reference asset, matching shop layout and 5/15/30 purchases; modern settings, profile tabs, owned themes, actual game palette, chest seven-day reward, stale/duplicate quest protection and three viewports
+RUN: node tests/crystal-shop-audit.cjs
+PASS: centered non-overlapping title on 3 viewports/4 balances; crystal icons/labels with unchanged balances; illustrated wheel above six grouped themes; new theme purchases, palettes, saved ownership, daily reward and legacy result display
+RUN: node tests/expansion-audit.cjs
+PASS: 25 languages, selection/reload/auto/RTL/LTR puzzle coordinates and live moves; six actual SVG theme palettes and widths; all 8 doubled bonus prizes, reload and legacy payout compatibility
+RUN: node tests/theme-gameplay-audit.cjs
+PASS: gold: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: ice: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: fire: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: shadow: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: emerald: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: ruby: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: 1800 themed boards; 3 viewports/all grid sizes; second-layer navigation, six live theme switches without resetting progress, 25 localized layer headings, stable cosmetic nodes and reload
+RUN: node tests/home-icons-audit.cjs
+PASS: four premium icons, unchanged menu artwork/seven controls, click-through on 3 viewports, 300-level/shop/quest/chest navigation, reward badges and claim-state glow, 25 labels/accessible names, reduced motion and usable vectors when artwork fails
+RUN: node tests/reward-performance-audit.cjs
+PASS: real 3-star level 17 doubles visible score/100 XP/crystals; higher prior best, duplicates, cancellation, reload/native receipt acknowledgement; zero hidden saves/body walks; 64 cell identities retained; modern profile/settings/chest/quests controls
+RUN: node tests/progression-audit.cjs
+PASS: six contiguous 50-level milestones, real win celebration, exact-once/replay/reload/journal recovery; four daily quest groups, fresh baselines, duplicate and stale-day claim protection
+RUN: node tests/goals-finale-audit.cjs
+PASS: milestone goals/gaps/claim/mastery/persistence, daily finale prerequisite/duplicate/stale date/reload/partial write recovery, badge and three viewports
+RUN: node tests/achievements-audit.cjs
+PASS: 12 shared achievements; legacy claims/rewards, locked/invalid claim rejection, profile/overlay duplicate protection, permanent streak peaks, partial-write recovery/reload, 3 viewports
+RUN: node tests/learning-audit.cjs
+PASS: 300 grading boundaries, first encounter/skip persistence, all 15 copied mechanic examples, no counter/resource mutation, paused clock/background/back, real three-star and hinted results, three viewports
+RUN: node tests/daily-challenge-audit.cjs
+PASS: daily deterministic seed independent of unlocks, 45 daily seeds / all 15 legal mechanics, separate normal save/progression/counters/undo, first-current-date-only 10 crystals/25 XP, 3 free hints, resume/reload/retry, midnight/date records, duplicate result protection, no reward ads, 3 viewports
+RUN: node tests/full-cloud-audit.cjs
+PASS: full-cloud browser integration across 5 isolated devices/4 accounts, migration, inventory/XP/coupons, offline purchases/duplicate claims, actual win/double/ad receipts, records, crash recovery, delayed old-account payout and throttled gameplay uploads
+RUN: node tests/installation-restore-audit.cjs
+PASS: restored Android/WebView backup uses a fresh native actor; old history, concurrent counters, daily attempts, legacy journal migration and immediate-reload recovery survive
+RUN: node tests/cloud-reconnect-audit.cjs
+PASS: offline gains upload on reconnect; no guest binding, duplicate credit or polling; hidden/bursty events, Google account changes and older bridge fallback
+RUN: node tests/lesson-quest-layout-audit.cjs
+PASS: six lesson themes match live 4x4–8x8 boards before/after without gameplay mutation; three-star button fits six viewports; all four daily task groups and final reward fit one screen; 25 languages/three fonts/RTL and reward controls remain usable
+RUN: node tests/lesson-transition-audit.cjs
+PASS: stored theme survives reload; an open lesson follows six cloud theme restores without losing its phase, masks or game state; store palettes remain independent; rotation preserves the paused example and full-screen quest state/back navigation
+RUN: node tests/weekly-quests-audit.cjs
+PASS: real wins and daily separation, 160 crystals/2 hints exactly once, local Monday rollover and partial-write recovery, 25 locales/3 viewports/keyboard tabs, two-device offline merge, account isolation and guest adoption
+RUN: node tests/privacy-settings-audit.cjs
+PASS: SDK privacy controls/policy; 25 languages/six screen sizes without scroll or gameplay changes; completed hint video pays one coupon, failure pays none, durable duplicates rejected; interstitial only at next-level transition; consent forms pause/resume the clock safely
+RUN: node tests/ad-owner-audit.cjs
+PASS: actual shop/hint requests pin their account before native auth refresh; delayed/reordered receipts stay with owners; one coupon, duplicate/reload safety, legacy bridges and guest adoption
+RUN: node tests/mechanic-progress-browser-audit.cjs
+PASS: mechanic progress/cards, all 17 mechanic filters with existing status filters, locks/chapter shortcuts, untouched board/currency, account isolation and 25 localized layouts
+RUN: node tests/key-completion-audit.cjs
+PASS: levels 156/201 complete on the final aligned key, pay once, and reject extra locked-board clicks
+RUN: node tests/daily-growth-audit.cjs
+PASS: real daily first-win reward, duplicates/replays/old dates, five guest interruption stages, account adoption/two-device idempotence, pending old-owner recovery, 30 distinct day badges/calendar and XP-derived account-local cosmetics
+RUN: node tests/onboarding-save-audit.cjs
+PASS: optional three legal practice moves, skip/replay/owner isolation, six actual theme renderers, 320px/keyboard, unchanged campaign state; storage fault visibility, latest pending value, bounded owner-pinned retries, newer save conflicts, removal retry and private diagnostics
+RUN: node tests/learning-focus-audit.cjs
+PASS: 139 learning/new-feature keys: Turkish canonical and 24 explicit translations, all 300 board states/DOM preserved, fresh lesson prompts and focus controls fit with system-ui/Arial/DejaVu Sans and 4px header clearance; compact focus never shrinks 7x7/8x8 tiles across five viewports, actions/RTL/progress labels fit, 44px settings hit regions, no timers or storage writes for focus
+RUN: node tests/workshop-browser-audit.cjs
+PASS: six real click solutions, fixed endpoints, no duplicate completion writes, campaign/economy isolation, reload, three owners, account-switch rejection, save failure/retry, keyboard controls, six original themes, English fallback, 320px/portrait/landscape
+RUN: node tests/mechanic-quests-browser-audit.cjs
+PASS: existing daily quests preserved until midnight, real tutorial-star improvement and two mechanics, immutable run deduplication, future-date isolation, deterministic conflicting IDs, guest adoption, account separation, and one-time UI quest reward
+RUN: node tests/history-bound-audit.cjs
+PASS: levels 22/292 retain 120 snapshots after 500 blocker chases and 500 ordinary rotations; both undos restore the previous state with 119 entries, without changing tiles during blocker movement or paying resources
+RUN: node tests/tablet-landscape-audit.cjs
+PASS: exact 1024x768 emerald rotation; 7x7/8x8 fresh/normal/focus at nine landscape boundary/tablet sizes in TR/EN/AR and three fonts; 4x4–6x6 tablet guards; original board/resources preserved; 542 geometry checks in 28.3s
+RUN: node tests/reward-indicators-audit.cjs
+PASS: truthful home/profile/shop/quest reward markers, accessible badge descriptions, read-only/idle/hidden behavior, pending/bonus wheel states, one-time claims/reload, midnight refresh, and account/cloud isolation without real ads
+RUN: node tests/obsidian-integration-audit.cjs
+PASS: tr — 100 state/save/SVG/energy/button/geometry comparisons, real gap/direct/outside clicks
+PASS: en — 100 state/save/SVG/energy/button/geometry comparisons, real gap/direct/outside clicks
+PASS: ar — 100 state/save/SVG/energy/button/geometry comparisons, real gap/direct/outside clicks
+PASS: zh — 100 state/save/SVG/energy/button/geometry comparisons, real gap/direct/outside clicks
+PASS: shipped obsidian design; 400 matrix checks, 1200 alignment states, legal win/exact reward, motion/dense/low-hardware guards
+
+ux-final.log
+PASS: entire game closure except audio adapters, plus 13 save/economy/policy files, byte-identical to c38bbf3
+PASS: 25 haptic eligibility, quiet/background, hardware, rate/clock and cue assertions
+PASS: native source guards, system-setting-respecting haptics and permission preservation; full Android compile/lint is a separate CI check
+PASS: short distinct cues; no legacy music; sound/haptics independent and persistent; silent/native denial, volume zero, background cleanup, ≤8 voices/one context; unsupported haptics disabled; segment ticks/reduced motion; wheel outcome unchanged
+PASS: 150 settings layouts across 25 locales/6 viewports; 168 localized wheel layouts/7 states; 8 free outcomes and safe reservation/payout; acceleration/deceleration timing
+
+wheel-final.log
+PASS: independent short effects/haptics, no music, volume/mute, 8 visible wheel prizes, animation, free/bonus limits, 3 completed ads, duplicate/cancel protection, next day, reload and exactly-once payout
+
+expansion-final.log
+PASS: 25 languages, selection/reload/auto/RTL/LTR puzzle coordinates and live moves; six actual SVG theme palettes and widths; all 8 doubled bonus prizes, reload and legacy payout compatibility
+
+shop-final.log
+PASS: centered non-overlapping title on 3 viewports/4 balances; crystal icons/labels with unchanged balances; illustrated wheel above six grouped themes; new theme purchases, palettes, saved ownership, daily reward and legacy result display
+
+Son bağlantı/satın alma geri bildirimi ve deterministik takvim denetimleri
+PASS: short distinct cues; real connection/purchase/daily-claim feedback; no legacy music; sound/haptics independent and persistent; silent/native denial, volume zero, background cleanup, ≤8 voices/one context; unsupported haptics disabled; segment ticks/reduced motion; wheel outcome unchanged
+PASS: independent short effects/haptics, no music, volume/mute, 8 visible wheel prizes, animation, free/bonus limits, 3 completed ads, duplicate/cancel protection, next day, reload and exactly-once payout

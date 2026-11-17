@@ -1,0 +1,313 @@
+{
+  "scope": "Desktop headless Chromium, real WebAudio, native haptic bridge mocked. CPU4/6, two-RAF input timing; not Android FPS/thermal/ANR evidence.",
+  "scenes": [
+    {
+      "profile": "320x568-cpu6",
+      "level": 53,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 16,
+        "p95Ms": 27,
+        "maxMs": 34
+      },
+      "inputToSecondFrame": {
+        "medianMs": 47,
+        "p95Ms": 64,
+        "maxMs": 69
+      },
+      "heapBeforeBytes": 2903584,
+      "heapAfterBytes": 3126032,
+      "heapDeltaBytes": 222448,
+      "longTasks": [],
+      "feedback": null
+    },
+    {
+      "profile": "320x568-cpu6",
+      "level": 53,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 16,
+        "p95Ms": 29,
+        "maxMs": 40
+      },
+      "inputToSecondFrame": {
+        "medianMs": 44,
+        "p95Ms": 59,
+        "maxMs": 73
+      },
+      "heapBeforeBytes": 2936560,
+      "heapAfterBytes": 3171464,
+      "heapDeltaBytes": 234904,
+      "longTasks": [
+        54
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 27,
+        "haptics": 0,
+        "peakVoices": 4,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    },
+    {
+      "profile": "320x568-cpu6",
+      "level": 91,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 21,
+        "p95Ms": 48,
+        "maxMs": 65
+      },
+      "inputToSecondFrame": {
+        "medianMs": 48,
+        "p95Ms": 84,
+        "maxMs": 96
+      },
+      "heapBeforeBytes": 2918536,
+      "heapAfterBytes": 3143152,
+      "heapDeltaBytes": 224616,
+      "longTasks": [
+        69,
+        69,
+        53
+      ],
+      "feedback": null
+    },
+    {
+      "profile": "320x568-cpu6",
+      "level": 91,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 18,
+        "p95Ms": 29,
+        "maxMs": 31
+      },
+      "inputToSecondFrame": {
+        "medianMs": 48,
+        "p95Ms": 54,
+        "maxMs": 57
+      },
+      "heapBeforeBytes": 2946316,
+      "heapAfterBytes": 3186692,
+      "heapDeltaBytes": 240376,
+      "longTasks": [
+        69
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 26,
+        "haptics": 0,
+        "peakVoices": 4,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    },
+    {
+      "profile": "320x568-cpu6",
+      "level": 151,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 21,
+        "p95Ms": 52,
+        "maxMs": 64
+      },
+      "inputToSecondFrame": {
+        "medianMs": 50,
+        "p95Ms": 88,
+        "maxMs": 93
+      },
+      "heapBeforeBytes": 3059448,
+      "heapAfterBytes": 3292148,
+      "heapDeltaBytes": 232700,
+      "longTasks": [
+        73,
+        107,
+        63
+      ],
+      "feedback": null
+    },
+    {
+      "profile": "320x568-cpu6",
+      "level": 151,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 23,
+        "p95Ms": 31,
+        "maxMs": 33
+      },
+      "inputToSecondFrame": {
+        "medianMs": 47,
+        "p95Ms": 77,
+        "maxMs": 91
+      },
+      "heapBeforeBytes": 3063244,
+      "heapAfterBytes": 3322108,
+      "heapDeltaBytes": 258864,
+      "longTasks": [
+        79
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 28,
+        "haptics": 0,
+        "peakVoices": 4,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 53,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 18,
+        "maxMs": 20
+      },
+      "inputToSecondFrame": {
+        "medianMs": 37,
+        "p95Ms": 62,
+        "maxMs": 72
+      },
+      "heapBeforeBytes": 2904468,
+      "heapAfterBytes": 3125444,
+      "heapDeltaBytes": 220976,
+      "longTasks": [],
+      "feedback": null
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 53,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 23,
+        "maxMs": 24
+      },
+      "inputToSecondFrame": {
+        "medianMs": 34,
+        "p95Ms": 77,
+        "maxMs": 82
+      },
+      "heapBeforeBytes": 2929396,
+      "heapAfterBytes": 3166268,
+      "heapDeltaBytes": 236872,
+      "longTasks": [],
+      "feedback": {
+        "contexts": 1,
+        "cues": 24,
+        "haptics": 0,
+        "peakVoices": 3,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 91,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 17,
+        "maxMs": 20
+      },
+      "inputToSecondFrame": {
+        "medianMs": 36,
+        "p95Ms": 53,
+        "maxMs": 64
+      },
+      "heapBeforeBytes": 2895960,
+      "heapAfterBytes": 3122580,
+      "heapDeltaBytes": 226620,
+      "longTasks": [],
+      "feedback": null
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 91,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 18,
+        "maxMs": 18
+      },
+      "inputToSecondFrame": {
+        "medianMs": 32,
+        "p95Ms": 48,
+        "maxMs": 54
+      },
+      "heapBeforeBytes": 2923648,
+      "heapAfterBytes": 3164252,
+      "heapDeltaBytes": 240604,
+      "longTasks": [],
+      "feedback": {
+        "contexts": 1,
+        "cues": 23,
+        "haptics": 0,
+        "peakVoices": 4,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 151,
+      "variant": "main-c38bbf3",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 21,
+        "maxMs": 31
+      },
+      "inputToSecondFrame": {
+        "medianMs": 33,
+        "p95Ms": 60,
+        "maxMs": 64
+      },
+      "heapBeforeBytes": 3036296,
+      "heapAfterBytes": 3278460,
+      "heapDeltaBytes": 242164,
+      "longTasks": [
+        57
+      ],
+      "feedback": null
+    },
+    {
+      "profile": "390x844-cpu4",
+      "level": 151,
+      "variant": "ux-preview",
+      "handler": {
+        "medianMs": 12,
+        "p95Ms": 16,
+        "maxMs": 17
+      },
+      "inputToSecondFrame": {
+        "medianMs": 37,
+        "p95Ms": 52,
+        "maxMs": 57
+      },
+      "heapBeforeBytes": 3062128,
+      "heapAfterBytes": 3321156,
+      "heapDeltaBytes": 259028,
+      "longTasks": [
+        50
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 26,
+        "haptics": 0,
+        "peakVoices": 4,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

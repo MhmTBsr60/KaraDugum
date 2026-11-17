@@ -1,0 +1,9 @@
+/* Reproducible browser captures; baseline is a detached c38bbf3 worktree, fresh mock save. */
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{chromium,serve,init}=require('../../tests/ux-harness.cjs');
+const out=__dirname,routes=['wheel','shop','levels','quests','achievements','profile','settings','home','puzzle'];
+(async()=>{const {server,url}=await serve(),b=await chromium.launch({args:['--no-sandbox']});try{
+ for(const before of [true,false])for(const route of routes){const p=await init(b,url,{before,dpr:2});await p.evaluate(route=>{if(route==='wheel'){kdNavigate('shop');kdOpenWheel()}else if(route==='quests'||route==='achievements'){kdNavigate('home');kdOpenExtras(route)}else if(route==='puzzle'){kdSelectLevel(81);kdNavigate('game');kdLearning.leave();kdSetPaused(true)}else kdNavigate(route)},route);await p.clock.runFor(600);await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,(before?'before':'after')+'-'+route+'.png')});await p.close();}
+ const view=await b.newPage({viewport:{width:844,height:1100},deviceScaleFactor:2});for(const route of routes.slice(0,7)){await view.goto(url+'/after/design/ux-preview/index.html?screen='+route+'&capture=1');await view.evaluate(()=>document.fonts.ready);await view.screenshot({path:path.join(out,'compare-'+route+'.jpg'),quality:94});}
+ const sha=file=>crypto.createHash('sha256').update(fs.readFileSync(path.join(out,file))).digest('hex');const preservation={homePixelsIdentical:sha('before-home.png')===sha('after-home.png'),puzzlePixelsIdentical:sha('before-puzzle.png')===sha('after-puzzle.png')};fs.writeFileSync(path.join(out,'capture-check.json'),JSON.stringify(preservation,null,2)+'\n');console.log(preservation);
+ }finally{await b.close();server.close();}})().catch(e=>{console.error(e);process.exitCode=1});

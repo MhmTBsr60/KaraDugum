@@ -1,0 +1,139 @@
+{
+  "scope": "Chromium CPU6, real audio / mocked haptics; warmed by real game and shop clicks, 3 x 4.2s spins per variant. Not Android GPU/FPS.",
+  "scenes": [
+    {
+      "variant": "main-c38bbf3",
+      "trial": 1,
+      "tasks": [
+        {
+          "start": 6984,
+          "duration": 63
+        },
+        {
+          "start": 7048.199999999255,
+          "duration": 108
+        }
+      ],
+      "feedback": null,
+      "hapticCalls": 0,
+      "settled": true,
+      "idleWillChange": "transform",
+      "payout": 1215
+    },
+    {
+      "variant": "main-c38bbf3",
+      "trial": 2,
+      "tasks": [
+        {
+          "start": 12161.099999997765,
+          "duration": 91
+        },
+        {
+          "start": 12252.79999999702,
+          "duration": 124
+        }
+      ],
+      "feedback": null,
+      "hapticCalls": 0,
+      "settled": true,
+      "idleWillChange": "transform",
+      "payout": 1225
+    },
+    {
+      "variant": "main-c38bbf3",
+      "trial": 3,
+      "tasks": [
+        {
+          "start": 17287.599999997765,
+          "duration": 73
+        },
+        {
+          "start": 17361.599999997765,
+          "duration": 131
+        }
+      ],
+      "feedback": null,
+      "hapticCalls": 0,
+      "settled": true,
+      "idleWillChange": "transform",
+      "payout": 1235
+    },
+    {
+      "variant": "ux-preview",
+      "trial": 1,
+      "tasks": [
+        {
+          "start": 2121.89999999851,
+          "duration": 58
+        },
+        {
+          "start": 6679.89999999851,
+          "duration": 89
+        }
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 52,
+        "haptics": 50,
+        "peakVoices": 2,
+        "activeVoices": 2,
+        "activated": true,
+        "contextState": "running"
+      },
+      "hapticCalls": 50,
+      "settled": true,
+      "idleWillChange": "auto",
+      "payout": 1215
+    },
+    {
+      "variant": "ux-preview",
+      "trial": 2,
+      "tasks": [
+        {
+          "start": 11950.199999999255,
+          "duration": 95
+        }
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 100,
+        "haptics": 98,
+        "peakVoices": 2,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      },
+      "hapticCalls": 98,
+      "settled": true,
+      "idleWillChange": "auto",
+      "payout": 1225
+    },
+    {
+      "variant": "ux-preview",
+      "trial": 3,
+      "tasks": [
+        {
+          "start": 17084.199999999255,
+          "duration": 55
+        },
+        {
+          "start": 17140.10000000149,
+          "duration": 102
+        }
+      ],
+      "feedback": {
+        "contexts": 1,
+        "cues": 149,
+        "haptics": 147,
+        "peakVoices": 2,
+        "activeVoices": 0,
+        "activated": true,
+        "contextState": "running"
+      },
+      "hapticCalls": 147,
+      "settled": true,
+      "idleWillChange": "auto",
+      "payout": 1235
+    }
+  ]
+}

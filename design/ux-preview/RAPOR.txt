@@ -1,0 +1,90 @@
+KARA DÜĞÜM — OBSİDYEN / ALTIN UX ÖNİZLEMESİ
+17 Kasım 2026
+Dal: design/obsidian-ux-preview-20261117
+Temel: main / c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4
+Çalışma kodu: 5b377e2842d57853424068dad2f869dfc4dd4f79
+Son test düzeltmesi: 835ddc5576e1e1bbf6b5c7a2e03d19ce1a87627f (yalnızca sahte takvimin belirgin ve deterministik kurulması)
+Durum: Tasarım onayı için ayrı dal. Main birleştirmesi ve yayın yapılmadı.
+
+HAZIRLANANLAR
+• Arka plan müziği kaldırıldı. Eski müzik tercihi silinmedi fakat artık müzik başlatmıyor.
+• Dokunma/düğüm döndürme, doğru bağlantı, kilitli hamle, geri alma, başarısızlık, ödül ve bölüm tamamlanması için kısa, farklı sentezlenmiş efektler.
+• Ses efektleri ve titreşim için birbirinden bağımsız, kalıcı aç/kapat tercihleri. Efekt ses düzeyi ve iki ayrı deneme butonu. Mevcut ses tercihi korundu; yeni titreşim tercihi varsayılan kapalı.
+• Desteklenen Android cihazlarda sistemin performHapticFeedback API'si. Yeni VIBRATE izni yok. Sistem titreşim tercihini yok sayan bayrak yok. Donanım bulunmazsa kontrol devre dışı.
+• Android ses köprüsünde sessiz/titreşim modu ve DND'nin tam sessizlik/alarm filtreleri; haptikte sessiz, arka plan, görünürlük ve hız korumaları. Fiziksel davranış ayrıca doğrulanmalı.
+• Metalik çerçeve, koyu obsidyen dilimler, altın yıldız madalyonu ve belirgin gösterge. Hızlanıp yavaşlayan tek SVG dönüşü; dilim geçişlerinde kısa tıklama/haptik. Sonuç için 220 ms hafif açılış. Hareketi azalt tercihinde dönüş/sonuç animasyonu ve seri dilim geri bildirimi kapalı; mevcut 200 ms sonuç süresi korunuyor.
+• Küçük ekranda daha büyük çark/yazılar: test edilen en dar ölçülerde ödül yazısı yaklaşık 12 CSS piksel ve üzeri. Dar/yatay görünümde kaydırılarak bütün çark eylemlerine erişiliyor.
+• Klavyeyle çark odağı, Tab döngüsü, Escape ile kapatma. Sonuç alanında mevcut aria-live bildirimi korundu.
+• Mağaza, bölüm listesi, görevler, başarımlar, profil ve ayarlarda ortak obsidyen yüzeyler, metalik sınırlar ve okunabilir durumlar. Mağaza yerleşimi, fiyatlar ve satın alma işlevleri korundu.
+• Yeni ayar metinleri 25 dilde mevcut; Arapça/RTL kontrolleri yapıldı.
+
+KORUNANLAR
+300 bölüm, üretim/generatör/çözüm kuralları, düğüm şekil ve yönleri, mevcut ipuçları, ilerleme, kristal ekonomisi, kayıt ve bulut modelleri korundu. Oyun çekirdeğinin yalnızca izin verilen iki ses adaptörü bölgesi dışında tamamı c38bbf3 ile bayt düzeyinde aynı. Ek 13 kayıt/ekonomi/politika dosyası değişmedi.
+Ana menü ve bölüm 81'in aynı durumla alınan önce/sonra ekranları piksel düzeyinde aynı.
+
+ÇARKIN AYNI KALAN KURALLARI
+8 eşit olasılıklı dilim: 10, 25, 15, 50, 20, 30 kristal; 1 ipucu; boş.
+Her dilimin seçilme olasılığı mevcut kodda 1/8. Beklenen ücretsiz ödül: 18,75 kristal ve 0,125 ipucu. Bu teorik değerler gelir vaadi veya canlı istatistik değildir.
+Günde bir ücretsiz çevirme; üç ayrı tamamlanmış reklamdan sonra bir ek çevirme ve 2× ödül. Sonuç ve ödeme makbuzu animasyondan önce yerel olarak kaydediliyor. Animasyon, ses veya kapatma sonucu değiştirmiyor. Bekleyen çevirmenin yeniden yüklemede bir kez ödenmesi korunuyor. Reklamın erken kapanması, başarısız/stale/tekrar callback'leri ek hak vermiyor.
+
+TEST SONUÇLARI
+• npm test: mevcut 18 kaynak denetimi başarılı. Buna 17 Android manifest testi dahil.
+• 300 bölüm üretim/çözülebilirlik ve gerçek yasal ipuçlarıyla tamamlanma denetimleri başarılı.
+• Mevcut 43 tarayıcı denetiminin tamamı yerelde çalıştırıldı; son CI koşusunda da tek akışta başarılı sonuç alındı. İlk koşuda eski müzik/titreşim beklentileri yeni gereksinimle uyuşmadı; bu beklentiler güncellendi ve etkilenen testler yeniden çalıştırıldı. Diğer ekonomi/kayıt/ödül kontrolleri korunmuştur.
+• Altı temanın her birinde 300 bölüm: toplam 1.800 bölüm/tema durumu başarılı.
+• Mevcut obsidyen entegrasyon denetimi: 400 karşılaştırma, 1.200 hizalanma durumu; yasal tamamlanma, tek ödeme, yoğun tahta ve düşük donanım hareket korumaları başarılı.
+• npm run test:ux: korunan çekirdek/hash, 25 saf Java haptik koşulu, ses/haptik bağımsızlığı ve kalıcılık, ses sıfır/sessiz köprü reddi, arka plan temizliği, donanımsız kontrol, tek AudioContext ve en fazla 8 ses kaynağı koruması başarılı.
+• 25 dil × 6 ölçü = 150 ayar yerleşimi başarılı.
+• TR/EN/AR/ZH × 6 ölçü × 7 çark durumu = 168 görünüm başarılı. Yatay taşma, ödül yazısı boyutu, erişilebilir eylem ve sekiz dilim kontrol edildi.
+• Sekiz ücretsiz ve sekiz 2× bonus ödül sonucu; günlük hak, üç tamamlanmış reklam, tekrar/başarısız callback, boş dilim, yeniden yükleme ve eski makbuz uyumu başarılı. Bunlar benzetilmiş reklam callback'leridir; gerçek reklam gösterimi yapılmadı.
+• GitHub Actions: Android Java derlemesi ve lint başarılı. İlk doğrulama koşusu: https://github.com/MhmTBsr60/KaraDugum/actions/runs/44109851593
+  Son tam denetim: https://github.com/MhmTBsr60/KaraDugum/actions/runs/44114927442 — kaynaklar, 43 tarayıcı denetimi, yeni UX testleri ve Android derleme/lint başarılı.
+  Yeni CI yalnızca önizleme dalında, örnek reklam kimlikleriyle, derleme/lint kontrolü yapar; APK/AAB paketlemez, imza anahtarı veya yayın yetkisi kullanmaz.
+• CI’deki tek bir takvim geçişi başarısızlığından sonra test, tarihi açıkça kuracak ve günün gerçekten değiştiğini doğrulayacak şekilde düzeltildi; oyun kodu değiştirilmedi. Son tam tarayıcı/UX koşusu geçti.
+• Son küçük çark/yazı/klavye iyileştirmeleri sonrası UX, reklamlı çark, 25 dil/bonus ve mağaza denetimleri tekrar çalıştırıldı. Ayrıntılar tests.log ve ci-results.log dosyalarında.
+
+PERFORMANS
+Gerçek WebAudio ile masaüstü headless Chromium; fiziksel Android değildir. CPU 6×/4× yavaşlatıldı. Her sahnede 40 giriş, aynı durum, zorlanmış yerleşim ve iki animation frame beklendi. İki sürümde hamleler, maskeler ve kaynaklar eşit kaldı.
+
+Ölçü / CPU / bölüm    İşleyici medyanı önce→sonra    İşleyici p95 önce→sonra
+320×568 / 6× / 53       16 → 16 ms                    27 → 29 ms
+320×568 / 6× / 91       21 → 18 ms                    48 → 29 ms
+320×568 / 6× / 151       21 → 23 ms                    52 → 31 ms
+390×844 / 4× / 53       12 → 12 ms                    18 → 23 ms
+390×844 / 4× / 91       12 → 12 ms                    17 → 18 ms
+390×844 / 4× / 151       12 → 12 ms                    21 → 16 ms
+
+İki-frame gecikmesi p95 değeri beş sahnede azaldı; 390×844 / bölüm 53 sahnesinde 62 → 77 ms arttı. İşleyici p95 değerlerinde bazı sahnelerde 1–5 ms artış da ölçüldü; bunlar Android FPS ölçümü değildir. Tek örneklemli bu karşılaştırma her cihazda hızlanma garantisi vermez.
+Yeni efektlerde bir AudioContext, oyun girişlerinde gözlenen en fazla dört eşzamanlı ses ve kuyruk bittikten sonra sıfır aktif ses. 40 giriş sonrası GC ile ölçülen ek heap artışı temel sürüme göre bu örneklerde yaklaşık 12–26 KB daha fazlaydı; uzun süreli Android bellek testi yerine geçmez.
+CPU6 oyun sahnelerinde yeni sürümde en uzun görev 79 ms ölçüldü. Isıtılmış çark testinde üç çevirmede en uzun görev temel sürümde 131 ms, önizlemede 102 ms idi; çoğu ödeme sonrası mağaza/gösterge yenilemesi çevresindeydi. Bu nedenle tüm düşük cihazlarda kesintisiz 60 FPS iddiası yok.
+Çark sabitken katman terfisi kaldırılır. Parçacık motoru, ağır blur, sürekli ses döngüsü veya kare başına DOM güncellemesi eklenmedi. Dilim geri bildirimi tek sonraki zamanlayıcıyla yürütülür; kapanma/arka plan/hareketi azalt durumunda iptal edilir.
+Ham sonuçlar: performance.json, wheel-performance-warm.json.
+
+DOĞRULANAMAYANLAR VE KALAN RİSKLER
+ORTA — Gerçek Android cihaz/emülatör yok. API 24/30/36 üzerinde fiziksel ses, titreşim, sessiz/DND davranışı, TalkBack, Bluetooth/kulaklık, pil/ısınma, gerçek GPU/FPS ve uzun süreli bellek/ANR ölçülmedi. Native derleme ve saf Java koşul testleri, cihaz testi değildir.
+ORTA — CPU6 altında ödül sonrası 102 ms'ye kadar görev gözlendi. Gerçek düşük donanımda çark sonrası ekran yenilemesi ayrıca denenmeli.
+ORTA — Mevcut çark günlük hakları cihaz tarihine dayanıyor. Sunucu doğrulaması olmadan tarih/veri manipülasyonuna karşı kesin günlük sınır güvencesi yok. Bu çalışmada ödül/takvim kuralları değiştirilmedi. Yerel makbuzlar sunucu düzeyinde hile koruması değildir.
+ORTA — Gerçek reklam, Google Play Games oturumu ve canlı bulut sunucusu bu testlerde kullanılmadı. Yerel modeller, sahiplik ve callback akışları denetlendi. AdMob hesabındaki G sınırının etkinliği bu çalışma alanından doğrulanmadı; uygunluk iddiası yapılmıyor.
+DÜŞÜK — Sesin algılanan yüksekliği ve titreşim hissi hoparlör/motor üreticisine göre değişir. Altı kısa WAV örneği tasarım onayı için sunulmuştur; telefon dinleme testi bekler.
+
+YAYIN VE DOSYA KORUMASI
+Main c38bbf3 olarak kaldı. Bu dal main'e birleştirilmedi.
+Google Play 6.50 üretim sürümü, incelemedeki mağaza görselleri, AdMob ve diğer uygulamalarda işlem yapılmadı. Yeni APK/AAB veya üretim sürümü oluşturulmadı/yüklenmedi/yayımlanmadı.
+Mevcut LIVE AAB SHA-256 hâlâ:
+9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf
+
+GÖRSELLER VE YENİDEN ÜRETİM
+index.html: yerel karşılaştırma galerisi ve ses örnekleri. compare-*.jpg: büyük yan yana görseller. before/after-*.png: 2× gerçek sayfa görüntüleri. Bunlar mağaza görseli değildir ve Android paketine kopyalanmaz.
+Aynı yerel kayıt, tarih, dil, bölüm/durum ve ekran ölçüsü kullanıldı. Native köprü görüntü/test için benzetildi.
+Temel görüntüler için c38bbf3 checkout'u ../KaraDugum-ux-baseline altında gerekir.
+  npm ci --ignore-scripts
+  npm test
+  npm run test:browser
+  npm run test:ux
+  node design/ux-preview/capture.cjs
+  node design/ux-preview/render-sounds.cjs
+  node design/ux-preview/benchmark.cjs
+  node design/ux-preview/wheel-benchmark.cjs
+
+SONRAKİ AŞAMA
+Görsel/ses onayından sonra ayrı TEST APK ve gerçek telefon doğrulaması yapılabilir. Bu rapor main birleştirme veya yayın onayı yerine geçmez.
