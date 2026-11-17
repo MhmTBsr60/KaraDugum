@@ -1,0 +1,40 @@
+/* Approval-only prototype. Not imported by index.html. Enabled only by the preview capture tool. */
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal]::before{
+ background:radial-gradient(ellipse at 50% 51%,#b488251a,transparent 59%),linear-gradient(90deg,#080a0ce0,#080a0cf0 25%,#080a0cf0 75%,#080a0ce0);
+ border-color:#8b7040;
+}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] main>.board{
+ background-color:#0c1012;
+ box-shadow:0 0 0 3px #101210,0 0 0 4px #8d7245,0 12px 24px #000a,0 0 24px #b88d2819;
+}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] main>.board .tile:not(.good){
+ background-image:linear-gradient(145deg,#323d44bf,#0b1013dc 48%,#020406f5),url('assets/kara-dugum-theme-stones.webp')!important;
+ border-color:#8b7448;
+ box-shadow:inset 0 1px 0 #f8e2ab45,inset 1px 0 0 #e7c47c1c,inset 0 -2px 3px #000c;
+ transition:none;
+}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] .kdPipeLustre{opacity:.9}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] .kdPipeCastShadow{opacity:.46}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] .kdBoardOrnament{opacity:.9}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] .stats .stat{
+ background:linear-gradient(140deg,#1b1a16,#090c0e);border-color:#9d8047;
+ box-shadow:inset 0 1px 0 #f2d49a20;
+}
+@media(prefers-reduced-motion:no-preference){
+ #kdGame[data-visual-proposal] #board>.tile.flash{animation:kdPreviewTouch .14s ease-out!important}
+ #kdGame[data-visual-proposal] #board[data-preview-complete]>.kdBoardOrnament{animation:kdPreviewLight .45s ease-out}
+ html[data-visual-proposal] .kdWinPanel{animation:kdPreviewWin .22s ease-out}
+}
+@media(prefers-reduced-motion:reduce){
+ #kdGame[data-visual-proposal] #board>.tile.flash,
+ #kdGame[data-visual-proposal] #board[data-preview-complete]>.kdBoardOrnament,
+ html[data-visual-proposal] .kdWinPanel{animation:none!important}
+}
+@keyframes kdPreviewTouch{0%,100%{transform:scale(1)}45%{transform:scale(.965)}}
+@keyframes kdPreviewLight{0%,100%{opacity:.9}40%{opacity:1}}
+@keyframes kdPreviewWin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* Dense boards keep their current static feedback; avoid many transient compositor layers. */
+#kdGame[data-visual-proposal] #board[style*="repeat(7"]>.tile.flash,
+#kdGame[data-visual-proposal] #board[style*="repeat(8"]>.tile.flash{animation:none!important}
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] #board[style*="repeat(7"]>.tile:not(.good),
+html[data-kd-theme="gold"] #kdGame[data-visual-proposal] #board[style*="repeat(8"]>.tile:not(.good){background-image:linear-gradient(145deg,#202a2e,#070b0e)!important;background-size:100% 100%}

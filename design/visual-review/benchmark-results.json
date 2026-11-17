@@ -1,0 +1,137 @@
+{
+  "scope": "Chromium synthetic CPU throttling, 20 real tile dispatches/scene; forced layout and two RAF; not Android performance",
+  "scenes": [
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "proposed": false,
+      "handler": {
+        "medianMs": 13.600000000558794,
+        "p95Ms": 22.100000000558794,
+        "maxMs": 22.100000000558794
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.59999999962747,
+        "p95Ms": 143.6000000005588,
+        "maxMs": 143.6000000005588
+      },
+      "retainedCells": 36
+    },
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "proposed": true,
+      "handler": {
+        "medianMs": 13.799999999813735,
+        "p95Ms": 24.90000000037253,
+        "maxMs": 24.90000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.60000000055879,
+        "p95Ms": 128.79999999981374,
+        "maxMs": 128.79999999981374
+      },
+      "retainedCells": 36
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "proposed": false,
+      "handler": {
+        "medianMs": 14.5,
+        "p95Ms": 139.3999999994412,
+        "maxMs": 139.3999999994412
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.09999999962747,
+        "p95Ms": 201.5,
+        "maxMs": 201.5
+      },
+      "retainedCells": 64
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "proposed": true,
+      "handler": {
+        "medianMs": 14.599999999627471,
+        "p95Ms": 25.600000000558794,
+        "maxMs": 25.600000000558794
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.10000000055879,
+        "p95Ms": 49.09999999962747,
+        "maxMs": 49.09999999962747
+      },
+      "retainedCells": 64
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "proposed": false,
+      "handler": {
+        "medianMs": 8.699999999254942,
+        "p95Ms": 63.89999999944121,
+        "maxMs": 63.89999999944121
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.299999999813735,
+        "p95Ms": 101.20000000018626,
+        "maxMs": 101.20000000018626
+      },
+      "retainedCells": 36
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "proposed": true,
+      "handler": {
+        "medianMs": 7.2999999998137355,
+        "p95Ms": 11,
+        "maxMs": 11
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.09999999962747,
+        "p95Ms": 122.80000000074506,
+        "maxMs": 122.80000000074506
+      },
+      "retainedCells": 36
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "proposed": false,
+      "handler": {
+        "medianMs": 10.899999999441206,
+        "p95Ms": 79.79999999981374,
+        "maxMs": 79.79999999981374
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.19999999925494,
+        "p95Ms": 147.70000000018626,
+        "maxMs": 147.70000000018626
+      },
+      "retainedCells": 64
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "proposed": true,
+      "handler": {
+        "medianMs": 10.200000000186265,
+        "p95Ms": 13.900000000372529,
+        "maxMs": 13.900000000372529
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.19999999925494,
+        "p95Ms": 59.10000000055879,
+        "maxMs": 59.10000000055879
+      },
+      "retainedCells": 64
+    }
+  ],
+  "errors": [],
+  "status": "pass",
+  "baseMainCommit": "40b165edf3cd6fad7bc43f7a812c31fa872b79f1",
+  "cssSha256": "15e5dfbb3873fedccfd0dc2f9c077ddc0600651b04a4de0f8b8dd6500da4208a"
+}
