@@ -1,0 +1,70 @@
+name: Publish verified UX TEST download
+on:
+  push:
+    branches: [builds/ux-test-20261117]
+jobs:
+  publish:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      KD_SOURCE_RUN: '44129965255'
+      KD_SOURCE_COMMIT: '0acb75b117e9cb4fee53b316dd7226f97a1e7256'
+      KD_APK_SHA256: '1f72aff2d4315ed1bd5478aa4808e20a4c96213a06fa9e3077b0a3eccc653687'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Verify source build provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$KD_SOURCE_RUN" > /tmp/kd-source-run.json
+          python3 - <<'PY'
+          import json,os
+          r=json.load(open('/tmp/kd-source-run.json'))
+          assert r['conclusion']=='success' and r['head_branch']=='main'
+          assert r['head_sha']==os.environ['KD_SOURCE_COMMIT']
+          assert r['path'].split('@')[0]=='.github/workflows/android-design-test.yml'
+          PY
+          gh run download "$KD_SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name KaraDugum-6.50-UX-TEST-APK --dir /tmp/kd-ux-artifact
+      - name: Verify signed TEST bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,hashlib,zipfile
+          from pathlib import Path
+          p=Path('/tmp/kd-ux-artifact/KaraDugum-6.50-UX-TEST.apk')
+          info=json.load(open('/tmp/kd-ux-artifact/build-info.json'))
+          assert info['commit']==os.environ['KD_SOURCE_COMMIT']
+          assert info['adsMode']=='test' and info['versionName']=='6.50-ux-test2'
+          assert info['applicationId']=='com.orynexa.karadugum' and info['versionCode']==110
+          assert info['sha256']==os.environ['KD_APK_SHA256']==hashlib.sha256(p.read_bytes()).hexdigest()
+          assert info['rewardedUnitId']=='ca-app-pub-3940256099942544/5224354917'
+          assert info['interstitialUnitId']=='ca-app-pub-3940256099942544/1033173712'
+          with zipfile.ZipFile(p) as z:
+              for f in ['index.html','feedback.js','wheel.js','wheel-motion.js','ux-polish.css','ux-locales.js','cloud-model.js','cloud-sync.js','reward-receipts.js']:
+                  assert z.read('assets/'+f)==Path(f).read_bytes(),f
+              assert not any(n.endswith(('.jks','.keystore','.aab')) for n in z.namelist())
+          PY
+          printf '%s\n' '351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e' > /tmp/kd-cert-sha256
+          bash scripts/verify-apk-signature.sh /tmp/kd-ux-artifact/KaraDugum-6.50-UX-TEST.apk /tmp/kd-cert-sha256
+      - name: Save verified APK in download branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p test-builds/ux-20261117
+          cp /tmp/kd-ux-artifact/KaraDugum-6.50-UX-TEST.apk test-builds/ux-20261117/
+          cp /tmp/kd-ux-artifact/build-info.json test-builds/ux-20261117/
+          cp /tmp/kd-ux-artifact/TELEFON-TESTI.txt test-builds/ux-20261117/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add test-builds/ux-20261117/KaraDugum-6.50-UX-TEST.apk test-builds/ux-20261117/build-info.json test-builds/ux-20261117/TELEFON-TESTI.txt
+          git commit -m "[skip ci] Publish verified UX TEST APK from $KD_SOURCE_COMMIT"
+          git push origin HEAD:refs/heads/builds/ux-test-20261117

@@ -1,0 +1,73 @@
+{
+  "scope": "Synthetic Chromium viewports/CPU/DPR; no physical Android or ANR/FPS certification",
+  "runtimeCommit": "fbeb34a37007beb26eede020a1337a3febe3bc51",
+  "testCommit": "0acb75b117e9cb4fee53b316dd7226f97a1e7256",
+  "sourceAssetsMatchCurrent": true,
+  "sourceChangedDuringRun": false,
+  "gameScenes": 145,
+  "gameErrors": [],
+  "profiles": [
+    {
+      "id": "compact-slow",
+      "cpu": 6,
+      "width": 320,
+      "height": 568,
+      "dpr": 1,
+      "loadToSplashGoneMs": 3448,
+      "longTask": {
+        "count": 124,
+        "maxMs": 366,
+        "heartBeatMaxGapMs": 583.6999999992549
+      },
+      "shopIdle": {
+        "saves": 0,
+        "bodyWalks": 0
+      }
+    },
+    {
+      "id": "standard-mid",
+      "cpu": 4,
+      "width": 360,
+      "height": 800,
+      "dpr": 2,
+      "loadToSplashGoneMs": 2861,
+      "longTask": {
+        "count": 64,
+        "maxMs": 245,
+        "heartBeatMaxGapMs": 326.5999999977648
+      },
+      "shopIdle": {
+        "saves": 0,
+        "bodyWalks": 0
+      }
+    },
+    {
+      "id": "large-fast",
+      "cpu": 1,
+      "width": 412,
+      "height": 915,
+      "dpr": 3,
+      "loadToSplashGoneMs": 2398,
+      "longTask": {
+        "count": 2,
+        "maxMs": 78,
+        "heartBeatMaxGapMs": 154.5
+      },
+      "shopIdle": {
+        "saves": 0,
+        "bodyWalks": 0
+      }
+    }
+  ],
+  "workshopScenes": 12,
+  "workshopErrors": [],
+  "layout": {
+    "plannedRows": 108,
+    "completedRows": 108,
+    "checks": 1854,
+    "passed": 1854,
+    "failed": 0,
+    "pageErrors": 0,
+    "blockedExternalRequests": 0
+  }
+}
