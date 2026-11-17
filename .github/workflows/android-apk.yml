@@ -14,6 +14,7 @@ on:
 
 jobs:
   build:
+    if: ${{ !contains(github.event.head_commit.message, '[test-apk-only]') }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -215,6 +216,8 @@ jobs:
           cp weekly-quests.js app/src/main/assets/weekly-quests.js
           cp learning.js app/src/main/assets/learning.js
           cp board-renderer.js app/src/main/assets/board-renderer.js
+          cp obsidian-gold.css app/src/main/assets/obsidian-gold.css
+          cp obsidian-gold.js app/src/main/assets/obsidian-gold.js
           cp reward-receipts.js app/src/main/assets/reward-receipts.js
           cp theme-renderer.js app/src/main/assets/theme-renderer.js
           mkdir -p app/src/main/assets/assets

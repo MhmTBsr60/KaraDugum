@@ -61,3 +61,8 @@ SON GÖRSEL İYİLEŞTİRME — 17 KASIM 2026
 iyileştirmesi final/ klasöründedir. Üçlü karşılaştırma: final/comparison.html;
 büyük tahta: final/boards-large.jpg. Bu son tasarım için ayrıca onay bekleniyor.
 Önceki A dosyaları referans olarak korunmuştur; oyun girişine eklenmedi.
+
+ENTEGRASYON ONAYI — 17 KASIM 2026
+Kullanıcı0fd4419 son tasarımını onayladı. Oyuna entegrasyon, dokunma alanı ve
+performans çalışması design/obsidian-integration/README.txt içinde belgelenir.
+Bu klasördeki önizleme raporları üretildikleri anın tarihsel kaydıdır.

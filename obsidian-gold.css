@@ -1,0 +1,106 @@
+/* Approved Obsidian/Gold finish. Geometry, rules and save ownership remain in core. */
+html[data-kd-theme="gold"] #kdGame::before{
+ background:radial-gradient(ellipse at 50% 51%,#b488251a,transparent 59%),linear-gradient(90deg,#080a0ce0,#080a0cf0 25%,#080a0cf0 75%,#080a0ce0);
+ border-color:#8b7040;
+}
+html[data-kd-theme="gold"] #kdGame main>.board{
+ background-color:#0c1012;
+ box-shadow:0 0 0 3px #101210,0 0 0 4px #8d7245,0 12px 24px #000a,0 0 24px #b88d2819;
+}
+html[data-kd-theme="gold"] #kdGame main>.board .tile:not(.good){
+ background-image:linear-gradient(145deg,#323d44bf,#0b1013dc 48%,#020406f5),url('assets/kara-dugum-theme-stones.webp')!important;
+ border-color:#8b7448;
+ box-shadow:inset 0 1px 0 #f8e2ab45,inset 1px 0 0 #e7c47c1c,inset 0 -2px 3px #000c;
+ transition:none;
+}
+html[data-kd-theme="gold"] #kdGame .kdPipeLustre{opacity:.9}
+html[data-kd-theme="gold"] #kdGame .kdPipeCastShadow{opacity:.46}
+html[data-kd-theme="gold"] #kdGame .kdBoardOrnament{opacity:.9}
+html[data-kd-theme="gold"] #kdGame .stats .stat{
+ background:linear-gradient(140deg,#1b1a16,#090c0e);border-color:#9d8047;
+ box-shadow:inset 0 1px 0 #f2d49a20;
+}
+
+/* Restrained lighting; existing SVG geometry and energy colors are unchanged. */
+html[data-kd-theme="gold"] #kdGame::before {
+  background: radial-gradient(ellipse at 50% 55%, #a9791710, transparent 62%), linear-gradient(90deg, #07090bea, #06090bf5 25%, #06090bf5 75%, #07090bea);
+  border-color: #927442;
+}
+html[data-kd-theme="gold"] #kdGame main > .board {
+  background: #05080b;
+  box-shadow: 0 0 0 3px #0b0d0e, 0 0 0 4px #ad8a4f, 0 12px 24px #000a, 0 0 20px #c99d2014;
+}
+html[data-kd-theme="gold"] #kdGame main > .board .tile:not(.good) {
+  background-color: #080c10;
+  background-image: linear-gradient(145deg, #2c353cda, #0b1015ed 43%, #020406fa), url('assets/kara-dugum-theme-stones.webp') !important;
+  border-color: #997d48;
+  box-shadow: inset 0 1px 0 #fff0c04f, inset 1px 0 0 #dfbc6c21, inset 0 -2px 3px #000d;
+}
+/* Existing geometry, energy hues, badges, fixed nodes and SVG paths remain authoritative. */
+html[data-kd-theme="gold"] #kdGame .tile svg .kdPipeLustre { opacity: .98; }
+html[data-kd-theme="gold"] #kdGame .tile svg .kdPipeFilament { --kd-final-rest: .82; opacity: var(--kd-final-rest); }
+html[data-kd-theme="gold"] #kdGame .tile svg .kdPipeCastShadow { opacity: .64; }
+html[data-kd-theme="gold"] #kdGame .tile[data-kd-gold-linked] svg .kdPipeFilament { --kd-final-rest: .97; opacity: var(--kd-final-rest); }
+html[data-kd-theme="gold"] #kdGame .kdBoardOrnament { opacity: 1; }
+/* Buttons retain their exact box metrics and handlers; finish changes only. */
+html[data-kd-theme="gold"] #kdGame main > .controls button.secondary {
+  background: linear-gradient(140deg, #22221de6, #090c0ee8); border-color: #ab8a4b;
+  box-shadow: inset 0 1px 0 #f8dc9c24;
+}
+html[data-kd-theme="gold"] #kdGame main > .controls button:not(.secondary) {
+  background: linear-gradient(125deg, #ffe8b2, #c99e52); box-shadow: inset 0 1px 0 #fff2cf66;
+}
+/* No filter/box-shadow animation, scale, particles, recurring timer or added bitmaps. */
+html[data-kd-theme="gold"] #kdGame .tile { transition: none !important; }
+html[data-kd-theme="gold"] #kdGame .tile:active { filter: none; }
+html[data-kd-theme="gold"] #kdGame #board > .tile.flash { animation: none !important; }
+/* Touch glow reuses the existing SVG filament: no extra tile overlay or gradient. */
+html[data-kd-theme="gold"] #board[data-kd-gold-complete]::after {
+  content: ''; position: absolute; z-index: 6; inset: -3px; border: 2px solid #ffe9a6;
+  border-radius: 9px; box-shadow: 0 0 10px #ffd57755, inset 0 0 9px #ffd57722;
+  pointer-events: none; opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-kd-theme="gold"] body:not(.kdNoGlow) #board .kdPipeFilament { transition: opacity 160ms ease-out; }
+  html[data-kd-theme="gold"] body:not(.kdNoGlow) #board > .tile.flash .kdPipeFilament { animation: kdGoldTap 140ms ease-out; }
+  html[data-kd-theme="gold"] body:not(.kdNoGlow) #board[data-kd-gold-complete]::after { animation: kdGoldComplete 450ms ease-out; }
+  html[data-kd-theme="gold"] body:not(.kdNoGlow) #modal.show .kdWinPanel { animation: kdGoldPanel 220ms ease-out both; }
+}
+@keyframes kdGoldTap { 0%, 100% { opacity: var(--kd-final-rest, .82); } 28% { opacity: 1; } }
+@keyframes kdGoldComplete { 0%, 100% { opacity: 0; } 30% { opacity: .72; } }
+@keyframes kdGoldPanel { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+/* 7×7 / 8×8: static alignment feedback and one tap/frame overlay, not 64 moving layers. */
+html[data-kd-theme="gold"] #kdGame #board[data-kd-gold-dense] > .tile:not(.good) {
+  background-image: linear-gradient(145deg, #232d34, #060a0e 64%, #020405) !important;
+  background-size: 100% 100%;
+}
+html[data-kd-theme="gold"] body:not(.kdNoGlow) #board[data-kd-gold-dense] .kdPipeFilament { transition: none; }
+html[data-kd-theme="gold"] #board[data-kd-gold-dense] .kdPipeEnergy { filter: none; }
+/* Respect both the system motion preference and the game light setting. */
+
+html[data-kd-theme="gold"] body.kdNoGlow #board .kdPipeFilament { transition: none !important; }
+html[data-kd-theme="gold"] body.kdNoGlow #board .kdPipeFilament,
+html[data-kd-theme="gold"] body.kdNoGlow #board::after,
+html[data-kd-theme="gold"] body.kdNoGlow #modal .kdWinPanel { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-kd-theme="gold"] #board .kdPipeFilament { transition: none !important; }
+  html[data-kd-theme="gold"] #board .kdPipeFilament, html[data-kd-theme="gold"] #board::after,
+  html[data-kd-theme="gold"] #modal .kdWinPanel { animation: none !important; }
+}
+
+/* Dense boards and constrained devices use a static tap glint, without animation layers. */
+html[data-kd-theme="gold"] #board[data-kd-gold-dense] .tile.flash .kdPipeFilament,
+html[data-kd-theme="gold"][data-kd-gold-low-motion] #board .kdPipeFilament { animation:none!important;transition:none!important; }
+html[data-kd-theme="gold"] body:not(.kdNoGlow) #board[data-kd-gold-dense] .tile.flash .kdPipeFilament { opacity:1; }
+html[data-kd-theme="gold"][data-kd-gold-low-motion] #board::after,
+html[data-kd-theme="gold"][data-kd-gold-low-motion] #modal .kdWinPanel { animation:none!important; }
+
+/* Teaching examples use the same surface and fixed-node distinction as the real board. */
+html[data-kd-theme="gold"] .kdLessonBoard .tile:not(.good) {
+ background-color:#080c10;
+ background-image:linear-gradient(145deg,#2c353cda,#0b1015ed 43%,#020406fa),url('assets/kara-dugum-theme-stones.webp')!important;
+}
+html[data-kd-theme="gold"] .kdLessonBoard[data-board-size="7"] .tile:not(.good),
+html[data-kd-theme="gold"] .kdLessonBoard[data-board-size="8"] .tile:not(.good) {
+ background-image:linear-gradient(145deg,#232d34,#060a0e 64%,#020405)!important;background-size:100% 100%;
+}
