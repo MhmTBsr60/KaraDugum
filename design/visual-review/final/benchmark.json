@@ -1,0 +1,331 @@
+{
+  "scope": "Chromium CPU throttling, 40 real tile dispatches/scene; forced layout, two RAF; not Android/GPU measurements",
+  "scenes": [
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "current",
+      "handler": {
+        "medianMs": 15,
+        "p95Ms": 30.5,
+        "maxMs": 39.399999998509884
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.59999999962747,
+        "p95Ms": 66.89999999850988,
+        "maxMs": 67.5
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 224816
+    },
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "A",
+      "handler": {
+        "medianMs": 14.800000000745058,
+        "p95Ms": 21,
+        "maxMs": 30.700000001117587
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.59999999962747,
+        "p95Ms": 57.5,
+        "maxMs": 83.30000000074506
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 256096
+    },
+    {
+      "profile": "compact-6x",
+      "level": 53,
+      "variant": "final",
+      "handler": {
+        "medianMs": 17.299999998882413,
+        "p95Ms": 31,
+        "maxMs": 33.69999999925494
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 52.69999999925494,
+        "p95Ms": 85.5,
+        "maxMs": 96.89999999850988
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 255572
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "current",
+      "handler": {
+        "medianMs": 13.800000000745058,
+        "p95Ms": 23,
+        "maxMs": 27.800000000745058
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.59999999962747,
+        "p95Ms": 50.19999999925494,
+        "maxMs": 53
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 251956
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "A",
+      "handler": {
+        "medianMs": 14.699999999254942,
+        "p95Ms": 28.699999999254942,
+        "maxMs": 71.5
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.5,
+        "p95Ms": 66.19999999925494,
+        "maxMs": 98.69999999925494
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 251940
+    },
+    {
+      "profile": "compact-6x",
+      "level": 91,
+      "variant": "final",
+      "handler": {
+        "medianMs": 17.40000000037253,
+        "p95Ms": 29.90000000037253,
+        "maxMs": 30.40000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 48.59999999962747,
+        "p95Ms": 67.20000000111759,
+        "maxMs": 68.5
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 251716
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "current",
+      "handler": {
+        "medianMs": 16.59999999962747,
+        "p95Ms": 25.399999998509884,
+        "maxMs": 29.100000001490116
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 38.40000000037253,
+        "p95Ms": 60.600000001490116,
+        "maxMs": 66.09999999962747
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261160
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "A",
+      "handler": {
+        "medianMs": 16.699999999254942,
+        "p95Ms": 21.799999998882413,
+        "maxMs": 29
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 41.19999999925494,
+        "p95Ms": 53.59999999962747,
+        "maxMs": 55.30000000074506
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261388
+    },
+    {
+      "profile": "compact-6x",
+      "level": 151,
+      "variant": "final",
+      "handler": {
+        "medianMs": 19,
+        "p95Ms": 30.300000000745058,
+        "maxMs": 34.40000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 50,
+        "p95Ms": 86.09999999962747,
+        "maxMs": 98.79999999888241
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261808
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "current",
+      "handler": {
+        "medianMs": 10.5,
+        "p95Ms": 15.699999999254942,
+        "maxMs": 16.199999999254942
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.09999999962747,
+        "p95Ms": 49.5,
+        "maxMs": 52.79999999888241
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 256080
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "A",
+      "handler": {
+        "medianMs": 8.400000000372529,
+        "p95Ms": 12.800000000745058,
+        "maxMs": 16.40000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.29999999888241,
+        "p95Ms": 34.69999999925494,
+        "maxMs": 35.30000000074506
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 257516
+    },
+    {
+      "profile": "standard-4x",
+      "level": 53,
+      "variant": "final",
+      "handler": {
+        "medianMs": 11,
+        "p95Ms": 17.600000001490116,
+        "maxMs": 19.100000001490116
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34.20000000111759,
+        "p95Ms": 53.5,
+        "maxMs": 54.70000000111759
+      },
+      "retainedCells": 36,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 255540
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "current",
+      "handler": {
+        "medianMs": 10.199999999254942,
+        "p95Ms": 18,
+        "maxMs": 18.399999998509884
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.20000000111759,
+        "p95Ms": 33.90000000037253,
+        "maxMs": 52.70000000111759
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 251252
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "A",
+      "handler": {
+        "medianMs": 9.799999998882413,
+        "p95Ms": 24.799999998882413,
+        "maxMs": 31.899999998509884
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.20000000111759,
+        "p95Ms": 34.40000000037253,
+        "maxMs": 49.899999998509884
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 252412
+    },
+    {
+      "profile": "standard-4x",
+      "level": 91,
+      "variant": "final",
+      "handler": {
+        "medianMs": 10.900000000372529,
+        "p95Ms": 18.299999998882413,
+        "maxMs": 18.300000000745058
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33.30000000074506,
+        "p95Ms": 50.19999999925494,
+        "maxMs": 50.40000000037253
+      },
+      "retainedCells": 49,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 251512
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "current",
+      "handler": {
+        "medianMs": 11.799999998882413,
+        "p95Ms": 20.600000001490116,
+        "maxMs": 21.90000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33,
+        "p95Ms": 42.5,
+        "maxMs": 59.20000000111759
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261268
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "A",
+      "handler": {
+        "medianMs": 9.600000001490116,
+        "p95Ms": 12.800000000745058,
+        "maxMs": 16.90000000037253
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 33,
+        "p95Ms": 34.600000001490116,
+        "maxMs": 35.09999999962747
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261284
+    },
+    {
+      "profile": "standard-4x",
+      "level": 151,
+      "variant": "final",
+      "handler": {
+        "medianMs": 11.900000000372529,
+        "p95Ms": 16.90000000037253,
+        "maxMs": 21.699999999254942
+      },
+      "dispatchToSecondFrame": {
+        "medianMs": 34,
+        "p95Ms": 52.29999999888241,
+        "maxMs": 56.69999999925494
+      },
+      "retainedCells": 64,
+      "observerIdle": true,
+      "gcHeapDeltaBytes": 261752
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

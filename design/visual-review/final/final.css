@@ -1,0 +1,66 @@
+/* Preview only. Load after proposal.css; production index.html never loads this file. */
+html[data-kd-theme="gold"][data-kd-final] #kdGame[data-visual-proposal]::before {
+  background: radial-gradient(ellipse at 50% 55%, #a9791710, transparent 62%), linear-gradient(90deg, #07090bea, #06090bf5 25%, #06090bf5 75%, #07090bea);
+  border-color: #927442;
+}
+html[data-kd-theme="gold"][data-kd-final] #kdGame main > .board {
+  background: #05080b;
+  box-shadow: 0 0 0 3px #0b0d0e, 0 0 0 4px #ad8a4f, 0 12px 24px #000a, 0 0 20px #c99d2014;
+}
+html[data-kd-theme="gold"][data-kd-final] #kdGame main > .board .tile:not(.good) {
+  background-color: #080c10;
+  background-image: linear-gradient(145deg, #2c353cda, #0b1015ed 43%, #020406fa), url('../../../assets/kara-dugum-theme-stones.webp') !important;
+  border-color: #997d48;
+  box-shadow: inset 0 1px 0 #fff0c04f, inset 1px 0 0 #dfbc6c21, inset 0 -2px 3px #000d;
+}
+/* Existing geometry, energy hues, badges, fixed nodes and SVG paths remain authoritative. */
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile svg .kdPipeLustre { opacity: .98; }
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile svg .kdPipeFilament { --kd-final-rest: .82; opacity: var(--kd-final-rest); }
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile svg .kdPipeCastShadow { opacity: .64; }
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile[data-kd-final-linked] svg .kdPipeFilament { --kd-final-rest: .97; opacity: var(--kd-final-rest); }
+html[data-kd-theme="gold"][data-kd-final] #kdGame .kdBoardOrnament { opacity: 1; }
+/* Buttons retain their exact box metrics and handlers; finish changes only. */
+html[data-kd-theme="gold"][data-kd-final] #kdGame main > .controls button.secondary {
+  background: linear-gradient(140deg, #22221de6, #090c0ee8); border-color: #ab8a4b;
+  box-shadow: inset 0 1px 0 #f8dc9c24;
+}
+html[data-kd-theme="gold"][data-kd-final] #kdGame main > .controls button:not(.secondary) {
+  background: linear-gradient(125deg, #ffe8b2, #c99e52); box-shadow: inset 0 1px 0 #fff2cf66;
+}
+/* No filter/box-shadow animation, scale, particles, recurring timer or added bitmaps. */
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile { transition: none !important; }
+html[data-kd-theme="gold"][data-kd-final] #kdGame .tile:active { filter: none; }
+html[data-kd-theme="gold"][data-kd-final] #kdGame #board > .tile.flash { animation: none !important; }
+/* Touch glow reuses the existing SVG filament: no extra tile overlay or gradient. */
+html[data-kd-theme="gold"][data-kd-final] #board[data-kd-final-complete]::after {
+  content: ''; position: absolute; z-index: 6; inset: -3px; border: 2px solid #ffe9a6;
+  border-radius: 9px; box-shadow: 0 0 10px #ffd57755, inset 0 0 9px #ffd57722;
+  pointer-events: none; opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-kd-theme="gold"][data-kd-final] body:not(.kdNoGlow) #board .kdPipeFilament { transition: opacity 160ms ease-out; }
+  html[data-kd-theme="gold"][data-kd-final] body:not(.kdNoGlow) #board > .tile.flash .kdPipeFilament { animation: kdFinalTap 140ms ease-out; }
+  html[data-kd-theme="gold"][data-kd-final] body:not(.kdNoGlow) #board[data-kd-final-complete]::after { animation: kdFinalComplete 450ms ease-out; }
+  html[data-kd-theme="gold"][data-kd-final] body:not(.kdNoGlow) #modal.show .kdWinPanel { animation: kdFinalPanel 220ms ease-out both; }
+}
+@keyframes kdFinalTap { 0%, 100% { opacity: var(--kd-final-rest, .82); } 28% { opacity: 1; } }
+@keyframes kdFinalComplete { 0%, 100% { opacity: 0; } 30% { opacity: .72; } }
+@keyframes kdFinalPanel { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+/* 7×7 / 8×8: static alignment feedback and one tap/frame overlay, not 64 moving layers. */
+html[data-kd-theme="gold"][data-kd-final] #kdGame #board[data-kd-final-dense] > .tile:not(.good) {
+  background-image: linear-gradient(145deg, #232d34, #060a0e 64%, #020405) !important;
+  background-size: 100% 100%;
+}
+html[data-kd-theme="gold"][data-kd-final] body:not(.kdNoGlow) #board[data-kd-final-dense] .kdPipeFilament { transition: none; }
+html[data-kd-theme="gold"][data-kd-final] #board[data-kd-final-dense] .kdPipeEnergy { filter: none; }
+/* These guards also defeat the original A preview animation rules. */
+html[data-kd-theme="gold"][data-kd-final] #board[data-preview-complete] > .kdBoardOrnament { animation: none !important; }
+html[data-kd-theme="gold"][data-kd-final] body.kdNoGlow #board .kdPipeFilament { transition: none !important; }
+html[data-kd-theme="gold"][data-kd-final] body.kdNoGlow #board .kdPipeFilament,
+html[data-kd-theme="gold"][data-kd-final] body.kdNoGlow #board::after,
+html[data-kd-theme="gold"][data-kd-final] body.kdNoGlow #modal .kdWinPanel { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-kd-theme="gold"][data-kd-final] #board .kdPipeFilament { transition: none !important; }
+  html[data-kd-theme="gold"][data-kd-final] #board .kdPipeFilament, html[data-kd-theme="gold"][data-kd-final] #board::after,
+  html[data-kd-theme="gold"][data-kd-final] #modal .kdWinPanel { animation: none !important; }
+}

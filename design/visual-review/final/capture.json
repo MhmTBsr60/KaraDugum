@@ -1,0 +1,59 @@
+{
+  "status": "pass",
+  "level": 53,
+  "grid": "6x6",
+  "deviceScaleFactor": 3,
+  "identicalStateAndSavesAndButtons": true,
+  "staticDemoTimingAndReducedMotion": true,
+  "staticDemoNoStorage": true,
+  "images": {
+    "A-board.jpg": {
+      "bytes": 678355,
+      "sha256": "045f9995b735a61e8476311b91ca22b4b488a89a656abe1931d970141333c9d5"
+    },
+    "A.jpg": {
+      "bytes": 902037,
+      "sha256": "b4d63d1931fab51552040b2ef9ccbab5c0298b1e9188a36586761b2003d43361"
+    },
+    "boards-large.jpg": {
+      "bytes": 2207270,
+      "sha256": "1d4af735f1f3b53f28366bf19e8c283661b43eaeff9dd04d2ed779ca6ecc5e70"
+    },
+    "compact-8x8.jpg": {
+      "bytes": 426233,
+      "sha256": "811c050851e1a7c87164bfa834d1f76cffa21f9df057548d0c3cf7a292c6d3b0"
+    },
+    "comparison-large.jpg": {
+      "bytes": 3060617,
+      "sha256": "b3c6dc8ccf6746ea930d24c48482b017afc7f836d947206a4e6bba1cc022e066"
+    },
+    "current-board.jpg": {
+      "bytes": 880836,
+      "sha256": "50bf923736159bb1c7d0ddb3cab2bf751c40e0808ca620110d0d4fb14c5e33ae"
+    },
+    "current.jpg": {
+      "bytes": 1116780,
+      "sha256": "fd528644d6e36c0e5c624b28b7a6e306dec80a6c3a627b2e77083e66945707c0"
+    },
+    "final-board.jpg": {
+      "bytes": 609548,
+      "sha256": "d0e382c14f3928a6d332dfba474c4d6b915c3799573cd1f2bb671e9c2ada8a61"
+    },
+    "final.jpg": {
+      "bytes": 823862,
+      "sha256": "0c4a76b3483ac99f8855ed6521a5344f1f1cb04ad3c35255b7ed1fe973079bc0"
+    },
+    "landscape-8x8.jpg": {
+      "bytes": 584389,
+      "sha256": "8f4ad1c4fe2aaef7a72cd5c68806806f46e24e4c9846f3a69119f2709b723cf1"
+    },
+    "node.jpg": {
+      "bytes": 15063,
+      "sha256": "1ba353932b0373a01966cbbedd64c41c04f3874f53f822f7845c536e28f8df3d"
+    },
+    "tablet-8x8.jpg": {
+      "bytes": 1185828,
+      "sha256": "bb7e707da0022701244b33f0a4b1b1f62c548fb6c74d363a07bb1630f73c337e"
+    }
+  }
+}

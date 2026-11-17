@@ -1,0 +1,16 @@
+PASS: gold: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: ice: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: fire: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: shadow: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: emerald: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: ruby: all 300 levels, 4x4–8x8, pipe masks/openings, fog and dual energy colors
+PASS: 1800 themed boards; 3 viewports/all grid sizes; second-layer navigation, six live theme switches without resetting progress, 25 localized layer headings, stable cosmetic nodes and reload
+PASS: only Gold stone backing changes in gameplay, lesson, onboarding, workshop and shop previews; all SVG pipe colors/masks/frame/gradients, other five themes and game resources preserved. /tmp/kd-gold-contrast
+PASS: exact 1024x768 emerald rotation; 7x7/8x8 fresh/normal/focus at nine landscape boundary/tablet sizes in TR/EN/AR and three fonts; 4x4–6x6 tablet guards; original board/resources preserved; 542 geometry checks in 28.8s
+PASS: edge gameplay content/painted frame, 4x4–8x8 square boards and original hit targets across nine phone/tablet/landscape viewports, asymmetric safe-inset/RTL simulation, normal-width fill, focus and live-rotation state/save isolation; 255 geometry checks
+PASS: six contiguous 50-level milestones, real win celebration, exact-once/replay/reload/journal recovery; four daily quest groups, fresh baselines, duplicate and stale-day claim protection
+PASS: SDK privacy controls/policy; 25 languages/six screen sizes without scroll or gameplay changes; completed hint video pays one coupon, failure pays none, durable duplicates rejected; interstitial only at next-level transition; consent forms pause/resume the clock safely
+PASS: centered non-overlapping title on 3 viewports/4 balances; crystal icons/labels with unchanged balances; illustrated wheel above six grouped themes; new theme purchases, palettes, saved ownership, daily reward and legacy result display
+PASS: full-cloud browser integration across 5 isolated devices/4 accounts, migration, inventory/XP/coupons, offline purchases/duplicate claims, actual win/double/ad receipts, records, crash recovery, delayed old-account payout and throttled gameplay uploads
+PASS: levels 156/201 complete on the final aligned key, pay once, and reject extra locked-board clicks
+PASS: 25 locales, complete key/placeholder coverage, 75 localized-caption viewport checks; Turkish artwork preserved

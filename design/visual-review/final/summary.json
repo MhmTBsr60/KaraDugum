@@ -1,0 +1,40 @@
+{
+  "status": "preview-ready; final visual approval pending; hardware performance unverified",
+  "branch": "design/obsidian-gold-preview-20261117",
+  "baseMain": "40b165edf3cd6fad7bc43f7a812c31fa872b79f1",
+  "fixF9286e4IsAncestorOfMain": true,
+  "threeWayComparisons": 400,
+  "alignmentAfterMoves": 1200,
+  "syntheticInputs": 720,
+  "sourceTests": "npm test: exit 0",
+  "browserRegressions": [
+    "theme-gameplay",
+    "gold-contrast",
+    "tablet-landscape",
+    "edge-layout",
+    "progression",
+    "privacy-settings",
+    "crystal-shop",
+    "full-cloud",
+    "key-completion",
+    "localized-shop"
+  ],
+  "androidDeviceOrEmulator": false,
+  "protectedLiveAabSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+  "onlyDesignFilesChanged": true,
+  "mainMerged": false,
+  "playOrAdmobChanged": false,
+  "newPackageBuilt": false,
+  "risks": [
+    "6x CPU profile still has additional frame latency; no 60 FPS claim",
+    "No physical Android/GPU/thermal/ANR/touch verification",
+    "320px 8x8 cells about 25.3px; existing small touch targets preserved"
+  ],
+  "sourceHashes": {
+    "final.css": "a37b96c6ea7324ee2b8bf5b11ba2265aa72698f1967adbf206889286e92c04da",
+    "preview-effects.js": "714b07c61ca0aa0416c097fbcc0b21a0fa19b94838fd61ac81e9d7afbfff7ae1",
+    "checks.cjs": "3aaa8d85d26f00cdbd938f55184fb0be1209ed68849621905382b6cde93e971c",
+    "benchmark.cjs": "d6676bec5fa19b84adbe31a52c6c7a3da0d67091d46b1429cca9a48430dc4e24",
+    "capture.cjs": "4a35c8ff330e7e2f3b96fca70256ebb2bf28486291ac412d3ed04b4b1afb6484"
+  }
+}

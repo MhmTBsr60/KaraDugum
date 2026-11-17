@@ -55,3 +55,9 @@ BÜYÜK İNCELEME GÖRSELLERİ
 Tarayıcı3× piksel yoğunluğuyla tekrar yakalandı;60 durum/ölçü koruma kontrolü
 geçti. Bunlar inceleme çıktılarıdır; oyundan yüklenmez ve mağazaya gönderilmedi.
 Görsel CSS kodu 0d56339 ile aynıdır; yalnızca büyük inceleme çıktıları eklendi.
+
+SON GÖRSEL İYİLEŞTİRME — 17 KASIM 2026
+Öneri A kullanıcı tarafından temel olarak onaylandı. Son obsidyen/altın
+iyileştirmesi final/ klasöründedir. Üçlü karşılaştırma: final/comparison.html;
+büyük tahta: final/boards-large.jpg. Bu son tasarım için ayrıca onay bekleniyor.
+Önceki A dosyaları referans olarak korunmuştur; oyun girişine eklenmedi.

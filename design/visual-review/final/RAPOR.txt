@@ -1,0 +1,106 @@
+KARA DÜĞÜM — SON OBSİDYEN/ALTIN TASARIM ÖNİZLEMESİ
+17 Kasım 2026 · Kullanıcı incelemesi için
+Dal: design/obsidian-gold-preview-20261117
+Taban main: 40b165edf3cd6fad7bc43f7a812c31fa872b79f1
+
+YAPILANLAR
+Öneri A referansı korundu. Daha koyu obsidyen, belirgin metal kenarlar ve daha
+parlak altın ışık çizgileri hazırlandı. SVG bağlantı yolları, yönler, oyun renk
+kodları, özel mekanik simgeleri ve sabit düğüm ayrımı korundu. Butonlarda yüzey
+ve yansıma iyileştirildi; ölçü, konum ve işlevlere dokunulmadı.
+
+140ms dokunma: var olan SVG ışık çizgisinin saydamlığı; ek gradyan katmanı yok.
+160ms bağlantı geçişi: yerel uçları karşılıklı hizalanan düğümün ışık çizgisi.
+Bu vurgu tüm bulmacanın çözüldüğü anlamına gelmez; anahtar/hedef/katman/portal
+kuralları yine oyunun kendi kodundadır. Sisli düğümler ve sisli komşuları ifşa
+edilmez. 7×7/8×8 bağlantı geçişi statiktir; toplu animasyon yapılmaz.
+450ms tamamlanma: gerçek kazanma panelinin run kimliğiyle tek çerçeve ışığı.
+220ms sonuç paneli: saydamlık ve4px yumuşak açılış.
+Reduced-motion ve mevcut ışık kapatma ayarları yeni hareketleri kapatır.
+Yeni parçacık motoru, sürekli timer, dış bağımlılık veya oyun bitmap'i eklenmedi.
+
+İlk taslaktaki hücre üstü gradyan, CPU yavaşlatmasında ek çizim yükü oluşturdu.
+Ayrıştırma denemesi bunu doğruladı; son sürüm var olan SVG çizgisini kullanır.
+Hizalanma gözlemcisi de yalnızca değişen düğümler ve komşularını günceller;
+boşta döngü veya her hamlede bütün tahta taraması yapmaz.
+
+GÖRSELLER
+comparison-large.jpg: üçlü tam ekran.
+boards-large.jpg: üçlü tahta yakın görünümü.
+current.jpg / A.jpg / final.jpg: tek tek büyük ekranlar.
+Bölüm53,6×6,katman1,0 hamle,%39 bağlantı,0:00: durum ve kayıt eşitliği doğrulandı.
+compact-8x8.jpg / tablet-8x8.jpg / landscape-8x8.jpg: yoğun tahta örnekleri.
+motion.html: bağımsız hareket örnekleri; oyun, kayıt veya reklam başlatmaz.
+
+TEST SONUÇLARI
+- npm test başarılı.300 bölüm gerçek yasal ipucu hamleleriyle tamamlandı;
+  300 gerçek ipucu tıklaması, kaynak regresyonları ve17 Android manifest
+  denetim testi dahil. Native çağrı denetimleri gerçek cihaz oturumu değildir.
+- Mevcut10 ilgili tarayıcı test dosyası başarılı.1800 temalı tahta;542
+  tablet/yatay ve255 kenar yerleşimi; kayıt/ilerleme, reklam rızası akışı,
+  mağaza/ekonomi, bulut model entegrasyonu ve son anahtar kazanması kontrolü.
+  25 dilin anahtar/yer tutucu kapsamı ve75 mağaza altyazısı kontrolü geçti.
+- Son tasarım:400 üçlü karşılaştırma (20 bölüm×5 ekran×4 dil),15 mekanik ve
+  4×4–8×8. Oyun durumu, tüm sentetik kayıtlar, SVG, enerji renkleri ve tüm
+  buton/tahta/düğüm dikdörtgenleri aynı; yatay taşma yok, tahta ekran içinde.
+- 300 bölümde1.200 hareket sonrası önizleme hizalanma sonucu kontrolü geçti.
+- Gerçek yasal kazanma ile140/160/450/220ms süre tanımları, tek run,
+  7×7/8×8 koruması, ışık kapatma, reduced-motion, boşta ve destroy kontrolleri.
+- Büyük görüntüler3× yoğunlukta alındı. Statik hareket sayfasında süreler,
+  reduced-motion ve kayıt yazmama testi geçti.
+
+Ekranlar:320×568,390×844,768×1024,1024×768,844×390; diller:TR/EN/AR/ZH.
+Özel tasarım testleri izole Chromium'dadır. Eski tarayıcı regresyonları üretim
+kodunu, yeni önizleme testleri ise son CSS/adapter ile gerçek oyunu çalıştırır.
+Canlı reklam gösterimi, gerçek ödeme ve gerçek Google hesabı denenmedi.
+
+PERFORMANS
+Profil / bölüm / tasarım | handler medyan ms | iki RAF medyan ms | iki RAF p95 ms
+compact-6x / 53 / current | 15.0 | 34.6 | 66.9
+compact-6x / 53 / A | 14.8 | 34.6 | 57.5
+compact-6x / 53 / final | 17.3 | 52.7 | 85.5
+compact-6x / 91 / current | 13.8 | 33.6 | 50.2
+compact-6x / 91 / A | 14.7 | 33.5 | 66.2
+compact-6x / 91 / final | 17.4 | 48.6 | 67.2
+compact-6x / 151 / current | 16.6 | 38.4 | 60.6
+compact-6x / 151 / A | 16.7 | 41.2 | 53.6
+compact-6x / 151 / final | 19.0 | 50.0 | 86.1
+standard-4x / 53 / current | 10.5 | 33.1 | 49.5
+standard-4x / 53 / A | 8.4 | 33.3 | 34.7
+standard-4x / 53 / final | 11.0 | 34.2 | 53.5
+standard-4x / 91 / current | 10.2 | 33.2 | 33.9
+standard-4x / 91 / A | 9.8 | 33.2 | 34.4
+standard-4x / 91 / final | 10.9 | 33.3 | 50.2
+standard-4x / 151 / current | 11.8 | 33.0 | 42.5
+standard-4x / 151 / A | 9.6 | 33.0 | 34.6
+standard-4x / 151 / final | 11.9 | 34.0 | 52.3
+
+4× CPU son tasarım medyanı yaklaşık33–34ms;6× CPU
+yavaşlatmasında son tasarım bazı sahnelerde mevcut/A görünümünden yavaştır.
+Bu, kalan performans riskidir; düşük donanımda akıcılık doğrulandı denemez.
+
+ÖLÇÜMÜN SINIRLARI VE KALAN RİSKLER
+- Bunlar sentetik Chromium CPU yavaşlatma ölçümleridir. İki kareye kadar ölçüm
+  FPS veya tek kare süresi değildir.40 girişlik örnekler kısa sürelidir;
+  p95 sonuçları sistem yükü ve çizim zamanlamasından etkilenir.
+- Benchmark PASS; girdi sonuçlarının, kaynakların ve DOM kimliklerinin eşit
+  kaldığını ve JS hatası çıkmadığını gösterir.60FPS bütçe onayı değildir.
+- Fiziksel Android, emülatör, farklı Android sürümleri, düşük donanım GPU'su,
+  gerçek dokunma doğruluğu, termal davranış ve uzun oturum ANR doğrulanmadı.
+- Dar320px ekranda8×8 düğüm yaklaşık25,3px; matrisin en küçük düğümü23,0px.
+  Bunlar mevcut ölçülerle aynıdır. Yeni taşma yoktur; küçük dokunma hedefleri
+  ve okunabilirlik fiziksel telefonda ayrıca değerlendirilmelidir.
+- Kare gecikmesi varsa ilk ayar ışık efektlerini kapatmak veya sistemin
+  hareketi azalt seçeneğidir. Daha güçlü performans iddiası cihaz testi ister.
+
+KORUMA VE YAYIN DURUMU
+Bu değişiklikler yalnız design/visual-review altındadır.300 bölüm, mekanikler,
+kayıt modeli, ilerleme, ipucu/ödül/reklam, ana menü ve buton davranış kodları
+aynı kaldı. Önizleme dosyaları oyun girişinde veya Android paketleme listesinde
+yoktur; büyük inceleme JPEG'leri APK/AAB oyun varlığı değildir.
+f9286e4 düzeltmeleri main'in atasıdır; bu çalışma main'i ilerletmez.
+Main40b165e olarak korundu. Son tasarım kullanıcı onayından önce birleştirilmez.
+Google Play6.50, AdMob ve mağaza medyasına işlem yapılmadı. Yeni paket
+oluşturulmadı, yüklenmedi veya yayınlanmadı; üretim workflow'u tetiklenmedi.
+Mevcut6.50 LIVE AAB SHA256:
+9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf
