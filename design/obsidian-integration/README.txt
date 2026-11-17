@@ -30,7 +30,7 @@ Tahta MutationObserver'ı kaldırıldı. Mevcut görsel renderer bittikten sonra
 yalnız değişen düğüm ve komşular için ışık durumu güncellenir. Yeni parçacık
 motoru, büyük oyun görseli, sürekli döngü veya kayıt yazımı yoktur.
 4×4–6×6:140ms mevcut SVG ışık çizgisi;160ms yerel bağlantı geçişi.
-7×7–8×8: dokunma parıltısı statik; düğüm animasyonu/geçişi yok.
+7×7–8×8 ve360px/altında6×6: dokunma parıltısı statik; düğüm animasyonu/geçişi yok.
 Tamamlama450ms, panel220ms.4 veya daha az çekirdek/bellek4GB veya altında ya da
 slow-update bildiren ortamda yeni hareket efektleri kapanır. Bu, gerçek cihaz
 performans ölçümü yerine geçmez. Sistem hareketi azalt ve oyun ışık ayarları
