@@ -1,0 +1,12 @@
+{
+  "versionName": "6.50-ux-test2",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "0acb75b117e9cb4fee53b316dd7226f97a1e7256",
+  "adsMode": "test",
+  "sha256": "1f72aff2d4315ed1bd5478aa4808e20a4c96213a06fa9e3077b0a3eccc653687",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}
