@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),
 const {chromium}=require('playwright'),root=path.resolve(__dirname,'..'),base='40b165edf3cd6fad7bc43f7a812c31fa872b79f1';
 const now=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const inline=s=>[...s.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).filter(Boolean);
-assert.equal(crypto.createHash('sha256').update(JSON.stringify(inline(now))).digest('hex'),'61c29c2763538a9b054fbb3907a64df90f0e47ee6e172ddd8be469d49fd7ee5a','All embedded game, save, reward and navigation code must remain byte-identical');
+require('./ux-protected-core.cjs').check(now);
 for(const file of ['obsidian-gold.css','obsidian-gold.js']){
  assert(now.includes(file),'Runtime asset is not loaded: '+file);
  for(const workflow of ['android-apk.yml','android-design-test.yml'])assert(fs.readFileSync(path.join(root,'.github/workflows',workflow),'utf8').includes('cp '+file+' app/src/main/assets/'+file),'Asset missing from '+workflow);

@@ -36,6 +36,8 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
+    private final UiFeedbackGate uiFeedbackGate = new UiFeedbackGate();
+    private boolean uiHapticsEnabled, uiFeedbackForeground;
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
     private static final String FULL_SAVE_NAME = "karadugum_full_v1";
@@ -720,6 +722,42 @@ public class MainActivity extends Activity {
         catch (RuntimeException e) { interstitialInProgress = false; sendAudienceState(); Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public boolean feedbackAudioAllowed() {
+            try {
+                AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                android.app.NotificationManager notifications = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                int interruption = notifications == null ? android.app.NotificationManager.INTERRUPTION_FILTER_UNKNOWN : notifications.getCurrentInterruptionFilter();
+                return manager != null && manager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
+                    && interruption != android.app.NotificationManager.INTERRUPTION_FILTER_NONE
+                    && interruption != android.app.NotificationManager.INTERRUPTION_FILTER_ALARMS;
+            } catch (RuntimeException e) { return false; }
+        }
+        @JavascriptInterface public boolean hapticAvailable() {
+            try {
+                android.os.Vibrator motor = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                return motor != null && motor.hasVibrator();
+            } catch (RuntimeException e) { return false; }
+        }
+        @JavascriptInterface public void setHapticsEnabled(boolean enabled) {
+            runOnUiThread(() -> uiHapticsEnabled = enabled);
+        }
+        @JavascriptInterface public void haptic(String kind) {
+            runOnUiThread(() -> {
+                if (view == null || isFinishing()) return;
+                AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                boolean quiet = manager != null && manager.getRingerMode() == AudioManager.RINGER_MODE_SILENT;
+                if (!uiFeedbackGate.allow(kind, uiHapticsEnabled, uiFeedbackForeground,
+                        view.isAttachedToWindow() && view.isShown() && view.hasWindowFocus(),
+                        quiet, hapticAvailable(), android.os.SystemClock.uptimeMillis())) return;
+                int feedback = android.view.HapticFeedbackConstants.CLOCK_TICK;
+                if ("win".equals(kind) || "reward".equals(kind) || "confirm".equals(kind))
+                    feedback = Build.VERSION.SDK_INT >= 30 ? android.view.HapticFeedbackConstants.CONFIRM : android.view.HapticFeedbackConstants.KEYBOARD_TAP;
+                else if ("fail".equals(kind) || "lock".equals(kind))
+                    feedback = Build.VERSION.SDK_INT >= 30 ? android.view.HapticFeedbackConstants.REJECT : android.view.HapticFeedbackConstants.KEYBOARD_TAP;
+                view.performHapticFeedback(feedback);
+            });
+        }
+
         @JavascriptInterface public void setLanguage(String code) { runOnUiThread(() -> uiLanguage = NativeStrings.language(code)); }
         @JavascriptInterface public void openAccountDeletion() { runOnUiThread(() -> openLegalPage("delete-account.html")); }
         @JavascriptInterface public void rewardedAccountRequest(String kind, String requestId, String owner) {
@@ -829,11 +867,13 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onPause() {
-        if (view != null) { view.evaluateJavascript("window.kdAppBackground=true;window.kdSetPaused && window.kdSetPaused(true);window.kdCloudSync && window.kdCloudSync()",null); view.onPause(); }
+        uiFeedbackForeground = false;
+        if (view != null) { view.evaluateJavascript("window.kdAppBackground=true;window.kdFeedback && window.kdFeedback.stop();window.kdSetPaused && window.kdSetPaused(true);window.kdCloudSync && window.kdCloudSync()",null); view.onPause(); }
         super.onPause();
     }
     @Override protected void onResume() {
         super.onResume();
+        uiFeedbackForeground = true;
         loadRewarded();
         loadInterstitial();
         if (view != null) { view.onResume(); if (audienceAnswered && audienceDialog == null) startEligibleServices(); deliverPendingRewards(); view.evaluateJavascript("window.kdAppBackground=false;window.kdUnlockAudio && window.kdUnlockAudio();window.kdSetPaused && window.kdSetPaused(document.getElementById('kdGame').hidden)",null); }

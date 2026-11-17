@@ -7,7 +7,8 @@
     "test:performance": "node tests/mobile-performance-audit.cjs",
     "test:mobile-layout": "node tests/mobile-layout-matrix.cjs",
     "test:workshop-performance": "node tests/workshop-performance-audit.cjs",
-    "test:obsidian": "node tests/obsidian-integration-audit.cjs"
+    "test:obsidian": "node tests/obsidian-integration-audit.cjs",
+    "test:ux": "node tests/ux-protected-core.cjs && node tests/ui-feedback-native-audit.cjs && node tests/ux-feedback-audit.cjs && node tests/ux-wheel-matrix.cjs"
   },
   "devDependencies": {
     "playwright": "1.56.1"

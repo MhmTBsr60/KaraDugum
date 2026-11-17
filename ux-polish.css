@@ -1,0 +1,115 @@
+/* Preview branch: shared obsidian/gold finish, existing controls and data stay in place. */
+#kdShell:has(.kdModernScreen),#kdShell:has(.kdCollection){
+ --ux-surface:#10171b;--ux-line:#826d44;--ux-ink:#f3dba2;
+ background-color:#070b0e;
+}
+#kdShell .kdPanel,#kdShell .kdModernXp,#kdShell .kdProfileTitlePanel,
+#kdShell .kdGoalCard,#kdShell .kdPackCard,#kdShell .kdDailyShopCard,
+#kdShell .kdThemeCard,#kdShell .kdMechanicMastery{
+ border-color:#75603e;background-color:#10171b;
+ box-shadow:inset 0 1px 0 #ffe9b116,0 8px 16px #0003;
+}
+#kdShell .kdPackCard{background:linear-gradient(155deg,#27291f,#10171b 68%);border-color:#867044}
+#kdShell .kdPackFeatured{border-color:#d6ba7c;box-shadow:inset 0 1px #ffe9b133,0 0 0 1px #ad8a3d22}
+#kdShell .kdPackCard button,#kdShell .kdDailyShopCard button{min-height:44px}
+#kdShell .kdPackCard>strong{line-height:1.4;overflow-wrap:anywhere}
+#kdShell .kdPackCard .kdUnitPrice{font-size:9px;line-height:1.5}
+#kdShell .kdDailyShopCard{background:radial-gradient(ellipse at 50% 0,#a47c2521,transparent 70%),#10171b}
+#kdShell .kdDailyShopSymbol{color:#f0d49a;text-shadow:none}
+#kdShell .kdThemeBottom>button{min-height:40px}
+#kdShell .kdJourneyGrid .kdLevel{background:linear-gradient(145deg,#232b2d,#0b1115);border-color:#766342;box-shadow:inset 0 1px #fbe7b312}
+#kdShell .kdJourneyGrid .kdLevel.done{background:linear-gradient(145deg,#343225,#11191c);border-color:#b79c63}
+#kdShell .kdJourneyGrid .kdLevelCurrent{outline:1px solid #ffe5a3;outline-offset:2px;box-shadow:inset 0 1px #fff0bd33!important}
+#kdShell .kdJourneyGrid .kdLevel:disabled{background:#101618}
+#kdShell .kdJourneyGrid .kdTileStars .earned{color:#f4db94;text-shadow:none}
+#kdShell .kdChapterHeading{border-color:#9a7b3e55}
+#kdShell .kdProfileIdentity{background:radial-gradient(ellipse at 15% 20%,#aa7a2920,transparent 65%),linear-gradient(135deg,#1d2526,#0b1116);border-color:#a38b59}
+#kdShell .kdModernMetricGrid>div{background:linear-gradient(145deg,#252c28,#10191e);border-color:#766746;box-shadow:inset 0 1px #fbe5a317}
+#kdShell .kdProfileTabs{background:#0b1217;border-color:#695b3e}
+#kdShell .kdProfileTabs button.active{background:linear-gradient(145deg,#73603b,#2e3024);color:#fff1c6}
+#kdShell .kdSettingCard{background:linear-gradient(140deg,#1b2426,#0e1519);border-color:#7b6845}
+#kdShell .kdSettingCard strong{color:#f4dca6;line-height:1.35}
+#kdShell .kdSettingCard small{line-height:1.5;color:#c4c2af}
+#kdShell .kdSettingToggle{min-height:44px;min-width:76px}
+#kdShell .kdSettingToggle:disabled{opacity:.55;cursor:default}
+#kdShell .kdSettingToggle.on{background:#51462d;border-color:#d5b67b}
+#kdShell .kdSettingToggle.on i{background:#ffe7a6;box-shadow:none}
+#kdShell .kdVolumeRow{gap:8px;align-items:center}
+#kdShell .kdVolumeRow input{min-height:44px;accent-color:#e6ca89;touch-action:pan-y}
+#kdShell .kdFeedbackTry{grid-column:2/-1;justify-self:start;min-height:40px;border:1px solid #a18a57;border-radius:9px;padding:9px 13px;background:#172126;color:#f2dca5;font:600 11px/1.3 system-ui;margin-top:3px}
+#kdShell .kdFeedbackTry:disabled{opacity:.45;cursor:default}
+#kdShell .kdHapticCard small{max-width:38ch}
+/* Existing quest/achievement/chest layout remains intact; finish changes only. */
+.kdV9Overlay .kdV9Card{border-color:#9d8352;background:linear-gradient(145deg,#172025,#0a1015);box-shadow:inset 0 1px #f5dba225,0 20px 50px #0009}
+.kdV9Overlay .kdV9Row{border-color:#716247;background:linear-gradient(130deg,#1e2928,#10181d)}
+.kdV9Overlay .kdV9Row button{border-color:#ad925c;background:#353b2a;color:#f6e4b4;box-shadow:inset 0 1px #ffe9b117}
+.kdV9Overlay .kdV9Row button:disabled{color:#a8b3ab;background:#151e22;border-color:#4d564b}
+.kdV9Overlay .kdQuestFinale{border-color:#b99b61;background:linear-gradient(125deg,#383925,#172023)}
+.kdV9Overlay .kdQuestFinale button{background:linear-gradient(125deg,#f4dba3,#c09a55);color:#201a0f}
+/* One rotating SVG, no blur or per-frame DOM/tick work. Idle has no promoted layer. */
+#kdWheelOverlay{background:#03070bef;overscroll-behavior:contain}
+#kdWheelOverlay .kdWheelCard{background:radial-gradient(ellipse at 50% 0,#d1ab4720,transparent 50%),linear-gradient(145deg,#1b2529,#080f14);border-color:#c2a76a;box-shadow:inset 0 1px #ffeeb74d,0 20px 50px #0009}
+#kdWheelOverlay .kdWheelCard h2{font:26px/1.3 Georgia,serif;color:#f8e3ad;letter-spacing:.6px;padding-inline:22px}
+#kdWheelOverlay .kdWheelCard h2 span{display:block;font-size:18px;color:#bf9b54;margin-bottom:5px}
+#kdWheelOverlay .kdWheelClose{min-width:44px;min-height:44px;right:7px;top:7px;border:1px solid #8d76484d;border-radius:50%;font-size:27px}
+#kdWheelOverlay .kdWheelDisc{filter:none;will-change:auto}
+#kdWheelOverlay[data-spinning="true"] .kdWheelDisc{will-change:transform}
+#kdWheelOverlay .kdWheelPointer{font-size:31px;top:-12px;color:#ffeab1;text-shadow:0 2px 3px #000}
+#kdWheelOverlay .kdWheelStatus{color:#c4c9be;line-height:1.5;min-height:40px}
+#kdWheelOverlay .kdWheelResult{border:1px solid #8e764a66;border-radius:11px;padding:12px 6px;min-height:50px;background:#0a1116;color:#fbe2a2;font-size:18px}
+#kdWheelOverlay[data-result="won"] .kdWheelResult{animation:kdWheelReveal 220ms ease-out both}
+@keyframes kdWheelReveal{from{opacity:.3;transform:translateY(3px)}to{opacity:1;transform:none}}
+#kdWheelOverlay[data-result="none"] .kdWheelResult{visibility:hidden}
+#kdWheelOverlay[data-result="blank"] .kdWheelResult{color:#d7d0ba;border-color:#686b55}
+#kdWheelOverlay .kdWheelSpin{min-height:48px;background:linear-gradient(125deg,#f6dda5,#ba9351);border-color:#e8cd91;color:#201a10;box-shadow:inset 0 1px #fff3cf66;font-size:13px}
+#kdWheelOverlay .kdWheelAd{min-height:44px;background:#172228;border-color:#9d895a;color:#f1dfad;font-size:12px}
+#kdWheelOverlay .kdWheelCard>small{color:#b9c2b7;font-size:11px;line-height:1.65}
+#kdWheelOverlay button:focus-visible,#kdShell .kdFeedbackTry:focus-visible{outline:2px solid #fff0b7;outline-offset:3px}
+@media(max-width:350px){
+ #kdShell .kdSettingCard{column-gap:10px;padding-inline:12px}
+ #kdShell .kdSettingIcon{width:32px;min-width:32px}
+ #kdShell .kdSettingToggle{min-width:68px}
+ #kdWheelOverlay .kdWheelCard{padding-inline:12px}
+ #kdWheelOverlay .kdWheelCard h2{font-size:23px}
+}
+@media(max-height:650px){
+ #kdWheelOverlay{align-items:flex-start;padding:10px}
+ #kdWheelOverlay .kdWheelCard{max-height:calc(100dvh - 20px);padding-block:12px}
+ #kdWheelOverlay .kdWheelCard h2{font-size:20px;margin-block:2px 7px}
+ #kdWheelOverlay .kdWheelCard h2 span{display:none}
+ #kdWheelOverlay .kdWheelStage{width:min(100%,210px);margin-block:10px 4px}
+ #kdWheelOverlay .kdWheelResult{margin-block:5px 8px;padding:7px 4px;min-height:40px;font-size:15px}
+ #kdWheelOverlay .kdWheelCard>small{font-size:10px;margin-top:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ #kdWheelOverlay .kdWheelResult{animation:none!important}
+ #kdWheelOverlay .kdWheelDisc{transition:none!important;will-change:auto!important}
+ #kdShell .kdSettingToggle,#kdShell .kdSettingToggle i{transition:none!important}
+}
+@media(min-width:600px) and (max-height:480px){
+ #kdWheelOverlay .kdWheelCard{width:min(740px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,1fr);grid-template-rows:auto auto auto auto auto auto;gap:4px 18px;align-items:center;padding:12px 18px}
+ #kdWheelOverlay .kdWheelStage{grid-column:1;grid-row:1/-1;width:min(100%,calc(100dvh - 70px));margin:0 auto}
+ #kdWheelOverlay .kdWheelCard>h2,#kdWheelOverlay .kdWheelStatus,#kdWheelOverlay .kdWheelResult,#kdWheelOverlay .kdWheelSpin,#kdWheelOverlay .kdWheelAd,#kdWheelOverlay .kdWheelCard>small{grid-column:2;margin-block:2px}
+ #kdWheelOverlay .kdWheelCard>small{font-size:9px;line-height:1.4}
+ #kdWheelOverlay .kdWheelStatus{font-size:11px;min-height:28px}
+ #kdWheelOverlay .kdWheelSpin,#kdWheelOverlay .kdWheelAd{padding-block:8px}
+}
+/* Short screens keep privacy/age controls visible; volume and sample share a row. */
+@media(max-height:820px){
+ #kdShell .kdFeedbackCard,#kdShell .kdHapticCard{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px!important}
+ #kdShell .kdFeedbackCard>.kdSettingIcon,#kdShell .kdHapticCard>.kdSettingIcon{display:none}
+ #kdShell .kdFeedbackCard>div:not(.kdVolumeRow),#kdShell .kdHapticCard>div:not(.kdSettingIcon){grid-column:1;grid-row:1}
+ #kdShell .kdFeedbackCard>[data-setting],#kdShell .kdHapticCard>[data-setting]{grid-column:2;grid-row:1}
+ #kdShell .kdFeedbackCard .kdVolumeRow{grid-column:1;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr) 29px;margin:0!important;padding:0!important;border:0;gap:0 4px}
+ #kdShell .kdFeedbackCard .kdVolumeRow input{grid-row:1;grid-column:1;min-width:0;width:100%;margin:0}
+ #kdShell .kdFeedbackCard .kdVolumeRow output{grid-row:1;grid-column:2;font-size:9px}
+ #kdShell .kdFeedbackCard .kdVolumeRow label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ #kdShell .kdFeedbackCard>.kdFeedbackTry{grid-column:2;grid-row:2;margin:0;min-height:40px;font-size:9px;padding:6px;max-width:90px}
+ #kdShell .kdHapticCard>.kdFeedbackTry{grid-column:1;grid-row:2;min-height:32px;margin:0;font-size:9px;padding:6px}
+ #kdShell .kdHapticCard>[data-setting]{grid-row:1/3}
+}
+/* Bound the rotating SVG's rectangular paint bounds; keep the pointer inside the stage. */
+#kdWheelOverlay .kdWheelStage{overflow:hidden;padding-top:12px;isolation:isolate}
+#kdWheelOverlay .kdWheelPointer{top:0}
+#kdWheelOverlay .kdWheelDisc{display:block}
+#kdWheelOverlay .kdWheelCard>button{max-width:100%;white-space:normal;overflow-wrap:anywhere}

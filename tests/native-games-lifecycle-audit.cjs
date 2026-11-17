@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
  private static final String TAG="LifecycleAudit";private static final int GAMES_STARTUP_REQUEST=9002;
  private static AudiencePolicy audience=AudiencePolicy.choose(null);private static boolean audienceAnswered;
  private AudienceChoiceStore audienceChoices;private boolean gamesInitialized,gamesLifecycleReady,gamesStartupPending,gamesStartupFailed,pendingInteractiveLogin;
- private Object audienceDialog,consentGate;private FakeView view=new FakeView();private int automaticProbes,manualProbes,states,rewardDeliveries;
+ private boolean uiFeedbackForeground;private Object audienceDialog,consentGate;private FakeView view=new FakeView();private int automaticProbes,manualProbes,states,rewardDeliveries;
  private final List<Integer> statuses=new ArrayList<>();private final List<String> errors=new ArrayList<>();
  private void configureAudienceAds(){}private void initializeConsent(){consentGate=new Object();}private boolean adsAllowed(){return false;}private void initializeAds(){}private void loadRewarded(){}private void loadInterstitial(){}
  private void sendAudienceState(){states++;}private void error(String value){errors.add(value);}private void deliverPendingRewards(){rewardDeliveries++;}

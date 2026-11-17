@@ -1,0 +1,19 @@
+{
+  "base": "c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4",
+  "normalizedCoreSha256": "6b16f40242955f695f490f2fd2c73b8d730c8707600e49ddac754181df96f3de",
+  "protectedFiles": {
+    "cloud-model.js": "f567310004cf0ce09540f10265bae8c7bb1e5946c2ca2539c768762213c5693f",
+    "cloud-sync.js": "f6a6819aa97f28ad8c98003b25728f2b99b94b568dd2003deab6f57b464eb852",
+    "reward-receipts.js": "17d8df416d98d2294ea002f0d03765195541ca00e9e739a2a7b29f1a694750d1",
+    "daily-challenge.js": "f48feabedef6bdb0504ac099ef937ce8fd552e3c8fc7c395965d1b1add4960de",
+    "mechanic-progress.js": "c0c1b761a04053bebe050718a7477941426ed00cbbf1436fce9731790d267c5b",
+    "mechanic-quests.js": "331b097966d9af5acb525d1a4db854290c819620abbcd7b5c3fab36885509f54",
+    "weekly-quests.js": "629189377016d1824104de78a6c3efbf9c0ad0aa40d3c05467f419d89b011141",
+    "CloudMerge.java": "3a8f55af63f78ad983189593121304b5d91bfb28270456a190bbc25f1eacbd2f",
+    "InstallationIdentity.java": "b862dd2bcff5c9a68c215a8c7e1572fe75b46db866b89fe607883704fd35ed04",
+    "AudiencePolicy.java": "7af114f441446e90669fb10beeba13c3f901f366405bccf081769e7466b8b8ed",
+    "AdConsentGate.java": "fbe597e0d9dc0d300d3ebed3d6147f1612ffa05cb108ea7a8b09d15c40f3fd35",
+    "AndroidManifest.xml": "99d8dac4e33c1ab67f4df7621a23a595480b99ef9676a145c8f9fa85262dd21c",
+    "admob-units.json": "6c271919eb4ecf2a0873763917ab9334f9b25aaea14a554e0ad901c5639333fd"
+  }
+}

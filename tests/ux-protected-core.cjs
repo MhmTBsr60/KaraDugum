@@ -1,0 +1,7 @@
+/* Audio adapters may change; the entire remaining game closure and save files may not. */
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),fixture=require('./ux-protected-fixture.json');
+function normalize(core){let a=core.indexOf('let soundOn='),b=core.indexOf('let pausedAt=',a);assert(a>=0&&b>a);core=core.slice(0,a)+'/* UI_AUDIO */'+core.slice(b);a=core.indexOf("$('effects').onclick=");b=core.indexOf("$('profileBtn').onclick=",a);assert(a>=0&&b>a);return core.slice(0,a)+'/* UI_AUDIO_CONTROLS */'+core.slice(b);}
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+function check(html){const core=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes('function generate(){')&&s.includes('function solved(){'));assert(core);assert.equal(sha(normalize(core)),fixture.normalizedCoreSha256,'Game closure changed beyond the permitted audio adapters');for(const [file,hash]of Object.entries(fixture.protectedFiles))assert.equal(sha(fs.readFileSync(path.join(root,file))),hash,'Protected save/economy/policy file changed: '+file);}
+module.exports={check};if(require.main===module){check(fs.readFileSync(path.join(root,'index.html'),'utf8'));console.log('PASS: entire game closure except audio adapters, plus 13 save/economy/policy files, byte-identical to c38bbf3');}

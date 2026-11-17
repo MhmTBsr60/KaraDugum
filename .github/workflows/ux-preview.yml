@@ -1,0 +1,168 @@
+name: KaraDugum UX preview checks
+
+on:
+  push:
+    branches: [design/obsidian-ux-preview-20261117]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      KD_ADS_MODE: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Configure sample ads in generated project only
+        run: node scripts/configure-ads.cjs app/kd-ads.json
+      - name: Source and 300 level regressions
+        run: |
+          npm ci --ignore-scripts
+          npm test
+          node tests/ux-protected-core.cjs
+          mkdir -p /tmp/kd-ui-feedback
+          javac -d /tmp/kd-ui-feedback UiFeedbackGate.java tests/UiFeedbackGateAudit.java
+          java -cp /tmp/kd-ui-feedback com.orynexa.karadugum.UiFeedbackGateAudit
+      - name: Isolated browser feedback and wheel checks
+        run: |
+          npx playwright install --with-deps chromium
+          node tests/wheel-audio-audit.cjs
+          node tests/ux-feedback-audit.cjs
+          node tests/ux-wheel-matrix.cjs
+      - name: Android projesini hazirla
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f MainActivity.java || { echo 'MainActivity.java eksik'; exit 1; }
+          test -f index.html || { echo 'index.html eksik'; exit 1; }
+          grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
+          mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
+          cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
+          cp UiFeedbackGate.java app/src/main/java/com/orynexa/karadugum/UiFeedbackGate.java
+          cp GamesStartupActivity.java app/src/main/java/com/orynexa/karadugum/GamesStartupActivity.java
+          cp NativeStrings.java app/src/main/java/com/orynexa/karadugum/NativeStrings.java
+          cp AudiencePolicy.java app/src/main/java/com/orynexa/karadugum/AudiencePolicy.java
+          cp AudienceChoiceStore.java app/src/main/java/com/orynexa/karadugum/AudienceChoiceStore.java
+          cp AdConsentGate.java app/src/main/java/com/orynexa/karadugum/AdConsentGate.java
+          cp InterstitialCadence.java app/src/main/java/com/orynexa/karadugum/InterstitialCadence.java
+          cp AdLoadGate.java app/src/main/java/com/orynexa/karadugum/AdLoadGate.java
+          cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
+          cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
+          cp index.html app/src/main/assets/index.html
+          cp mechanic-progress.js app/src/main/assets/mechanic-progress.js
+          cp privacy-policy.html app/src/main/assets/privacy-policy.html
+          cp delete-account.html app/src/main/assets/delete-account.html
+          cp privacy-settings.js app/src/main/assets/privacy-settings.js
+          cp wheel.js app/src/main/assets/wheel.js
+          cp feedback.js app/src/main/assets/feedback.js
+          cp wheel-motion.js app/src/main/assets/wheel-motion.js
+          cp ux-locales.js app/src/main/assets/ux-locales.js
+          cp ux-polish.css app/src/main/assets/ux-polish.css
+          cp localization.js app/src/main/assets/localization.js
+          cp screens.css app/src/main/assets/screens.css
+          cp reference.css app/src/main/assets/reference.css
+          cp theme-skins.css app/src/main/assets/theme-skins.css
+          cp home-icons.css app/src/main/assets/home-icons.css
+          cp modern-panels.css app/src/main/assets/modern-panels.css
+          cp learning.css app/src/main/assets/learning.css
+          cp daily-challenge.css app/src/main/assets/daily-challenge.css
+          cp daily-challenge.js app/src/main/assets/daily-challenge.js
+          cp save-health.js app/src/main/assets/save-health.js
+          cp save-health.css app/src/main/assets/save-health.css
+          cp onboarding.js app/src/main/assets/onboarding.js
+          cp onboarding.css app/src/main/assets/onboarding.css
+          cp workshop.js app/src/main/assets/workshop.js
+          cp workshop.css app/src/main/assets/workshop.css
+          cp xp-cosmetics.js app/src/main/assets/xp-cosmetics.js
+          cp xp-cosmetics.css app/src/main/assets/xp-cosmetics.css
+          cp board-focus.js app/src/main/assets/board-focus.js
+          cp board-focus.css app/src/main/assets/board-focus.css
+          cp mechanic-quests.js app/src/main/assets/mechanic-quests.js
+          cp cloud-model.js app/src/main/assets/cloud-model.js
+          cp cloud-sync.js app/src/main/assets/cloud-sync.js
+          cp weekly-quests.js app/src/main/assets/weekly-quests.js
+          cp learning.js app/src/main/assets/learning.js
+          cp board-renderer.js app/src/main/assets/board-renderer.js
+          cp obsidian-gold.css app/src/main/assets/obsidian-gold.css
+          cp obsidian-gold.js app/src/main/assets/obsidian-gold.js
+          cp reward-receipts.js app/src/main/assets/reward-receipts.js
+          cp theme-renderer.js app/src/main/assets/theme-renderer.js
+          mkdir -p app/src/main/assets/assets
+          cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
+          cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
+          cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png
+          cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp
+          cp assets/kara-dugum-theme-scenes.webp app/src/main/assets/assets/kara-dugum-theme-scenes.webp
+          cp assets/kara-dugum-theme-stones.webp app/src/main/assets/assets/kara-dugum-theme-stones.webp
+          cp assets/kara-dugum-home-icons.webp app/src/main/assets/assets/kara-dugum-home-icons.webp
+          if [ -f icon.png ]; then
+            cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-xxxhdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-mdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-mdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          else
+            echo 'HATA: icon.png veya android-icons simgesi bulunamadi.'
+            exit 1
+          fi
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
+          python3 - <<'PYTEST'
+          from pathlib import Path
+          p=Path('app/src/main/AndroidManifest.xml')
+          text=p.read_text().replace('android:label="KARA DÜĞÜM"', 'android:label="KARA DÜĞÜM TEST"')
+          p.write_text(text)
+          PYTEST
+          mkdir -p app/src/main/res/values
+          printf '<resources><string name="game_services_project_id">1097423047801</string></resources>\n' > app/src/main/res/values/strings.xml
+          cat > settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories { google(); mavenCentral() }
+          }
+          rootProject.name = 'KaraDugum'
+          include ':app'
+          EOF
+          cat > build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application' version '8.13.2' apply false
+          }
+          EOF
+          cat > app/build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application'
+          }
+          def ads = new groovy.json.JsonSlurper().parse(file('kd-ads.json'))
+          android {
+            buildFeatures { buildConfig true }
+            namespace 'com.orynexa.karadugum'
+            compileSdk 36
+            defaultConfig {
+              applicationId 'com.orynexa.karadugum'
+              minSdk 24
+              targetSdk 36
+              versionCode 110
+              versionName '6.50-ux-preview'
+              buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
+              buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
+              buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
+            }
+            buildTypes {
+              release {
+                minifyEnabled false
+              }
+            }
+          }
+          apply from: rootProject.file('android-dependencies.gradle')
+          EOF
+
+      - name: Compile Android bridge and lint without packaging
+        run: gradle --no-daemon --stacktrace :app:compileReleaseJavaWithJavac :app:lintRelease
