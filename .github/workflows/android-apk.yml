@@ -177,6 +177,7 @@ jobs:
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
           cp UiFeedbackGate.java app/src/main/java/com/orynexa/karadugum/UiFeedbackGate.java
+          cp HapticFeedbackPlayer.java app/src/main/java/com/orynexa/karadugum/HapticFeedbackPlayer.java
           cp GamesStartupActivity.java app/src/main/java/com/orynexa/karadugum/GamesStartupActivity.java
           cp NativeStrings.java app/src/main/java/com/orynexa/karadugum/NativeStrings.java
           cp AudiencePolicy.java app/src/main/java/com/orynexa/karadugum/AudiencePolicy.java
@@ -196,6 +197,8 @@ jobs:
           cp wheel-motion.js app/src/main/assets/wheel-motion.js
           cp ux-locales.js app/src/main/assets/ux-locales.js
           cp ux-polish.css app/src/main/assets/ux-polish.css
+          cp gameplay-ui.js app/src/main/assets/gameplay-ui.js
+          cp gameplay-layout.css app/src/main/assets/gameplay-layout.css
           cp localization.js app/src/main/assets/localization.js
           cp screens.css app/src/main/assets/screens.css
           cp reference.css app/src/main/assets/reference.css

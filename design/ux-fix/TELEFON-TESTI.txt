@@ -1,0 +1,18 @@
+KARA DÜĞÜM 6.50-ux-test3 — POCO X7 Pro telefon kontrolü
+
+Yalnızca TEST APK: Google'ın örnek reklam kimlikleri. Canlı AdMob hesabı veya Google Play sürümü değiştirilmedi.
+Paket com.orynexa.karadugum, sürüm kodu 110. Önceki GitHub TEST APK ile aynı imza kullanılmalıdır; CI bunu denetler.
+Kurarken güncelle seçeneğini kullan. İmza uyuşmazsa oyunu silme veya uygulama verilerini temizleme; kayıt kaybı olabilir.
+
+1. Mevcut ilerlemenin, kristallerin ve ipuçlarının korunduğunu kontrol et.
+2. Telefon sessiz modda olmasın; medya sesini aç. Ayarlar → Ses Efektleri açık, Ses seviyesi %60–100. “Sesi dene”ye bas.
+3. Titreşimi aç. POCO/HyperOS sistem ayarlarında dokunma geri bildirimi/titreşim etkin olsun. “Titreşimi dene”ye bas; kısa bir darbe hissetmelisin. Sistem kapalıysa uygulama uyarı gösterir, sistem ayarını zorla değiştirmez.
+4. Ses kapalı/titreşim açık ve ses açık/titreşim kapalı durumlarını ayrı ayrı dene. Müzik çalmamalı.
+5. Bir bölümde birkaç hamle yap. Bölümler → YOLCULUĞA DEVAM ET aynı bulmacayı ve geri alma geçmişini açmalı.
+6. Günün Bulmacası ve Mekanik Atölyesi açılmalı; bölümlere dönünce ana ilerleme korunmalı.
+7. Düğümlere dokun: kısa tok ses ve isteğe bağlı titreşim; geri al, yeniden başlat, ipucu ve yenile çalışmalı. İpucu rozeti ücretsiz sayısını, ◆ işareti kupon sayısını, ▶ reklam yolunu belirtir.
+8. Telefonu yatay/dikey çevir; düğümler, metinler ve dört alt kontrol taşmamalı. 7×7/8×8 tahtaları da kontrol et.
+9. Uygulamayı arka plana alınca ses/titreşim durmalı. Yeniden açınca ayarlar ve ilerleme korunmalı.
+10. Test reklamından ödül yalnızca bir kez verilmeli. Reklamı erken kapatınca ödül verilmemeli.
+
+Bu çalışma alanında fiziksel telefona erişim yoktu. Android derleme/lint, imza ve otomatik tarayıcı/native testleri fiziksel ses şiddeti, titreşim hissi veya POCO'nun güç tasarrufu davranışını doğrulamaz.

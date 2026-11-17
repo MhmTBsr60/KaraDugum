@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),{chromium,serve,init}=require('./ux-harness.cjs');
 (async()=>{const {server,url}=await serve(),b=await chromium.launch({args:['--no-sandbox']});try{
  const p=await init(b,url,{audioMock:true,legacyMusic:true}),errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('dialog',d=>d.accept());
- assert.equal(await p.evaluate(()=>__ux.contexts),0,'Legacy music preference must not auto-create audio');
+ assert.equal(await p.evaluate(()=>__ux.notes.length),0,'Legacy music preference must not play ambient audio; trusted startup dismissal may unlock the context');
  await p.evaluate(()=>kdNavigate('settings'));assert.equal(await p.locator('[data-setting="music"],#kdMusicVolume').count(),0);
  assert.equal(await p.locator('[data-setting="haptics"]').getAttribute('aria-checked'),'false');
  await p.locator('[data-feedback-test="sound"]').click();await p.clock.runFor(1);assert.equal(await p.evaluate(()=>__ux.contexts),1);assert.equal(await p.evaluate(()=>__ux.haptics.length),0);

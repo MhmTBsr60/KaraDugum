@@ -37,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private final UiFeedbackGate uiFeedbackGate = new UiFeedbackGate();
+    private HapticFeedbackPlayer uiHapticPlayer;
     private boolean uiHapticsEnabled, uiFeedbackForeground;
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
@@ -109,6 +110,7 @@ public class MainActivity extends Activity {
         // Safe child defaults before any explicit ad initialization; wait for the age screen.
         configureAudienceAds();
         view = new WebView(this);
+        uiHapticPlayer = new HapticFeedbackPlayer(this);
         view.setBackgroundColor(Color.BLACK);
         view.getSettings().setJavaScriptEnabled(true);
         view.getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -723,38 +725,32 @@ public class MainActivity extends Activity {
     }
     public class Bridge {
         @JavascriptInterface public boolean feedbackAudioAllowed() {
+            AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (manager == null || manager.getRingerMode() == AudioManager.RINGER_MODE_SILENT || manager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) return false;
             try {
-                AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 android.app.NotificationManager notifications = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                int interruption = notifications == null ? android.app.NotificationManager.INTERRUPTION_FILTER_UNKNOWN : notifications.getCurrentInterruptionFilter();
-                return manager != null && manager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL
-                    && interruption != android.app.NotificationManager.INTERRUPTION_FILTER_NONE
-                    && interruption != android.app.NotificationManager.INTERRUPTION_FILTER_ALARMS;
-            } catch (RuntimeException e) { return false; }
+                int filter = notifications == null ? android.app.NotificationManager.INTERRUPTION_FILTER_UNKNOWN : notifications.getCurrentInterruptionFilter();
+                return filter != android.app.NotificationManager.INTERRUPTION_FILTER_NONE && filter != android.app.NotificationManager.INTERRUPTION_FILTER_ALARMS;
+            } catch (RuntimeException unavailable) { return true; } // The media stream still enforces the OS policy.
         }
-        @JavascriptInterface public boolean hapticAvailable() {
-            try {
-                android.os.Vibrator motor = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                return motor != null && motor.hasVibrator();
-            } catch (RuntimeException e) { return false; }
-        }
-        @JavascriptInterface public void setHapticsEnabled(boolean enabled) {
-            runOnUiThread(() -> uiHapticsEnabled = enabled);
-        }
-        @JavascriptInterface public void haptic(String kind) {
+        @JavascriptInterface public boolean hapticAvailable() { return uiHapticPlayer != null && uiHapticPlayer.available(); }
+        @JavascriptInterface public void setHapticsEnabled(boolean enabled) { runOnUiThread(() -> { uiHapticsEnabled = enabled; if (!enabled && uiHapticPlayer != null) uiHapticPlayer.cancel(); }); }
+        @JavascriptInterface public void haptic(String kind) { triggerUiHaptic(kind, false); }
+        @JavascriptInterface public void testHaptic() { triggerUiHaptic("confirm", true); }
+        private void triggerUiHaptic(String kind, boolean preview) {
             runOnUiThread(() -> {
                 if (view == null || isFinishing()) return;
                 AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 boolean quiet = manager != null && manager.getRingerMode() == AudioManager.RINGER_MODE_SILENT;
-                if (!uiFeedbackGate.allow(kind, uiHapticsEnabled, uiFeedbackForeground,
-                        view.isAttachedToWindow() && view.isShown() && view.hasWindowFocus(),
-                        quiet, hapticAvailable(), android.os.SystemClock.uptimeMillis())) return;
-                int feedback = android.view.HapticFeedbackConstants.CLOCK_TICK;
-                if ("win".equals(kind) || "reward".equals(kind) || "confirm".equals(kind))
-                    feedback = Build.VERSION.SDK_INT >= 30 ? android.view.HapticFeedbackConstants.CONFIRM : android.view.HapticFeedbackConstants.KEYBOARD_TAP;
-                else if ("fail".equals(kind) || "lock".equals(kind))
-                    feedback = Build.VERSION.SDK_INT >= 30 ? android.view.HapticFeedbackConstants.REJECT : android.view.HapticFeedbackConstants.KEYBOARD_TAP;
-                view.performHapticFeedback(feedback);
+                boolean allowed = uiFeedbackGate.allow(kind, uiHapticsEnabled, uiFeedbackForeground,
+                    view.isAttachedToWindow() && view.isShown() && view.hasWindowFocus(), quiet, hapticAvailable(), android.os.SystemClock.uptimeMillis());
+                String reason = allowed ? uiHapticPlayer.play(kind) : quiet ? "blocked" : !hapticAvailable() ? "unavailable" : "busy";
+                if (preview) {
+                    JSONObject result = new JSONObject();
+                    try { result.put("channel", "haptics"); result.put("reason", reason == null ? JSONObject.NULL : reason); }
+                    catch (Exception ignored) { }
+                    view.evaluateJavascript("window.kdFeedback && window.kdFeedback.nativeResult(" + result + ")", null);
+                }
             });
         }
 
@@ -868,6 +864,7 @@ public class MainActivity extends Activity {
 
     @Override protected void onPause() {
         uiFeedbackForeground = false;
+        if (uiHapticPlayer != null) uiHapticPlayer.cancel();
         if (view != null) { view.evaluateJavascript("window.kdAppBackground=true;window.kdFeedback && window.kdFeedback.stop();window.kdSetPaused && window.kdSetPaused(true);window.kdCloudSync && window.kdCloudSync()",null); view.onPause(); }
         super.onPause();
     }
@@ -889,6 +886,7 @@ public class MainActivity extends Activity {
         }
     }
     @Override protected void onDestroy() {
+        if (uiHapticPlayer != null) uiHapticPlayer.cancel();
         if (audienceDialog != null) { audienceDialog.setOnDismissListener(null); audienceDialog.dismiss(); audienceDialog = null; }
         if (consentGate != null) consentGate.destroy();
         adGeneration++;
