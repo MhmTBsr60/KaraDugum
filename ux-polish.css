@@ -77,7 +77,7 @@
  #kdWheelOverlay .kdWheelCard{max-height:calc(100dvh - 20px);padding-block:12px}
  #kdWheelOverlay .kdWheelCard h2{font-size:20px;margin-block:2px 7px}
  #kdWheelOverlay .kdWheelCard h2 span{display:none}
- #kdWheelOverlay .kdWheelStage{width:min(100%,210px);margin-block:10px 4px}
+ #kdWheelOverlay .kdWheelStage{width:min(100%,280px);margin-block:10px 4px}
  #kdWheelOverlay .kdWheelResult{margin-block:5px 8px;padding:7px 4px;min-height:40px;font-size:15px}
  #kdWheelOverlay .kdWheelCard>small{font-size:10px;margin-top:9px}
 }

@@ -1,4 +1,4 @@
-/* Short, bounded UI cues. No music, polling, permission prompt, economy or save writes. */
+/* Short, bounded UI cues. No music, polling, permission prompt, economy or progress writes. */
 (() => {
  'use strict';
  const read=(key,fallback)=>{try{return localStorage.getItem(key)??fallback}catch{return fallback}};
@@ -35,11 +35,23 @@
   if(channel!=='haptics'&&settings.effects&&settings.volume>0&&audioAllowed()){if(priority[kind]>=6)stopAll();const a=audio();if(a)for(const note of cues[kind])schedule(a,note);}
   if(channel!=='sound'&&settings.haptics&&nativeSupported()){try{KaraNative.haptic(kind);metrics.haptics++;}catch{}}
  }
- function play(kind,channel='both'){if(!Object.hasOwn(cues,kind)||!activated||!visible())return false;if(!pending||priority[kind]>priority[pending.kind])pending={kind,channel};if(!queued){queued=true;queueMicrotask(flush);}return true;}
+ function play(kind,channel='both'){if(!Object.hasOwn(cues,kind)||!activated||!visible())return false;if(!pending||priority[kind]>priority[pending.kind])pending={kind,channel};if(!queued){queued=true;setTimeout(flush,0);}return true;}
  function unlock(event){if(event&&!event.isTrusted)return;activated=true;if(context&&settings.effects&&settings.volume>0&&visible())audio();}
  document.addEventListener('pointerdown',unlock,true);document.addEventListener('keydown',unlock,true);
  document.addEventListener('visibilitychange',()=>{if(!visible())silence()});
  window.addEventListener('pagehide',silence);
+ // Reuse the game's own ratio and completed transactions; never duplicate rules.
+ const snapshots=new WeakMap();
+ document.addEventListener('click',event=>{
+  if(!activated||!visible()||(!(settings.effects&&settings.volume>0)&&!settings.haptics))return;
+  const tile=event.target.closest?.('#board>.tile'),claim=event.target.closest?.('[data-shop-daily],[data-achievement-claim],[data-journey-claim],[data-shop-buy]');
+  if(tile)snapshots.set(event,{game:window.kdGetLearningState?.(),ratio:Number.parseInt(document.getElementById('links')?.textContent)||0});
+  else if(claim&&!claim.disabled)snapshots.set(event,{claim,coins:Number(read('kd64_coins','0')),hints:Number(read('kd64_hintCoupons','0'))});
+ },true);
+ window.addEventListener('click',event=>{const before=snapshots.get(event);snapshots.delete(event);if(!before)return;
+  if(before.game){const after=window.kdGetLearningState?.(),next=Number.parseInt(document.getElementById('links')?.textContent)||0;if(after&&before.game.level===after.level&&after.moves>before.game.moves&&next>before.ratio)play('chain');}
+  else if(Number(read('kd64_coins','0'))>before.coins||Number(read('kd64_hintCoupons','0'))>before.hints)play(before.claim.hasAttribute('data-shop-buy')?'confirm':'reward');
+ });
  document.addEventListener('click',event=>{const button=event.target.closest?.('[data-go],[data-extra]');if(button&&!button.disabled)play('ui');});
  window.kdFeedback={
   play,cues,

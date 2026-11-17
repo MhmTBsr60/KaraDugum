@@ -34,9 +34,8 @@ jobs:
       - name: Isolated browser feedback and wheel checks
         run: |
           npx playwright install --with-deps chromium
-          node tests/wheel-audio-audit.cjs
-          node tests/ux-feedback-audit.cjs
-          node tests/ux-wheel-matrix.cjs
+          npm run test:browser
+          npm run test:ux
       - name: Android projesini hazirla
         shell: bash
         run: |
