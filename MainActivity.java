@@ -139,10 +139,12 @@ public class MainActivity extends Activity {
         com.google.android.gms.ads.RequestConfiguration.Builder configuration = new com.google.android.gms.ads.RequestConfiguration.Builder();
         configuration.setAgeRestrictedTreatment(audience.restrictedAds()
             ? com.google.android.gms.ads.AgeRestrictedTreatment.CHILD : com.google.android.gms.ads.AgeRestrictedTreatment.UNSPECIFIED);
+        // The game's general-audience content rating also applies to adult ad requests.
+        // This client cap does not certify the account settings or individual creatives.
+        configuration.setMaxAdContentRating(com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_G);
         if (audience.restrictedAds()) {
             // Keep the documented AAID-suppression flag for compatible SDK/service paths too.
             configuration.setTagForChildDirectedTreatment(com.google.android.gms.ads.RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_TRUE);
-            configuration.setMaxAdContentRating(com.google.android.gms.ads.RequestConfiguration.MAX_AD_CONTENT_RATING_G);
             configuration.setPublisherPrivacyPersonalizationState(com.google.android.gms.ads.RequestConfiguration.PublisherPrivacyPersonalizationState.DISABLED);
         }
         MobileAds.setRequestConfiguration(configuration.build());

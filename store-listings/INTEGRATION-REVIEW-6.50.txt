@@ -1,0 +1,38 @@
+KARA DÜĞÜM — f9286e4 ENTEGRASYON İNCELEMESİ
+Taban main: c84b6eaf0c6e16b6e48bf736b3534f3c11da2110
+İncelenen dal: fix/audit-650-20261117, başlangıç f9286e4.
+
+11 dosyanın farkları incelendi. Main tabanı aynı kaldığı için dosya çakışması yok.
+300 bölümlük oyun betiği, ana menü, bulut birleştirme şeması, reklam birimi
+kimlikleri ve Android sürüm numaraları değişmedi. Eski AUDIT-FIXES-6.50.txt,
+önceki geliştirme adımının tarihli kaydıdır; oradaki birleştirme yapılmadı notları
+o adımı anlatır.
+
+Birleştirme öncesinde yakalanan ek hata:
+Günlük ödülün tarih yazımı yarıda kesilir, ardından 225 kristallik ipucu alımı
+yapılırsa yeniden açılış eski bakiye hedefini yeniden uygulayabiliyordu.
+1000→1025 ödül→800 alım→yeniden açılış1025 olarak tekrarlandı.
+Hazırlanmış misafir ödülleri artık başka bir cüzdan okuma/işleminden önce
+kurtarılır. Kalıcı kurtarma hatasında cüzdan yazımı da durur. Aynı örnek artık
+1000→1025→800→yeniden açılış800 kalır, 5 kupon korunur.
+Geçici ve kalıcı hata, alım ve yeniden açılış testleri genişletildi. Bulut hesap
+şeması değiştirilmedi. Çevrimdışı güvenilir saat/veri geri alma sınırları sürer.
+
+Eski WebView için contain-intrinsic-size uzunluk geri dönüşü eklendi; modern
+tarayıcıdaki auto+uzunluk kuralı korunur. Gerçek eski Android cihazı denenmedi.
+
+Son doğrulama:
+- npm test: 18 grup başarılı; manifest denetleyicisinde 17 Python testi.
+- npm run test:browser: 42 grubun tamamı başarılı.
+- 8 Java grubu başarılı; Java/JS bulut birleştirme 641 fixture eşleşmesi.
+- 300 bölüm sıralı olarak bitirildi.
+- İpucu/reklam/mağaza/kayıt/bulut/25 dil testleri tarayıcı ve sahte SDK akışıyla
+  doğrulandı. Gerçek Android, canlı reklam, rıza ve Google oturumu yerine geçmez.
+
+Kullanıcının talebi: kontroller geçtikten sonra bu düzeltmeleri main'e birleştir;
+görsel geliştirmeyi ayrı dalda tut ve görsel main birleşmesi için onay bekle.
+Google Play 6.50 dağıtımı, incelemedeki mağaza görselleri, AdMob hesabı ve diğer
+uygulamalar için hiçbir hesap değişikliği yapılmadı.
+Main push'u normal Android CI işini başlatabilir. İş akışı GitHub artefaktı üretir;
+Play'e yükleme veya yayınlama adımı yoktur. Çıktılar mevcut Play paketinin yerine
+geçmez; ileride yeni yayın için ayrıca yeni sürüm numarası ve kabul testi gerekir.

@@ -1,0 +1,88 @@
+KARA DÜĞÜM — 6.50 DENETİMİ GELİŞTİRME DALI
+Dal: fix/audit-650-20261117
+Taban: c84b6eaf0c6e16b6e48bf736b3534f3c11da2110 (6.50 / 110)
+
+Bu dal üretim sürümü değildir. Sürüm numarası değiştirilmedi; APK/AAB derlenmedi,
+Play'e yükleme, yayın veya main dalına birleştirme yapılmadı.
+
+1. Günlük mağaza ödülü
+- shopDailyDate artık takvim yüksek su işareti olarak kullanılır. Aynı veya daha eski
+  tarihte ödül kapalıdır. Önceki 17→18→17→18 tekrarı yeniden ödeme yapmaz.
+- Misafir ödülü mevcut kalıcı yazma günlüğünde bakiye+tarih olarak hazırlanır.
+  Yeniden açılışta, sonraki alımda ve hesap devralmadan önce tamamlanır.
+- Bağlı hesapta mevcut işlem defteri/claim kimlikleri korunur. Eski son alım tarihi
+  aynen korunur ve mevcut guest/account migration üzerinden devralınır.
+- SUNUCU OLMADAN SINIR: yeni ve ileri bir tarihi gerçek ertesi günden ayıramayız.
+  Sürekli ileri tarih verme, yerel dosya/veri silme veya yedeği geriye döndürme için
+  mutlak hile koruması sağlanmaz. Cihaz tarihi çok ileri alınıp ödül alınırsa normal
+  tarihe dönünce o son alım tarihi aşılana kadar ödül kapalı kalır. Saat dilimiyle
+  bir önceki güne dönülmesi de bu korumaya takılabilir. Güvenilir sunucu zamanı ve
+  sunucuda idempotent ödül defteri olmadan bu risk kapanmış sayılmamalıdır.
+
+2. Çeviriler
+- 21 dil × 69 anahtar = 1449 yeni değer, uygulama dosyasına gömülü.
+- Mevcut çeviri değerleri değiştirilmedi. Yeni mağaza sandığı cümlesi aynı eksik
+  anahtar kümesindeydi; vücut anlamındaki hatalı “chest” taslakları düzeltildi.
+- Taslaklar İngilizce oyun metinlerinden Google Translate ile üretildi; kısa reklam
+  etiketlerine bağlam verildi, yer tutucular ve anahtar kapsamı denetlendi.
+  Yerel Android diyaloglarının mevcut TR/EN/AR/ZH kapsamı değiştirilmedi; diğer
+  dillerdeki yerel diyaloglar için İngilizce geri dönüş devam eder.
+  Bu, yerel dil uzmanı onayı değildir. Özellikle az kaynaklı dillerde insan dil
+  kontrolü önerilir. Oyunun çalışma anında çeviri servisine ağ isteği yoktur.
+
+3. Mağaza sandığı görseli
+- Görsel dosyası yeniden çizilmedi/değiştirilmedi. Türkçe görünüm korunur.
+- Diğer dillerde yalnızca gömülü Türkçe yazının bulunduğu alana koyu geçiş ve
+  çevrilebilir DOM açıklaması gelir; sandık çizimi ve mağaza işlevleri korunur.
+- Arapça metin RTL; bulmaca tahtasının koordinat yönü değiştirilmedi.
+
+4. Uzun görev
+- CPU6 profili, 300 tamamlanmış bölümlü aynı örnek kayıtla bölüm listesi açılışı
+  incelendi. CPU profiler örneklerinde en büyük yoğunluk zorunlu yerleşim
+  (getBoundingClientRect) ve draw işindeydi; tek başına bulmaca üreticisine
+  atfedilmedi. İlk beş liste açılışı: 583 / 242 / 390 / 393 / 368 ms.
+- Destekleyen WebView/tarayıcıda ekran dışı bölge yerleşim/çizimi content-visibility
+  ile ertelenir; 300 gerçek buton, kayıt, filtre, klavye ve bölüm bağlantıları kalır.
+  Desteklemeyen eski WebView aynı mevcut görünümü normal çizimle kullanır.
+- Bu ölçümler sentetik Chromium CPU profilidir; Android FPS/ANR veya bütün
+  cihazlarda belirli bir başlangıç süresi garantisi değildir.
+
+5. Reklam SDK ayarı
+- configureAudienceAds artık yetişkin ve kısıtlı isteklerin tümünde G maksimum
+  içerik sınırını ayarlar. Çocuk işaretleri, rıza kapıları, NPA ve reklam birimi
+  kimlikleri korunur. Mevcut üretim ikilisi bu değişikliği içermez.
+- AdMob hesap/uygulama panelindeki G ayarı bu çalışma alanından doğrulanamadı.
+  Panel onayı veya politikaya tam uygunluk iddiası yapılmaz. Gerçek yaratıcılar,
+  canlı SDK istekleri, rıza akışı ve Families koşulları ayrıca doğrulanmalıdır.
+- Daha dar reklam havuzunun gelir etkisi gerçek trafikle ölçülür; gelir garantisi
+  veya uygunsuz reklamın hiçbir zaman çıkmayacağı garantisi verilmez.
+
+Koruma: ilk oyun betiği (üreteç, çözücü, hamle/ipuçları) ve ana menü markup'ı,
+taban commit ile byte karşılaştırmasında aynıdır. Kayıt anahtarları sıfırlanmadı.
+Günlük ödül için mevcut alan ve işlem günlüğü genişletildi; yeni kayıt formatına
+zorunlu toplu göç veya kullanıcı verisi silme yoktur.
+
+SON DOĞRULAMA — 17 KASIM 2026
+- npm test: 18 kaynak grubu, başarılı; manifest denetleyicisinde 17 Python testi.
+- npm run test:browser: son tam koşuda 42 grup başarılı (39 mevcut + 3 yeni).
+  İlk koşuda PT/TL görev finali taşması bulundu, metinler kısaltıldı; tam dizi
+  düzeltme sonrasında yeniden geçti. Test eşikleri gevşetilmedi.
+- 8 Java test grubu başarılı; Java/JS bulut birleştirme 641 fixture ile eşleşiyor.
+- 300 bölüm sıralı tarayıcı ilerlemesinde tamamlandı; kayıt 300/300.
+- Ek dil testi: 25 dil, tam anahtar/yer tutucu kapsamı, 75 mağaza başlığı boyut
+  kontrolü. 25 dilde görev ekranı testi ve TR/EN/AR bölüm bağlantısı/klavye testi geçti.
+- Nihai ekran matrisi: 108 senaryo, 1854 kontrol, 0 başarısızlık/pageerror.
+- Nihai performans: 145 sahne / 3 sentetik profil; kaynaklar ölçümde değişmedi.
+  Yavaş profilde en uzun görev 345 ms (ilk denetim koşusunda 604 ms).
+  Aynı 5 liste açılışını profillemede medyan yaklaşık390→64 ms, en yüksek
+  583→130 ms. Ölçüm/sistem yükü farkları vardır; bu bir Android FPS garantisi değil.
+  Uzun görevler devam eder; donanımda ayrıca profil çıkarılmalıdır.
+- Orta profilde 2000 hamle sonrası kayıt korunur, history120 sınırı işler.
+  GC sonrası JS heap başlangıç3.471.360 / son3.766.148 byte; bu kısa koşu
+  Android toplam RAM veya uzun süreli sızıntı yokluğunu kanıtlamaz.
+- Üretim LIVE AAB SHA-256 değişmedi:
+  9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf
+
+Gerçek Android cihaz/emülatör, canlı UMP/AdMob, Google Play girişi ve gerçek iki
+cihazlı bulut testleri yapılamadı. Sonuçlar bunların yerine geçmez. AdMob hesabının
+G sınırı hâlâ doğrulanmış değildir. Dalı main'e birleştirme/yayınlama yapılmadı.

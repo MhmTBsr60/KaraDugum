@@ -75,3 +75,13 @@ html[data-kd-theme] #kdGame #kdModeRule{border-color:var(--stone-edge)!important
 html[data-kd-theme] #kdGame .stat b{color:var(--pipe-tone)}
 html[data-kd-theme] #kdGame main>.controls>button:not(.secondary){background:linear-gradient(120deg,var(--pipe-tone),var(--stone-edge));color:#111}
 html[data-kd-theme] #kdGame main>.controls button.secondary{background:color-mix(in srgb,var(--stone-tone) 40%,#111318);border-color:var(--stone-edge)}
+
+/* Localizable caption covers only the baked-in Turkish copy; chest art and Turkish layout stay intact. */
+.kdRefBanner{position:relative}
+.kdLocalizedShopBanner{display:none}
+html:not([lang="tr"]) .kdRefBanner::after{content:"";position:absolute;inset:0 44% 0 0;background:linear-gradient(90deg,#111519 0%,#111519 84%,transparent);pointer-events:none}
+html:not([lang="tr"]) .kdLocalizedShopBanner{display:flex;align-items:center;position:absolute;z-index:1;inset:12% 53% 12% 5%;margin:0;font:clamp(11px,3.5vw,18px)/1.4 Georgia,serif;color:#f4dda2;overflow-wrap:anywhere}
+/* Keep all 300 real buttons; defer layout/paint of off-screen chapters, with cached intrinsic sizes. */
+@supports(content-visibility:auto){
+ .kdChapterSection{content-visibility:auto;contain-intrinsic-size:1000px;contain-intrinsic-size:auto 1000px}
+}
