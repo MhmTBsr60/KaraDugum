@@ -1,0 +1,14 @@
+KARA DÜĞÜM 6.50-light-trace-test1 — LIGHT-500 tanılama APK
+POCO'DA ÇÖZÜLDÜ OLARAK ONAYLANMAMIŞTIR.
+Mevcut TEST APK üzerine kurun; oyunu kaldırmayın/verilerini temizlemeyin.
+
+1. İlk düğüm dokunuşunda LIGHT-500 paneli otomatik açılır. Ayarlar → Işık İzi yanındaki ⓘ ile de açabilirsiniz. Panelde sürüm, telefon modeli, Android/WebView sürümü görünür; farklı bir sürüm yazıyorsa yeni APK kurulu değildir.
+2. Işık İzi açıkken bir düğüme dokunun. ↓ dokunma, ↳ tıklama, → çizim isteği, Canvas çizim komutu, frame kare gönderimi, HTML WebView yedek katmanı sayılarıdır. Kare gönderimi, ekranda insan tarafından görüldüğü anlamına GELMEZ.
+3. AUTO: Android kare onayı gelmezse WebView katmanı devreye girer. Altın parlama 500 ms sabit durmalıdır.
+4. ANDROID seç → 500 ms TEST: oyun hamlesi olmadan yalnızca Android çizimini dene. native_timeout veya native_rejected_* başarısızlığın aşamasını gösterir.
+5. WEBVIEW seç → 500 ms TEST: yalnızca WebView üst katmanını dene. Aynı düğümde altın dolgu ve çerçeve beklenir. Hangi yolun gözle göründüğünü ayrı not edin.
+6. Işık İzi kapalıyken hiçbir yol parlamamalıdır. Aç/kapat tercihi aynı kd5_glow anahtarında kalır.
+7. 500 ms TEST hamle, geri alma geçmişi, ipucu veya kristal tüketmez. Panel × ile kapanır; renderer seçimi kalıcı kaydedilmez. Ses/titreşim test düğmeleri değişmedi.
+8. Panelin aşama/sayaç satırları ve hangi yolun görülebildiği telefon kök nedeni için gereklidir. Tanılama cihaz belleğindedir; ağ üzerinden gönderilmez.
+
+Google test reklam kimlikleri. Main/Google Play/AdMob/üretim AAB değiştirilmez.

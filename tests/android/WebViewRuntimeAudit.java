@@ -114,15 +114,33 @@ public final class WebViewRuntimeAudit {
         }
         assertEquals(6,scenes.size());assertEquals(6,tones.size());
         report.put("themes",themes);
-        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');return true})()");
+        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');kdLightFeedback.diagnostics();const s=document.querySelector('.kdLightDiagnostics select');s.value='native';s.dispatchEvent(new Event('change'));return true})()");
         SystemClock.sleep(150);int before=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();
         long paintDeadline=SystemClock.uptimeMillis()+5000;
         while(SystemClock.uptimeMillis()<paintDeadline&&((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints")<=before)SystemClock.sleep(10);
-        shot("native-light-on");SystemClock.sleep(350);
-        JSONObject on=(JSONObject)eval("kdLightFeedback.state()");assertTrue("Real Android touch must reach native Canvas onDraw: "+on,on.getInt("nativePaints")>before);assertTrue(on.getInt("pointer")>0);assertTrue(on.getBoolean("native"));
+        long committed=SystemClock.uptimeMillis();shot("native-light-on");
+        SystemClock.sleep(Math.max(0,300-(SystemClock.uptimeMillis()-committed)));
+        eval("(()=>{document.getAnimations().forEach(a=>a.pause());return true})()");
+        shot("native-light-300ms");SystemClock.sleep(Math.max(0,650-(SystemClock.uptimeMillis()-committed)));
+        JSONObject on=(JSONObject)eval("kdLightFeedback.state()");assertTrue("Real Android touch must reach native Canvas onDraw: "+on,on.getInt("nativePaints")>before);assertTrue(on.getInt("pointer")>0);assertTrue(on.getBoolean("native"));assertTrue(on.getInt("nativeDraws")>0);assertEquals(500,on.getInt("duration"));
+        assertTrue(on.getJSONObject("preference").getBoolean("matches"));
+        report.put("lightGeometry",on.getJSONObject("geometry"));
+        report.put("lightNativeInfo",on.getJSONObject("nativeInfo"));
         shot("native-light-settled");
         eval("(()=>{document.body.classList.add('kdNoGlow');localStorage.setItem('kd5_glow','0');return true})()");SystemClock.sleep(100);int offBefore=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();SystemClock.sleep(100);
         JSONObject off=(JSONObject)eval("kdLightFeedback.state()");assertEquals(offBefore,off.getInt("nativePaints"));assertFalse(off.getBoolean("enabled"));shot("native-light-off");
+        // Force a native rejection while the JavaScript setting remains on. Old code
+        // returned true and silently lost the light; AUTO must now paint its HTML fallback.
+        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');const s=document.querySelector('.kdLightDiagnostics select');s.value='auto';s.dispatchEvent(new Event('change'));return true})()");
+        SystemClock.sleep(100);
+        Field overlayField=MainActivity.class.getDeclaredField("tapLightOverlay");overlayField.setAccessible(true);
+        TapLightOverlay actualLayer=(TapLightOverlay)overlayField.get(activity);
+        instrumentation.runOnMainSync(()->actualLayer.enabled(false));
+        tap();long fallbackDeadline=SystemClock.uptimeMillis()+3000;JSONObject fallback;
+        do{fallback=(JSONObject)eval("kdLightFeedback.state()");if(fallback.getInt("htmlPaints")>0)break;SystemClock.sleep(10);}while(SystemClock.uptimeMillis()<fallbackDeadline);
+        assertTrue("Native rejection must not silently swallow feedback: "+fallback,fallback.getInt("htmlPaints")>0);
+        assertTrue(fallback.toString().contains("rejected_disabled"));shot("native-rejection-html-fallback");
+        report.put("forcedNativeRejectionFallback",fallback).put("phoneVerified",false);
         report.put("lightOn",on).put("lightOff",off).put("protectedWallet",eval("({coins:localStorage.getItem('kd64_coins'),hints:localStorage.getItem('kd64_hintCoupons')})"));
         assertEquals("510",((JSONObject)report.get("protectedWallet")).getString("coins"));assertEquals("7",((JSONObject)report.get("protectedWallet")).getString("hints"));
         eval("(()=>{kdNavigate('settings');return true})()");assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('[data-onboard-repeat]')")));assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('[data-feedback-test=sound]')&&!!document.querySelector('[data-feedback-test=haptics]')")));

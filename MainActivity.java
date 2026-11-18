@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
     private boolean rewardedLoading = false;
     private WebView view;
     private TapLightOverlay tapLightOverlay;
+    private volatile String tapLightDebug = "{}";
     private boolean backHandling = false;
     private boolean signedIn = false;
     private String currentPlayerId = "";
@@ -134,16 +135,34 @@ public class MainActivity extends Activity {
         });
         android.widget.FrameLayout gameSurface = new android.widget.FrameLayout(this);
         gameSurface.addView(view, new android.widget.FrameLayout.LayoutParams(-1,-1));
-        tapLightOverlay = new TapLightOverlay(this, sequence -> {
-            if(view!=null&&uiFeedbackForeground)view.evaluateJavascript("window.kdLightFeedback&&window.kdLightFeedback.nativePainted("+sequence+")",null);
+        tapLightOverlay = new TapLightOverlay(this, new TapLightOverlay.Listener() {
+            @Override public void painted(int sequence) { tapLightStage(sequence,"presented"); }
+            @Override public void stage(int sequence,String phase) { tapLightStage(sequence,phase); }
         });
         gameSurface.addView(tapLightOverlay,new android.widget.FrameLayout.LayoutParams(-1,-1));
         setContentView(gameSurface);
         view.loadUrl("file:///android_asset/index.html");
+        tapLightStage(0,"ready");
         if (Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, () -> handleGameBack());
         }
+    }
+
+    // UI-thread snapshot only. The JS bridge reads a volatile string, never Android Views.
+    private void tapLightStage(int sequence,String phase) {
+        String webview="unknown";
+        if(Build.VERSION.SDK_INT>=26&&WebView.getCurrentWebViewPackage()!=null)webview=WebView.getCurrentWebViewPackage().versionName;
+        tapLightDebug="{\"build\":"+JSONObject.quote(BuildConfig.VERSION_NAME)
+            +",\"model\":"+JSONObject.quote(Build.MODEL)+",\"android\":"+Build.VERSION.SDK_INT
+            +",\"webview\":"+JSONObject.quote(webview)+",\"phase\":"+JSONObject.quote(phase)
+            +",\"enabled\":"+(tapLightOverlay!=null&&tapLightOverlay.lightEnabled())
+            +",\"foreground\":"+uiFeedbackForeground+",\"focus\":"+(view!=null&&view.hasWindowFocus())
+            +",\"visible\":"+(tapLightOverlay!=null&&tapLightOverlay.isShown())
+            +",\"width\":"+(tapLightOverlay==null?0:tapLightOverlay.getWidth())
+            +",\"height\":"+(tapLightOverlay==null?0:tapLightOverlay.getHeight())+"}";
+        if(view!=null)view.evaluateJavascript("window.kdLightFeedback&&window.kdLightFeedback.nativeEvent("
+            +sequence+","+JSONObject.quote(phase)+","+tapLightDebug+")",null);
     }
 
     private void configureAudienceAds() {
@@ -780,13 +799,20 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
         @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
         @JavascriptInterface public void setTapLightEnabled(boolean enabled) {
-            runOnUiThread(()->{if(tapLightOverlay!=null)tapLightOverlay.enabled(enabled);});
+            runOnUiThread(()->{if(tapLightOverlay!=null)tapLightOverlay.enabled(enabled);tapLightStage(0,enabled?"enabled":"disabled");});
+        }
+        @JavascriptInterface public String tapLightInfo() { return tapLightDebug; }
+        @JavascriptInterface public void cancelTapLight(int sequence) {
+            runOnUiThread(()->{if(tapLightOverlay!=null)tapLightOverlay.cancel(sequence);});
         }
         @JavascriptInterface public boolean drawTapLight(double x,double y,double width,double height,double viewportWidth,double viewportHeight,boolean reduced,int sequence) {
             if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(width)||!Double.isFinite(height)||!Double.isFinite(viewportWidth)||!Double.isFinite(viewportHeight)
                 ||viewportWidth<=0||viewportHeight<=0||width<=0||height<=0||x<0||y<0||x+width>viewportWidth+1||y+height>viewportHeight+1)return false;
             runOnUiThread(()->{
-                if(view==null||tapLightOverlay==null||!uiFeedbackForeground||!view.hasWindowFocus())return;
+                tapLightStage(sequence,"queued");
+                if(view==null||tapLightOverlay==null){tapLightStage(sequence,"rejected_missing_view");return;}
+                if(!uiFeedbackForeground){tapLightStage(sequence,"rejected_background");return;}
+                if(!view.hasWindowFocus()){tapLightStage(sequence,"rejected_focus");return;}
                 float sx=view.getWidth()/(float)viewportWidth,sy=view.getHeight()/(float)viewportHeight;
                 tapLightOverlay.flash((float)x*sx,(float)y*sy,(float)width*sx,(float)height*sy,reduced,sequence);
             });
