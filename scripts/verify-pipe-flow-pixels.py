@@ -12,13 +12,14 @@ assert not any(delta(p,q)>20 for p,q in zip(a,a))
 r['pixelProof']={'boardChangedFraction':changed,'addedGoldFraction':added,'restoreDifference':restore,'negativeControlRejected':True,'method':'actual Android Surface on/off/restored screenshots, same puzzle; not counters'}
 (root/'pipe-flow-report.json').write_text(json.dumps(r,indent=2));print(r['pixelProof'])
 
-# Decode continuous native screenrecord frames outside this script. Reference and
-# samples share the same codec, avoiding PNG screenshot latency/codec differences.
+# Real Android Surface screenshots of the packaged renderer at controlled times.
+# The emulated GPU cannot capture a reliable 900 ms real-time movie. This tests
+# actual pixels/travel independently of counters; it is explicitly NOT an FPS test.
 from PIL import ImageDraw
 import shutil
-animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];frames=sorted(Path(sys.argv[2]).glob('*.png'));assert len(frames)>=12
-rest=Image.open(frames[-1]).convert('RGB');assert abs(rest.width/rest.height-animated['vw']/animated['vh'])<.01,'Unexpected recording projection';scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']]);small=(round(g['width']),round(g['height']))
-# Analyse at CSS resolution; raw full-resolution chosen frames remain available.
+animated=json.loads((root/'animated-flow-report.json').read_text());assert animated['clockControlledForSurfaceTest']
+f=animated['during'];g=f['rect'];frames=[root/n for n in animated['surfaceSamples']];assert len(frames)==3
+rest=Image.open(root/animated['settledSurface']).convert('RGB');assert abs(rest.width/rest.height-animated['vw']/animated['vh'])<.01,'Unexpected Surface projection';scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']]);small=(round(g['width']),round(g['height']))
 mask=Image.new('L',small);draw=ImageDraw.Draw(mask);width=round(g['width']/4*.10+3)
 for seg in f['segments']:
  points=[(round(x),round(y)) for x,y in seg['points']];draw.line(points,fill=255,width=width,joint='curve')
@@ -29,8 +30,8 @@ luma=lambda p:.2126*p[0]+.7152*p[1]+.0722*p[2]
 for i,name in enumerate(frames):
  im=Image.open(name).convert('RGB').crop(boardbox).resize(small,Image.Resampling.LANCZOS);pixels=list(im.getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed));bright=[k for k,(p,q) in enumerate(zip(im.crop(roi).getdata(),end)) if luma(p)-luma(q)>12]
  if outside<.03 and len(bright)>=8:valid.append({'sample':name.name,'frame':i,'brightPixels':len(bright),'centroidX':sum(roi[0]+k%(roi[2]-roi[0]) for k in bright)/len(bright)*scale,'outsideMatchedPipesFraction':outside})
-assert len(valid)>=2,('No two visible moving-light video frames on the same committed puzzle',valid)
+assert len(valid)>=2,('No two visible moving-light Surface frames on the same committed puzzle',valid)
 shift=max(v['centroidX'] for v in valid)-min(v['centroidX'] for v in valid);assert shift>=3,('Energy must visibly travel along the pipe',valid)
-best=max(valid,key=lambda v:v['brightPixels']);shutil.copyfile(Path(sys.argv[2])/best['sample'],root/'animated-flow-on.png');shutil.copyfile(frames[-1],root/'animated-flow-settled-video.png')
-animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':best['brightPixels'],'sameCommittedPuzzle':True,'visibleSamples':valid,'travelPixels':shift,'selectedSample':best['sample'],'method':'continuous Android screenrecord frames: positive luminance + directional travel inside matched pipes; not counters','physicalPhoneVerified':False}
+best=max(valid,key=lambda v:v['brightPixels']);shutil.copyfile(root/best['sample'],root/'animated-flow-on.png')
+animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':best['brightPixels'],'sameCommittedPuzzle':True,'visibleSamples':valid,'travelPixels':shift,'selectedSample':best['sample'],'method':'actual Android Surface PNGs, controlled 200/420/640 ms animation clock: positive luminance and directional travel inside matched pipes; not counters or real-time FPS','clockControlled':True,'physicalPhoneVerified':False,'realTimePhonePerformanceVerified':False}
 (root/'animated-flow-report.json').write_text(json.dumps(animated,indent=2));print(animated['surfaceAnimationProof'])
