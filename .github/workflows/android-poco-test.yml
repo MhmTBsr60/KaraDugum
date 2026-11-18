@@ -409,19 +409,24 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
-          target: google_apis
+          emulator-boot-timeout: 180
+          target: default
           arch: x86_64
           profile: pixel_7
           disable-animations: false
-          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 1536 -cores 2 -skin 720x1600 -dpi-device 320
           script: |
             timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
             timeout 45s adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
             adb logcat -c
+            mkdir -p dist/android-webview
+            nohup timeout 240s adb logcat -v threadtime > dist/android-webview/live-logcat.txt 2>&1 &
             timeout 200s adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
             mkdir -p dist/android-webview
             timeout 30s adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
-            timeout 30s adb logcat -d > dist/android-webview/logcat.txt
+            timeout 15s adb logcat -d > dist/android-webview/logcat.txt || true
+            free -m > dist/android-webview/host-memory.txt
+            sudo dmesg -T | tail -100 > dist/android-webview/host-kernel.txt || true
             python3 -c "assert 'OK (1 test)' in open('/tmp/kd-webview-instrumentation.log').read()"
             python3 scripts/compose-theme-proof.py dist/android-webview
 
