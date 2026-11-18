@@ -55,7 +55,9 @@ public final class WebViewRuntimeAudit {
     private Object eval(String expression) throws Exception {
         CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
         instrumentation.runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
-        assertTrue("WebView evaluateJavascript callback timeout",latch.await(3,TimeUnit.SECONDS));
+        // A cold WebView may not answer during its first three seconds. The startup
+        // readiness loop retries within 45 seconds; later evaluation timeouts still fail.
+        if(!latch.await(3,TimeUnit.SECONDS))throw new TimeoutException("WebView evaluateJavascript callback timeout");
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
     private void visualFrame() throws Exception {
