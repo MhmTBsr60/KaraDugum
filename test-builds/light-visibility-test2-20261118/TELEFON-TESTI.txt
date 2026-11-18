@@ -1,0 +1,13 @@
+6.50-light-visibility-test2 — GOLD-500 / visibility-test2
+FİZİKSEL POCO'DA ÇÖZÜLDÜ OLARAK ONAYLANMAMIŞTIR.
+
+Mevcut TEST APK üzerine kurun. Oyunu kaldırmayın/verilerini temizlemeyin.
+1. Ayarlar → Işık İzi açık → ⓘ. Başlıkta GOLD-500 / visibility-test2 ve 6.50-light-visibility-test2 görünmeli. Android ✓ / ✦ biçimindeki eski tek satır görünüyorsa bu yeni tanılama değildir.
+2. Varsayılan mod WEBVIEW'dir. 500 ms TEST'e basın: düğüm döndürmeden yüksek görünürlüklü altın dolgu ve çerçeve beklenir. Hamle, ipucu, kristal ve geri alma geçmişi tüketilmez.
+3. BUFFER:GOLD çizim tamponundaki altın rengidir, TOP:YES tarayıcı üst katmanıdır, WEB sayacı gönderilen WebView karesidir. Bunlar tek başına telefonda görüldü onayı değildir; hangi durumda gözle parlamayı gördüğünüzü ayrıca belirtin.
+4. Düğüme normal dokunmayı da deneyin. İki durumda da süre 500 ms'dir. Işık İzi kapalıyken hiçbir parlama olmamalı.
+5. Gerekirse mod düğmesiyle ANDROID/AUTO karşılaştırması yapın. Native çizim başarılı cevap verse bile WEBVIEW bu katmana bağımlı değildir.
+6. Panel otomatik açıldığında salt okunur/kompakttır. Ayrıntılar Ayarlar → ⓘ ile açılır; uzun satırları kaydırabilir, × ile kapatabilirsiniz.
+7. Ses/titreşim test düğmeleri ve bütün oyuncu kayıtları korunur. Tanılama yalnız bellekte, ağ/telemetri gönderimi yoktur.
+
+Test APK yalnız Google test reklam kimliklerini kullanır. Main/Google Play/AdMob/üretim AAB değiştirilmez.

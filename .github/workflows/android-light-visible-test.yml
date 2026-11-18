@@ -1,0 +1,513 @@
+name: KaraDugum GOLD-500 WebView visible pixel TEST2
+
+on:
+  push:
+    branches: [fix/light-visible-webview-20261118]
+  workflow_dispatch:
+
+jobs:
+  test-apk:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    env:
+      KD_ADS_MODE: test
+      KD_TEST_VERSION: 6.50-light-visibility-test2
+    steps:
+      - name: Kaynaklari al
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Degisiklik kapsam ve korunan kaynaklari dogrula
+        shell: bash
+        run: |
+          python3 - <<'PYSOURCE'
+          import subprocess
+          source='618a8f15d828ff908218f7140ce95591dc7d7698'
+          changed=subprocess.check_output(['git','diff','--name-only',source,'HEAD'],text=True).splitlines()
+          allowed={'light-feedback.js','light-feedback.css','tests/light-trace-audit.cjs','tests/light-visible-audit.cjs','tests/poco-runtime-audit.cjs','tests/android/WebViewRuntimeAudit.java','scripts/visible-light-metrics.py','scripts/verify-visible-light.py','.github/workflows/android-light-visible-test.yml'}
+          assert all(f in allowed or f.startswith('test-builds/light-visibility-test2-20261118/') for f in changed),changed
+          for f in ['MainActivity.java','TapLightOverlay.java','index.html','board-renderer.js','theme-renderer.js','wheel.js','localization.js','feedback.js','HapticFeedbackPlayer.java','UiFeedbackGate.java','AndroidManifest.xml','cloud-model.js','cloud-sync.js','onboarding.js','onboarding.css','admob-units.json']:
+              assert not subprocess.check_output(['git','diff',source,'HEAD','--',f]),f
+          print('PASS: only authorized light diagnostics/tests differ; game, identity/audio/haptics/saves/tutorial/ads byte-identical; native changes constrained by light-trace-audit')
+          PYSOURCE
+
+      - name: Reklam modunu dogrula
+        run: node scripts/configure-ads.cjs app/kd-ads.json
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Oyun JavaScript sozdizimini kontrol et
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.active = False
+                  self.parts = []
+                  self.scripts = []
+              def handle_starttag(self, tag, attrs):
+                  if tag == 'script':
+                      attrs = dict(attrs)
+                      self.active = 'src' not in attrs and attrs.get('type', 'text/javascript') in ('text/javascript', 'module')
+                      self.parts = []
+              def handle_data(self, data):
+                  if self.active:
+                      self.parts.append(data)
+              def handle_endtag(self, tag):
+                  if tag == 'script':
+                      if self.active:
+                          self.scripts.append(''.join(self.parts))
+                      self.active = False
+          parser = Scripts()
+          parser.feed(Path('index.html').read_text(encoding='utf-8'))
+          if not parser.scripts:
+              raise SystemExit('HATA: Kontrol edilecek JavaScript bulunamadi')
+          for i, script in enumerate(parser.scripts, 1):
+              Path('/tmp/karadugum-script-%d.js' % i).write_text(script, encoding='utf-8')
+          print('%d oyun scripti kontrol edilecek' % len(parser.scripts))
+          PY
+          for script in /tmp/karadugum-script-*.js; do node --check "$script"; done
+          node --check wheel.js
+          node --check localization.js
+          node --check theme-renderer.js
+          node --check board-renderer.js
+          node --check obsidian-gold.js
+          node --check reward-receipts.js
+          node --check learning.js
+          node --check daily-challenge.js
+          node --check cloud-model.js
+          node --check cloud-sync.js
+          node --check weekly-quests.js
+          node --check mechanic-progress.js
+          node --check privacy-settings.js
+          node --check scripts/configure-ads.cjs
+          node --check scripts/stage-release.cjs
+          node --check scripts/verify-sdk-dependencies.cjs
+          bash -n scripts/verify-apk-signature.sh
+          bash -n scripts/verify-aab-signature.sh
+          bash -n scripts/inspect-release-manifests.sh
+
+      - name: 300 bolum otomatik denetimi
+        run: |
+          node tests/level-audit.cjs
+          node tests/hint-runtime-audit.cjs
+          node tests/ui-regression.cjs
+          node tests/full-solve-audit.cjs
+          node tests/weekly-calendar-audit.cjs
+          node tests/ad-config-audit.cjs
+          node tests/sdk-dependencies-audit.cjs
+          python3 tests/android-manifests-audit.py
+          node tests/mechanic-progress-audit.cjs
+          node tests/release-package-audit.cjs
+          node tests/mechanic-quests-audit.cjs
+          node tests/workshop-audit.cjs
+          node tests/wheel-readiness-audit.cjs
+          node tests/store-listing-audit.cjs
+          node tests/native-auth-audit.cjs
+          node tests/native-games-lifecycle-audit.cjs
+          node tests/native-cloud-callback-audit.cjs
+
+      - name: Java ve JavaScript bulut birlestirme kontrolu
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --retry-max-time 45 --connect-timeout 10 --max-time 20 https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar --output "$RUNNER_TEMP/kd-json.jar"
+          node tests/cloud-model-audit.cjs --fixtures "$RUNNER_TEMP/kd-cloud-fixtures.json"
+          mkdir -p "$RUNNER_TEMP/kd-cloud-classes"
+          javac -cp "$RUNNER_TEMP/kd-json.jar" -d "$RUNNER_TEMP/kd-cloud-classes" CloudMerge.java tests/CloudMergeAudit.java InstallationIdentity.java tests/InstallationIdentityAudit.java AdConsentGate.java tests/AdConsentGateAudit.java InterstitialCadence.java tests/InterstitialCadenceAudit.java AdLoadGate.java tests/AdLoadGateAudit.java NativeStrings.java tests/NativeStringsAudit.java AudiencePolicy.java tests/AudiencePolicyAudit.java AudienceChoiceStore.java tests/AudienceChoiceStoreAudit.java
+          java -cp "$RUNNER_TEMP/kd-cloud-classes:$RUNNER_TEMP/kd-json.jar" com.orynexa.karadugum.CloudMergeAudit "$RUNNER_TEMP/kd-cloud-fixtures.json"
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InstallationIdentityAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AdConsentGateAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.InterstitialCadenceAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AdLoadGateAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.NativeStringsAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AudiencePolicyAudit
+          java -cp "$RUNNER_TEMP/kd-cloud-classes" com.orynexa.karadugum.AudienceChoiceStoreAudit
+
+      - name: Gercek tarayici testlerini kur ve calistir
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install chromium
+          python3 -m pip install 'Pillow>=10,<13'
+          node tests/brand-light-trail-audit.cjs
+          node tests/poco-runtime-audit.cjs
+          node tests/light-trace-audit.cjs
+          node tests/light-visible-audit.cjs
+
+      - name: Bolum ve kayit koruma kontrolleri
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('index.html').read_text(encoding='utf-8')
+          workflow = Path('.github/workflows/android-apk.yml').read_text(encoding='utf-8')
+          required = [
+              ("300 bolum", "Math.min(300"),
+              ("Bulut kaydi", "window.kdCloudSync"),
+              ("Cift odul korumasi", "function win(){if(locked)return;"),
+              ("Sure bitimi", "window.kdLastWin=null;clearInterval(timer);"),
+              ("Tekrar dene", "if(replay || !window.kdLastWin)"),
+              ("Bolum boyutlari", "n=level<=15?4:level<=30?5:level<=75?6:level<=150?7:8;"),
+          ]
+          for label, token in required:
+              if token not in html:
+                  raise SystemExit('HATA: ' + label + ' kontrolu basarisiz')
+          if 'id="backup"' in html:
+              raise SystemExit('HATA: Eski yedekleme butonu yeniden eklenmis')
+          if "versionCode 110" not in workflow or "versionName '6.50'" not in workflow:
+              raise SystemExit('HATA: Surum 6.50 ayarlari uyusmuyor')
+          java = Path('MainActivity.java').read_text(encoding='utf-8')
+          if 'registerOnBackInvokedCallback' not in java or 'window.kdHandleBack' not in java:
+              raise SystemExit('HATA: Android geri hareketi kontrolu eksik')
+          print('Bolum, kayit, odul, geri hareketi ve surum kontrolleri gecti.')
+          PY
+
+      - name: Android projesini hazirla
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f MainActivity.java || { echo 'MainActivity.java eksik'; exit 1; }
+          test -f index.html || { echo 'index.html eksik'; exit 1; }
+          grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
+          mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
+          cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
+          cp TapLightOverlay.java app/src/main/java/com/orynexa/karadugum/TapLightOverlay.java
+          cp TapLightOverlay.java app/src/main/java/com/orynexa/karadugum/TapLightOverlay.java
+          cp UiFeedbackGate.java app/src/main/java/com/orynexa/karadugum/UiFeedbackGate.java
+          cp HapticFeedbackPlayer.java app/src/main/java/com/orynexa/karadugum/HapticFeedbackPlayer.java
+          cp GamesStartupActivity.java app/src/main/java/com/orynexa/karadugum/GamesStartupActivity.java
+          cp NativeStrings.java app/src/main/java/com/orynexa/karadugum/NativeStrings.java
+          cp AudiencePolicy.java app/src/main/java/com/orynexa/karadugum/AudiencePolicy.java
+          cp AudienceChoiceStore.java app/src/main/java/com/orynexa/karadugum/AudienceChoiceStore.java
+          cp AdConsentGate.java app/src/main/java/com/orynexa/karadugum/AdConsentGate.java
+          cp InterstitialCadence.java app/src/main/java/com/orynexa/karadugum/InterstitialCadence.java
+          cp AdLoadGate.java app/src/main/java/com/orynexa/karadugum/AdLoadGate.java
+          cp CloudMerge.java app/src/main/java/com/orynexa/karadugum/CloudMerge.java
+          cp InstallationIdentity.java app/src/main/java/com/orynexa/karadugum/InstallationIdentity.java
+          cp index.html app/src/main/assets/index.html
+          cp light-feedback.js light-feedback.css app/src/main/assets/
+          cp mechanic-progress.js app/src/main/assets/mechanic-progress.js
+          cp privacy-policy.html app/src/main/assets/privacy-policy.html
+          cp delete-account.html app/src/main/assets/delete-account.html
+          cp privacy-settings.js app/src/main/assets/privacy-settings.js
+          cp wheel.js app/src/main/assets/wheel.js
+          cp feedback.js app/src/main/assets/feedback.js
+          cp light-feedback.js light-feedback.css app/src/main/assets/
+          cp wheel-motion.js app/src/main/assets/wheel-motion.js
+          cp ux-locales.js app/src/main/assets/ux-locales.js
+          cp ux-polish.css app/src/main/assets/ux-polish.css
+          cp gameplay-ui.js app/src/main/assets/gameplay-ui.js
+          cp gameplay-layout.css app/src/main/assets/gameplay-layout.css
+          cp localization.js app/src/main/assets/localization.js
+          cp screens.css app/src/main/assets/screens.css
+          cp reference.css app/src/main/assets/reference.css
+          cp theme-skins.css app/src/main/assets/theme-skins.css
+          cp home-icons.css app/src/main/assets/home-icons.css
+          cp modern-panels.css app/src/main/assets/modern-panels.css
+          cp learning.css app/src/main/assets/learning.css
+          cp daily-challenge.css app/src/main/assets/daily-challenge.css
+          cp daily-challenge.js app/src/main/assets/daily-challenge.js
+          cp save-health.js app/src/main/assets/save-health.js
+          cp save-health.css app/src/main/assets/save-health.css
+          cp onboarding.js app/src/main/assets/onboarding.js
+          cp onboarding.css app/src/main/assets/onboarding.css
+          cp workshop.js app/src/main/assets/workshop.js
+          cp workshop.css app/src/main/assets/workshop.css
+          cp xp-cosmetics.js app/src/main/assets/xp-cosmetics.js
+          cp xp-cosmetics.css app/src/main/assets/xp-cosmetics.css
+          cp board-focus.js app/src/main/assets/board-focus.js
+          cp board-focus.css app/src/main/assets/board-focus.css
+          cp mechanic-quests.js app/src/main/assets/mechanic-quests.js
+          cp cloud-model.js app/src/main/assets/cloud-model.js
+          cp cloud-sync.js app/src/main/assets/cloud-sync.js
+          cp weekly-quests.js app/src/main/assets/weekly-quests.js
+          cp learning.js app/src/main/assets/learning.js
+          cp board-renderer.js app/src/main/assets/board-renderer.js
+          cp obsidian-gold.css app/src/main/assets/obsidian-gold.css
+          cp obsidian-gold.js app/src/main/assets/obsidian-gold.js
+          cp reward-receipts.js app/src/main/assets/reward-receipts.js
+          cp theme-renderer.js app/src/main/assets/theme-renderer.js
+          mkdir -p app/src/main/assets/assets
+          cp assets/kara-dugum-menu.png app/src/main/assets/assets/kara-dugum-menu.png
+          cp assets/kara-dugum-treasury.webp app/src/main/assets/assets/kara-dugum-treasury.webp
+          cp assets/kara-dugum-reference.png app/src/main/assets/assets/kara-dugum-reference.png
+          cp assets/kara-dugum-expansion.webp app/src/main/assets/assets/kara-dugum-expansion.webp
+          cp assets/kara-dugum-theme-scenes.webp app/src/main/assets/assets/kara-dugum-theme-scenes.webp
+          cp assets/kara-dugum-theme-stones.webp app/src/main/assets/assets/kara-dugum-theme-stones.webp
+          cp assets/kara-dugum-home-icons.webp app/src/main/assets/assets/kara-dugum-home-icons.webp
+          if [ -f icon.png ]; then
+            cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-xxxhdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-xxxhdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          elif [ -f android-icons/mipmap-mdpi/ic_launcher.png ]; then
+            cp android-icons/mipmap-mdpi/ic_launcher.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+          else
+            echo 'HATA: icon.png veya android-icons simgesi bulunamadi.'
+            exit 1
+          fi
+          cp AndroidManifest.xml app/src/main/AndroidManifest.xml
+          python3 - <<'PYTEST'
+          from pathlib import Path
+          p=Path('app/src/main/AndroidManifest.xml')
+          text=p.read_text().replace('android:label="KARA DÜĞÜM"', 'android:label="KARA DÜĞÜM TEST"')
+          p.write_text(text)
+          PYTEST
+          mkdir -p app/src/main/res/values
+          printf '<resources><string name="game_services_project_id">1097423047801</string></resources>\n' > app/src/main/res/values/strings.xml
+          mkdir -p app/src/androidTest/java/com/orynexa/karadugum
+          cp tests/android/WebViewRuntimeAudit.java app/src/androidTest/java/com/orynexa/karadugum/
+          cp tests/android/AndroidManifest.xml app/src/androidTest/AndroidManifest.xml
+          cat > settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories { google(); mavenCentral() }
+          }
+          rootProject.name = 'KaraDugum'
+          include ':app'
+          EOF
+          cat > build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application' version '8.13.2' apply false
+          }
+          EOF
+          cat > app/build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application'
+          }
+          def ads = new groovy.json.JsonSlurper().parse(file('kd-ads.json'))
+          android {
+            buildFeatures { buildConfig true }
+            testBuildType "release"
+            namespace 'com.orynexa.karadugum'
+            compileSdk 36
+            defaultConfig {
+              applicationId 'com.orynexa.karadugum'
+              testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+              minSdk 24
+              targetSdk 36
+              versionCode 110
+              versionName '6.50-light-visibility-test2'
+              buildConfigField 'boolean', 'ADS_TEST_MODE', String.valueOf(ads.mode == 'test')
+              buildConfigField 'String', 'REWARDED_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.rewardedUnitId)
+              buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', groovy.json.JsonOutput.toJson(ads.interstitialUnitId)
+            }
+            signingConfigs {
+              release {
+                storeFile file('karadugum.jks')
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+              }
+            }
+            buildTypes {
+              release {
+                signingConfig signingConfigs.release
+                minifyEnabled false
+              }
+            }
+          }
+          dependencies {
+            androidTestImplementation 'androidx.test:runner:1.6.2'
+            androidTestImplementation 'androidx.test:core:1.6.1'
+            androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+          }
+          apply from: rootProject.file('android-dependencies.gradle')
+          EOF
+
+      - name: Imzalama anahtarini hazirla
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for variable in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!variable:-}" ]; then
+              echo "HATA: $variable icin GitHub Secret eksik veya bos."
+              exit 1
+            fi
+          done
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          keytool -list -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" >/dev/null
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}' > /tmp/expected-cert-sha256
+          # Play Games Android OAuth credential must match the installed APK signing certificate.
+          EXPECTED_PGS_SHA1='A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A'
+          ACTUAL_PGS_SHA1=$(keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha1sum | awk '{print toupper($1)}' | sed 's/../&:/g;s/:$//')
+          echo "Play Games OAuth SHA-1: $EXPECTED_PGS_SHA1"
+          echo "APK signing SHA-1: $ACTUAL_PGS_SHA1"
+          if [ "$ACTUAL_PGS_SHA1" != "$EXPECTED_PGS_SHA1" ]; then
+            echo 'HATA: APK imza SHA-1 Play Games Android OAuth kimlik bilgisiyle eslesmiyor.'
+            exit 1
+          fi
+          echo 'Imza sertifikasi hazir.'
+
+      - name: Yalniz TEST APK derle ve lint calistir
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle --no-daemon --stacktrace :app:assembleRelease :app:lintRelease :app:assembleReleaseAndroidTest
+
+      - name: Imza ve TEST paketini dogrula
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/verify-apk-signature.sh app/build/outputs/apk/release/app-release.apk /tmp/expected-cert-sha256
+          python3 scripts/verify-test-apk.py app/build/outputs/apk/release/app-release.apk
+
+      - name: Gercek APK icindeki ogretici ve Ayarlar akisini test et
+        run: node tests/apk-tutorial-delivery-audit.cjs app/build/outputs/apk/release/app-release.apk
+
+      - name: Gercek APK icindeki marka ve isik izini test et
+        shell: bash
+        run: |
+          python3 - <<'PYASSETS'
+          import zipfile,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'poco-assets'
+          with zipfile.ZipFile('app/build/outputs/apk/release/app-release.apk') as z:
+              for name in z.namelist():
+                  if not name.startswith('assets/') or name.endswith('/'): continue
+                  p=Path(name);assert '..' not in p.parts
+                  dest=root/Path(*p.parts[1:]);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(z.read(name))
+          PYASSETS
+          node tests/brand-light-trail-audit.cjs "$RUNNER_TEMP/poco-assets"
+          KD_RUNTIME_ROOT="$RUNNER_TEMP/poco-assets" KD_POCO_REPORT="$RUNNER_TEMP/poco-apk-report" node tests/poco-runtime-audit.cjs
+          KD_RUNTIME_ROOT="$RUNNER_TEMP/poco-assets" KD_LIGHT_REPORT="$RUNNER_TEMP/light-apk-report" node tests/light-trace-audit.cjs
+          KD_RUNTIME_ROOT="$RUNNER_TEMP/poco-assets" KD_VISIBLE_REPORT="$RUNNER_TEMP/visible-apk-report" node tests/light-visible-audit.cjs
+
+      - name: Android emulatore erisim ve test APK imzasi
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        shell: bash
+        run: |
+          sudo chmod 666 /dev/kvm
+          KD_APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$KD_APKSIGNER" sign --ks app/karadugum.jks --ks-pass env:KEYSTORE_PASSWORD --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASSWORD app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+
+      - name: Gercek Android 35 WebView file origin, native Canvas, 6 tema ve acik-kapali testi
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          emulator-boot-timeout: 180
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 1536 -cores 2 -skin 720x1600 -dpi-device 320
+          script: |
+            adb shell settings put secure immersive_mode_confirmations confirmed
+            timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
+            timeout 45s adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+            adb logcat -c
+            mkdir -p dist/android-webview
+            nohup timeout 240s adb logcat -v threadtime > dist/android-webview/live-logcat.txt 2>&1 &
+            timeout 200s adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
+            mkdir -p dist/android-webview
+            timeout 30s adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
+            timeout 15s adb logcat -d > dist/android-webview/logcat.txt || true
+            free -m > dist/android-webview/host-memory.txt
+            sudo dmesg -T | tail -100 > dist/android-webview/host-kernel.txt || true
+            python3 -c "assert 'OK (2 tests)' in open('/tmp/kd-webview-instrumentation.log').read()"
+            python3 scripts/compose-theme-proof.py dist/android-webview
+            python3 scripts/verify-light-pixels.py dist/android-webview
+            python3 scripts/verify-visible-light.py dist/android-webview
+
+      - name: Tum mevcut tarayici, ses-titresim ve ogretici regresyonlari
+        run: |
+          set +e
+          npm run test:browser > "$RUNNER_TEMP/full-browser.log" 2>&1 &
+          browser_pid=$!
+          npm run test:ux > "$RUNNER_TEMP/full-ux.log" 2>&1 &
+          ux_pid=$!
+          npm run test:tutorial > "$RUNNER_TEMP/full-tutorial.log" 2>&1 &
+          tutorial_pid=$!
+          wait "$browser_pid"; browser_status=$?
+          wait "$ux_pid"; ux_status=$?
+          wait "$tutorial_pid"; tutorial_status=$?
+          cat "$RUNNER_TEMP/full-browser.log" "$RUNNER_TEMP/full-ux.log" "$RUNNER_TEMP/full-tutorial.log"
+          test "$browser_status" -eq 0 && test "$ux_status" -eq 0 && test "$tutorial_status" -eq 0
+
+      - name: TEST APK indirilebilir dosyalarini hazirla
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/tutorial-test
+          cp app/build/outputs/apk/release/app-release.apk dist/tutorial-test/KaraDugum-6.50-LIGHT-VISIBILITY-TEST2.apk
+          python3 - <<'PYTEST'
+          import hashlib,json,os
+          from pathlib import Path
+          p=Path('dist/tutorial-test/KaraDugum-6.50-LIGHT-VISIBILITY-TEST2.apk')
+          info={'versionName':'6.50-light-visibility-test2','versionCode':110,'applicationId':'com.orynexa.karadugum','commit':os.environ['GITHUB_SHA'],'adsMode':'test','sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'phoneVerified':False,'defaultRenderer':'webview-canvas-top-layer','lightDurationMs':500,'noAabBuilt':True,'noPlayUpload':True,'runtimeSourceCommit':os.environ['GITHUB_SHA'],'fullWebRegressionRun':int(os.environ['GITHUB_RUN_ID']),'fullWebRegressionSource':os.environ['GITHUB_SHA'],'baseTutorialCommit':'441d3f7199d86b7197d68571ba2357eebd717383','rewardedUnitId':'ca-app-pub-3940256099942544/5224354917','interstitialUnitId':'ca-app-pub-3940256099942544/1033173712'}
+          (p.parent/'build-info.json').write_text(json.dumps(info,indent=2))
+          PYTEST
+          cp app/build/outputs/apk/release/app-release.apk.tutorial-check.json dist/tutorial-test/apk-tutorial-check.json
+          cp "$RUNNER_TEMP/poco-apk-report/report.json" dist/tutorial-test/poco-check.json
+          cp "$RUNNER_TEMP/light-apk-report/report.json" dist/tutorial-test/light-trace-check.json
+          cp "$RUNNER_TEMP/visible-apk-report/report.json" dist/tutorial-test/visible-check.json
+          cp -r dist/android-webview dist/tutorial-test/android-webview
+          cp test-builds/light-visibility-test2-20261118/TELEFON-TESTI.txt dist/tutorial-test/
+          python3 - <<'PYNOTE'
+          from pathlib import Path
+          p=Path('dist/tutorial-test/TELEFON-TESTI.txt')
+          assert '6.50-light-visibility-test2' in p.read_text()
+          PYNOTE
+
+      - name: Yalniz TEST APK dosyalarini yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.50-LIGHT-VISIBILITY-TEST2-APK
+          path: dist/tutorial-test/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Dogrulanmis APK icin kalici indirme baglantisini hazirla
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p test-builds/light-visibility-test2-20261118
+          cp -r dist/tutorial-test/android-webview test-builds/light-visibility-test2-20261118/
+          cp dist/tutorial-test/KaraDugum-6.50-LIGHT-VISIBILITY-TEST2.apk dist/tutorial-test/build-info.json dist/tutorial-test/apk-tutorial-check.json dist/tutorial-test/poco-check.json dist/tutorial-test/light-trace-check.json dist/tutorial-test/visible-check.json dist/tutorial-test/TELEFON-TESTI.txt test-builds/light-visibility-test2-20261118/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add test-builds/light-visibility-test2-20261118/
+          git commit -m "[skip ci] Publish GOLD-500 visible TEST2 APK (phone verification pending) from $GITHUB_SHA"
+          git push origin HEAD:refs/heads/fix/light-visible-webview-20261118
+
+      - name: Basarisizlik raporlarini sakla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: light-trace-diagnostics
+          path: |
+            dist/android-webview/
+            /tmp/kd-webview-instrumentation.log
+            app/build/reports/
+            build/reports/
+            ${{ runner.temp }}/full-*.log
+          if-no-files-found: ignore

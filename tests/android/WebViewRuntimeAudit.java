@@ -81,12 +81,37 @@ public final class WebViewRuntimeAudit {
         }
         assertTrue("Real Surface PNG must exist",new File(output,name+".png").length()>1000);
     }
-    private void tap() throws Exception {
-        JSONObject r=(JSONObject)eval("(()=>{const r=document.querySelector('#board>.tile:not(.good)').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight}})()");
+    private void tap() throws Exception { tapSelector("#board>.tile:not(.good)"); }
+    private void tapSelector(String selector) throws Exception {
+        JSONObject r=(JSONObject)eval("(()=>{const e=document.querySelector("+JSONObject.quote(selector)+");e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight}})()");
         int[] location=new int[2],size=new int[2];instrumentation.runOnMainSync(()->{web.getLocationOnScreen(location);size[0]=web.getWidth();size[1]=web.getHeight();});
         float x=location[0]+(float)(r.getDouble("x")*size[0]/r.getDouble("vw")),y=location[1]+(float)(r.getDouble("y")*size[1]/r.getDouble("vh"));
         long time=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(time,time,MotionEvent.ACTION_DOWN,x,y,0),up=MotionEvent.obtain(time,time+25,MotionEvent.ACTION_UP,x,y,0);
         instrumentation.sendPointerSync(down);instrumentation.sendPointerSync(up);down.recycle();up.recycle();
+    }
+    @Test(timeout=120000) public void testVisibleWebCanvasSamePuzzle() throws Exception {
+        assertEquals("web",((JSONObject)eval("kdLightFeedback.state()")).getString("mode"));
+        eval("(()=>{kdLightFeedback.diagnostics();kdSetPaused(true);const s=document.createElement('style');s.textContent='*{animation:none!important;transition:none!important}';document.head.appendChild(s);return true})()");
+        visualFrame();
+        String before=(String)eval("(()=>{const s=kdGetLearningState();delete s.elapsed;return JSON.stringify(s)})()");
+        shot("visible-before");tapSelector("[data-light-preview]");
+        long deadline=SystemClock.uptimeMillis()+5000;JSONObject on;
+        do{on=(JSONObject)eval("kdLightFeedback.state()");if(on.getInt("htmlPaints")>0)break;SystemClock.sleep(10);}while(SystemClock.uptimeMillis()<deadline);
+        assertTrue("WebView visual frame must be acknowledged: "+on,on.getInt("htmlPaints")>0);
+        assertEquals(0,on.getInt("nativeDraws"));assertEquals(0,on.getInt("nativePaints"));
+        JSONObject paint=on.getJSONObject("paintEvidence");assertTrue(paint.getBoolean("bufferGold"));assertTrue(paint.getBoolean("topLayer"));assertEquals("HTML",paint.getString("parent"));assertEquals("1",paint.getString("opacity"));assertEquals("none",paint.getString("filter"));assertEquals("none",paint.getString("clipPath"));
+        assertFalse(on.getJSONObject("nativeInfo").getBoolean("enabled"));
+        shot("visible-on");SystemClock.sleep(650);visualFrame();shot("visible-after");
+        assertEquals(before,eval("(()=>{const s=kdGetLearningState();delete s.elapsed;return JSON.stringify(s)})()"));
+        assertTrue(Boolean.TRUE.equals(eval("!document.getElementById('kdLightCanvas')")));
+        JSONObject result=new JSONObject().put("status","PASS").put("phoneVerified",false).put("androidApi",android.os.Build.VERSION.SDK_INT).put("samePuzzleNoMove",true).put("state",on);
+        eval("(()=>{kdNavigate('settings');return true})()");tapSelector("[data-setting=\"glow\"]");
+        eval("(()=>{kdLightFeedback.diagnostics();kdSetPaused(true);return true})()");
+        int count=((JSONObject)eval("kdLightFeedback.state()")).getInt("requested");tapSelector("[data-light-preview]");SystemClock.sleep(150);
+        JSONObject off=(JSONObject)eval("kdLightFeedback.state()");assertFalse(off.getBoolean("enabled"));assertEquals(count,off.getInt("requested"));assertTrue(Boolean.TRUE.equals(eval("!document.getElementById('kdLightCanvas')")));
+        result.put("off",off).put("protectedWallet",eval("({coins:localStorage.getItem('kd64_coins'),hints:localStorage.getItem('kd64_hintCoupons')})"));
+        assertEquals("510",result.getJSONObject("protectedWallet").getString("coins"));assertEquals("7",result.getJSONObject("protectedWallet").getString("hints"));
+        try(FileOutputStream f=new FileOutputStream(new File(output,"visibility-report.json"))){f.write(result.toString(2).getBytes("UTF-8"));}
     }
     @Test(timeout=120000) public void testRealFileOriginThemesLightAndSave() throws Exception {
         final int[] delayedAlpha={0};
