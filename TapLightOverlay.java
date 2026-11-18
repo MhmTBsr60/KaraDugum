@@ -16,7 +16,7 @@ public final class TapLightOverlay extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF bounds = new RectF();
     private final Listener listener;
-    private boolean enabled, active, still, announced;
+    private boolean enabled, active, still, announced, frameQueued;
     private long start;
     private int sequence, duration;
     private final Runnable clearTask = this::clear;
@@ -37,7 +37,7 @@ public final class TapLightOverlay extends View {
         bounds.set(Math.max(0,x),Math.max(0,y),Math.min(getWidth(),x+width),Math.min(getHeight(),y+height));
         if(bounds.width()<1||bounds.height()<1)return;
         removeCallbacks(clearTask);
-        sequence=id;announced=false;still=reduced||(Build.VERSION.SDK_INT>=26&&!ValueAnimator.areAnimatorsEnabled());
+        sequence=id;announced=false;frameQueued=false;still=reduced||(Build.VERSION.SDK_INT>=26&&!ValueAnimator.areAnimatorsEnabled());
         duration=still?200:260;start=0;active=true;
         // Start visible lifetime at the first actual paint, never at a queued touch.
         invalidate();
@@ -45,8 +45,7 @@ public final class TapLightOverlay extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(!enabled||!active)return;
-        if(start==0){start=SystemClock.uptimeMillis();postDelayed(clearTask,duration);}
-        float progress=Math.min(1f,(SystemClock.uptimeMillis()-start)/(float)duration);
+        float progress=start==0?0:Math.min(1f,(SystemClock.uptimeMillis()-start)/(float)duration);
         float alpha=still?1f:progress<.25f?1f:1f-(progress-.25f)/.75f;
         float density=getResources().getDisplayMetrics().density;
         RectF r=new RectF(bounds);r.inset(density,density);
@@ -57,7 +56,20 @@ public final class TapLightOverlay extends View {
         canvas.drawRoundRect(r,5*density,5*density,paint);
         r.inset(2*density,2*density);paint.setStrokeWidth(density);
         paint.setColor(Color.argb((int)(130*alpha),255,239,181));canvas.drawRoundRect(r,4*density,4*density,paint);
-        if(!announced){announced=true;final int painted=sequence;post(()->listener.painted(painted));}
-        if(!still&&progress<1f)postInvalidateOnAnimation();
+        if(!frameQueued){
+            frameQueued=true;final int painted=sequence;
+            if(isHardwareAccelerated()&&Build.VERSION.SDK_INT>=29){
+                getViewTreeObserver().registerFrameCommitCallback(()->post(()->beginVisible(painted)));
+            }else if(isHardwareAccelerated()){
+                postOnAnimation(()->postOnAnimation(()->beginVisible(painted)));
+            }else beginVisible(painted);
+        }
+        if(!announced||!still&&progress<1f)postInvalidateOnAnimation();
+    }
+    private void beginVisible(int painted) {
+        if(!active||!enabled||sequence!=painted||announced)return;
+        announced=true;start=SystemClock.uptimeMillis();postDelayed(clearTask,duration);
+        listener.painted(painted);
+        if(!still)postInvalidateOnAnimation();
     }
 }

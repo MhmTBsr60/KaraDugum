@@ -58,7 +58,19 @@ public final class WebViewRuntimeAudit {
         assertTrue("WebView evaluateJavascript callback timeout",latch.await(3,TimeUnit.SECONDS));
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
+    private void visualFrame() throws Exception {
+        CountDownLatch frame=new CountDownLatch(1);
+        instrumentation.runOnMainSync(()->web.postVisualStateCallback(SystemClock.uptimeMillis(),new WebView.VisualStateCallback(){
+            @Override public void onComplete(long requestId){
+                web.getViewTreeObserver().registerFrameCommitCallback(frame::countDown);
+                web.invalidate();
+            }
+        }));
+        assertTrue("WebView visual state + actual frame commit timeout",frame.await(15,TimeUnit.SECONDS));
+        SystemClock.sleep(80);
+    }
     private void shot(String name) throws Exception {
+        if(name.startsWith("theme-"))visualFrame();
         // Use Android's screencap Surface path instead of emulator UiAutomation bitmap binding.
         try(android.os.ParcelFileDescriptor descriptor=instrumentation.getUiAutomation().executeShellCommand("screencap -p");
             InputStream input=new android.os.ParcelFileDescriptor.AutoCloseInputStream(descriptor);
@@ -90,9 +102,9 @@ public final class WebViewRuntimeAudit {
         JSONArray themes=new JSONArray();
         java.util.Set<String> scenes=new java.util.HashSet<>(),tones=new java.util.HashSet<>();
         for(String theme:new String[]{"gold","ice","fire","shadow","emerald","ruby"}){
-            eval("(()=>{kdNavigate('shop');const b=document.querySelector('[data-shop-theme=\""+theme+"\"]');if(!b.disabled)b.click();kdNavigate('game');kdLearning.leave();return true})()");
+            eval("(()=>{kdNavigate('shop');const b=document.querySelector('[data-shop-theme=\""+theme+"\"]');if(!b.disabled)b.click();kdNavigate('game');kdLearning.leave();kdSetPaused(true);return true})()");
             SystemClock.sleep(150);
-            JSONObject appearance=(JSONObject)eval("(()=>{const tile=document.querySelector('#board .kdSculptedPipe'),s=getComputedStyle(document.getElementById('kdGame'));return {theme:document.documentElement.dataset.kdTheme,pipe:tile.dataset.pipeTheme,scene:s.backgroundPosition,tone:getComputedStyle(tile).getPropertyValue('--pipe-tone'),stone:getComputedStyle(document.querySelector('#board>.tile:not(.good)')).backgroundImage}})()");
+            JSONObject appearance=(JSONObject)eval("(()=>{const tile=document.querySelector('#board .kdSculptedPipe'),s=getComputedStyle(document.getElementById('kdGame'));const r=document.getElementById('board').getBoundingClientRect();return {theme:document.documentElement.dataset.kdTheme,pipe:tile.dataset.pipeTheme,scene:s.backgroundPosition,viewportWidth:innerWidth,board:{x:r.left,y:r.top,width:r.width,height:r.height},tone:getComputedStyle(tile).getPropertyValue('--pipe-tone'),stone:getComputedStyle(document.querySelector('#board>.tile:not(.good)')).backgroundImage}})()");
             assertEquals(theme,appearance.getString("theme"));assertEquals(theme,appearance.getString("pipe"));
             assertEquals(state,eval("(()=>{const s=kdGetLearningState();delete s.elapsed;return JSON.stringify(s)})()"));
             scenes.add(appearance.getString("scene"));tones.add(appearance.getString("tone"));
@@ -101,7 +113,10 @@ public final class WebViewRuntimeAudit {
         assertEquals(6,scenes.size());assertEquals(6,tones.size());
         report.put("themes",themes);
         eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');return true})()");
-        SystemClock.sleep(150);int before=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();SystemClock.sleep(35);shot("native-light-on");SystemClock.sleep(350);
+        SystemClock.sleep(150);int before=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();
+        long paintDeadline=SystemClock.uptimeMillis()+5000;
+        while(SystemClock.uptimeMillis()<paintDeadline&&((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints")<=before)SystemClock.sleep(10);
+        shot("native-light-on");SystemClock.sleep(350);
         JSONObject on=(JSONObject)eval("kdLightFeedback.state()");assertTrue("Real Android touch must reach native Canvas onDraw: "+on,on.getInt("nativePaints")>before);assertTrue(on.getInt("pointer")>0);assertTrue(on.getBoolean("native"));
         shot("native-light-settled");
         eval("(()=>{document.body.classList.add('kdNoGlow');localStorage.setItem('kd5_glow','0');return true})()");SystemClock.sleep(100);int offBefore=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();SystemClock.sleep(100);
