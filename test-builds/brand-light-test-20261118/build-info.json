@@ -1,0 +1,14 @@
+{
+  "versionName": "6.50-brand-light-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "34ecf418119b5965e3a67c94ee147a3e3e6a9c39",
+  "adsMode": "test",
+  "sha256": "0c2d35d0e97a9c89b79ed4f39d51d02c44c211a585e18ff11afe2baf26e198f2",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "runtimeSourceCommit": "34ecf418119b5965e3a67c94ee147a3e3e6a9c39",
+  "baseTutorialCommit": "441d3f7199d86b7197d68571ba2357eebd717383",
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}

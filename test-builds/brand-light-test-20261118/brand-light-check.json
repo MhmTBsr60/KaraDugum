@@ -1,0 +1,142 @@
+{
+  "scope": "Actual APK assets in mobile Chromium; not physical Android WebView",
+  "errors": [],
+  "scenes": [
+    {
+      "spec": {
+        "motion": "reduce"
+      },
+      "level": 11,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "motion": "reduce"
+      },
+      "level": 53,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "motion": "reduce"
+      },
+      "level": 91,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "motion": "reduce"
+      },
+      "level": 151,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "limited": true
+      },
+      "level": 11,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "limited": true
+      },
+      "level": 53,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "limited": true
+      },
+      "level": 91,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "limited": true
+      },
+      "level": 151,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "legacy": true
+      },
+      "level": 11,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "legacy": true
+      },
+      "level": 53,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "legacy": true
+      },
+      "level": 91,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "legacy": true
+      },
+      "level": 151,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "width": 320
+      },
+      "level": 11,
+      "animations": 1
+    },
+    {
+      "spec": {
+        "width": 320
+      },
+      "level": 53,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "width": 320
+      },
+      "level": 91,
+      "animations": 0
+    },
+    {
+      "spec": {
+        "width": 320
+      },
+      "level": 151,
+      "animations": 0
+    },
+    {
+      "spec": {},
+      "level": 11,
+      "animations": 1
+    },
+    {
+      "spec": {},
+      "level": 53,
+      "animations": 1
+    },
+    {
+      "spec": {},
+      "level": 91,
+      "animations": 0
+    },
+    {
+      "spec": {},
+      "level": 151,
+      "animations": 0
+    }
+  ],
+  "brand": true,
+  "visiblePixels": true,
+  "preferencePersisted": true,
+  "protectedSources": true
+}
