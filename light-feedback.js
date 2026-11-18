@@ -1,6 +1,6 @@
 /* TEST light trace: input, preference, queue, Canvas and frame evidence are separate.
  * No puzzle, wallet, audio or save mutation. Submitted frames are NOT phone verification. */
-(()=>{'use strict';if(window.kdPipeFlow)return;
+(()=>{'use strict';if(window.kdPipeFlow||document.querySelector('script[src="pipe-flow.js"]'))return;
  const board=document.getElementById('board'),game=document.getElementById('kdGame');if(!board||!game)return;
  const TEST='GOLD-500 / visibility-test2',DURATION=500,ACK_WAIT=160;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),limited=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;

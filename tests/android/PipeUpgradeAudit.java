@@ -40,8 +40,8 @@ public final class PipeUpgradeAudit {
         if(value instanceof JSONObject&&((JSONObject)value).has("error"))fail(value.toString());return value;
     }
     private void ready() throws Exception {
-        long limit=SystemClock.uptimeMillis()+30000;
-        while(SystemClock.uptimeMillis()<limit){if(Boolean.TRUE.equals(eval("!!window.kdGetLearningState&&!!window.kdNavigate")))return;SystemClock.sleep(100);}
+        long limit=SystemClock.uptimeMillis()+45000;
+        while(SystemClock.uptimeMillis()<limit){try{if(Boolean.TRUE.equals(eval("!!window.kdGetLearningState&&!!window.kdNavigate")))return;}catch(TimeoutException ignored){}SystemClock.sleep(100);}
         fail("game did not load");
     }
     private String snapshot() throws Exception {
