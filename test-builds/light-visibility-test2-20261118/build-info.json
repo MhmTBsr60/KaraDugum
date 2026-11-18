@@ -1,0 +1,19 @@
+{
+  "versionName": "6.50-light-visibility-test2",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "672ef6adbb84378ca5a29aba2d0c8b40fa47058a",
+  "adsMode": "test",
+  "sha256": "33987d38f82969aef4639bdfc8edb4ff5273e4354ff8d0148adbcc18f55b2963",
+  "phoneVerified": false,
+  "defaultRenderer": "webview-canvas-top-layer",
+  "lightDurationMs": 500,
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "runtimeSourceCommit": "672ef6adbb84378ca5a29aba2d0c8b40fa47058a",
+  "fullWebRegressionRun": 44275123648,
+  "fullWebRegressionSource": "672ef6adbb84378ca5a29aba2d0c8b40fa47058a",
+  "baseTutorialCommit": "441d3f7199d86b7197d68571ba2357eebd717383",
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}

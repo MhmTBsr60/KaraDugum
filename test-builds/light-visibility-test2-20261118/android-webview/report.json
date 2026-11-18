@@ -1,0 +1,787 @@
+{
+  "fileOrigin": "file:///android_asset/index.html",
+  "androidApi": 35,
+  "webview": "124.0.6367.219",
+  "themes": [
+    {
+      "theme": "gold",
+      "pipe": "gold",
+      "scene": "50% 50%, 0% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#dfb56d",
+      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    },
+    {
+      "theme": "ice",
+      "pipe": "ice",
+      "scene": "50% 50%, 50% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#8cbedc",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    },
+    {
+      "theme": "fire",
+      "pipe": "fire",
+      "scene": "50% 50%, 100% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#e0aa5e",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    },
+    {
+      "theme": "shadow",
+      "pipe": "shadow",
+      "scene": "50% 50%, 0% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#ba9be5",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    },
+    {
+      "theme": "emerald",
+      "pipe": "emerald",
+      "scene": "50% 50%, 50% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#83ddb0",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    },
+    {
+      "theme": "ruby",
+      "pipe": "ruby",
+      "scene": "50% 50%, 100% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
+      "tone": "#f18d7b",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
+    }
+  ],
+  "lightGeometry": {
+    "tile": "0",
+    "x": 15.222500801086426,
+    "y": 235.79393005371094,
+    "width": 45.019287109375,
+    "height": 45.0192985534668,
+    "viewportWidth": 275,
+    "viewportHeight": 610,
+    "visualScale": 1,
+    "visualOffsetX": 0,
+    "visualOffsetY": 0
+  },
+  "lightNativeInfo": {
+    "build": "6.50-light-visibility-test2",
+    "uptimeMs": 63012,
+    "model": "Android SDK built for x86_64",
+    "android": 35,
+    "webview": "124.0.6367.219",
+    "phase": "cleared_elapsed_500ms",
+    "visibleSinceMs": 62512,
+    "enabled": true,
+    "foreground": true,
+    "focus": true,
+    "visible": true,
+    "width": 720,
+    "height": 1600
+  },
+  "nativeVisibleHoldMs": 500,
+  "forcedNativeRejectionFallback": {
+    "pointer": 3,
+    "click": 3,
+    "requested": 2,
+    "nativeDraws": 1,
+    "nativePaints": 1,
+    "htmlPaints": 1,
+    "skipped": 1,
+    "last": 2,
+    "route": "WEBVIEW Canvas TOP",
+    "phase": "native_html_presented",
+    "reason": "",
+    "nativeInfo": {
+      "build": "6.50-light-visibility-test2",
+      "uptimeMs": 65948,
+      "model": "Android SDK built for x86_64",
+      "android": 35,
+      "webview": "124.0.6367.219",
+      "phase": "html_presented",
+      "visibleSinceMs": 62512,
+      "enabled": false,
+      "foreground": true,
+      "focus": true,
+      "visible": true,
+      "width": 720,
+      "height": 1600
+    },
+    "fallbackReason": "rejected_disabled",
+    "lastNativeFailure": "rejected_disabled",
+    "geometry": {
+      "tile": "0",
+      "x": 15.222500801086426,
+      "y": 235.79393005371094,
+      "width": 45.019287109375,
+      "height": 45.0192985534668,
+      "viewportWidth": 275,
+      "viewportHeight": 610,
+      "visualScale": 1,
+      "visualOffsetX": 0,
+      "visualOffsetY": 0
+    },
+    "paintEvidence": {
+      "renderer": "Canvas2D",
+      "parent": "HTML",
+      "topLayer": true,
+      "bufferGold": true,
+      "bufferSample": [
+        255,
+        212,
+        59,
+        255
+      ],
+      "opacity": "1",
+      "visibility": "visible",
+      "filter": "none",
+      "clipPath": "none",
+      "mixBlend": "normal",
+      "cssWidth": 45.019287109375,
+      "cssHeight": 45.0192985534668,
+      "backingWidth": 91,
+      "backingHeight": 91
+    },
+    "enabled": true,
+    "preference": {
+      "stored": "1",
+      "applied": true,
+      "matches": true
+    },
+    "native": true,
+    "reduced": false,
+    "limited": true,
+    "mode": "auto",
+    "duration": 500,
+    "active": 2,
+    "history": [
+      {
+        "ms": 12342,
+        "sequence": 1,
+        "phase": "requested",
+        "detail": "tap; 500ms; 45px",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12345,
+        "sequence": 1,
+        "phase": "native_requested",
+        "detail": "awaiting acknowledgement",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_queued",
+        "detail": "",
+        "nativeMs": 61608,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_accepted",
+        "detail": "",
+        "nativeMs": 61612,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12362,
+        "sequence": 1,
+        "phase": "native_drawn",
+        "detail": "",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12514,
+        "sequence": 1,
+        "phase": "native_timeout",
+        "detail": "no frame acknowledgement in 160ms",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13257,
+        "sequence": 1,
+        "phase": "native_presented",
+        "detail": "",
+        "nativeMs": 62512,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13757,
+        "sequence": 1,
+        "phase": "native_cleared_elapsed_500ms",
+        "detail": "",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13758,
+        "sequence": 1,
+        "phase": "cancel",
+        "detail": "elapsed_500ms",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14776,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14896,
+        "sequence": 0,
+        "phase": "pointer",
+        "detail": "touch",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14901,
+        "sequence": 0,
+        "phase": "click",
+        "detail": "",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14901,
+        "sequence": 0,
+        "phase": "blocked",
+        "detail": "setting_off",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15649,
+        "sequence": 0,
+        "phase": "mode",
+        "detail": "auto",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15652,
+        "sequence": 0,
+        "phase": "native_enabled",
+        "detail": "",
+        "nativeMs": 64903,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15916,
+        "sequence": 0,
+        "phase": "pointer",
+        "detail": "touch",
+        "nativeMs": 64903,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15920,
+        "sequence": 0,
+        "phase": "click",
+        "detail": "",
+        "nativeMs": 64903,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15921,
+        "sequence": 2,
+        "phase": "requested",
+        "detail": "tap; 500ms; 45px",
+        "nativeMs": 64903,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15922,
+        "sequence": 2,
+        "phase": "native_requested",
+        "detail": "awaiting acknowledgement",
+        "nativeMs": 64903,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15934,
+        "sequence": 2,
+        "phase": "native_queued",
+        "detail": "",
+        "nativeMs": 65184,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15934,
+        "sequence": 2,
+        "phase": "native_rejected_disabled",
+        "detail": "",
+        "nativeMs": 65184,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15936,
+        "sequence": 2,
+        "phase": "html_attached",
+        "detail": "rejected_disabled",
+        "nativeMs": 65184,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 15941,
+        "sequence": 2,
+        "phase": "html_waiting_commit",
+        "detail": "rejected_disabled",
+        "nativeMs": 65184,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 16695,
+        "sequence": 2,
+        "phase": "native_html_presented",
+        "detail": "",
+        "nativeMs": 65948,
+        "nativeStartedMs": 62512
+      }
+    ]
+  },
+  "phoneVerified": false,
+  "lightOn": {
+    "pointer": 1,
+    "click": 1,
+    "requested": 1,
+    "nativeDraws": 1,
+    "nativePaints": 1,
+    "htmlPaints": 0,
+    "skipped": 0,
+    "last": 1,
+    "route": "Android frame",
+    "phase": "cancel",
+    "reason": "elapsed_500ms",
+    "nativeInfo": {
+      "build": "6.50-light-visibility-test2",
+      "uptimeMs": 63012,
+      "model": "Android SDK built for x86_64",
+      "android": 35,
+      "webview": "124.0.6367.219",
+      "phase": "cleared_elapsed_500ms",
+      "visibleSinceMs": 62512,
+      "enabled": true,
+      "foreground": true,
+      "focus": true,
+      "visible": true,
+      "width": 720,
+      "height": 1600
+    },
+    "fallbackReason": "",
+    "lastNativeFailure": "native_timeout",
+    "geometry": {
+      "tile": "0",
+      "x": 15.222500801086426,
+      "y": 235.79393005371094,
+      "width": 45.019287109375,
+      "height": 45.0192985534668,
+      "viewportWidth": 275,
+      "viewportHeight": 610,
+      "visualScale": 1,
+      "visualOffsetX": 0,
+      "visualOffsetY": 0
+    },
+    "enabled": true,
+    "preference": {
+      "stored": "1",
+      "applied": true,
+      "matches": true
+    },
+    "native": true,
+    "reduced": false,
+    "limited": true,
+    "mode": "native",
+    "duration": 500,
+    "active": 0,
+    "history": [
+      {
+        "ms": 1220,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 50476,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 11863,
+        "sequence": 0,
+        "phase": "mode",
+        "detail": "native",
+        "nativeMs": 50476,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 11872,
+        "sequence": 0,
+        "phase": "native_enabled",
+        "detail": "",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12319,
+        "sequence": 0,
+        "phase": "pointer",
+        "detail": "touch",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12338,
+        "sequence": 0,
+        "phase": "click",
+        "detail": "",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12342,
+        "sequence": 1,
+        "phase": "requested",
+        "detail": "tap; 500ms; 45px",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12345,
+        "sequence": 1,
+        "phase": "native_requested",
+        "detail": "awaiting acknowledgement",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_queued",
+        "detail": "",
+        "nativeMs": 61608,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_accepted",
+        "detail": "",
+        "nativeMs": 61612,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12362,
+        "sequence": 1,
+        "phase": "native_drawn",
+        "detail": "",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12514,
+        "sequence": 1,
+        "phase": "native_timeout",
+        "detail": "no frame acknowledgement in 160ms",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13257,
+        "sequence": 1,
+        "phase": "native_presented",
+        "detail": "",
+        "nativeMs": 62512,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13757,
+        "sequence": 1,
+        "phase": "native_cleared_elapsed_500ms",
+        "detail": "",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13758,
+        "sequence": 1,
+        "phase": "cancel",
+        "detail": "elapsed_500ms",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      }
+    ]
+  },
+  "lightOff": {
+    "pointer": 2,
+    "click": 2,
+    "requested": 1,
+    "nativeDraws": 1,
+    "nativePaints": 1,
+    "htmlPaints": 0,
+    "skipped": 1,
+    "last": 1,
+    "route": "Android frame",
+    "phase": "blocked",
+    "reason": "setting_off",
+    "nativeInfo": {
+      "build": "6.50-light-visibility-test2",
+      "uptimeMs": 64028,
+      "model": "Android SDK built for x86_64",
+      "android": 35,
+      "webview": "124.0.6367.219",
+      "phase": "disabled",
+      "visibleSinceMs": 62512,
+      "enabled": false,
+      "foreground": true,
+      "focus": true,
+      "visible": true,
+      "width": 720,
+      "height": 1600
+    },
+    "fallbackReason": "",
+    "lastNativeFailure": "native_timeout",
+    "geometry": {
+      "tile": "0",
+      "x": 15.222500801086426,
+      "y": 235.79393005371094,
+      "width": 45.019287109375,
+      "height": 45.0192985534668,
+      "viewportWidth": 275,
+      "viewportHeight": 610,
+      "visualScale": 1,
+      "visualOffsetX": 0,
+      "visualOffsetY": 0
+    },
+    "enabled": false,
+    "preference": {
+      "stored": "0",
+      "applied": false,
+      "matches": true
+    },
+    "native": true,
+    "reduced": false,
+    "limited": true,
+    "mode": "native",
+    "duration": 500,
+    "active": 0,
+    "history": [
+      {
+        "ms": 1220,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 50476,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 11863,
+        "sequence": 0,
+        "phase": "mode",
+        "detail": "native",
+        "nativeMs": 50476,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 11872,
+        "sequence": 0,
+        "phase": "native_enabled",
+        "detail": "",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12319,
+        "sequence": 0,
+        "phase": "pointer",
+        "detail": "touch",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12338,
+        "sequence": 0,
+        "phase": "click",
+        "detail": "",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12342,
+        "sequence": 1,
+        "phase": "requested",
+        "detail": "tap; 500ms; 45px",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12345,
+        "sequence": 1,
+        "phase": "native_requested",
+        "detail": "awaiting acknowledgement",
+        "nativeMs": 61119,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_queued",
+        "detail": "",
+        "nativeMs": 61608,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12361,
+        "sequence": 1,
+        "phase": "native_accepted",
+        "detail": "",
+        "nativeMs": 61612,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12362,
+        "sequence": 1,
+        "phase": "native_drawn",
+        "detail": "",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 12514,
+        "sequence": 1,
+        "phase": "native_timeout",
+        "detail": "no frame acknowledgement in 160ms",
+        "nativeMs": 61613,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13257,
+        "sequence": 1,
+        "phase": "native_presented",
+        "detail": "",
+        "nativeMs": 62512,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13757,
+        "sequence": 1,
+        "phase": "native_cleared_elapsed_500ms",
+        "detail": "",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 13758,
+        "sequence": 1,
+        "phase": "cancel",
+        "detail": "elapsed_500ms",
+        "nativeMs": 63012,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14776,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14896,
+        "sequence": 0,
+        "phase": "pointer",
+        "detail": "touch",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14901,
+        "sequence": 0,
+        "phase": "click",
+        "detail": "",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      },
+      {
+        "ms": 14901,
+        "sequence": 0,
+        "phase": "blocked",
+        "detail": "setting_off",
+        "nativeMs": 64028,
+        "nativeStartedMs": 62512
+      }
+    ]
+  },
+  "protectedWallet": {
+    "coins": "510",
+    "hints": "7"
+  },
+  "delayedFirstNativePaintVisible": true,
+  "status": "PASS",
+  "sixDistinctBoardPixelHashes": [
+    "6c22792bbd820dffb844d0214f0150825c78a135d451e5340d597be2a89e5463",
+    "54f9812a877b5dbb58ea51147847372c4e6f2ec9db1d9e43a47acc1a715f9ca8",
+    "0780db39fbdbf39e045ce6c6f7d3562cc2ede259385c12e909800032397e661f",
+    "d24337a8c9cee13401cec9a8539e79b6e771909ae9ae64020bc3b868fee6901f",
+    "2803ee02d8efd5fde0e496e612fe7680654ad65103955443f8f7e921970089b1",
+    "a7e74360ebe0df015cf2da814e251173e484e61965f11816a9b14ab53100ca56"
+  ],
+  "visualStateAndFrameCommitSynchronized": true,
+  "htmlLightPixels": {
+    "changedFractionAtFirstCapturedFrame": 0.9090778511921862,
+    "phoneVerified": false
+  },
+  "lightPixels": {
+    "rect": [
+      40,
+      617,
+      158,
+      735
+    ],
+    "changedFractionAtFirstCapturedFrame": 0.9381643205975294,
+    "observedOn": "Android emulator Surface screenshots",
+    "phoneVerified": false
+  }
+}

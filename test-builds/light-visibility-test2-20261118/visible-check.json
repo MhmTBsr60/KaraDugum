@@ -1,0 +1,164 @@
+{
+  "status": "PASS",
+  "physicalPhoneVerified": false,
+  "scope": "Chromium pixel screenshots; real Android Surface test is separate",
+  "cases": [
+    {
+      "spec": {
+        "width": 393,
+        "height": 873
+      },
+      "stress": false,
+      "positive": {
+        "changedFraction": 0.9227308294209703,
+        "addedGoldFraction": 0.43114241001564946,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    },
+    {
+      "spec": {
+        "width": 393,
+        "height": 873
+      },
+      "stress": true,
+      "positive": {
+        "changedFraction": 0.9313380281690141,
+        "addedGoldFraction": 0.20344287949921752,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    },
+    {
+      "spec": {
+        "width": 320,
+        "height": 568
+      },
+      "stress": false,
+      "positive": {
+        "changedFraction": 0.8709823449524672,
+        "addedGoldFraction": 0.469895880488909,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    },
+    {
+      "spec": {
+        "width": 320,
+        "height": 568
+      },
+      "stress": true,
+      "positive": {
+        "changedFraction": 0.8764146672702581,
+        "addedGoldFraction": 0.2915346310547759,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    },
+    {
+      "spec": {
+        "width": 844,
+        "height": 390
+      },
+      "stress": false,
+      "positive": {
+        "changedFraction": 0.8914105142200517,
+        "addedGoldFraction": 0.4521689169778799,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    },
+    {
+      "spec": {
+        "width": 844,
+        "height": 390
+      },
+      "stress": true,
+      "positive": {
+        "changedFraction": 0.9008905486929043,
+        "addedGoldFraction": 0.2482045389255961,
+        "unrestoredFraction": 0,
+        "visible": true,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "negative": {
+        "changedFraction": 0,
+        "addedGoldFraction": 0,
+        "unrestoredFraction": 0,
+        "visible": false,
+        "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+      },
+      "defaultWebview": true,
+      "nativeDisabled": true,
+      "sameState": true,
+      "topLayer": true,
+      "off": true
+    }
+  ],
+  "errors": []
+}

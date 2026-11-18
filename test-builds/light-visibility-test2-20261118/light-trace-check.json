@@ -1,0 +1,178 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "protectedRuntime": true,
+  "cases": [
+    {
+      "file": false,
+      "bridge": "silent",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_timeout",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "file": false,
+      "bridge": "presented",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_queued",
+        "native_drawn",
+        "native_presented"
+      ]
+    },
+    {
+      "file": false,
+      "bridge": "rejected",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_rejected_focus",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "file": false,
+      "bridge": "none",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "file": true,
+      "bridge": "silent",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_timeout",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "file": true,
+      "bridge": "presented",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_queued",
+        "native_drawn",
+        "native_presented"
+      ]
+    },
+    {
+      "file": true,
+      "bridge": "rejected",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "native_requested",
+        "native_rejected_focus",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "file": true,
+      "bridge": "none",
+      "on": true,
+      "off": true,
+      "previewPreservesState": true,
+      "phases": [
+        "mode",
+        "mode",
+        "pointer",
+        "click",
+        "requested",
+        "html_attached",
+        "html_browser_frame"
+      ]
+    },
+    {
+      "webFrame": "delayed",
+      "committedFrameBeforeSuccess": true
+    },
+    {
+      "webFrame": "missing",
+      "committedFrameBeforeSuccess": true
+    },
+    {
+      "webFrame": "rejected",
+      "committedFrameBeforeSuccess": true
+    }
+  ],
+  "errors": [],
+  "oldSilentAcceptanceReproduced": {
+    "state": {
+      "pointer": 1,
+      "click": 1,
+      "requested": 1,
+      "nativePaints": 0,
+      "htmlPaints": 0,
+      "skipped": 0,
+      "last": 1,
+      "route": "Android",
+      "enabled": true,
+      "native": true,
+      "reduced": false,
+      "limited": false
+    },
+    "visible": false
+  },
+  "oldHtmlGoneAt450ms": true
+}

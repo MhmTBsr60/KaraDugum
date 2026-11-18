@@ -1,0 +1,283 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "androidApi": 35,
+  "samePuzzleNoMove": true,
+  "state": {
+    "pointer": 0,
+    "click": 0,
+    "requested": 1,
+    "nativeDraws": 0,
+    "nativePaints": 0,
+    "htmlPaints": 1,
+    "skipped": 0,
+    "last": 1,
+    "route": "WEBVIEW Canvas TOP",
+    "phase": "native_html_presented",
+    "reason": "",
+    "nativeInfo": {
+      "build": "6.50-light-visibility-test2",
+      "uptimeMs": 45172,
+      "model": "Android SDK built for x86_64",
+      "android": 35,
+      "webview": "124.0.6367.219",
+      "phase": "html_presented",
+      "visibleSinceMs": 0,
+      "enabled": false,
+      "foreground": true,
+      "focus": true,
+      "visible": true,
+      "width": 720,
+      "height": 1600
+    },
+    "fallbackReason": "forced_webview",
+    "lastNativeFailure": "",
+    "geometry": {
+      "tile": "0",
+      "x": 13.785714149475098,
+      "y": 273.8690490722656,
+      "width": 47.89285659790039,
+      "height": 47.89285659790039,
+      "viewportWidth": 275,
+      "viewportHeight": 610,
+      "visualScale": 1,
+      "visualOffsetX": 0,
+      "visualOffsetY": 0
+    },
+    "paintEvidence": {
+      "renderer": "Canvas2D",
+      "parent": "HTML",
+      "topLayer": true,
+      "bufferGold": true,
+      "bufferSample": [
+        255,
+        212,
+        59,
+        255
+      ],
+      "opacity": "1",
+      "visibility": "visible",
+      "filter": "none",
+      "clipPath": "none",
+      "mixBlend": "normal",
+      "cssWidth": 47.89285659790039,
+      "cssHeight": 47.89285659790039,
+      "backingWidth": 96,
+      "backingHeight": 96
+    },
+    "enabled": true,
+    "preference": {
+      "stored": "default:on",
+      "applied": true,
+      "matches": true
+    },
+    "native": true,
+    "reduced": false,
+    "limited": true,
+    "mode": "web",
+    "duration": 500,
+    "active": 1,
+    "history": [
+      {
+        "ms": 3308,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13201,
+        "sequence": 1,
+        "phase": "requested",
+        "detail": "preview_no_move; 500ms; 48px",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13213,
+        "sequence": 1,
+        "phase": "html_attached",
+        "detail": "forced_webview",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13221,
+        "sequence": 1,
+        "phase": "html_waiting_commit",
+        "detail": "forced_webview",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13333,
+        "sequence": 1,
+        "phase": "native_html_presented",
+        "detail": "",
+        "nativeMs": 45172,
+        "nativeStartedMs": 0
+      }
+    ]
+  },
+  "off": {
+    "pointer": 0,
+    "click": 0,
+    "requested": 1,
+    "nativeDraws": 0,
+    "nativePaints": 0,
+    "htmlPaints": 1,
+    "skipped": 1,
+    "last": 1,
+    "route": "WEBVIEW Canvas TOP",
+    "phase": "blocked",
+    "reason": "setting_off",
+    "nativeInfo": {
+      "build": "6.50-light-visibility-test2",
+      "uptimeMs": 45172,
+      "model": "Android SDK built for x86_64",
+      "android": 35,
+      "webview": "124.0.6367.219",
+      "phase": "html_presented",
+      "visibleSinceMs": 0,
+      "enabled": false,
+      "foreground": true,
+      "focus": true,
+      "visible": true,
+      "width": 720,
+      "height": 1600
+    },
+    "fallbackReason": "forced_webview",
+    "lastNativeFailure": "",
+    "geometry": {
+      "tile": "0",
+      "x": 13.785714149475098,
+      "y": 273.8690490722656,
+      "width": 47.89285659790039,
+      "height": 47.89285659790039,
+      "viewportWidth": 275,
+      "viewportHeight": 610,
+      "visualScale": 1,
+      "visualOffsetX": 0,
+      "visualOffsetY": 0
+    },
+    "paintEvidence": {
+      "renderer": "Canvas2D",
+      "parent": "HTML",
+      "topLayer": true,
+      "bufferGold": true,
+      "bufferSample": [
+        255,
+        212,
+        59,
+        255
+      ],
+      "opacity": "1",
+      "visibility": "visible",
+      "filter": "none",
+      "clipPath": "none",
+      "mixBlend": "normal",
+      "cssWidth": 47.89285659790039,
+      "cssHeight": 47.89285659790039,
+      "backingWidth": 96,
+      "backingHeight": 96
+    },
+    "enabled": false,
+    "preference": {
+      "stored": "0",
+      "applied": false,
+      "matches": true
+    },
+    "native": true,
+    "reduced": false,
+    "limited": true,
+    "mode": "web",
+    "duration": 500,
+    "active": 0,
+    "history": [
+      {
+        "ms": 3308,
+        "sequence": 0,
+        "phase": "native_disabled",
+        "detail": "",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13201,
+        "sequence": 1,
+        "phase": "requested",
+        "detail": "preview_no_move; 500ms; 48px",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13213,
+        "sequence": 1,
+        "phase": "html_attached",
+        "detail": "forced_webview",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13221,
+        "sequence": 1,
+        "phase": "html_waiting_commit",
+        "detail": "forced_webview",
+        "nativeMs": 35144,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13333,
+        "sequence": 1,
+        "phase": "native_html_presented",
+        "detail": "",
+        "nativeMs": 45172,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 13834,
+        "sequence": 1,
+        "phase": "cancel",
+        "detail": "elapsed_500ms",
+        "nativeMs": 45172,
+        "nativeStartedMs": 0
+      },
+      {
+        "ms": 15513,
+        "sequence": 0,
+        "phase": "blocked",
+        "detail": "setting_off",
+        "nativeMs": 45172,
+        "nativeStartedMs": 0
+      }
+    ]
+  },
+  "protectedWallet": {
+    "coins": "510",
+    "hints": "7"
+  },
+  "pixelEvidence": {
+    "positive": {
+      "changedFraction": 0.930304,
+      "addedGoldFraction": 0.419072,
+      "unrestoredFraction": 0.0,
+      "visible": true,
+      "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+    },
+    "negativeControl": {
+      "changedFraction": 0.0,
+      "addedGoldFraction": 0.0,
+      "unrestoredFraction": 0.0,
+      "visible": false,
+      "method": "same puzzle; added gold + contrast + restoration, not callback counts"
+    },
+    "rect": [
+      36,
+      717,
+      161,
+      842
+    ],
+    "device": "Android emulator Surface PNG, not a physical POCO"
+  }
+}

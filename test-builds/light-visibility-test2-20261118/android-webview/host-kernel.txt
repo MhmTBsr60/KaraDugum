@@ -1,0 +1,100 @@
+[Wed Nov 18 09:19:59 2026] systemd[1]: Expecting device dev-disk-by\x2dlabel-UEFI.device - /dev/disk/by-label/UEFI...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Expecting device dev-ttyS0.device - /dev/ttyS0...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target integritysetup.target - Local Integrity Protected Volumes.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target slices.target - Slice Units.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target snapd.mounts-pre.target - Mounting snaps.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target swap.target - Swaps.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target time-set.target - System Time Set.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Reached target veritysetup.target - Local Verity Protected Volumes.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on dm-event.socket - Device-mapper event daemon FIFOs.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on lvm2-lvmpolld.socket - LVM2 poll daemon socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on multipathd.socket - multipathd control socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on syslog.socket - Syslog Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-coredump.socket - Process Core Dump Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-fsckd.socket - fsck to fsckd communication Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-initctl.socket - initctl Compatibility Named Pipe.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-journald-dev-log.socket - Journal Socket (/dev/log).
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-journald.socket - Journal Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-networkd.socket - Network Service Netlink Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: systemd-pcrextend.socket - TPM2 PCR Extension (Varlink) was skipped because of an unmet condition check (ConditionSecurity=measured-uki).
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-udevd-control.socket - udev Control Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Listening on systemd-udevd-kernel.socket - udev Kernel Socket.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Mounting dev-hugepages.mount - Huge Pages File System...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Mounting dev-mqueue.mount - POSIX Message Queue File System...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Mounting sys-kernel-debug.mount - Kernel Debug File System...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Mounting sys-kernel-tracing.mount - Kernel Trace File System...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting systemd-journald.service - Journal Service...
+[Wed Nov 18 09:19:59 2026] systemd-journald[465]: Collecting audit messages is disabled.
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting keyboard-setup.service - Set the console keyboard layout...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting kmod-static-nodes.service - Create List of Static Device Nodes...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting lvm2-monitor.service - Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@configfs.service - Load Kernel Module configfs...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@dm_mod.service - Load Kernel Module dm_mod...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@drm.service - Load Kernel Module drm...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@efi_pstore.service - Load Kernel Module efi_pstore...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@fuse.service - Load Kernel Module fuse...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting modprobe@loop.service - Load Kernel Module loop...
+[Wed Nov 18 09:19:59 2026] pstore: Using crash dump compression: deflate
+[Wed Nov 18 09:19:59 2026] systemd[1]: netplan-ovs-cleanup.service - OpenVSwitch configuration for cleanup was skipped because of an unmet condition check (ConditionFileIsExecutable=/usr/bin/ovs-vsctl).
+[Wed Nov 18 09:19:59 2026] systemd[1]: systemd-fsck-root.service - File System Check on Root Device was skipped because of an unmet condition check (ConditionPathExists=!/run/initramfs/fsck-root).
+[Wed Nov 18 09:19:59 2026] pstore: Registered efi_pstore as persistent store backend
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting systemd-modules-load.service - Load Kernel Modules...
+[Wed Nov 18 09:19:59 2026] systemd[1]: systemd-pcrmachine.service - TPM2 PCR Machine ID Measurement was skipped because of an unmet condition check (ConditionSecurity=measured-uki).
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting systemd-remount-fs.service - Remount Root and Kernel File Systems...
+[Wed Nov 18 09:19:59 2026] systemd[1]: systemd-tpm2-setup-early.service - TPM2 SRK Setup (Early) was skipped because of an unmet condition check (ConditionSecurity=measured-uki).
+[Wed Nov 18 09:19:59 2026] systemd[1]: Starting systemd-udev-trigger.service - Coldplug All udev Devices...
+[Wed Nov 18 09:19:59 2026] systemd[1]: Started systemd-journald.service - Journal Service.
+[Wed Nov 18 09:19:59 2026] EXT4-fs (dm-0): re-mounted 7bbbc619-f44a-4d70-9514-033a92baf17e r/w.
+[Wed Nov 18 09:19:59 2026] systemd-journald[465]: Received client request to flush runtime journal.
+[Wed Nov 18 09:19:59 2026] systemd-journald[465]: /var/log/journal/ec2cde4264f461b4d3e83fce63d0b813/system.journal: Journal file uses a different sequence number ID, rotating.
+[Wed Nov 18 09:19:59 2026] systemd-journald[465]: Rotating system journal.
+[Wed Nov 18 09:20:00 2026] vmclock AMZNC10C:00: vmclock0: registered miscdev
+[Wed Nov 18 09:20:00 2026] parport_pc 00:03: reported by Plug and Play ACPI
+[Wed Nov 18 09:20:00 2026] nvme nvme0: using unchecked data buffer
+[Wed Nov 18 09:20:00 2026] ppdev: user-space parallel port driver
+[Wed Nov 18 09:20:00 2026] loop0: detected capacity change from 0 to 151600
+[Wed Nov 18 09:20:00 2026] piix4_smbus 0000:00:01.3: SMBus base address uninitialized - upgrade BIOS or use force_addr=0xaddr
+[Wed Nov 18 09:20:00 2026] loop1: detected capacity change from 0 to 66584
+[Wed Nov 18 09:20:00 2026] intel_powerclamp: No package C-state available
+[Wed Nov 18 09:20:00 2026] EXT4-fs (nvme0n1p16): Supports (experimental) DIO atomic writes awu_min: 4096, awu_max: 4096
+[Wed Nov 18 09:20:00 2026] EXT4-fs (nvme0n1p16): mounted filesystem 66e0ce68-527d-4508-af75-1cb17f46135a r/w with ordered data mode. Quota mode: none.
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.367:2): apparmor="STATUS" operation="profile_load" profile="unconfined" name="QtWebEngineProcess" pid=677 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.368:3): apparmor="STATUS" operation="profile_load" profile="unconfined" name="1password" pid=674 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.368:4): apparmor="STATUS" operation="profile_load" profile="unconfined" name=4D6F6E676F444220436F6D70617373 pid=676 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.368:5): apparmor="STATUS" operation="profile_load" profile="unconfined" name="Discord" pid=675 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.369:6): apparmor="STATUS" operation="profile_load" profile="unconfined" name="brave" pid=679 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.369:7): apparmor="STATUS" operation="profile_load" profile="unconfined" name="buildah" pid=680 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.369:8): apparmor="STATUS" operation="profile_load" profile="unconfined" name="cam" pid=681 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.371:9): apparmor="STATUS" operation="profile_load" profile="unconfined" name="ch-checkns" pid=682 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.371:10): apparmor="STATUS" operation="profile_load" profile="unconfined" name="ch-run" pid=683 comm="apparmor_parser"
+[Wed Nov 18 09:20:00 2026] audit: type=1400 audit(1794993599.371:11): apparmor="STATUS" operation="profile_load" profile="unconfined" name="chrome" pid=684 comm="apparmor_parser"
+[Wed Nov 18 09:20:05 2026] 8021q: 802.1Q VLAN Support v1.8
+[Wed Nov 18 09:20:05 2026] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[Wed Nov 18 09:20:05 2026] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[Wed Nov 18 09:20:05 2026] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[Wed Nov 18 09:20:05 2026] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[Wed Nov 18 09:20:05 2026] cfg80211: failed to load regulatory.db
+[Wed Nov 18 09:20:07 2026] systemd-fstab-generator[871]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 09:20:07 2026] systemd-fstab-generator[871]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 09:20:10 2026] EXT4-fs (dm-0): resizing filesystem from 19398395 to 39059195 blocks
+[Wed Nov 18 09:20:10 2026] EXT4-fs (dm-0): resized filesystem to 39059195
+[Wed Nov 18 09:20:10 2026] ephemeral0: Can't lookup blockdev
+[Wed Nov 18 09:20:10 2026] systemd-fstab-generator[943]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 09:20:10 2026] systemd-fstab-generator[943]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 09:20:11 2026] ephemeral0: Can't lookup blockdev
+[Wed Nov 18 09:20:11 2026] kauditd_printk_skb: 113 callbacks suppressed
+[Wed Nov 18 09:20:11 2026] audit: type=1400 audit(1794993609.992:125): apparmor="STATUS" operation="profile_replace" info="same as current profile, skipping" profile="unconfined" name="rsyslogd" pid=1019 comm="apparmor_parser"
+[Wed Nov 18 09:20:11 2026] loop2: detected capacity change from 0 to 8
+[Wed Nov 18 09:20:11 2026] audit: type=1400 audit(1794993610.299:126): apparmor="STATUS" operation="profile_replace" info="same as current profile, skipping" profile="unconfined" name="/usr/lib/snapd/snap-confine" pid=1200 comm="apparmor_parser"
+[Wed Nov 18 09:20:11 2026] systemd-journald[465]: /var/log/journal/ec2cde4264f461b4d3e83fce63d0b813/user-1001.journal: Journal file uses a different sequence number ID, rotating.
+[Wed Nov 18 09:20:12 2026] NET: Registered PF_QIPCRTR protocol family
+[Wed Nov 18 09:20:12 2026] zram: Added device: zram0
+[Wed Nov 18 09:20:13 2026] evm: overlay not supported
+[Wed Nov 18 09:20:18 2026] audit: type=1400 audit(1794993618.361:127): apparmor="STATUS" operation="profile_load" profile="unconfined" name="docker-default" pid=1480 comm="apparmor_parser"
+[Wed Nov 18 09:20:21 2026] Initializing XFRM netlink socket
+[Wed Nov 18 09:20:21 2026] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
+[Wed Nov 18 09:20:27 2026] systemd-fstab-generator[1836]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 09:20:27 2026] systemd-fstab-generator[1836]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 09:20:27 2026] systemd-fstab-generator[1904]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 09:20:27 2026] systemd-fstab-generator[1904]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 09:28:21 2026] /proc/cgroups lists only v1 controllers, use cgroup.controllers of root cgroup for v2 info
