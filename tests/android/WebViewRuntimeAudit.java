@@ -114,7 +114,7 @@ public final class WebViewRuntimeAudit {
         }
         assertEquals(6,scenes.size());assertEquals(6,tones.size());
         report.put("themes",themes);
-        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');kdLightFeedback.diagnostics();const s=document.querySelector('.kdLightDiagnostics select');s.value='native';s.dispatchEvent(new Event('change'));return true})()");
+        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');kdLightFeedback.diagnostics();while(kdLightFeedback.state().mode!=='native')document.querySelector('[data-light-mode]').click();return true})()");
         SystemClock.sleep(150);int before=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();
         long paintDeadline=SystemClock.uptimeMillis()+5000;
         while(SystemClock.uptimeMillis()<paintDeadline&&((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints")<=before)SystemClock.sleep(10);
@@ -131,8 +131,9 @@ public final class WebViewRuntimeAudit {
         JSONObject off=(JSONObject)eval("kdLightFeedback.state()");assertEquals(offBefore,off.getInt("nativePaints"));assertFalse(off.getBoolean("enabled"));shot("native-light-off");
         // Force a native rejection while the JavaScript setting remains on. Old code
         // returned true and silently lost the light; AUTO must now paint its HTML fallback.
-        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');const s=document.querySelector('.kdLightDiagnostics select');s.value='auto';s.dispatchEvent(new Event('change'));return true})()");
+        eval("(()=>{document.body.classList.remove('kdNoGlow');localStorage.setItem('kd5_glow','1');while(kdLightFeedback.state().mode!=='auto')document.querySelector('[data-light-mode]').click();return true})()");
         SystemClock.sleep(100);
+        assertTrue(Boolean.TRUE.equals(eval("(()=>{const a=document.querySelector('.kdLightDiagnostics').getBoundingClientRect(),b=document.getElementById('board').getBoundingClientRect();return a.bottom<b.top})()")));
         Field overlayField=MainActivity.class.getDeclaredField("tapLightOverlay");overlayField.setAccessible(true);
         TapLightOverlay actualLayer=(TapLightOverlay)overlayField.get(activity);
         instrumentation.runOnMainSync(()->actualLayer.enabled(false));
