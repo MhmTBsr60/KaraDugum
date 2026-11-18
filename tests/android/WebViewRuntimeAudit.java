@@ -40,6 +40,14 @@ public final class WebViewRuntimeAudit {
         assertEquals("file:///android_asset/index.html",webUrl());
         eval("(()=>{localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd64_level','300');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');for(const t of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+t,'true');kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdSelectLevel(17);kdNavigate('game');kdLearning.leave();kdOnboarding.leave();return true})()");
         SystemClock.sleep(2600);
+        // First-boot Android immersive confirmation is a system window, not game input.
+        android.view.accessibility.AccessibilityNodeInfo system=instrumentation.getUiAutomation().getRootInActiveWindow();
+        if(system!=null&&!system.findAccessibilityNodeInfosByText("Viewing full screen").isEmpty()){
+            for(android.view.accessibility.AccessibilityNodeInfo button:system.findAccessibilityNodeInfosByText("Got it"))button.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+            SystemClock.sleep(300);
+        }
+        boolean[] focus={false};instrumentation.runOnMainSync(()->focus[0]=web.hasWindowFocus());
+        assertTrue("Real app window must own focus before board input/screenshots",focus[0]);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdLearning.leave();kdSetPaused(true);return true})()");
     }
     @After public void tearDown(){try{if(output!=null)shot("final-state");}catch(Exception ignored){}if(scenario!=null)scenario.close();}
