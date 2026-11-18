@@ -424,11 +424,13 @@ jobs:
             timeout 45s adb install -r "$RUNNER_TEMP/previous-test.apk"
             timeout 45s adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
             timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PipeUpgradeAudit#seedPreviousSignedTest' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/pipe-upgrade-seed.log
-            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-seed.log').read()"
+            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-seed.log').read()" || { mkdir -p dist/android-webview; adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/; adb logcat -d > dist/android-webview/upgrade-failure-logcat.txt; exit 1; }
+            timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PipeUpgradeAudit#verifyPreviousBeforeUpgrade' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/pipe-upgrade-old-restart.log
+            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-old-restart.log').read()" || { mkdir -p dist/android-webview; adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/; adb logcat -d > dist/android-webview/upgrade-failure-logcat.txt; exit 1; }
             adb shell am force-stop com.orynexa.karadugum
             timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
             timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PipeUpgradeAudit#verifyAfterInPlaceInstall' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/pipe-upgrade-verify.log
-            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-verify.log').read()"
+            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-verify.log').read()" || { mkdir -p dist/android-webview; adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/; adb logcat -d > dist/android-webview/upgrade-failure-logcat.txt; exit 1; }
             adb logcat -c
             mkdir -p dist/android-webview
             nohup timeout 320s adb logcat -v threadtime > dist/android-webview/live-logcat.txt 2>&1 &

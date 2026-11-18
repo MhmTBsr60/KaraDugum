@@ -55,14 +55,30 @@ public final class PipeUpgradeAudit {
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
         write("upgrade-expected.json",snapshot());
+        // Chromium LocalStorage is synchronous to JS, but commits its backing database
+        // asynchronously. Do not kill the seed process immediately after its final move.
+        SystemClock.sleep(10000);
+    }
+    private String expectedSnapshot() throws Exception {
+        try(InputStream in=new FileInputStream(new File(output,"upgrade-expected.json"))){ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1)bytes.write(buffer,0,n);return bytes.toString("UTF-8");}
+    }
+    private void comparePersisted(String stage) throws Exception {
+        eval("(()=>{kdNavigate('game');kdOnboarding.leave();kdLearning.leave();kdSetPaused(true);return true})()");
+        String expected=expectedSnapshot(),actual=snapshot();
+        write("upgrade-"+stage+"-actual.json",actual);
+        write("upgrade-"+stage+"-storage.json",(String)eval("JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map(k=>[k,localStorage.getItem(k)])))"));
+        assertEquals("Persisted fixture differs at "+stage,expected,actual);
+        assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+    }
+    @Test(timeout=60000) public void verifyPreviousBeforeUpgrade() throws Exception {
+        assertFalse(Boolean.TRUE.equals(eval("!!window.kdPipeFlow")));
+        comparePersisted("old-restart");
+        write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
     @Test(timeout=60000) public void verifyAfterInPlaceInstall() throws Exception {
         assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
-        eval("(()=>{kdNavigate('game');kdOnboarding.leave();kdLearning.leave();kdSetPaused(true);return true})()");
-        String expected;try(InputStream in=new FileInputStream(new File(output,"upgrade-expected.json"))){ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1)bytes.write(buffer,0,n);expected=bytes.toString("UTF-8");}
-        assertEquals("Existing puzzle, progress, wallet, coupons, ownership and preferences changed during install -r",expected,snapshot());
-        assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        comparePersisted("new-install");
         assertTrue(Boolean.TRUE.equals(eval("!window.kdLightFeedback")));
-        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-light-visibility-test2").put("newVersion","6.50-pipe-energy-test1").put("inPlaceInstall",true).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
+        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-light-visibility-test2").put("newVersion","6.50-pipe-energy-test1").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
 }
