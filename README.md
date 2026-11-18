@@ -148,7 +148,7 @@ Mekanik ustalığı geliştirmesi bu sürüme alınmıştır. Son doğrulama, `n
 - Titreşim önizlemesi ve oyun dokunuşları Android VibratorManager/uyumlu Vibrator yolunu kullanır.
 - Menü müziği telefon hoparlörü için daha duyulur tonlar kullanır; Ayarlar > Müzik sesi ile 0–100 ayarlanır.
 - Şans çarkı 8 eşit olasılıklı dilim içerir: 10, 15, 20, 25, 30, 50 jeton, 1 ipucu, boş.
-- Her yerel takvim gününde 1 ücretsiz çevirme ve 3 tamamlanan ödüllü reklamla 1 ek çevirme vardır. Ek hak ve reklam ilerlemesi ertesi güne taşınmaz. İptal edilen reklam sayılmaz.
+- Her yerel takvim gününde 1 ücretsiz çevirme ve 2 tamamlanan ödüllü reklamla 1 ek çevirme vardır. Ek hak ve reklam ilerlemesi ertesi güne taşınmaz. İptal edilen reklam sayılmaz.
 - Çark sonucu animasyon bitince uygulanır; uygulama yeniden açılsa da bekleyen ödül yalnızca bir kez verilir.
 - `npm run test:browser`, reklam iptali/tekrar bildirimi, günlük sınır, ödülün yeniden yüklemede korunması, ses seviyesi ve titreşim köprüsü kontrollerini içerir. Fiziksel ses/titreşim ve gerçek reklam SDK davranışı ayrıca cihazda doğrulanmalıdır.
 
@@ -182,7 +182,7 @@ Mekanik ustalığı geliştirmesi bu sürüme alınmıştır. Son doğrulama, `n
 - Görünen para birimi Kristal olarak adlandırılır. Bakiye, ücret ve ödül miktarları dönüştürülmez; `kd64_coins` kayıt anahtarı ve yerel reklam payload'ları uyumluluk için korunur. Görünen etiket ve simgeler kristalle değiştirilir.
 - Mağaza başlığı ekran merkezine sabitlenir; büyük bakiye metinleri başlığın üzerine taşmaz. Günlük Ödül ve görselli Şans Çarkı kartları ipucu paketlerinden sonra, temalardan önce gelir. Oyuna Dön ve Diğer Koleksiyonun alanları kaldırılır.
 - Altı tema tek koleksiyondadır: Kadim Taş, Gece Tapınağı, Çöl Harabeleri, Gece Moru, Zümrüt Mabedi, Yakut Ateşi. Önceki sahiplikler korunur. Yeni Zümrüt Mabedi 300 kristal, Yakut Ateşi 350 kristaldir; çizimleri ve oyun tahtası paletleri farklıdır.
-- Yeni görseller bu çalışma için üretilmiş `assets/kara-dugum-expansion.webp` dosyasında çevrimdışı paketlenir. Şans çarkının 1 ücretsiz + 3 tamamlanan reklamla 1 ek hak kuralı değişmez.
+- Yeni görseller bu çalışma için üretilmiş `assets/kara-dugum-expansion.webp` dosyasında çevrimdışı paketlenir. Şans çarkının 1 ücretsiz + 2 tamamlanan reklamla 1 ek hak kuralı değişmez.
 - `tests/crystal-shop-audit.cjs`, başlık merkezini, 3 ekran boyutunda 4 farklı bakiyeyi, birim adı değişirken bakiyenin korunmasını, kart sırasını, altı temayı, yeni tema alışverişlerini ve oyun paletlerini, eski çark sonuçlarının yeniden ödül vermeden yeni adla gösterilmesini denetler.
 
 ## v6.16
