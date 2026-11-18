@@ -1,0 +1,14 @@
+KARA DÜĞÜM — 6.50-brand-light-test1
+Paket: com.orynexa.karadugum — mevcut TEST APK ile aynı imza ve sürüm kodu 110.
+Oyunu silmeden üzerine güncelleyin. Uygulama verilerini temizlemeyin.
+Yalnız Google test reklam kimlikleri kullanılır. Üretim AAB veya Play yayını yoktur.
+
+1. Açılış ekranı, Ayarlar altlığı ve oyuncu profilinde VORYNEXA markasını kontrol edin.
+2. Ayarlar → Işık İzi AÇIK → oyun tahtasında düğüme dokunun. Kısa altın kenar ve hafif merkez ışıltısı görünmelidir.
+3. Işık İzi KAPALI iken aynı dokunuşlarda bu katman oluşmamalıdır. Ayarı uygulamayı tekrar açarak kontrol edin.
+4. Hareketi azalt / düşük donanım / 7×7–8×8: solma animasyonu yerine kısa sabit altın vurgu kullanılır.
+5. Ses ve titreşim deneme butonları ile bağımsız ayarlar önceki sürümle aynıdır.
+6. İlerleme, ipuçları, kristaller ve Ayarlar → Öğreticiyi Tekrar Göster seçeneğini kontrol edin.
+
+Sınır: Chromium dokunma/piksel testleri ve Android derleme/lint/imza kontrolleri, POCO X7 Pro üzerinde fiziksel doğrulama yerine geçmez.
+Google Play ile kurulan sürüm Play App Signing nedeniyle farklı imzaya sahipse yükleme reddedilebilir. Böyle bir durumda oyunu silmeyin.
