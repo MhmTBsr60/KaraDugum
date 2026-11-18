@@ -1,0 +1,18 @@
+{
+  "versionName": "6.50-light-trace-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "688bc49a52421df0381868635492e9dfd160f81a",
+  "adsMode": "test",
+  "sha256": "ffd42da154531220cf8ff6872ca6057c417c3c6741fcc6a8175fe267f30b0f49",
+  "phoneVerified": false,
+  "lightDurationMs": 500,
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "runtimeSourceCommit": "688bc49a52421df0381868635492e9dfd160f81a",
+  "fullWebRegressionRun": 44269130021,
+  "fullWebRegressionSource": "688bc49a52421df0381868635492e9dfd160f81a",
+  "baseTutorialCommit": "441d3f7199d86b7197d68571ba2357eebd717383",
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}
