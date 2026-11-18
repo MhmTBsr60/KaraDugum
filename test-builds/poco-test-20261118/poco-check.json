@@ -10,7 +10,7 @@
       "pipe": "gold",
       "shell": "url(\"#kd617-gold-a\")",
       "background": "50% 50%, 0% 0%",
-      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(8, 12, 16) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(8, 12, 16) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#dfb56d"
     },
     {
@@ -21,7 +21,7 @@
       "pipe": "ice",
       "shell": "url(\"#kd617-ice-a\")",
       "background": "50% 50%, 50% 0%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(32, 42, 53) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(32, 42, 53) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#8cbedc"
     },
     {
@@ -32,7 +32,7 @@
       "pipe": "fire",
       "shell": "url(\"#kd617-fire-a\")",
       "background": "50% 50%, 100% 0%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(70, 55, 42) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(70, 55, 42) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#e0aa5e"
     },
     {
@@ -43,7 +43,7 @@
       "pipe": "shadow",
       "shell": "url(\"#kd617-shadow-a\")",
       "background": "50% 50%, 0% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(44, 35, 55) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(44, 35, 55) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#ba9be5"
     },
     {
@@ -54,7 +54,7 @@
       "pipe": "emerald",
       "shell": "url(\"#kd617-emerald-a\")",
       "background": "50% 50%, 50% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(23, 59, 47) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(23, 59, 47) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#83ddb0"
     },
     {
@@ -65,7 +65,7 @@
       "pipe": "ruby",
       "shell": "url(\"#kd617-ruby-a\")",
       "background": "50% 50%, 100% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(60, 32, 37) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(60, 32, 37) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#f18d7b"
     },
     {
@@ -76,7 +76,7 @@
       "pipe": "gold",
       "shell": "url(\"#kd617-gold-a\")",
       "background": "50% 50%, 0% 0%",
-      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(8, 12, 16) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(8, 12, 16) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#dfb56d"
     },
     {
@@ -87,7 +87,7 @@
       "pipe": "ice",
       "shell": "url(\"#kd617-ice-a\")",
       "background": "50% 50%, 50% 0%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(32, 42, 53) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(32, 42, 53) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#8cbedc"
     },
     {
@@ -98,7 +98,7 @@
       "pipe": "fire",
       "shell": "url(\"#kd617-fire-a\")",
       "background": "50% 50%, 100% 0%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(70, 55, 42) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 16.6667% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(70, 55, 42) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 16.6667% / 600% 400% padding-box border-box",
       "pipeTone": "#e0aa5e"
     },
     {
@@ -109,7 +109,7 @@
       "pipe": "shadow",
       "shell": "url(\"#kd617-shadow-a\")",
       "background": "50% 50%, 0% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(44, 35, 55) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(44, 35, 55) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 10% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#ba9be5"
     },
     {
@@ -120,7 +120,7 @@
       "pipe": "emerald",
       "shell": "url(\"#kd617-emerald-a\")",
       "background": "50% 50%, 50% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(23, 59, 47) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(23, 59, 47) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 50% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#83ddb0"
     },
     {
@@ -131,7 +131,7 @@
       "pipe": "ruby",
       "shell": "url(\"#kd617-ruby-a\")",
       "background": "50% 50%, 100% 100%",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(60, 32, 37) url(\"http://127.0.0.1:39723/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 83.3333% / 600% 400% padding-box border-box",
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)) repeat scroll 50% 50% / 100% 100% padding-box border-box, rgb(60, 32, 37) url(\"http://127.0.0.1:32869/assets/kara-dugum-theme-stones.webp\") repeat scroll 90% 83.3333% / 600% 400% padding-box border-box",
       "pipeTone": "#f18d7b"
     },
     {

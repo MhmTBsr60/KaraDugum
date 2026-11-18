@@ -1,5 +1,5 @@
 {
-  "fileOrigin": "file:\/\/\/android_asset\/index.html",
+  "fileOrigin": "file:///android_asset/index.html",
   "androidApi": 35,
   "webview": "124.0.6367.219",
   "themes": [
@@ -7,43 +7,85 @@
       "theme": "gold",
       "pipe": "gold",
       "scene": "50% 50%, 0% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#dfb56d",
-      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     },
     {
       "theme": "ice",
       "pipe": "ice",
       "scene": "50% 50%, 50% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#8cbedc",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     },
     {
       "theme": "fire",
       "pipe": "fire",
       "scene": "50% 50%, 100% 0%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#e0aa5e",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     },
     {
       "theme": "shadow",
       "pipe": "shadow",
       "scene": "50% 50%, 0% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#ba9be5",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     },
     {
       "theme": "emerald",
       "pipe": "emerald",
       "scene": "50% 50%, 50% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#83ddb0",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     },
     {
       "theme": "ruby",
       "pipe": "ruby",
       "scene": "50% 50%, 100% 100%",
+      "viewportWidth": 275,
+      "board": {
+        "x": 8.023809432983398,
+        "y": 228.59524536132812,
+        "width": 259,
+        "height": 259
+      },
       "tone": "#f18d7b",
-      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:\/\/\/android_asset\/assets\/kara-dugum-theme-stones.webp\")"
+      "stone": "linear-gradient(140deg, rgba(255, 255, 255, 0.086), rgba(0, 0, 0, 0.063) 40%, rgba(0, 0, 0, 0.6)), url(\"file:///android_asset/assets/kara-dugum-theme-stones.webp\")"
     }
   ],
   "lightOn": {
@@ -79,5 +121,14 @@
     "hints": "7"
   },
   "delayedFirstNativePaintVisible": true,
-  "status": "PASS"
+  "status": "PASS",
+  "sixDistinctBoardPixelHashes": [
+    "f861d2ce21364e0cf2266ebe50979cb82657569042e2947984065d4d249bf069",
+    "2273242b04e547992d354ca4e7c402e4e9608b05ca45ab0daadcc89fb42a4bae",
+    "6638a46240f9f1e3e74a9430197fa16d0b692dcefd129357515f933f75bfceab",
+    "904422b386fd8eb4c2989365899d542d5c88f64e69ca1166eddb4d36600b698d",
+    "ad3b9623928467bc21b0ceb7ff598481c1ed087867e88e0df7bff28b659566f3",
+    "a6121e086c200f445ecab5bdd03c22b2810c6761087e10f77c8f659c143d5939"
+  ],
+  "visualStateAndFrameCommitSynchronized": true
 }
