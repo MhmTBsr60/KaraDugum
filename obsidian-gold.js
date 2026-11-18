@@ -9,29 +9,6 @@
   const put=(el,name,value)=>{if(value==null){if(el.hasAttribute(name))el.removeAttribute(name);}else if(el.getAttribute(name)!==value)el.setAttribute(name,value);};
   const limited=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;
   if(limited)document.documentElement.setAttribute('data-kd-gold-low-motion','');
-  /* One reusable HTML layer survives SVG replacement after a rotation. Native
-     WebView needs no SVG filters, particles, frame loop or audio/haptic calls. */
-  const tap=document.createElement('span'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  tap.className='kdTapGlint';tap.setAttribute('aria-hidden','true');
-  let tapTimer=0,tapAnimation=null;
-  function clearTap(){
-    clearTimeout(tapTimer);tapTimer=0;
-    if(tapAnimation){tapAnimation.cancel();tapAnimation=null;}
-    tap.remove();
-  }
-  function showTap(e){
-    const cell=e.target.closest?.('.tile');
-    if(!cell||cell.parentNode!==board||document.body.classList.contains('kdNoGlow')||document.hidden||window.kdGetLearningState?.().locked)return;
-    clearTap();cell.appendChild(tap);
-    const still=reduced.matches||limited||document.documentElement.hasAttribute('data-kd-gold-low-motion')||board.hasAttribute('data-kd-gold-dense')||(innerWidth<=360&&board.dataset.boardSize==='6');
-    if(!still&&typeof tap.animate==='function'){
-      try{tapAnimation=tap.animate([{opacity:.9},{opacity:.7,offset:.3},{opacity:0}],{duration:140,easing:'ease-out',fill:'forwards'});}catch(_){/* Older WebView: short static glint. */}
-    }
-    tapTimer=setTimeout(clearTap,still?110:160);
-  }
-  board.addEventListener('click',showTap);
-  new MutationObserver(()=>{if(document.body.classList.contains('kdNoGlow'))clearTap();}).observe(document.body,{attributes:true,attributeFilter:['class']});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearTap();});
   function afterRender(host,values,changed){
     if(host!==board)return;
     const reusable=entry&&values&&values.length===entry.cells.length&&board.firstElementChild===entry.cells[0]&&entry.cells[entry.cells.length-1].parentNode===board;

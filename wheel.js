@@ -1,4 +1,4 @@
-/* Daily reward wheel: one free spin and one extra spin after 3 completed ads. */
+/* Daily reward wheel: one free spin and one extra spin after 2 completed ads. */
 (()=>{'use strict';
 const key='kd64_wheelState',pendingAdKey='kd64_wheelAdPending';
 const prizes=[{label:'10 kristal',coins:10},{label:'25 kristal',coins:25},{label:'1 ipucu',hints:1},{label:'Boş',coins:0},{label:'15 kristal',coins:15},{label:'50 kristal',coins:50},{label:'20 kristal',coins:20},{label:'30 kristal',coins:30}];
@@ -17,11 +17,14 @@ function state(){
   s={date:day(),freeUsed:read('kd64_shopWheelDate','')===day(),adCount:0,bonusUsed:false,pending:null};
   write(key,s);localStorage.removeItem(pendingAdKey);
  }
- s.adCount=Math.min(3,amount(s.adCount));return s;
+ // Preserve verified historical completions and already consumed/reserved bonus spins.
+ const count=Math.min(2,amount(s.adCount)),used=!!s.freeUsed||read('kd64_shopWheelDate','')===day();
+ if(s.adGoal!==2||s.adCount!==count||s.freeUsed!==used){s.adGoal=2;s.adCount=count;s.freeUsed=used;write(key,s);}
+ return s;
 }
 function validPrize(index){return Number.isInteger(index)&&index>=0&&index<prizes.length;}
  // Badge reads must never settle an old spin, roll over storage, or grant currency.
- function availability(){const today=day(),raw=read(key,null),s=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},current=s.date===today,pending=!!s.pending,freeUsed=current&&!!s.freeUsed||read('kd64_shopWheelDate','')===today,freeReady=!pending&&!freeUsed,bonusReady=!pending&&current&&!!s.freeUsed&&amount(s.adCount)>=3&&!s.bonusUsed;return {freeReady,bonusReady,pending,total:Number(freeReady)+Number(bonusReady)};}
+ function availability(){const today=day(),raw=read(key,null),s=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},current=s.date===today,pending=!!s.pending,freeUsed=current&&!!s.freeUsed||read('kd64_shopWheelDate','')===today,freeReady=!pending&&!freeUsed,bonusReady=!pending&&current&&!!s.freeUsed&&amount(s.adCount)>=2&&!s.bonusUsed;return {freeReady,bonusReady,pending,total:Number(freeReady)+Number(bonusReady)};}
  const changed=()=>window.dispatchEvent(new Event('kd:rewards-changed'));
  function changedIf(before){const after=availability();if(['freeReady','bonusReady','pending','total'].some(k=>before[k]!==after[k]))changed();}
  window.kdWheel={availability};
@@ -54,15 +57,16 @@ function drawWheel(multiplier=1){
 }
 function render(){
  const overlay=document.getElementById('kdWheelOverlay');if(!overlay)return;
- const s=state(),pending=s.pending,free=!s.freeUsed,bonus=s.freeUsed&&s.adCount>=3&&!s.bonusUsed;
+ const s=state(),pending=s.pending,free=!s.freeUsed,bonus=s.freeUsed&&s.adCount>=2&&!s.bonusUsed;
  let request=read(pendingAdKey,null);if(request&&(request.date!==day()||Date.now()-request.at>300000)){localStorage.removeItem(pendingAdKey);request=null;}
  const multiplier=pending?.multiplier===2||bonus||s.bonusUsed&&s.lastResult?.multiplier===2?2:1;
  const stage=overlay.querySelector('.kdWheelStage');if(stage.dataset.multiplier!==String(multiplier)){stage.dataset.multiplier=String(multiplier);stage.querySelector('svg').outerHTML=drawWheel(multiplier);}
  const spin=overlay.querySelector('.kdWheelSpin'),ad=overlay.querySelector('.kdWheelAd'),status=overlay.querySelector('.kdWheelStatus');
  spin.disabled=!!pending||!(free||bonus);spin.textContent=pending?'ÇARK DÖNÜYOR…':free?'ÜCRETSİZ ÇEVİR':bonus?'2× ÖDÜLLE ÇEVİR':'BUGÜNLÜK HAKLARIN BİTTİ';
- ad.hidden=free||s.bonusUsed||s.adCount>=3;ad.disabled=!!pending||!!request;ad.textContent=request?'REKLAM BEKLENİYOR…':`▶ REKLAM İZLE · ${s.adCount}/3`;
+ ad.hidden=free||s.bonusUsed||s.adCount>=2;ad.disabled=!!pending||!!request;ad.textContent=request?'REKLAM BEKLENİYOR…':`▶ REKLAM İZLE · ${s.adCount}/2`;
  const result=overlay.querySelector('.kdWheelResult');const resultLabel=s.lastResult?(validPrize(s.lastResult.prizeIndex)?prizeLabel(prizes[s.lastResult.prizeIndex],s.lastResult.multiplier===2?2:1):String(s.lastResult.label).replace(/jeton/gi,'kristal')):'';result.textContent=pending?'Ödülün belirleniyor…':s.lastResult?(resultLabel==='Boş'?'Boş dilim ödül vermez.':`Kazandın: ${resultLabel}!`):'';
- status.textContent=pending?'Ödülün belirleniyor…':free?'Günde 1 ücretsiz çevirme.':s.bonusUsed?'Bugün tamamlandı. Yarın tekrar gel.':s.adCount>=3?'Ek çevirmen hazır: 2× ödül.':'3 reklamla ek çevirme: 2× kristal ve ipucu.';
+ status.textContent=pending?'Ödülün belirleniyor…':free?'Günde 1 ücretsiz çevirme.':s.bonusUsed?'Bugün tamamlandı. Yarın tekrar gel.':s.adCount>=2?'Ek çevirmen hazır: 2× ödül.':'2 reklamla ek çevirme: 2× kristal ve ipucu.';
+ if(!free&&!pending){const progress=document.createElement('span');progress.className='kdWheelAdCount';progress.textContent=' · '+s.adCount+'/2';status.appendChild(progress);}
  overlay.dataset.spinning=String(!!pending);overlay.dataset.result=pending?'pending':s.lastResult?(resultLabel==='Boş'?'blank':'won'):'none';
  if(!pending&&s.lastResult&&validPrize(s.lastResult.prizeIndex)){const disc=overlay.querySelector('.kdWheelDisc');disc.style.transition='none';disc.style.transform=`rotate(${360-(s.lastResult.prizeIndex+.5)*45}deg)`;}
  if(pending){const disc=overlay.querySelector('.kdWheelDisc');rotation=(window.kdWheelMotion?.baseRotation||1800)+(360-(pending.prizeIndex+.5)*45);disc.style.transition=`transform ${Math.max(0,pending.readyAt-Date.now())}ms ${window.kdWheelMotion?.easing||"ease-in-out"}`;requestAnimationFrame(()=>{if(disc.isConnected)disc.style.transform=`rotate(${rotation}deg)`});}
@@ -71,7 +75,7 @@ function spin(){
  const s=state();if(s.pending)return;
  const multiplier=s.freeUsed?2:1;
  if(!s.freeUsed)s.freeUsed=true;
- else if(s.adCount>=3&&!s.bonusUsed)s.bonusUsed=true;
+ else if(s.adCount>=2&&!s.bonusUsed)s.bonusUsed=true;
  else return;
  const duration=matchMedia('(prefers-reduced-motion:reduce)').matches?200:4200;
  s.lastResult=null;s.pending={id:id(),date:day(),prizeIndex:Math.floor(Math.random()*prizes.length),multiplier,readyAt:Date.now()+duration};
@@ -80,7 +84,7 @@ function spin(){
  render();finishPending();window.kdFeedback?.play('wheel');if(disc)window.kdWheelMotion?.start(rotation,duration,disc);
 }
 function requestAd(){
- const s=state();if(!s.freeUsed||s.bonusUsed||s.adCount>=3||s.pending||read(pendingAdKey,null))return;
+ const s=state();if(!s.freeUsed||s.bonusUsed||s.adCount>=2||s.pending||read(pendingAdKey,null))return;
  if(typeof window.KaraNative?.rewardedWheel!=='function'){document.querySelector('.kdWheelStatus').textContent='Reklam hazır değil. Tekrar dene.';return;}
  const request={id:id(),date:day(),at:Date.now()};write(pendingAdKey,request);render();
  try{KaraNative.rewardedWheel(request.id)}catch(e){localStorage.removeItem(pendingAdKey);render();document.querySelector('.kdWheelStatus').textContent='Reklam hazır değil. Tekrar dene.';}
@@ -90,7 +94,7 @@ window.kdOpenWheel=()=>{
  if(document.getElementById('kdWheelOverlay'))return;
  returnFocus=document.activeElement;
  const overlay=document.createElement('div');overlay.id='kdWheelOverlay';overlay.className='kdWheelOverlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','kdWheelTitle');
- overlay.innerHTML=`<div class="kdWheelCard"><button class="kdWheelClose" aria-label="Çarkı kapat">×</button><h2 id="kdWheelTitle"><span aria-hidden="true">✧</span> ŞANS ÇARKI</h2><p class="kdWheelStatus"></p><div class="kdWheelStage"><span class="kdWheelPointer" aria-hidden="true">▼</span>${drawWheel()}</div><p class="kdWheelResult" aria-live="polite"></p><button class="kdWheelSpin"></button><button class="kdWheelAd"></button><small><span>Günde 1 ücretsiz çevirme.</span><br><span>3 reklamla ek çevirme: 2× kristal ve ipucu.</span><br><span>Boş dilim ödül vermez.</span></small></div>`;
+ overlay.innerHTML=`<div class="kdWheelCard"><button class="kdWheelClose" aria-label="Çarkı kapat">×</button><h2 id="kdWheelTitle"><span aria-hidden="true">✧</span> ŞANS ÇARKI</h2><p class="kdWheelStatus"></p><div class="kdWheelStage"><span class="kdWheelPointer" aria-hidden="true">▼</span>${drawWheel()}</div><p class="kdWheelResult" aria-live="polite"></p><button class="kdWheelSpin"></button><button class="kdWheelAd"></button><small><span>Günde 1 ücretsiz çevirme.</span><br><span>2 reklamla ek çevirme: 2× kristal ve ipucu.</span><br><span>Boş dilim ödül vermez.</span></small></div>`;
  document.body.appendChild(overlay);overlay.querySelector('.kdWheelClose').onclick=window.kdCloseWheel;overlay.querySelector('.kdWheelSpin').onclick=spin;overlay.querySelector('.kdWheelAd').onclick=requestAd;overlay.onclick=e=>{if(e.target===overlay)window.kdCloseWheel()};overlay.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();window.kdCloseWheel();return;}if(e.key==='Tab'){const buttons=[...overlay.querySelectorAll('button')].filter(b=>!b.disabled&&!b.hidden);const first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}};render();finishPending();overlay.querySelector('.kdWheelClose').focus({preventScroll:true});
 };
 const previous=window.kdNativeEvent;
@@ -99,7 +103,7 @@ window.kdNativeEvent=function(event,payload){
  if(event==='adReward'&&typeof payload==='string'&&payload.startsWith('wheel:')){
   if(!request||payload!=='wheel:'+request.id)return;
   const before=availability();localStorage.removeItem(pendingAdKey);
-  const s=state();if(request.date===day()&&s.freeUsed&&!s.bonusUsed){s.adCount=Math.min(3,s.adCount+1);write(key,s);}render();changedIf(before);return;
+  const s=state();if(request.date===day()&&s.freeUsed&&!s.bonusUsed){s.adCount=Math.min(2,s.adCount+1);write(key,s);}render();changedIf(before);return;
  }
  if((event==='adUnavailable'||event==='wheelAdUnavailable'&&request&&payload===request.id)&&request){const before=availability();localStorage.removeItem(pendingAdKey);render();changedIf(before);const status=document.querySelector('.kdWheelStatus');if(status)status.textContent='Reklam hazır değil. Tekrar dene.';return;}
  if(typeof previous==='function')return previous.apply(this,arguments);

@@ -15,12 +15,12 @@ assert config['interstitialUnitId']=='ca-app-pub-3940256099942544/1033173712'
 java=Path('app/build/generated/source/buildConfig/release/com/orynexa/karadugum/BuildConfig.java').read_text()
 assert re.search(r'ADS_TEST_MODE\s*=\s*true\s*;',java)
 with zipfile.ZipFile(apk) as archive:
-    for file in ['index.html','obsidian-gold.css','obsidian-gold.js','board-renderer.js','theme-renderer.js','localization.js','cloud-model.js','cloud-sync.js','reward-receipts.js','board-focus.css','board-focus.js','feedback.js','wheel.js','wheel-motion.js','ux-locales.js','ux-polish.css','gameplay-ui.js','gameplay-layout.css','onboarding.js','onboarding.css']:
+    for file in ['index.html','obsidian-gold.css','obsidian-gold.js','board-renderer.js','theme-renderer.js','localization.js','cloud-model.js','cloud-sync.js','reward-receipts.js','board-focus.css','board-focus.js','feedback.js','wheel.js','wheel-motion.js','ux-locales.js','ux-polish.css','gameplay-ui.js','gameplay-layout.css','onboarding.js','onboarding.css','light-feedback.js','light-feedback.css']:
         assert archive.read('assets/'+file)==Path(file).read_bytes(),file
     assert not any(name.endswith(('.jks','.keystore')) for name in archive.namelist())
     assert not any(name.startswith('assets/design/') for name in archive.namelist())
     dex=b''.join(archive.read(name) for name in archive.namelist() if re.match(r'classes\d*\.dex$',name))
-    for native_symbol in [b'UiFeedbackGate',b'HapticFeedbackPlayer',b'hapticAvailable',b'testHaptic',b'feedbackAudioAllowed']:
+    for native_symbol in [b'TapLightOverlay',b'drawTapLight',b'setTapLightEnabled',b'UiFeedbackGate',b'HapticFeedbackPlayer',b'hapticAvailable',b'testHaptic',b'feedbackAudioAllowed']:
         assert native_symbol in dex,native_symbol
     for key in ['rewardedUnitId','interstitialUnitId']:
         assert config[key].encode() in dex,key

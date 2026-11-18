@@ -1,0 +1,8 @@
+6.50-poco-test1 — mevcut TEST APK üzerine kurun; oyunu silmeyin/verileri temizlemeyin.
+1. VORYNEXA markası korunmalı.
+2. Ayarlar → Işık İzi açık → tanılama → tahtaya dokunun. Android ✓ ve ✦ çizim sayısı artmalı; altın kenar görünmeli. ↓ dokunma, ↳ tıklama, ✦ gerçekleşen çizim; sondaki sayı istek sayısıdır. Ekran görüntüsünde bu sayaçlar sorunun hangi aşamada olduğunu ayırır. × ile tanılamayı kapatın.
+3. Işık İzi kapalıyken parlama ve çizim artışı olmamalı. Ses/titreşim tercihleri değişmemeli.
+4. Altı satın alınmış temayı mağazadan uygulayıp gerçek tahtadaki renk/arka planı kontrol edin. İlerleme, ipucu ve kristaller korunmalı.
+5. Günlük ücretsiz çarktan sonra 0/2 → tamamlanan bir video ile 1/2; yarıda kesilen video artırmamalı; ikinci tamamlanan video ile ek hak açılmalı. Ödül bir kez ödenmeli.
+6. Tüm reklamlar Google test reklamlarıdır. Google Play üretim sürümü ve AdMob hesabı değiştirilmez.
+Fiziksel POCO sonucu emülatör testinden ayrı değerlendirilir.

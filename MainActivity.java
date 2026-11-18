@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
     private boolean rewardedInProgress = false;
     private boolean rewardedLoading = false;
     private WebView view;
+    private TapLightOverlay tapLightOverlay;
     private boolean backHandling = false;
     private boolean signedIn = false;
     private String currentPlayerId = "";
@@ -131,7 +132,13 @@ public class MainActivity extends Activity {
                 deliverPendingRewards(); sendPrivacyState();
             }
         });
-        setContentView(view);
+        android.widget.FrameLayout gameSurface = new android.widget.FrameLayout(this);
+        gameSurface.addView(view, new android.widget.FrameLayout.LayoutParams(-1,-1));
+        tapLightOverlay = new TapLightOverlay(this, sequence -> {
+            if(view!=null&&uiFeedbackForeground)view.evaluateJavascript("window.kdLightFeedback&&window.kdLightFeedback.nativePainted("+sequence+")",null);
+        });
+        gameSurface.addView(tapLightOverlay,new android.widget.FrameLayout.LayoutParams(-1,-1));
+        setContentView(gameSurface);
         view.loadUrl("file:///android_asset/index.html");
         if (Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
@@ -772,6 +779,19 @@ public class MainActivity extends Activity {
         @JavascriptInterface public String installationId() { return installationId; }
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
         @JavascriptInterface public void rewardedHint() { runOnUiThread(() -> { rewardPurpose = "hint"; showRewarded(); }); }
+        @JavascriptInterface public void setTapLightEnabled(boolean enabled) {
+            runOnUiThread(()->{if(tapLightOverlay!=null)tapLightOverlay.enabled(enabled);});
+        }
+        @JavascriptInterface public boolean drawTapLight(double x,double y,double width,double height,double viewportWidth,double viewportHeight,boolean reduced,int sequence) {
+            if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(width)||!Double.isFinite(height)||!Double.isFinite(viewportWidth)||!Double.isFinite(viewportHeight)
+                ||viewportWidth<=0||viewportHeight<=0||width<=0||height<=0||x<0||y<0||x+width>viewportWidth+1||y+height>viewportHeight+1)return false;
+            runOnUiThread(()->{
+                if(view==null||tapLightOverlay==null||!uiFeedbackForeground||!view.hasWindowFocus())return;
+                float sx=view.getWidth()/(float)viewportWidth,sy=view.getHeight()/(float)viewportHeight;
+                tapLightOverlay.flash((float)x*sx,(float)y*sy,(float)width*sx,(float)height*sy,reduced,sequence);
+            });
+            return true;
+        }
         @JavascriptInterface public void rewardedWheel(String requestId) {
             if(requestId==null || !requestId.matches("[a-zA-Z0-9_-]{1,100}"))return;
             runOnUiThread(() -> { if(rewardedInProgress){send("wheelAdUnavailable",JSONObject.quote(requestId));return;}rewardPurpose="wheel:"+requestId;showRewarded(); });
@@ -864,6 +884,7 @@ public class MainActivity extends Activity {
 
     @Override protected void onPause() {
         uiFeedbackForeground = false;
+        if(tapLightOverlay!=null)tapLightOverlay.clear();
         if (uiHapticPlayer != null) uiHapticPlayer.cancel();
         if (view != null) { view.evaluateJavascript("window.kdAppBackground=true;window.kdFeedback && window.kdFeedback.stop();window.kdSetPaused && window.kdSetPaused(true);window.kdCloudSync && window.kdCloudSync()",null); view.onPause(); }
         super.onPause();
