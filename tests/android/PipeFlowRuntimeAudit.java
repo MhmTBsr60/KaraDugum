@@ -125,6 +125,8 @@ public final class PipeFlowRuntimeAudit {
     }
     /** Real Android WebView/GPU, simulated capable-device properties. Default-device path is tested separately. */
     @Test(timeout=120000) public void testAnimatedConnectionPathOnAndroidWebView() throws Exception {
+        CountDownLatch moveQueued=new CountDownLatch(1);
+        instrumentation.runOnMainSync(()->web.addJavascriptInterface(new Object(){@android.webkit.JavascriptInterface public void queued(){moveQueued.countDown();}},"PipeVisualAudit"));
         String html;try(InputStream in=activity.getAssets().open("index.html")){html=new String(in.readAllBytes(),"UTF-8");}
         String injected="<script>Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>8});Object.defineProperty(navigator,'deviceMemory',{get:()=>8});window.__kdAnimatedHarness=true;</script>";
         final String page=html.replace("<head>","<head>"+injected);
@@ -133,7 +135,10 @@ public final class PipeFlowRuntimeAudit {
         assertTrue(Boolean.TRUE.equals(eval("!!window.__kdAnimatedHarness&&!!window.kdPipeFlow")));SystemClock.sleep(2600);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdNavigate('game');kdOnboarding.leave();kdSelectLevel(1);kdLearning.leave();kdSetPaused(true);return true})()");
         SystemClock.sleep(150);visualFrame();JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
-        tapSelector("#board>.tile[data-i=\"0\"]");SystemClock.sleep(220);shot("animated-flow-on");JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
+        eval("(()=>{const original=kdPipeFlow.afterRender;kdPipeFlow.afterRender=function(...args){const result=original.apply(this,args);if(kdGetLearningState().level===1&&kdGetLearningState().moves===1)PipeVisualAudit.queued();return result};return true})()");
+        Exception[] captureError={null};Thread sampler=new Thread(()->{try{if(!moveQueued.await(5,TimeUnit.SECONDS))throw new TimeoutException("No real move callback");SystemClock.sleep(80);for(int i=0;i<6;i++){shot("animated-sample-"+i);SystemClock.sleep(100);}}catch(Exception e){captureError[0]=e;}},"pipe-surface-sampler");sampler.start();
+        tapSelector("#board>.tile[data-i=\"0\"]");JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
+        sampler.join(6000);assertFalse("Surface sampler must finish",sampler.isAlive());if(captureError[0]!=null)throw captureError[0];
         assertEquals("strong-1",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());
         SystemClock.sleep(1000);JSONObject after=(JSONObject)eval("kdPipeFlow.state()");shot("animated-flow-rest");
         JSONObject progress=new JSONObject().put("status","RUNNING").put("phoneVerified",false).put("vw",eval("innerWidth")).put("before",before).put("during",during).put("after",after);

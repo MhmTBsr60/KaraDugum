@@ -12,9 +12,24 @@ assert not any(delta(p,q)>20 for p,q in zip(a,a))
 r['pixelProof']={'boardChangedFraction':changed,'addedGoldFraction':added,'restoreDifference':restore,'negativeControlRejected':True,'method':'actual Android Surface on/off/restored screenshots, same puzzle; not counters'}
 (root/'pipe-flow-report.json').write_text(json.dumps(r,indent=2));print(r['pixelProof'])
 
-# Animation proof also requires actual Surface pixels on a fixed, already committed puzzle.
-animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];before=Image.open(root/'animated-flow-on.png').convert('RGB');after=Image.open(root/'animated-flow-rest.png').convert('RGB');scale=before.width/animated['vw']
-seg=next(s for s in f['segments'] if s['id']=='0:1');xs=[p[0]+g['x'] for p in seg['points']];ys=[p[1]+g['y'] for p in seg['points']];box=(round((min(xs)-5)*scale),round((min(ys)-5)*scale),round((max(xs)+5)*scale),round((max(ys)+5)*scale))
-x,y=[list(im.crop(box).getdata()) for im in [before,after]];changed=sum(delta(p,q)>12 for p,q in zip(x,y));assert changed>=10,('No visible moving energy on Android Surface',changed,box)
-animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':changed,'sameCommittedPuzzle':True,'method':'actual Android Surface during vs settled; not frame counters','physicalPhoneVerified':False}
+# Temporal proof: actual Surface samples begin at the real engine move callback,
+# not after slow evaluateJavascript/screenshot round trips have consumed the pulse.
+from PIL import ImageDraw
+import shutil
+animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];rest=Image.open(root/'animated-flow-rest.png').convert('RGB');scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']])
+mask=Image.new('L',rest.size);draw=ImageDraw.Draw(mask);width=round((g['width']/4*.10+3)*scale)
+for seg in f['segments']:
+ points=[(round((x+g['x'])*scale),round((y+g['y'])*scale)) for x,y in seg['points']];draw.line(points,fill=255,width=width,joint='curve')
+ for x,y in points:draw.ellipse((x-width/2,y-width/2,x+width/2,y+width/2),fill=255)
+seg=next(v for v in f['segments'] if v['id']=='0:1');xs=[p[0]+g['x'] for p in seg['points']];ys=[p[1]+g['y'] for p in seg['points']];roi=(round((min(xs)-5)*scale),round((min(ys)-5)*scale),round((max(xs)+5)*scale),round((max(ys)+5)*scale))
+reference=list(rest.crop(boardbox).getdata());allowed=list(mask.crop(boardbox).getdata());end=list(rest.crop(roi).getdata());valid=[]
+luma=lambda p:.2126*p[0]+.7152*p[1]+.0722*p[2]
+for i in range(6):
+ name='animated-sample-'+str(i)+'.png';im=Image.open(root/name).convert('RGB');pixels=list(im.crop(boardbox).getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed))
+ bright=[k for k,(p,q) in enumerate(zip(im.crop(roi).getdata(),end)) if luma(p)-luma(q)>18]
+ if outside<.01 and len(bright)>=8:valid.append({'sample':name,'brightPixels':len(bright),'centroidX':sum(roi[0]+k%(roi[2]-roi[0]) for k in bright)/len(bright),'outsideMatchedPipesFraction':outside})
+assert len(valid)>=2,('No two visible moving-light Surface frames on the same committed puzzle',valid)
+shift=max(v['centroidX'] for v in valid)-min(v['centroidX'] for v in valid);assert shift>=3,('Energy must visibly travel along the pipe',valid)
+best=max(valid,key=lambda v:v['brightPixels']);shutil.copyfile(root/best['sample'],root/'animated-flow-on.png')
+animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':best['brightPixels'],'sameCommittedPuzzle':True,'visibleSamples':valid,'travelPixels':shift,'selectedSample':best['sample'],'method':'real Android Surface temporal brightness and travel inside matched pipes; not counters','physicalPhoneVerified':False}
 (root/'animated-flow-report.json').write_text(json.dumps(animated,indent=2));print(animated['surfaceAnimationProof'])
