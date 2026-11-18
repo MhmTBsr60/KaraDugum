@@ -17,7 +17,7 @@ r['pixelProof']={'boardChangedFraction':changed,'addedGoldFraction':added,'resto
 from PIL import ImageDraw
 import shutil
 animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];frames=sorted(Path(sys.argv[2]).glob('*.png'));assert len(frames)>=12
-rest=Image.open(frames[-1]).convert('RGB');scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']]);small=(round(g['width']),round(g['height']))
+rest=Image.open(frames[-1]).convert('RGB');assert abs(rest.width/rest.height-animated['vw']/animated['vh'])<.01,'Unexpected recording projection';scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']]);small=(round(g['width']),round(g['height']))
 # Analyse at CSS resolution; raw full-resolution chosen frames remain available.
 mask=Image.new('L',small);draw=ImageDraw.Draw(mask);width=round(g['width']/4*.10+3)
 for seg in f['segments']:
