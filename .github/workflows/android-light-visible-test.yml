@@ -145,6 +145,9 @@ jobs:
       - name: Gercek tarayici testlerini kur ve calistir
         run: |
           npm ci --ignore-scripts
+          # Match Playwright's baseline multilingual fonts without refreshing unrelated apt feeds.
+          sudo apt-get install -y --no-install-recommends fonts-noto-color-emoji fonts-unifont fonts-liberation fonts-ipafont-gothic fonts-wqy-zenhei fonts-tlwg-loma-otf fonts-freefont-ttf xfonts-cyrillic xfonts-scalable || { sudo apt-get update -o Acquire::Retries=2 -o Acquire::http::Timeout=20; sudo apt-get install -y --no-install-recommends fonts-noto-color-emoji fonts-unifont fonts-liberation fonts-ipafont-gothic fonts-wqy-zenhei fonts-tlwg-loma-otf fonts-freefont-ttf xfonts-cyrillic xfonts-scalable; }
+          fc-match 'sans-serif:lang=ta'
           npx playwright install chromium
           python3 -m pip install 'Pillow>=10,<13'
           node tests/brand-light-trail-audit.cjs
