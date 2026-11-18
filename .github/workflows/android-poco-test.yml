@@ -9,6 +9,7 @@ jobs:
   test-apk:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     permissions:
       contents: write
     env:
@@ -326,7 +327,7 @@ jobs:
           dependencies {
             androidTestImplementation 'androidx.test:runner:1.6.2'
             androidTestImplementation 'androidx.test:core:1.6.1'
-            androidTestImplementation 'androidx.test.ext:junit:1.2.1' 
+            androidTestImplementation 'androidx.test.ext:junit:1.2.1'
           }
           apply from: rootProject.file('android-dependencies.gradle')
           EOF
@@ -417,7 +418,7 @@ jobs:
             adb install -r app/build/outputs/apk/release/app-release.apk
             adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
             adb logcat -c
-            adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
+            timeout 200s adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
             mkdir -p dist/android-webview
             adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
             adb logcat -d > dist/android-webview/logcat.txt

@@ -38,12 +38,14 @@ public final class TapLightOverlay extends View {
         if(bounds.width()<1||bounds.height()<1)return;
         removeCallbacks(clearTask);
         sequence=id;announced=false;still=reduced||(Build.VERSION.SDK_INT>=26&&!ValueAnimator.areAnimatorsEnabled());
-        duration=still?200:260;start=SystemClock.uptimeMillis();active=true;
-        invalidate();postDelayed(clearTask,duration);
+        duration=still?200:260;start=0;active=true;
+        // Start visible lifetime at the first actual paint, never at a queued touch.
+        invalidate();
     }
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(!enabled||!active)return;
+        if(start==0){start=SystemClock.uptimeMillis();postDelayed(clearTask,duration);}
         float progress=Math.min(1f,(SystemClock.uptimeMillis()-start)/(float)duration);
         float alpha=still?1f:progress<.25f?1f:1f-(progress-.25f)/.75f;
         float density=getResources().getDisplayMetrics().density;

@@ -34,7 +34,9 @@ public final class WebViewRuntimeAudit {
         scenario=ActivityScenario.launch(MainActivity.class);scenario.onActivity(value->activity=value);
         Field f=MainActivity.class.getDeclaredField("view");f.setAccessible(true);web=(WebView)f.get(activity);
         output=new File(context.getExternalFilesDir(null),"webview-audit");assertTrue(output.isDirectory()||output.mkdirs());
-        for(int i=0;i<150;i++){try{if(Boolean.TRUE.equals(eval("!!(window.kdLightFeedback&&window.kdThemeArt&&window.kdNavigate&&window.kdLocalization)")))break;}catch(Exception ignored){}SystemClock.sleep(200);}
+        boolean ready=false;long deadline=SystemClock.uptimeMillis()+45000;
+        while(SystemClock.uptimeMillis()<deadline){try{if(Boolean.TRUE.equals(eval("!!(window.kdLightFeedback&&window.kdThemeArt&&window.kdNavigate&&window.kdLocalization)"))){ready=true;break;}}catch(Exception ignored){}SystemClock.sleep(200);}
+        assertTrue("WebView page scripts not ready within 45 seconds",ready);
         assertEquals("file:///android_asset/index.html",webUrl());
         eval("(()=>{localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd64_level','300');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');for(const t of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+t,'true');kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdSelectLevel(17);kdNavigate('game');kdLearning.leave();kdOnboarding.leave();return true})()");
         SystemClock.sleep(2600);
@@ -45,7 +47,7 @@ public final class WebViewRuntimeAudit {
     private Object eval(String expression) throws Exception {
         CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
         instrumentation.runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
-        assertTrue("WebView evaluateJavascript callback timeout",latch.await(15,TimeUnit.SECONDS));
+        assertTrue("WebView evaluateJavascript callback timeout",latch.await(3,TimeUnit.SECONDS));
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
     private void shot(String name) throws Exception {
@@ -59,7 +61,15 @@ public final class WebViewRuntimeAudit {
         long time=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(time,time,MotionEvent.ACTION_DOWN,x,y,0),up=MotionEvent.obtain(time,time+25,MotionEvent.ACTION_UP,x,y,0);
         instrumentation.sendPointerSync(down);instrumentation.sendPointerSync(up);down.recycle();up.recycle();
     }
-    @Test public void testRealFileOriginThemesLightAndSave() throws Exception {
+    @Test(timeout=120000) public void testRealFileOriginThemesLightAndSave() throws Exception {
+        final int[] delayedAlpha={0};
+        instrumentation.runOnMainSync(()->{
+            TapLightOverlay layer=new TapLightOverlay(activity,sequence->{});layer.layout(0,0,100,100);layer.enabled(true);layer.flash(10,10,60,60,true,1);
+            SystemClock.sleep(350); // Longer than the cue: it must still be visible on its first paint.
+            Bitmap pixels=Bitmap.createBitmap(100,100,Bitmap.Config.ARGB_8888);layer.draw(new android.graphics.Canvas(pixels));
+            delayedAlpha[0]=android.graphics.Color.alpha(pixels.getPixel(40,40));layer.clear();pixels.recycle();
+        });
+        assertTrue("Queued UI work must not expire light before first native paint",delayedAlpha[0]>0);
         assertTrue(eval("document.body.textContent.includes('VORYNEXA')").equals(Boolean.TRUE));
         JSONObject report=new JSONObject().put("fileOrigin",webUrl()).put("androidApi",android.os.Build.VERSION.SDK_INT);
         if(android.os.Build.VERSION.SDK_INT>=26)report.put("webview",WebView.getCurrentWebViewPackage().versionName);
@@ -86,6 +96,6 @@ public final class WebViewRuntimeAudit {
         report.put("lightOn",on).put("lightOff",off).put("protectedWallet",eval("({coins:localStorage.getItem('kd64_coins'),hints:localStorage.getItem('kd64_hintCoupons')})"));
         assertEquals("510",((JSONObject)report.get("protectedWallet")).getString("coins"));assertEquals("7",((JSONObject)report.get("protectedWallet")).getString("hints"));
         eval("(()=>{kdNavigate('settings');return true})()");assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('[data-onboard-repeat]')")));assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('[data-feedback-test=sound]')&&!!document.querySelector('[data-feedback-test=haptics]')")));
-        report.put("status","PASS");try(FileOutputStream file=new FileOutputStream(new File(output,"report.json"))){file.write(report.toString(2).getBytes("UTF-8"));}
+        report.put("delayedFirstNativePaintVisible",delayedAlpha[0]>0).put("status","PASS");try(FileOutputStream file=new FileOutputStream(new File(output,"report.json"))){file.write(report.toString(2).getBytes("UTF-8"));}
     }
 }
