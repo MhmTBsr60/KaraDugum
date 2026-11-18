@@ -118,14 +118,15 @@ public final class WebViewRuntimeAudit {
         SystemClock.sleep(150);int before=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();
         long paintDeadline=SystemClock.uptimeMillis()+5000;
         while(SystemClock.uptimeMillis()<paintDeadline&&((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints")<=before)SystemClock.sleep(10);
-        long committed=SystemClock.uptimeMillis();shot("native-light-on");
-        SystemClock.sleep(Math.max(0,300-(SystemClock.uptimeMillis()-committed)));
-        eval("(()=>{document.getAnimations().forEach(a=>a.pause());return true})()");
-        shot("native-light-300ms");SystemClock.sleep(Math.max(0,650-(SystemClock.uptimeMillis()-committed)));
+        shot("native-light-on");SystemClock.sleep(650);
         JSONObject on=(JSONObject)eval("kdLightFeedback.state()");assertTrue("Real Android touch must reach native Canvas onDraw: "+on,on.getInt("nativePaints")>before);assertTrue(on.getInt("pointer")>0);assertTrue(on.getBoolean("native"));assertTrue(on.getInt("nativeDraws")>0);assertEquals(500,on.getInt("duration"));
         assertTrue(on.getJSONObject("preference").getBoolean("matches"));
         report.put("lightGeometry",on.getJSONObject("geometry"));
         report.put("lightNativeInfo",on.getJSONObject("nativeInfo"));
+        long shownAt=0,clearedAt=0;JSONArray events=on.getJSONArray("history");
+        for(int i=0;i<events.length();i++){JSONObject e=events.getJSONObject(i);if(e.getString("phase").equals("native_presented"))shownAt=e.getLong("nativeStartedMs");if(e.getString("phase").equals("native_cleared_elapsed_500ms"))clearedAt=e.getLong("nativeMs");}
+        assertTrue("Native committed frame must hold for 500ms: "+(clearedAt-shownAt),shownAt>0&&clearedAt-shownAt>=500);
+        report.put("nativeVisibleHoldMs",clearedAt-shownAt);
         shot("native-light-settled");
         eval("(()=>{document.body.classList.add('kdNoGlow');localStorage.setItem('kd5_glow','0');return true})()");SystemClock.sleep(100);int offBefore=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();SystemClock.sleep(100);
         JSONObject off=(JSONObject)eval("kdLightFeedback.state()");assertEquals(offBefore,off.getInt("nativePaints"));assertFalse(off.getBoolean("enabled"));shot("native-light-off");
@@ -140,7 +141,7 @@ public final class WebViewRuntimeAudit {
         tap();long fallbackDeadline=SystemClock.uptimeMillis()+3000;JSONObject fallback;
         do{fallback=(JSONObject)eval("kdLightFeedback.state()");if(fallback.getInt("htmlPaints")>0)break;SystemClock.sleep(10);}while(SystemClock.uptimeMillis()<fallbackDeadline);
         assertTrue("Native rejection must not silently swallow feedback: "+fallback,fallback.getInt("htmlPaints")>0);
-        assertTrue(fallback.toString().contains("rejected_disabled"));shot("native-rejection-html-fallback");
+        assertTrue(fallback.toString().contains("rejected_disabled"));shot("native-rejection-html-fallback");SystemClock.sleep(650);shot("native-rejection-html-settled");
         report.put("forcedNativeRejectionFallback",fallback).put("phoneVerified",false);
         report.put("lightOn",on).put("lightOff",off).put("protectedWallet",eval("({coins:localStorage.getItem('kd64_coins'),hints:localStorage.getItem('kd64_hintCoupons')})"));
         assertEquals("510",((JSONObject)report.get("protectedWallet")).getString("coins"));assertEquals("7",((JSONObject)report.get("protectedWallet")).getString("hints"));

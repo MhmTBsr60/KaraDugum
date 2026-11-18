@@ -32,6 +32,7 @@ public final class TapLightOverlay extends View {
         setWillNotDraw(false);
     }
     public boolean lightEnabled() { return enabled; }
+    public long visibleSinceMs() { return start; }
     public void enabled(boolean value) { enabled=value; if(!value)clear("disabled"); }
     public void clear() { clear("lifecycle"); }
     public void cancel(int id) { if(active&&sequence==id)clear("cancelled"); }

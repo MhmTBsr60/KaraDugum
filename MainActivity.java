@@ -154,8 +154,9 @@ public class MainActivity extends Activity {
         String webview="unknown";
         if(Build.VERSION.SDK_INT>=26&&WebView.getCurrentWebViewPackage()!=null)webview=WebView.getCurrentWebViewPackage().versionName;
         tapLightDebug="{\"build\":"+JSONObject.quote(BuildConfig.VERSION_NAME)
-            +",\"model\":"+JSONObject.quote(Build.MODEL)+",\"android\":"+Build.VERSION.SDK_INT
+            +",\"uptimeMs\":"+android.os.SystemClock.uptimeMillis()+",\"model\":"+JSONObject.quote(Build.MODEL)+",\"android\":"+Build.VERSION.SDK_INT
             +",\"webview\":"+JSONObject.quote(webview)+",\"phase\":"+JSONObject.quote(phase)
+            +",\"visibleSinceMs\":"+(tapLightOverlay==null?0:tapLightOverlay.visibleSinceMs())
             +",\"enabled\":"+(tapLightOverlay!=null&&tapLightOverlay.lightEnabled())
             +",\"foreground\":"+uiFeedbackForeground+",\"focus\":"+(view!=null&&view.hasWindowFocus())
             +",\"visible\":"+(tapLightOverlay!=null&&tapLightOverlay.isShown())
@@ -804,6 +805,24 @@ public class MainActivity extends Activity {
         @JavascriptInterface public String tapLightInfo() { return tapLightDebug; }
         @JavascriptInterface public void cancelTapLight(int sequence) {
             runOnUiThread(()->{if(tapLightOverlay!=null)tapLightOverlay.cancel(sequence);});
+        }
+        @JavascriptInterface public void requestWebLightFrame(int sequence) {
+            runOnUiThread(()->{
+                if(view==null||!uiFeedbackForeground){tapLightStage(sequence,"rejected_web_background");return;}
+                view.postVisualStateCallback(sequence,new WebView.VisualStateCallback(){
+                    @Override public void onComplete(long requestId){
+                        if(view==null||!uiFeedbackForeground)return;
+                        if(Build.VERSION.SDK_INT>=29&&view.isHardwareAccelerated()){
+                            view.getViewTreeObserver().registerFrameCommitCallback(()->runOnUiThread(()->{
+                                if(view!=null&&uiFeedbackForeground)tapLightStage(sequence,"html_presented");
+                            }));
+                            view.invalidate();
+                        }else view.postOnAnimation(()->{if(view!=null)view.postOnAnimation(()->{
+                            if(view!=null&&uiFeedbackForeground)tapLightStage(sequence,"html_legacy_frame");
+                        });});
+                    }
+                });
+            });
         }
         @JavascriptInterface public boolean drawTapLight(double x,double y,double width,double height,double viewportWidth,double viewportHeight,boolean reduced,int sequence) {
             if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(width)||!Double.isFinite(height)||!Double.isFinite(viewportWidth)||!Double.isFinite(viewportHeight)

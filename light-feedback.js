@@ -11,9 +11,9 @@
  const native=()=>typeof window.KaraNative?.drawTapLight==='function'&&typeof window.KaraNative?.setTapLightEnabled==='function';
  function preference(){let stored='unavailable';try{stored=localStorage.getItem('kd5_glow')??'default:on';}catch(_){}return {stored,applied:enabled(),matches:stored==='unavailable'||(stored!=='0')===enabled()};}
  function gate(){if(!enabled())return 'setting_off';if(document.hidden||window.kdAppBackground)return 'background';if(game.hidden)return 'game_hidden';if(document.getElementById('modal')?.classList.contains('show'))return 'result_modal';if(window.kdGetLearningState?.().locked)return 'puzzle_locked';if(window.kdOnboarding?.isOpen?.())return 'tutorial';return '';}
- function record(phase,detail='',sequence=active){stats.phase=phase;stats.reason=detail;history.push({ms:Math.round(performance.now()),sequence,phase,detail});if(history.length>24)history.shift();update();}
+ function record(phase,detail='',sequence=active){stats.phase=phase;stats.reason=detail;history.push({ms:Math.round(performance.now()),sequence,phase,detail,nativeMs:stats.nativeInfo?.uptimeMs,nativeStartedMs:stats.nativeInfo?.visibleSinceMs});if(history.length>24)history.shift();update();}
  function readNative(){try{if(typeof window.KaraNative?.tapLightInfo==='function')stats.nativeInfo=JSON.parse(KaraNative.tapLightInfo());}catch(_){} }
- function update(){if(!monitor)return;const p=preference(),info=stats.nativeInfo;monitor.style.maxHeight=Math.max(44,Math.min(180,board.getBoundingClientRect().top-monitor.getBoundingClientRect().top-6))+'px';
+ function update(){if(!monitor)return;const p=preference(),info=stats.nativeInfo;const room=board.getBoundingClientRect().top-monitor.getBoundingClientRect().top-6;monitor.style.maxHeight=Math.max(44,Math.min(180,room))+'px';monitor.dataset.compact=room<170?'1':'0';
   monitor.querySelector('[data-light-build]').textContent=TEST+(info?' · '+info.build+' · '+info.model+' · Android '+info.android+' · WV '+info.webview:' · WebView/browser');
   monitor.querySelector('output').textContent=`${t(p.applied?'AÇIK':'KAPALI')} [save:${p.stored}; match:${p.matches}] · ${mode} / ${stats.route}\n↓${stats.pointer} ↳${stats.click} →${stats.requested} · Canvas:${stats.nativeDraws} frame:${stats.nativePaints} HTML:${stats.htmlPaints}\n${stats.phase}${stats.reason?' · '+stats.reason:''}\nnative:${info?.enabled??'?'} focus:${info?.focus??'?'} shown:${info?.visible??'?'}\nfallback:${stats.fallbackReason||'-'} failure:${stats.lastNativeFailure||'-'}`;
  }
@@ -28,7 +28,10 @@
   // Static 500 ms, no CSS/WAAPI fade, blur or SVG filter. Timer starts at a browser frame.
   frame=requestAnimationFrame(()=>{frame=0;if(active!==sequence||gate())return;const c=getComputedStyle(glint),b=glint.getBoundingClientRect();
    if(c.display==='none'||Number(c.opacity)===0||b.width<1||b.height<1){record('html_hidden',`${c.display}/${c.opacity}/${b.width}x${b.height}`);return;}
-   stats.htmlPaints++;record('html_submitted',reason+'; static 500ms; pixels not phone-certified');expiry=setTimeout(()=>clear('elapsed_500ms'),DURATION);
+   if(typeof window.KaraNative?.requestWebLightFrame==='function'){
+    record('html_waiting_commit',reason);watchdog=setTimeout(()=>{if(active===sequence){clear('html_commit_timeout');record('html_commit_timeout','WebView frame not confirmed');}},2500);
+    try{KaraNative.requestWebLightFrame(sequence);}catch(e){record('html_bridge_error',String(e));}
+   }else{stats.htmlPaints++;record('html_browser_frame',reason+'; browser RAF only, not Android commit');expiry=setTimeout(()=>clear('elapsed_500ms'),DURATION);}
   });
  }
  function flash(cell,source='tap'){
@@ -47,19 +50,20 @@
  board.addEventListener('click',e=>{stats.click++;if(!autoOpened&&!game.hidden){autoOpened=true;openMonitor();}record('click');if(e.target!==board)flash(cellAt(e));},true);
  function openMonitor(){if(monitor)return;monitor=document.createElement('aside');monitor.className='kdLightDiagnostics';monitor.setAttribute('aria-label',t('Işık İzi Tanılama'));
   monitor.innerHTML='<strong data-light-build></strong><button type="button" data-light-close aria-label="Close">×</button><output dir="ltr"></output><div class="kdLightTools"><button type="button" data-light-mode aria-label="Light renderer">AUTO</button><button type="button" data-light-preview>500 ms TEST</button></div>';
-  monitor.querySelector('[data-light-close]').onclick=()=>{monitor.remove();monitor=null;};const selector=monitor.querySelector('[data-light-mode]');const modes=['auto','web','native'],labels={auto:'AUTO',web:'WEBVIEW',native:'ANDROID'};selector.textContent=labels[mode];selector.onclick=()=>{clear('renderer_changed');mode=modes[(modes.indexOf(mode)+1)%modes.length];selector.textContent=labels[mode];record('mode',mode);};
-  monitor.querySelector('[data-light-preview]').onclick=()=>flash(board.querySelector(':scope>.tile:not(.good)')||board.querySelector(':scope>.tile'),'preview_no_move');document.body.appendChild(monitor);readNative();update();
+  monitor.querySelector('[data-light-close]').onclick=()=>{monitor.remove();monitor=null;};const selector=monitor.querySelector('[data-light-mode]');const modes=['auto','web','native'],labels={auto:'AUTO',web:'WEBVIEW',native:'ANDROID'};selector.textContent=labels[mode];selector.onclick=()=>{monitor.dataset.interactive='1';clear('renderer_changed');mode=modes[(modes.indexOf(mode)+1)%modes.length];selector.textContent=labels[mode];record('mode',mode);};
+  monitor.querySelector('[data-light-preview]').onclick=()=>{monitor.dataset.interactive='1';flash(board.querySelector(':scope>.tile:not(.good)')||board.querySelector(':scope>.tile'),'preview_no_move');};document.body.appendChild(monitor);readNative();update();
  }
- function diagnostics(){autoOpened=true;window.kdNavigate?.('game');openMonitor();}
+ function diagnostics(){autoOpened=true;window.kdNavigate?.('game');openMonitor();monitor.dataset.interactive='1';}
  function mount(){const control=document.querySelector('[data-setting="glow"]');if(!control||document.querySelector('[data-light-diagnostics]'))return;const button=document.createElement('button');button.type='button';button.className='kdLightDiagnosticsButton';button.dataset.lightDiagnostics='1';button.textContent='ⓘ';button.setAttribute('aria-label',t('Işık İzi Tanılama'));button.title=TEST;button.onclick=diagnostics;const icon=control.parentElement.querySelector('.kdSettingIcon');if(icon)icon.replaceChildren(button);}
  function nativeEvent(sequence,phase,info){if(info)stats.nativeInfo=info;if(sequence!==active&&sequence!==0){history.push({ms:Math.round(performance.now()),sequence,phase:'stale_'+phase,detail:''});if(history.length>24)history.shift();return;}
-  if(phase==='drawn')stats.nativeDraws++;if(phase==='presented'){stats.nativePaints++;clearTimeout(watchdog);watchdog=0;if(htmlSequence!==sequence){stats.route='Android frame';expiry=setTimeout(()=>{if(active===sequence)clear('elapsed_500ms');},DURATION);}}
+  if(phase==='html_presented'||phase==='html_legacy_frame'){clearTimeout(watchdog);watchdog=0;stats.htmlPaints++;expiry=setTimeout(()=>{if(active===sequence)clear('elapsed_500ms');},DURATION);}
+  if(phase==='drawn')stats.nativeDraws++;if(phase==='presented'){stats.nativePaints++;if(htmlSequence!==sequence){clearTimeout(watchdog);watchdog=0;stats.route='Android frame';expiry=setTimeout(()=>{if(active===sequence)clear('elapsed_500ms');},DURATION);}}
   record('native_'+phase,info?.reason||'',sequence);
   if(phase.startsWith('rejected'))stats.lastNativeFailure=phase;
-  if(phase.startsWith('rejected')&&active&&mode==='auto'){const cell=board.querySelector(`:scope>.tile[data-i="${lastCellId}"]`);if(cell)htmlFlash(cell,active,phase);}
+  if(phase.startsWith('rejected')&&active&&mode==='auto'&&htmlSequence!==active){const cell=board.querySelector(`:scope>.tile[data-i="${lastCellId}"]`);if(cell)htmlFlash(cell,active,phase);}
  }
  window.kdLightFeedback={state:()=>({...stats,enabled:enabled(),preference:preference(),native:native(),reduced:reduced.matches,limited,mode,duration:DURATION,active,history:history.map(x=>({...x}))}),diagnostics,nativeEvent,nativePainted:sequence=>nativeEvent(sequence,'presented')};
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});const shell=document.getElementById('kdShell');if(shell)new MutationObserver(mount).observe(shell,{childList:true,subtree:true});
  new MutationObserver(sync).observe(game,{attributes:true,attributeFilter:['hidden']});const modal=document.getElementById('modal');if(modal)new MutationObserver(sync).observe(modal,{attributes:true,attributeFilter:['class']});
- document.addEventListener('visibilitychange',sync);sync();mount();
+ document.addEventListener('visibilitychange',sync);window.addEventListener('resize',()=>{clear('viewport_resize');update();},{passive:true});if('ResizeObserver' in window)new ResizeObserver(update).observe(board);sync();mount();
 })();
