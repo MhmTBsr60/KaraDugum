@@ -3,7 +3,7 @@
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),limited=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;
  const stats={pointer:0,click:0,requested:0,nativePaints:0,htmlPaints:0,skipped:0,last:0,route:'none'},t=s=>window.kdTranslate?.(s)||s;
  const glint=document.createElement('div');glint.className='kdTapGlint';glint.setAttribute('aria-hidden','true');
- let timer=0,animation=null,lastCell=null,lastDown=0,monitor=null,nativeEnabled=null;
+ let timer=0,animation=null,monitor=null,nativeEnabled=null;
  const enabled=()=>!document.body.classList.contains('kdNoGlow');
  const native=()=>typeof window.KaraNative?.drawTapLight==='function'&&typeof window.KaraNative?.setTapLightEnabled==='function';
  function clear(){clearTimeout(timer);timer=0;if(animation){animation.cancel();animation=null;}glint.remove();}
@@ -20,11 +20,12 @@
   if(!still&&glint.animate){try{animation=glint.animate([{opacity:1},{opacity:1,offset:.25},{opacity:0}],{duration:260,fill:'forwards'});}catch(_){}}
   stats.htmlPaints++;timer=setTimeout(clear,still?200:280);update();
  }
- const down=e=>{if(e.isPrimary===false||e.button>0)return;stats.pointer++;const cell=cellAt(e);lastCell=cell;lastDown=performance.now();flash(cell);};
+ const down=e=>{if(e.isPrimary===false||e.button>0)return;stats.pointer++;update();};
  if('PointerEvent' in window)board.addEventListener('pointerdown',down,{capture:true,passive:true});
  else board.addEventListener('touchstart',e=>{const touch=e.touches[0];if(touch)down({target:e.target,clientX:touch.clientX,clientY:touch.clientY});},{capture:true,passive:true});
- // Keyboard/programmatic clicks also get feedback; real pointer taps are drawn once before SVG redraw.
- board.addEventListener('click',e=>{stats.click++;const cell=cellAt(e);if(cell!==lastCell||performance.now()-lastDown>650)flash(cell);update();},true);
+ // Paint after release/click so the finger cannot hide the entire cue. Gap routing
+ // already dispatches one real tile click; the original board-gap event must not draw twice.
+ board.addEventListener('click',e=>{stats.click++;if(e.target!==board)flash(cellAt(e));update();},true);
  function diagnostics(){if(monitor){monitor.remove();monitor=null;return;}monitor=document.createElement('aside');monitor.className='kdLightDiagnostics';monitor.innerHTML='<span></span><output dir="ltr"></output><button type="button">×</button>';monitor.querySelector('span').textContent=t('Işık İzi Tanılama');monitor.querySelector('button').setAttribute('aria-label',t('Kapat'));monitor.querySelector('button').onclick=diagnostics;document.body.appendChild(monitor);update();window.kdNavigate?.('game');}
  function mount(){const control=document.querySelector('[data-setting="glow"]');if(!control||document.querySelector('[data-light-diagnostics]'))return;const button=document.createElement('button');button.type='button';button.className='kdLightDiagnosticsButton';button.dataset.lightDiagnostics='1';button.textContent='ⓘ';button.setAttribute('aria-label',t('Işık İzi Tanılama'));button.title=t('Işık İzi Tanılama');button.onclick=diagnostics;const icon=control.parentElement.querySelector('.kdSettingIcon');if(icon)icon.replaceChildren(button);}
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});

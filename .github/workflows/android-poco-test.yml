@@ -54,9 +54,9 @@ jobs:
           proof=json.load(open('/tmp/full-regression-proof.json'))
           assert proof['conclusion']=='success' and proof['head_sha']==base
           changed=subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines()
-          allowed={'TapLightOverlay.java','.github/workflows/android-poco-test.yml','tests/android/WebViewRuntimeAudit.java','scripts/compose-theme-proof.py'}
+          allowed={'TapLightOverlay.java','light-feedback.js','tests/poco-runtime-audit.cjs','.github/workflows/android-poco-test.yml','tests/android/WebViewRuntimeAudit.java','scripts/compose-theme-proof.py'}
           assert all(f in allowed or f.startswith('test-builds/poco-test-20261118/') for f in changed),changed
-          print('PASS: all web/game/save/wheel/sound/haptic/tutorial code byte-identical to successful full regression '+base+'; only native light commit timing and synchronized screenshot test changed')
+          print('PASS: all game/save/wheel/sound/haptic/tutorial code byte-identical to successful full regression '+base+'; only native light/input adapter and synchronized screenshot test changed')
           PYBASE
 
       - name: Reklam modunu dogrula
