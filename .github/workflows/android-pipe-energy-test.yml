@@ -273,7 +273,7 @@ jobs:
           mkdir -p app/src/main/res/values
           printf '<resources><string name="game_services_project_id">1097423047801</string></resources>\n' > app/src/main/res/values/strings.xml
           mkdir -p app/src/androidTest/java/com/orynexa/karadugum
-          cp tests/android/PipeFlowRuntimeAudit.java app/src/androidTest/java/com/orynexa/karadugum/
+          cp tests/android/PipeFlowRuntimeAudit.java tests/android/PipeUpgradeAudit.java app/src/androidTest/java/com/orynexa/karadugum/
           cp tests/android/AndroidManifest.xml app/src/androidTest/AndroidManifest.xml
           cat > settings.gradle <<'EOF'
           pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
@@ -402,6 +402,8 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         shell: bash
         run: |
+          curl --fail --silent --show-error --location --retry 3 https://raw.githubusercontent.com/MhmTBsr60/KaraDugum/f4e94270776a6220c1790fda5a3a22ad7cba7e9a/test-builds/light-visibility-test2-20261118/KaraDugum-6.50-LIGHT-VISIBILITY-TEST2.apk --output "$RUNNER_TEMP/previous-test.apk"
+          echo "33987d38f82969aef4639bdfc8edb4ff5273e4354ff8d0148adbcc18f55b2963  $RUNNER_TEMP/previous-test.apk" | sha256sum --check
           sudo chmod 666 /dev/kvm
           KD_APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
           "$KD_APKSIGNER" sign --ks app/karadugum.jks --ks-pass env:KEYSTORE_PASSWORD --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASSWORD app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
@@ -418,12 +420,18 @@ jobs:
           emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 1536 -cores 2 -skin 720x1600 -dpi-device 320
           script: |
             adb shell settings put secure immersive_mode_confirmations confirmed
-            timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
+            timeout 45s adb install -r "$RUNNER_TEMP/previous-test.apk"
             timeout 45s adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+            timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PipeUpgradeAudit#seedPreviousSignedTest' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/pipe-upgrade-seed.log
+            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-seed.log').read()"
+            adb shell am force-stop com.orynexa.karadugum
+            timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
+            timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PipeUpgradeAudit#verifyAfterInPlaceInstall' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/pipe-upgrade-verify.log
+            python3 -c "assert 'OK (1 test)' in open('/tmp/pipe-upgrade-verify.log').read()"
             adb logcat -c
             mkdir -p dist/android-webview
             nohup timeout 320s adb logcat -v threadtime > dist/android-webview/live-logcat.txt 2>&1 &
-            timeout 280s adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
+            timeout 280s adb shell am instrument -w -e class com.orynexa.karadugum.PipeFlowRuntimeAudit com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
             mkdir -p dist/android-webview
             timeout 30s adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
             timeout 15s adb logcat -d > dist/android-webview/logcat.txt || true
