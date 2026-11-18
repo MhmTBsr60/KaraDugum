@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "scope": "Same old signed APK in a new process, before any package update",
+  "phoneVerified": false
+}

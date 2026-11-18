@@ -1,0 +1,17 @@
+{
+  "versionName": "6.50-pipe-energy-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "06ecfcf20f2a527b645cf27c8f76a37614c80631",
+  "baseCommit": "41aef5049cffddecb8667781c9cab8761b3082ed",
+  "adsMode": "test",
+  "sha256": "ec9884ee961a7461de1f241156fba001428a2b5389de416e5c6d35032e8e9649",
+  "phoneVerified": false,
+  "renderer": "root-canvas2d",
+  "style": "strong-1",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "fullWebRegressionRun": 44422846590,
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}

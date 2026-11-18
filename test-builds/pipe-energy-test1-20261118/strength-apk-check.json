@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "cases": [
+    {
+      "theme": "gold",
+      "baselineLight": 723399.989797647,
+      "strongLight": 837502.8869803922,
+      "ratio": 1.3195503991617767,
+      "wholeBoardRatio": 1.1577314055736476,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    },
+    {
+      "theme": "ice",
+      "baselineLight": 758110.6698321569,
+      "strongLight": 871562.8281450979,
+      "ratio": 1.3156718805848526,
+      "wholeBoardRatio": 1.1496511826407336,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    },
+    {
+      "theme": "fire",
+      "baselineLight": 695698.4001678431,
+      "strongLight": 809416.4305741176,
+      "ratio": 1.3517541731364584,
+      "wholeBoardRatio": 1.1634588068318672,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    },
+    {
+      "theme": "shadow",
+      "baselineLight": 624461.5262572549,
+      "strongLight": 735226.0875513725,
+      "ratio": 1.3713566121694851,
+      "wholeBoardRatio": 1.1773761178818993,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    },
+    {
+      "theme": "emerald",
+      "baselineLight": 721257.2123749019,
+      "strongLight": 837949.9013231372,
+      "ratio": 1.3472324653045755,
+      "wholeBoardRatio": 1.1617906718242696,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    },
+    {
+      "theme": "ruby",
+      "baselineLight": 612276.346854902,
+      "strongLight": 711113.0007364706,
+      "ratio": 1.327973670082729,
+      "wholeBoardRatio": 1.1614249095024913,
+      "scope": "newly formed connection 0:1 at the same 400ms frame",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true
+    }
+  ],
+  "errors": [],
+  "locales": 25,
+  "noLegacyFallbackOnCanvasFailure": true
+}
