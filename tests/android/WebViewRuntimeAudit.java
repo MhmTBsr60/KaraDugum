@@ -51,8 +51,13 @@ public final class WebViewRuntimeAudit {
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
     private void shot(String name) throws Exception {
-        Bitmap bitmap=instrumentation.getUiAutomation().takeScreenshot();assertNotNull("Surface screenshot",bitmap);
-        try(FileOutputStream out=new FileOutputStream(new File(output,name+".png"))){bitmap.compress(Bitmap.CompressFormat.PNG,100,out);}bitmap.recycle();
+        // Use Android's screencap Surface path instead of emulator UiAutomation bitmap binding.
+        try(android.os.ParcelFileDescriptor descriptor=instrumentation.getUiAutomation().executeShellCommand("screencap -p");
+            InputStream input=new android.os.ParcelFileDescriptor.AutoCloseInputStream(descriptor);
+            FileOutputStream out=new FileOutputStream(new File(output,name+".png"))){
+            byte[] buffer=new byte[32768];int size;while((size=input.read(buffer))!=-1)out.write(buffer,0,size);
+        }
+        assertTrue("Real Surface PNG must exist",new File(output,name+".png").length()>1000);
     }
     private void tap() throws Exception {
         JSONObject r=(JSONObject)eval("(()=>{const r=document.querySelector('#board>.tile:not(.good)').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight}})()");
