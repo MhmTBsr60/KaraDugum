@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "download": "https://raw.githubusercontent.com/MhmTBsr60/KaraDugum/38e0cb5e7461595407bd17c0b35d9b748a011220/test-builds/pipe-energy-test1-20261118/KaraDugum-6.50-PIPE-ENERGY-TEST1.apk",
+  "publicationCommit": "38e0cb5e7461595407bd17c0b35d9b748a011220",
+  "runtimeCommit": "06ecfcf20f2a527b645cf27c8f76a37614c80631",
+  "versionName": "6.50-pipe-energy-test1",
+  "sha256": "ec9884ee961a7461de1f241156fba001428a2b5389de416e5c6d35032e8e9649",
+  "package": "com.orynexa.karadugum",
+  "sameSignerAsPreviousTest": true,
+  "signer": {
+    "sha1": "A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A",
+    "sha256": "35:1B:49:B7:2B:FC:09:EB:B3:17:76:98:32:31:9E:AD:CA:9D:ED:6D:AE:70:9D:AE:B8:31:47:19:A5:3D:EE:9E",
+    "block": "0x7109871a"
+  },
+  "androidApi": 35,
+  "physicalPhoneVerified": false,
+  "sameStatePixelProof": {
+    "boardChangedFraction": 0.009830666283794955,
+    "addedGoldFraction": 0.008597210257481227,
+    "restoreDifference": 0.00017620800375910408,
+    "negativeControlRejected": true,
+    "method": "actual Android Surface on/off/restored screenshots, same puzzle; not counters"
+  },
+  "animatedAndroidHarnessPassed": true,
+  "animatedHardwareOverride": true,
+  "animationClockControlled": true,
+  "realTimePhonePerformanceVerified": false,
+  "inPlaceUpgradePreserved": true,
+  "fullWebRegressionRun": 44422846590,
+  "byteMatchedRuntimeAssets": [
+    "index.html",
+    "connection-model.js",
+    "pipe-flow.js",
+    "pipe-flow.css",
+    "obsidian-gold.css",
+    "obsidian-gold.js",
+    "board-renderer.js",
+    "theme-renderer.js",
+    "localization.js",
+    "cloud-model.js",
+    "cloud-sync.js",
+    "reward-receipts.js",
+    "board-focus.css",
+    "board-focus.js",
+    "feedback.js",
+    "wheel.js",
+    "wheel-motion.js",
+    "ux-locales.js",
+    "ux-polish.css",
+    "gameplay-ui.js",
+    "gameplay-layout.css",
+    "onboarding.js",
+    "onboarding.css",
+    "privacy-policy.html",
+    "delete-account.html"
+  ],
+  "newLightRatios": [
+    {
+      "theme": "gold",
+      "ratio": 1.3195503991617767
+    },
+    {
+      "theme": "ice",
+      "ratio": 1.3156718805848526
+    },
+    {
+      "theme": "fire",
+      "ratio": 1.3517541731364584
+    },
+    {
+      "theme": "shadow",
+      "ratio": 1.3713566121694851
+    },
+    {
+      "theme": "emerald",
+      "ratio": 1.3472324653045755
+    },
+    {
+      "theme": "ruby",
+      "ratio": 1.327973670082729
+    }
+  ]
+}

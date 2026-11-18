@@ -1,6 +1,6 @@
 KARA DÜĞÜM 6.50-pipe-energy-test1 — Güçlendirilmiş boru içi enerji
 
-Mevcut TEST uygulamasının üzerine kurun. Oyunu kaldırmayın; uygulama verilerini temizlemeyin.
+Önce oyunda ana menüye dönüp 10 saniye bekleyin. Mevcut TEST uygulamasının üzerine kurun. Oyunu kaldırmayın; uygulama verilerini temizlemeyin.
 Paket: com.orynexa.karadugum; sürüm kodu 110. Önceki TEST imzası korunur.
 
 1. Android Uygulama bilgileri ekranında sürümün 6.50-pipe-energy-test1 olduğunu doğrulayın.
