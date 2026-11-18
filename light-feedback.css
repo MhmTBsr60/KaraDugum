@@ -12,5 +12,8 @@ body.kdNoGlow>.kdTapGlint{display:none!important}
 
 .kdLightDiagnostics[data-interactive="1"] output{pointer-events:auto}
 
-.kdLightDiagnostics[data-compact="1"] .kdLightTools{display:none}
-.kdLightDiagnostics[data-compact="1"]{grid-template-rows:44px minmax(0,1fr)}
+
+.kdLightDiagnostics:not([data-interactive="1"]) .kdLightTools{display:none}
+.kdLightDiagnostics:not([data-interactive="1"]){grid-template-rows:44px minmax(0,1fr)}
+
+.kdLightDiagnostics[data-interactive="1"]{pointer-events:auto}
