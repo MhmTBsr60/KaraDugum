@@ -50,7 +50,7 @@ public final class WebViewRuntimeAudit {
         assertTrue("Real app window must own focus before board input/screenshots",focus[0]);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdLearning.leave();kdSetPaused(true);return true})()");
     }
-    @After public void tearDown(){try{if(output!=null)shot("final-state");}catch(Exception ignored){}if(scenario!=null)scenario.close();}
+    @After public void tearDown(){try{if(output!=null){shot("final-state");try(FileOutputStream debug=new FileOutputStream(new File(output,"final-light-state.json"))){debug.write(String.valueOf(eval("kdLightFeedback.state()")).getBytes("UTF-8"));}}}catch(Exception ignored){}if(scenario!=null)scenario.close();}
     private String webUrl() throws Exception {final String[] s={null};instrumentation.runOnMainSync(()->s[0]=web.getUrl());return s[0];}
     private Object eval(String expression) throws Exception {
         CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
@@ -124,8 +124,11 @@ public final class WebViewRuntimeAudit {
         report.put("lightGeometry",on.getJSONObject("geometry"));
         report.put("lightNativeInfo",on.getJSONObject("nativeInfo"));
         long shownAt=0,clearedAt=0;JSONArray events=on.getJSONArray("history");
-        for(int i=0;i<events.length();i++){JSONObject e=events.getJSONObject(i);if(e.getString("phase").equals("native_presented"))shownAt=e.getLong("nativeStartedMs");if(e.getString("phase").equals("native_cleared_elapsed_500ms"))clearedAt=e.getLong("nativeMs");}
-        assertTrue("Native committed frame must hold for 500ms: "+(clearedAt-shownAt),shownAt>0&&clearedAt-shownAt>=500);
+        for(int i=0;i<events.length();i++){JSONObject e=events.getJSONObject(i);if(e.getString("phase").equals("native_presented"))shownAt=e.getLong("nativeStartedMs");if((e.getString("phase").startsWith("native_cleared_")||e.getString("phase").startsWith("stale_cleared_"))&&e.has("nativeMs"))clearedAt=e.getLong("nativeMs");}
+        JSONObject lastNative=on.getJSONObject("nativeInfo");
+        if(lastNative.getString("phase").startsWith("cleared_")&&lastNative.getLong("visibleSinceMs")==shownAt)clearedAt=lastNative.getLong("uptimeMs");
+        try(FileOutputStream debug=new FileOutputStream(new File(output,"native-timing-state.json"))){debug.write(on.toString(2).getBytes("UTF-8"));}
+        assertTrue("Native committed frame must hold for 500ms: "+(clearedAt-shownAt)+"; "+on,shownAt>0&&clearedAt-shownAt>=500);
         report.put("nativeVisibleHoldMs",clearedAt-shownAt);
         shot("native-light-settled");
         eval("(()=>{document.body.classList.add('kdNoGlow');localStorage.setItem('kd5_glow','0');return true})()");SystemClock.sleep(100);int offBefore=((JSONObject)eval("kdLightFeedback.state()")).getInt("nativePaints");tap();SystemClock.sleep(100);
