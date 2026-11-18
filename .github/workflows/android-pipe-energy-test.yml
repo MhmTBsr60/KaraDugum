@@ -441,7 +441,10 @@ jobs:
             free -m > dist/android-webview/host-memory.txt
             sudo dmesg -T | tail -100 > dist/android-webview/host-kernel.txt || true
             python3 -c "assert 'OK (2 tests)' in open('/tmp/kd-webview-instrumentation.log').read()"
-            python3 scripts/verify-pipe-flow-pixels.py dist/android-webview
+            adb pull /sdcard/kd-energy-flow.mp4 dist/android-webview/kd-energy-flow.mp4
+            mkdir -p "$RUNNER_TEMP/energy-video-frames"
+            ffmpeg -hide_banner -loglevel error -i dist/android-webview/kd-energy-flow.mp4 -vf fps=12 "$RUNNER_TEMP/energy-video-frames/%04d.png"
+            python3 scripts/verify-pipe-flow-pixels.py dist/android-webview "$RUNNER_TEMP/energy-video-frames"
 
       - name: Tum mevcut tarayici, ses-titresim ve ogretici regresyonlari
         run: |

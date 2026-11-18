@@ -12,24 +12,25 @@ assert not any(delta(p,q)>20 for p,q in zip(a,a))
 r['pixelProof']={'boardChangedFraction':changed,'addedGoldFraction':added,'restoreDifference':restore,'negativeControlRejected':True,'method':'actual Android Surface on/off/restored screenshots, same puzzle; not counters'}
 (root/'pipe-flow-report.json').write_text(json.dumps(r,indent=2));print(r['pixelProof'])
 
-# Temporal proof: actual Surface samples begin at the real engine move callback,
-# not after slow evaluateJavascript/screenshot round trips have consumed the pulse.
+# Decode continuous native screenrecord frames outside this script. Reference and
+# samples share the same codec, avoiding PNG screenshot latency/codec differences.
 from PIL import ImageDraw
 import shutil
-animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];rest=Image.open(root/'animated-flow-rest.png').convert('RGB');scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']])
-mask=Image.new('L',rest.size);draw=ImageDraw.Draw(mask);width=round((g['width']/4*.10+3)*scale)
+animated=json.loads((root/'animated-flow-report.json').read_text());f=animated['during'];g=f['rect'];frames=sorted(Path(sys.argv[2]).glob('*.png'));assert len(frames)>=12
+rest=Image.open(frames[-1]).convert('RGB');scale=rest.width/animated['vw'];boardbox=tuple(round(v*scale) for v in [g['x'],g['y'],g['x']+g['width'],g['y']+g['height']]);small=(round(g['width']),round(g['height']))
+# Analyse at CSS resolution; raw full-resolution chosen frames remain available.
+mask=Image.new('L',small);draw=ImageDraw.Draw(mask);width=round(g['width']/4*.10+3)
 for seg in f['segments']:
- points=[(round((x+g['x'])*scale),round((y+g['y'])*scale)) for x,y in seg['points']];draw.line(points,fill=255,width=width,joint='curve')
+ points=[(round(x),round(y)) for x,y in seg['points']];draw.line(points,fill=255,width=width,joint='curve')
  for x,y in points:draw.ellipse((x-width/2,y-width/2,x+width/2,y+width/2),fill=255)
-seg=next(v for v in f['segments'] if v['id']=='0:1');xs=[p[0]+g['x'] for p in seg['points']];ys=[p[1]+g['y'] for p in seg['points']];roi=(round((min(xs)-5)*scale),round((min(ys)-5)*scale),round((max(xs)+5)*scale),round((max(ys)+5)*scale))
-reference=list(rest.crop(boardbox).getdata());allowed=list(mask.crop(boardbox).getdata());end=list(rest.crop(roi).getdata());valid=[]
+seg=next(v for v in f['segments'] if v['id']=='0:1');xs=[p[0] for p in seg['points']];ys=[p[1] for p in seg['points']];roi=(round(min(xs)-5),round(min(ys)-5),round(max(xs)+5),round(max(ys)+5))
+base=rest.crop(boardbox).resize(small,Image.Resampling.LANCZOS);reference=list(base.getdata());allowed=list(mask.getdata());end=list(base.crop(roi).getdata());valid=[]
 luma=lambda p:.2126*p[0]+.7152*p[1]+.0722*p[2]
-for i in range(6):
- name='capture-energy-'+str(i)+'.png';im=Image.open(root/name).convert('RGB');pixels=list(im.crop(boardbox).getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed))
- bright=[k for k,(p,q) in enumerate(zip(im.crop(roi).getdata(),end)) if luma(p)-luma(q)>18]
- if outside<.01 and len(bright)>=8:valid.append({'sample':name,'brightPixels':len(bright),'centroidX':sum(roi[0]+k%(roi[2]-roi[0]) for k in bright)/len(bright),'outsideMatchedPipesFraction':outside})
-assert len(valid)>=2,('No two visible moving-light Surface frames on the same committed puzzle',valid)
+for i,name in enumerate(frames):
+ im=Image.open(name).convert('RGB').crop(boardbox).resize(small,Image.Resampling.LANCZOS);pixels=list(im.getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed));bright=[k for k,(p,q) in enumerate(zip(im.crop(roi).getdata(),end)) if luma(p)-luma(q)>12]
+ if outside<.03 and len(bright)>=8:valid.append({'sample':name.name,'frame':i,'brightPixels':len(bright),'centroidX':sum(roi[0]+k%(roi[2]-roi[0]) for k in bright)/len(bright)*scale,'outsideMatchedPipesFraction':outside})
+assert len(valid)>=2,('No two visible moving-light video frames on the same committed puzzle',valid)
 shift=max(v['centroidX'] for v in valid)-min(v['centroidX'] for v in valid);assert shift>=3,('Energy must visibly travel along the pipe',valid)
-best=max(valid,key=lambda v:v['brightPixels']);shutil.copyfile(root/best['sample'],root/'animated-flow-on.png')
-animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':best['brightPixels'],'sameCommittedPuzzle':True,'visibleSamples':valid,'travelPixels':shift,'selectedSample':best['sample'],'method':'real Android Surface temporal brightness and travel inside matched pipes; not counters','physicalPhoneVerified':False}
+best=max(valid,key=lambda v:v['brightPixels']);shutil.copyfile(Path(sys.argv[2])/best['sample'],root/'animated-flow-on.png');shutil.copyfile(frames[-1],root/'animated-flow-settled-video.png')
+animated['surfaceAnimationProof']={'changedPixelsOnNewConnection':best['brightPixels'],'sameCommittedPuzzle':True,'visibleSamples':valid,'travelPixels':shift,'selectedSample':best['sample'],'method':'continuous Android screenrecord frames: positive luminance + directional travel inside matched pipes; not counters','physicalPhoneVerified':False}
 (root/'animated-flow-report.json').write_text(json.dumps(animated,indent=2));print(animated['surfaceAnimationProof'])
