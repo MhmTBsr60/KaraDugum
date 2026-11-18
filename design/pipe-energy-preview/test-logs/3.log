@@ -1,0 +1,14 @@
+
+> test:ux
+> node tests/ux-protected-core.cjs && node tests/ui-feedback-native-audit.cjs && node tests/ux-feedback-audit.cjs && node tests/ux-wheel-matrix.cjs && node tests/wheel-motion-audit.cjs && node tests/native-haptic-player-audit.cjs && node tests/webview-feedback-regression.cjs && node tests/gameplay-fix-audit.cjs
+
+PASS: entire game closure except audio adapters, plus protected save/economy/policy files unchanged from c38bbf3; manifest differs only by authorized VIBRATE permission
+PASS: 25 haptic eligibility, quiet/background, hardware, rate/clock and cue assertions
+PASS: native source guards, system-setting-respecting haptics and normal permission declaration; full Android compile/lint is a separate CI check
+PASS: short distinct cues; real connection/purchase/daily-claim feedback; no legacy music; sound/haptics independent and persistent; silent/native denial, volume zero, background cleanup, ≤8 voices/one context; unsupported haptics disabled; segment ticks/reduced motion; wheel outcome unchanged
+PASS: 150 settings layouts across 25 locales/6 viewports; 318 localized wheel layouts/7 states plus all-language reward/wedge checks; 8 free outcomes and safe reservation/payout; acceleration/deceleration timing
+PASS: 16 actual high/low-hardware spins; original 8 payouts, preselection/no early payout, all final pointer angles, reduced turn/tick counts, static low-hardware result, independent reduced-motion override
+PASS: 112 actual native helper assertions; APIs 24/26/28/29/31/36, device tick/click, fallback motor/amplitude, permission/system-off/hardware/failure/cancel. Not a physical motor test.
+PASS: real Chromium WebAudio graph, nonzero unclipped signal {"state":"running","rms":0.011222790477682983,"peak":0.0492672398686409}; audibility on phone unverified
+PASS: real gesture + delayed WebView AudioContext resume; no premature note cleanup; bounded louder 35ms tap; native preview dispatch/status; independent persistent toggles; silent/zero-volume/pending-resume cancellation. Browser/native doubles, not physical sound or vibration.
+PASS: TEST2 bug reproduced, actual goal-button click resumes existing puzzle/undo; daily/workshop campaign return; wallet/save preservation; 128 game layouts/44px controls; 3 exact same-state board comparisons. Physical Android untested.

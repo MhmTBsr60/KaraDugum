@@ -1,0 +1,5 @@
+
+> test:tutorial
+> node tests/tutorial-audit.cjs
+
+PASS: first-install/returning/skip/complete/replay/owner/clock/undo/economy flows; 25 locales; 204 tutorial-stage layouts; 60 TEST3 board-size comparisons; live node identities preserved. Not a physical Android test.

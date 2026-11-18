@@ -29,6 +29,10 @@ Tek HTML-kök Canvas2D, boruların mevcut SVG merkez çizgilerine hizalanır. Bo
 - Android Surface on/off/restored görüntülerinde tahta piksellerinin %0,91'i değişti; %0,77 yeni altın piksel, geri açmada fark %0,0076. Sayaç/çizim tamponu tek başına başarı kanıtı değildir.
 - Android debug APK derleme/lint ve AndroidX testi: [Actions 44289156184](https://github.com/MhmTBsr60/KaraDugum/actions/runs/44289156184) başarılı. Yalnız izole emülatörde geçici debug APK kuruldu; telefona dağıtılacak yeni TEST APK veya AAB üretilip yayımlanmadı.
 
-`npm test`, `npm run test:ux`, `npm run test:tutorial` ve kapsamlı tarayıcı regresyonları yerel çalışma alanında ayrıca çalıştırılır; son toplu durum TEST-SONUCLARI.json dosyasındadır. Önceki dokunma parlaması tanılamaları eski tasarıma aittir. Obsidyen testindeki yalnız eski dokunma/border animasyonu beklentileri yeni bağlantı ışığı beklentileriyle değiştirildi; oyun, kayıt, tıklama, geometri ve ödül kontrolleri korunur.
+`npm test`, `npm run test:ux`, `npm run test:tutorial` ve kapsamlı tarayıcı regresyonları yerel çalışma alanında başarıyla tamamlandı; son toplu durum TEST-SONUCLARI.json dosyasındadır. Önceki dokunma parlaması tanılamaları eski tasarıma aittir. Obsidyen testindeki yalnız eski dokunma/border animasyonu beklentileri yeni bağlantı ışığı beklentileriyle değiştirildi; oyun, kayıt, tıklama, geometri ve ödül kontrolleri korunur.
 
 MainActivity, AndroidManifest, ses/titreşim, bulut/kayıt, ekonomi, öğretici, temaların boru çizimi, üretim derleme iş akışları, AdMob kimlikleri ve mağaza varlıkları değiştirilmedi. Main, Google Play 6.50 ve mağaza yayınlarına dokunulmadı.
+
+## Onaydan sonraki entegrasyon sınırları
+
+Üretim paketleme iş akışları bu önizlemede değiştirilmedi. Yeni üç çalışma zamanı dosyası yalnız önizleme derlemesine eklenir; tasarım onayından sonra üretim paketlemesine alınmalıdır. Ayarlardaki eski dokunma parlaması alt açıklaması da korunmuştur; yeni bağlantı enerjisi açıklamasının desteklenen dillerde yerelleştirilmesi onay sonrası arayüz işidir. Fiziksel POCO görünürlük/animasyon testi ve tamamlanma panelinin örttüğü borular için görsel tercih hâlâ açıktır.

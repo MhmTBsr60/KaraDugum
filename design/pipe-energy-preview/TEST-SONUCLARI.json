@@ -1,0 +1,96 @@
+{
+  "status": "PASS_PREVIEW_ONLY",
+  "date": "2026-11-18",
+  "branch": "design/pipe-energy-preview-20261118",
+  "runtimeCommit": "25b2aa0d5f6209b67a559078c0be66408e4ab568",
+  "previewEvidenceCommit": "d31d8d2",
+  "mainUnchanged": "0acb75b117e9cb4fee53b316dd7226f97a1e7256",
+  "productionAabUnchangedSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+  "noPlayUpload": true,
+  "noAdMobAccountChange": true,
+  "noStoreAssetChange": true,
+  "physicalPhoneVerified": false,
+  "runs": [
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "log": "test-logs/1.log",
+      "sha256": "7a4bf5adf64238ea953d1d3cdcdfacfe40896e0110e305736c183e3e395832b5"
+    },
+    {
+      "command": "npm run test:browser",
+      "exitCode": 0,
+      "log": "test-logs/2.log",
+      "sha256": "20c9cdab804a6fb88a11f9efa5bde2e70bbaee58415a79c704ce0dc411eef0ab"
+    },
+    {
+      "command": "npm run test:ux",
+      "exitCode": 0,
+      "log": "test-logs/3.log",
+      "sha256": "3da49dd52114b84fec6758769173ea6e55c10a49a280f72ad027ea2e19278b6e"
+    },
+    {
+      "command": "npm run test:tutorial",
+      "exitCode": 0,
+      "log": "test-logs/4.log",
+      "sha256": "28608780f72def6f5e5c6d5ccc276b35042fc16333cdfa7e23b366c3623e83bc"
+    },
+    {
+      "command": "node tests/pipe-flow-audit.cjs",
+      "exitCode": 0,
+      "log": "test-logs/5.log",
+      "sha256": "0a94ebc68742eeebdc5624d1bb24440ae232a5cdc192924176e199f05d120fdf"
+    },
+    {
+      "command": "node tests/pipe-flow-performance.cjs",
+      "exitCode": 0,
+      "log": "test-logs/6.log",
+      "sha256": "398e2c3d39222419dcb9dad2b60af3e8a0e13f7d40b144156d6dcb574bb5b599"
+    }
+  ],
+  "suiteScriptCounts": {
+    "test": 18,
+    "test:browser": 43,
+    "test:ux": 8,
+    "test:tutorial": 1
+  },
+  "android": {
+    "workflow": "https://github.com/MhmTBsr60/KaraDugum/actions/runs/44289156184",
+    "status": "success",
+    "sourceCommit": "25b2aa0d5f6209b67a559078c0be66408e4ab568",
+    "api": 35,
+    "compile": "assembleDebug + assembleDebugAndroidTest",
+    "lint": "lintDebug",
+    "scope": "real app MainActivity and file WebView in emulator; low-device/static path",
+    "pixelProof": {
+      "boardChangedFraction": 0.00911930804639709,
+      "addedGoldFraction": 0.007692240756693729,
+      "restoreDifference": 7.613926088356349e-05,
+      "negativeControlRejected": true,
+      "method": "actual Android Surface on/off/restored screenshots, same puzzle; not counters"
+    }
+  },
+  "preservedByteIdenticalFiles": [
+    "MainActivity.java",
+    "TapLightOverlay.java",
+    "AndroidManifest.xml",
+    "feedback.js",
+    "HapticFeedbackPlayer.java",
+    "UiFeedbackGate.java",
+    "theme-renderer.js",
+    "cloud-model.js",
+    "cloud-sync.js",
+    "wheel.js",
+    "onboarding.js",
+    "localization.js",
+    "admob-units.json",
+    ".github/workflows/android-apk.yml"
+  ],
+  "openItems": [
+    "Physical POCO visibility and animation/GPU performance remain unverified.",
+    "Android emulator exercised the low-device static path; animated dense boards were measured in desktop Chromium with CPU throttling.",
+    "Existing result panel still covers part of completion wave; reward/panel timing was intentionally preserved.",
+    "Preview workflow packages all new assets; production packaging workflows remain unchanged and require integration after design approval.",
+    "The settings subtitle still describes the older touch sparkle; localized replacement copy is a follow-up for the approved design."
+  ]
+}
