@@ -1,0 +1,100 @@
+[Wed Nov 18 05:26:36 2026] pstore: Using crash dump compression: deflate
+[Wed Nov 18 05:26:36 2026] systemd[1]: Starting modprobe@loop.service - Load Kernel Module loop...
+[Wed Nov 18 05:26:36 2026] pstore: Registered efi_pstore as persistent store backend
+[Wed Nov 18 05:26:36 2026] systemd[1]: Starting modprobe@nvme_fabrics.service - Load Kernel Module nvme_fabrics...
+[Wed Nov 18 05:26:36 2026] systemd[1]: netplan-ovs-cleanup.service - OpenVSwitch configuration for cleanup was skipped because of an unmet condition check (ConditionFileIsExecutable=/usr/bin/ovs-vsctl).
+[Wed Nov 18 05:26:36 2026] systemd[1]: Starting systemd-fsck-root.service - File System Check on Root Device...
+[Wed Nov 18 05:26:36 2026] systemd[1]: Starting systemd-modules-load.service - Load Kernel Modules...
+[Wed Nov 18 05:26:36 2026] systemd[1]: systemd-pcrmachine.service - TPM2 PCR Machine ID Measurement was skipped because of an unmet condition check (ConditionSecurity=measured-uki).
+[Wed Nov 18 05:26:36 2026] systemd[1]: systemd-tpm2-setup-early.service - TPM2 SRK Setup (Early) was skipped because of an unmet condition check (ConditionSecurity=measured-uki).
+[Wed Nov 18 05:26:36 2026] systemd[1]: Starting systemd-udev-trigger.service - Coldplug All udev Devices...
+[Wed Nov 18 05:26:36 2026] i2c_dev: i2c /dev entries driver
+[Wed Nov 18 05:26:36 2026] systemd[1]: Started systemd-journald.service - Journal Service.
+[Wed Nov 18 05:26:36 2026] EXT4-fs (nvme0n1p1): re-mounted 8a7dab9d-41c3-46bb-a697-a7a6bf234209 r/w.
+[Wed Nov 18 05:26:36 2026] systemd-journald[162]: Received client request to flush runtime journal.
+[Wed Nov 18 05:26:36 2026] systemd-journald[162]: /var/log/journal/5912aea2eb4f4b0eac01605262e84f87/system.journal: Journal file uses a different sequence number ID, rotating.
+[Wed Nov 18 05:26:36 2026] systemd-journald[162]: Rotating system journal.
+[Wed Nov 18 05:26:36 2026] nvme nvme0: using unchecked data buffer
+[Wed Nov 18 05:26:36 2026] hv_vmbus: registering driver hyperv_keyboard
+[Wed Nov 18 05:26:36 2026] hid: raw HID events driver (C) Jiri Kosina
+[Wed Nov 18 05:26:36 2026] input: AT Translated Set 2 keyboard as /devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/d34b2567-b9b6-42b9-8778-0a4ec0b955bf/serio0/input/input0
+[Wed Nov 18 05:26:36 2026] hv_vmbus: registering driver hid_hyperv
+[Wed Nov 18 05:26:36 2026] input: Microsoft Vmbus HID-compliant Mouse as /devices/0006:045E:0621.0001/input/input1
+[Wed Nov 18 05:26:36 2026] hv_vmbus: registering driver hyperv_drm
+[Wed Nov 18 05:26:36 2026] hyperv_drm 5620e0c7-8062-4dce-aeb7-520c7ef76171: [drm] Synthvid Version major 3, minor 5
+[Wed Nov 18 05:26:36 2026] hid-hyperv 0006:045E:0621.0001: input: VIRTUAL HID v0.01 Mouse [Microsoft Vmbus HID-compliant Mouse] on 
+[Wed Nov 18 05:26:36 2026] Console: switching to colour dummy device 80x25
+[Wed Nov 18 05:26:36 2026] hyperv_drm 5620e0c7-8062-4dce-aeb7-520c7ef76171: [drm] Registered 1 planes with drm panic
+[Wed Nov 18 05:26:36 2026] [drm] Initialized hyperv_drm 1.0.0 for 5620e0c7-8062-4dce-aeb7-520c7ef76171 on minor 1
+[Wed Nov 18 05:26:36 2026] mlx5_core e182:00:02.0: enabling device (0000 -> 0002)
+[Wed Nov 18 05:26:36 2026] mlx5_core e182:00:02.0: firmware version: 16.30.5034
+[Wed Nov 18 05:26:36 2026] Console: switching to colour frame buffer device 128x48
+[Wed Nov 18 05:26:36 2026] mlx5_core e182:00:02.0: Flow counters bulk query buffer size increased, bulk_query_len(8)
+[Wed Nov 18 05:26:36 2026] hyperv_drm 5620e0c7-8062-4dce-aeb7-520c7ef76171: [drm] fb0: hyperv_drmdrmfb frame buffer device
+[Wed Nov 18 05:26:37 2026] hv_netvsc 70a8a51b-4916-70a8-a51b-491670a8a51b eth0: VF registering: eth1
+[Wed Nov 18 05:26:37 2026] mlx5_core e182:00:02.0 eth1: joined to eth0
+[Wed Nov 18 05:26:37 2026] mlx5_core e182:00:02.0: MLX5E: StrdRq(1) RqSz(8) StrdSz(256) RxCqeCmprss(0 basic)
+[Wed Nov 18 05:26:37 2026] mlx5_core e182:00:02.0 enP57730s1: renamed from eth1
+[Wed Nov 18 05:26:37 2026] kvm_amd: TSC scaling supported
+[Wed Nov 18 05:26:37 2026] kvm_amd: Nested Virtualization enabled
+[Wed Nov 18 05:26:37 2026] kvm_amd: Nested Paging enabled
+[Wed Nov 18 05:26:37 2026] kvm_amd: kvm_amd: Hyper-V enlightened NPT TLB flush enabled
+[Wed Nov 18 05:26:37 2026] kvm_amd: kvm_amd: Hyper-V Direct TLB Flush enabled
+[Wed Nov 18 05:26:37 2026] kvm_amd: Virtual VMLOAD VMSAVE supported
+[Wed Nov 18 05:26:37 2026] kvm_amd: PMU virtualization is disabled
+[Wed Nov 18 05:26:37 2026] MACsec IEEE 802.1AE
+[Wed Nov 18 05:26:37 2026] EXT4-fs (nvme0n1p16): Supports (experimental) DIO atomic writes awu_min: 4096, awu_max: 4096
+[Wed Nov 18 05:26:37 2026] EXT4-fs (nvme0n1p16): mounted filesystem 5eb8fc51-75b6-4f8b-98bd-17e0c67f2ccf r/w with ordered data mode. Quota mode: none.
+[Wed Nov 18 05:26:37 2026] hv_utils: KVP IC version 4.0
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.375:2): apparmor="STATUS" operation="profile_load" profile="unconfined" name=4D6F6E676F444220436F6D70617373 pid=384 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.375:3): apparmor="STATUS" operation="profile_load" profile="unconfined" name="1password" pid=382 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.376:4): apparmor="STATUS" operation="profile_load" profile="unconfined" name="Discord" pid=383 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.376:5): apparmor="STATUS" operation="profile_load" profile="unconfined" name="QtWebEngineProcess" pid=385 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.380:6): apparmor="STATUS" operation="profile_load" profile="unconfined" name="cam" pid=390 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.380:7): apparmor="STATUS" operation="profile_load" profile="unconfined" name="buildah" pid=389 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.380:8): apparmor="STATUS" operation="profile_load" profile="unconfined" name="balena-etcher" pid=387 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.381:9): apparmor="STATUS" operation="profile_load" profile="unconfined" name="brave" pid=388 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] audit: type=1400 audit(1794979597.382:10): apparmor="STATUS" operation="profile_load" profile="unconfined" name="chrome" pid=393 comm="apparmor_parser"
+[Wed Nov 18 05:26:37 2026] /dev/sr0: Can't lookup blockdev
+[Wed Nov 18 05:26:38 2026] mlx5_core e182:00:02.0 enP57730s1: Link up
+[Wed Nov 18 05:26:38 2026] hv_netvsc 70a8a51b-4916-70a8-a51b-491670a8a51b eth0: Data path switched to VF: enP57730s1
+[Wed Nov 18 05:26:38 2026] mlx5_core e182:00:02.0 mlx5_0: Port: 1 Link ACTIVE
+[Wed Nov 18 05:26:38 2026] 8021q: 802.1Q VLAN Support v1.8
+[Wed Nov 18 05:26:38 2026] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[Wed Nov 18 05:26:38 2026] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[Wed Nov 18 05:26:38 2026] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[Wed Nov 18 05:26:38 2026] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[Wed Nov 18 05:26:38 2026] cfg80211: failed to load regulatory.db
+[Wed Nov 18 05:26:38 2026] hv_netvsc 70a8a51b-4916-70a8-a51b-491670a8a51b eth0: Data path switched from VF: enP57730s1
+[Wed Nov 18 05:26:38 2026] mlx5_core e182:00:02.0 mlx5_0: Port: 1 Link DOWN
+[Wed Nov 18 05:26:39 2026] mlx5_core e182:00:02.0 enP57730s1: Link up
+[Wed Nov 18 05:26:39 2026] hv_netvsc 70a8a51b-4916-70a8-a51b-491670a8a51b eth0: Data path switched to VF: enP57730s1
+[Wed Nov 18 05:26:39 2026] mlx5_core e182:00:02.0 mlx5_0: Port: 1 Link ACTIVE
+[Wed Nov 18 05:26:41 2026] EXT4-fs (nvme0n1p1): resizing filesystem from 19398395 to 39059195 blocks
+[Wed Nov 18 05:26:42 2026] EXT4-fs (nvme0n1p1): resized filesystem to 39059195
+[Wed Nov 18 05:26:42 2026] ephemeral0: Can't lookup blockdev
+[Wed Nov 18 05:26:42 2026] systemd-fstab-generator[781]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 05:26:42 2026] systemd-fstab-generator[781]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 05:26:43 2026] block nvme0n1: No UUID available providing old NGUID
+[Wed Nov 18 05:26:43 2026] ephemeral0: Can't lookup blockdev
+[Wed Nov 18 05:26:43 2026] kauditd_printk_skb: 113 callbacks suppressed
+[Wed Nov 18 05:26:43 2026] audit: type=1400 audit(1794979603.655:124): apparmor="STATUS" operation="profile_replace" info="same as current profile, skipping" profile="unconfined" name="rsyslogd" pid=872 comm="apparmor_parser"
+[Wed Nov 18 05:26:43 2026] evm: overlay not supported
+[Wed Nov 18 05:26:43 2026] loop0: detected capacity change from 0 to 8
+[Wed Nov 18 05:26:44 2026] NET: Registered PF_QIPCRTR protocol family
+[Wed Nov 18 05:26:44 2026] audit: type=1400 audit(1794979604.095:125): apparmor="STATUS" operation="profile_replace" info="same as current profile, skipping" profile="unconfined" name="/usr/lib/snapd/snap-confine" pid=1072 comm="apparmor_parser"
+[Wed Nov 18 05:26:44 2026] Adding 3145724k swap on /swapfile.  Priority:-1 extents:19 across:44810236k SS
+[Wed Nov 18 05:26:44 2026] audit: type=1400 audit(1794979604.302:126): apparmor="STATUS" operation="profile_load" profile="unconfined" name="docker-default" pid=1261 comm="apparmor_parser"
+[Wed Nov 18 05:26:44 2026] systemd-journald[162]: /var/log/journal/5912aea2eb4f4b0eac01605262e84f87/user-1001.journal: Journal file uses a different sequence number ID, rotating.
+[Wed Nov 18 05:26:44 2026] Initializing XFRM netlink socket
+[Wed Nov 18 05:26:45 2026] systemd-fstab-generator[1460]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 05:26:45 2026] systemd-fstab-generator[1460]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 05:26:45 2026] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
+[Wed Nov 18 05:26:46 2026] systemd-fstab-generator[1812]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 05:26:46 2026] systemd-fstab-generator[1812]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 05:26:46 2026] systemd-fstab-generator[1880]: Checking was requested for "ephemeral0", but it is not a device.
+[Wed Nov 18 05:26:46 2026] systemd-fstab-generator[1880]: x-systemd.device-timeout ignored for ephemeral0
+[Wed Nov 18 05:26:48 2026] workqueue: drm_fb_helper_damage_work hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[Wed Nov 18 05:27:23 2026] hv_balloon: Max. dynamic memory size: 16384 MB
+[Wed Nov 18 05:28:27 2026] /proc/cgroups lists only v1 controllers, use cgroup.controllers of root cgroup for v2 info
+[Wed Nov 18 05:29:59 2026] kvm: kvm [5082]: vcpu0, guest rIP: 0xffffffffaf00903d Unhandled WRMSR(0xc0010007) = 0xffff

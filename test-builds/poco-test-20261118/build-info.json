@@ -1,0 +1,14 @@
+{
+  "versionName": "6.50-poco-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "7806ed3706da90a015de415ce8c49dcfd274b71f",
+  "adsMode": "test",
+  "sha256": "2a72c7710ebbdecf0fbda1f6830dbc1df536236daea7c1f0b6fe3a4727a9eb7a",
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "runtimeSourceCommit": "7806ed3706da90a015de415ce8c49dcfd274b71f",
+  "baseTutorialCommit": "441d3f7199d86b7197d68571ba2357eebd717383",
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}
