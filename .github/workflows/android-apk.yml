@@ -176,6 +176,7 @@ jobs:
           grep -q '^package com.orynexa.karadugum;' MainActivity.java || { echo 'HATA: MainActivity paket adi yanlis'; exit 1; }
           mkdir -p app/src/main/java/com/orynexa/karadugum app/src/main/assets app/src/main/res/drawable-nodpi
           cp MainActivity.java app/src/main/java/com/orynexa/karadugum/MainActivity.java
+          cp TapLightOverlay.java app/src/main/java/com/orynexa/karadugum/TapLightOverlay.java
           cp UiFeedbackGate.java app/src/main/java/com/orynexa/karadugum/UiFeedbackGate.java
           cp HapticFeedbackPlayer.java app/src/main/java/com/orynexa/karadugum/HapticFeedbackPlayer.java
           cp GamesStartupActivity.java app/src/main/java/com/orynexa/karadugum/GamesStartupActivity.java
@@ -194,6 +195,7 @@ jobs:
           cp privacy-settings.js app/src/main/assets/privacy-settings.js
           cp wheel.js app/src/main/assets/wheel.js
           cp feedback.js app/src/main/assets/feedback.js
+          cp light-feedback.js light-feedback.css app/src/main/assets/
           cp wheel-motion.js app/src/main/assets/wheel-motion.js
           cp ux-locales.js app/src/main/assets/ux-locales.js
           cp ux-polish.css app/src/main/assets/ux-polish.css

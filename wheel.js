@@ -24,7 +24,7 @@ function state(){
 }
 function validPrize(index){return Number.isInteger(index)&&index>=0&&index<prizes.length;}
  // Badge reads must never settle an old spin, roll over storage, or grant currency.
- function availability(){const today=day(),raw=read(key,null),s=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},current=s.date===today,pending=!!s.pending,freeUsed=current&&!!s.freeUsed||read('kd64_shopWheelDate','')===today,freeReady=!pending&&!freeUsed,bonusReady=!pending&&current&&!!s.freeUsed&&amount(s.adCount)>=2&&!s.bonusUsed;return {freeReady,bonusReady,pending,total:Number(freeReady)+Number(bonusReady)};}
+ function availability(){const today=day(),raw=read(key,null),s=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},current=s.date===today,pending=!!s.pending,freeUsed=current&&!!s.freeUsed||read('kd64_shopWheelDate','')===today,freeReady=!pending&&!freeUsed,bonusReady=!pending&&current&&freeUsed&&amount(s.adCount)>=2&&!s.bonusUsed;return {freeReady,bonusReady,pending,total:Number(freeReady)+Number(bonusReady)};}
  const changed=()=>window.dispatchEvent(new Event('kd:rewards-changed'));
  function changedIf(before){const after=availability();if(['freeReady','bonusReady','pending','total'].some(k=>before[k]!==after[k]))changed();}
  window.kdWheel={availability};

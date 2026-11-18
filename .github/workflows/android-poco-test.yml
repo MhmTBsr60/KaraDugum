@@ -27,7 +27,7 @@ jobs:
           import subprocess
           source='d8985fd8c2196c9f4876013e1c4636b7e8ecb224'
           changed=subprocess.check_output(['git','diff','--name-only',source,'HEAD'],text=True).splitlines()
-          allowed={'scripts/compose-theme-proof.py','.github/workflows/android-poco-test.yml', 'scripts/verify-test-apk.py', 'tests/reward-indicators-audit.cjs', 'tests/android/AndroidManifest.xml', 'tests/wheel-audio-audit.cjs', 'MainActivity.java', 'TapLightOverlay.java', 'localization.js', 'index.html', 'tests/android/WebViewRuntimeAudit.java', 'obsidian-gold.js', 'light-feedback.css', 'obsidian-gold.css', 'light-feedback.js', 'tests/poco-runtime-audit.cjs', 'tests/brand-light-trail-audit.cjs', 'wheel.js', 'tests/wheel-readiness-audit.cjs'}
+          allowed={'.github/workflows/android-apk.yml','scripts/compose-theme-proof.py','.github/workflows/android-poco-test.yml', 'scripts/verify-test-apk.py', 'tests/reward-indicators-audit.cjs', 'tests/android/AndroidManifest.xml', 'tests/wheel-audio-audit.cjs', 'MainActivity.java', 'TapLightOverlay.java', 'localization.js', 'index.html', 'tests/android/WebViewRuntimeAudit.java', 'obsidian-gold.js', 'light-feedback.css', 'obsidian-gold.css', 'light-feedback.js', 'tests/poco-runtime-audit.cjs', 'tests/brand-light-trail-audit.cjs', 'wheel.js', 'tests/wheel-readiness-audit.cjs'}
           assert all(f in allowed or f.startswith('test-builds/poco-test-20261118/') for f in changed),changed
           for f in ['feedback.js','HapticFeedbackPlayer.java','UiFeedbackGate.java','AndroidManifest.xml','cloud-model.js','cloud-sync.js','onboarding.js','onboarding.css','admob-units.json']:
               assert not subprocess.check_output(['git','diff',source,'HEAD','--',f]),f
@@ -299,7 +299,7 @@ jobs:
             compileSdk 36
             defaultConfig {
               applicationId 'com.orynexa.karadugum'
-              testInstrumentationRunner "android.test.InstrumentationTestRunner"
+              testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
               minSdk 24
               targetSdk 36
               versionCode 110
@@ -324,7 +324,9 @@ jobs:
             }
           }
           dependencies {
-            androidTestImplementation files("${android.sdkDirectory}/platforms/android-36/optional/android.test.runner.jar", "${android.sdkDirectory}/platforms/android-36/optional/android.test.base.jar")
+            androidTestImplementation 'androidx.test:runner:1.6.2'
+            androidTestImplementation 'androidx.test:core:1.6.1'
+            androidTestImplementation 'androidx.test.ext:junit:1.2.1' 
           }
           apply from: rootProject.file('android-dependencies.gradle')
           EOF
@@ -414,10 +416,12 @@ jobs:
           script: |
             adb install -r app/build/outputs/apk/release/app-release.apk
             adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
-            adb shell am instrument -w com.orynexa.karadugum.test/android.test.InstrumentationTestRunner | tee /tmp/kd-webview-instrumentation.log
-            rg 'OK \(1 test\)' /tmp/kd-webview-instrumentation.log
+            adb logcat -c
+            adb shell am instrument -w com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-webview-instrumentation.log
             mkdir -p dist/android-webview
-            adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/
+            adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
+            adb logcat -d > dist/android-webview/logcat.txt
+            python3 -c "assert 'OK (1 test)' in open('/tmp/kd-webview-instrumentation.log').read()"
             python3 scripts/compose-theme-proof.py dist/android-webview
 
       - name: Tum mevcut tarayici, ses-titresim ve ogretici regresyonlari

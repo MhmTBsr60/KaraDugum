@@ -4,7 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import android.test.ActivityInstrumentationTestCase2;
+import android.app.Instrumentation;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 import org.json.*;
@@ -13,17 +21,17 @@ import java.lang.reflect.Field;
 import java.util.concurrent.*;
 
 /** Runs the signed release APK's real file:///android_asset page on Android. No phone data. */
-@SuppressWarnings("deprecation")
-public final class WebViewRuntimeAudit extends ActivityInstrumentationTestCase2<MainActivity> {
+@RunWith(AndroidJUnit4.class)
+public final class WebViewRuntimeAudit {
+    private final Instrumentation instrumentation=InstrumentationRegistry.getInstrumentation();
+    private ActivityScenario<MainActivity> scenario;
     private MainActivity activity;
     private WebView web;
     private File output;
-    public WebViewRuntimeAudit(){super(MainActivity.class);}
-    @Override protected void setUp() throws Exception {
-        super.setUp();
-        Context context=getInstrumentation().getTargetContext();
+    @Before public void setUp() throws Exception {
+        Context context=instrumentation.getTargetContext();
         assertTrue(new AudienceChoiceStore(context.getNoBackupFilesDir()).save("under13"));
-        setActivityInitialTouchMode(true);activity=getActivity();
+        scenario=ActivityScenario.launch(MainActivity.class);scenario.onActivity(value->activity=value);
         Field f=MainActivity.class.getDeclaredField("view");f.setAccessible(true);web=(WebView)f.get(activity);
         output=new File(context.getExternalFilesDir(null),"webview-audit");assertTrue(output.isDirectory()||output.mkdirs());
         for(int i=0;i<150;i++){try{if(Boolean.TRUE.equals(eval("!!(window.kdLightFeedback&&window.kdThemeArt&&window.kdNavigate&&window.kdLocalization)")))break;}catch(Exception ignored){}SystemClock.sleep(200);}
@@ -32,25 +40,26 @@ public final class WebViewRuntimeAudit extends ActivityInstrumentationTestCase2<
         SystemClock.sleep(2600);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdLearning.leave();kdSetPaused(true);return true})()");
     }
-    private String webUrl() throws Exception {final String[] s={null};getInstrumentation().runOnMainSync(()->s[0]=web.getUrl());return s[0];}
+    @After public void tearDown(){try{if(output!=null)shot("final-state");}catch(Exception ignored){}if(scenario!=null)scenario.close();}
+    private String webUrl() throws Exception {final String[] s={null};instrumentation.runOnMainSync(()->s[0]=web.getUrl());return s[0];}
     private Object eval(String expression) throws Exception {
         CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
-        getInstrumentation().runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
+        instrumentation.runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
         assertTrue("WebView evaluateJavascript callback timeout",latch.await(15,TimeUnit.SECONDS));
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
     private void shot(String name) throws Exception {
-        Bitmap bitmap=getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull("Surface screenshot",bitmap);
+        Bitmap bitmap=instrumentation.getUiAutomation().takeScreenshot();assertNotNull("Surface screenshot",bitmap);
         try(FileOutputStream out=new FileOutputStream(new File(output,name+".png"))){bitmap.compress(Bitmap.CompressFormat.PNG,100,out);}bitmap.recycle();
     }
     private void tap() throws Exception {
         JSONObject r=(JSONObject)eval("(()=>{const r=document.querySelector('#board>.tile:not(.good)').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight}})()");
-        int[] location=new int[2],size=new int[2];getInstrumentation().runOnMainSync(()->{web.getLocationOnScreen(location);size[0]=web.getWidth();size[1]=web.getHeight();});
+        int[] location=new int[2],size=new int[2];instrumentation.runOnMainSync(()->{web.getLocationOnScreen(location);size[0]=web.getWidth();size[1]=web.getHeight();});
         float x=location[0]+(float)(r.getDouble("x")*size[0]/r.getDouble("vw")),y=location[1]+(float)(r.getDouble("y")*size[1]/r.getDouble("vh"));
         long time=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(time,time,MotionEvent.ACTION_DOWN,x,y,0),up=MotionEvent.obtain(time,time+25,MotionEvent.ACTION_UP,x,y,0);
-        getInstrumentation().sendPointerSync(down);getInstrumentation().sendPointerSync(up);down.recycle();up.recycle();
+        instrumentation.sendPointerSync(down);instrumentation.sendPointerSync(up);down.recycle();up.recycle();
     }
-    public void testRealFileOriginThemesLightAndSave() throws Exception {
+    @Test public void testRealFileOriginThemesLightAndSave() throws Exception {
         assertTrue(eval("document.body.textContent.includes('VORYNEXA')").equals(Boolean.TRUE));
         JSONObject report=new JSONObject().put("fileOrigin",webUrl()).put("androidApi",android.os.Build.VERSION.SDK_INT);
         if(android.os.Build.VERSION.SDK_INT>=26)report.put("webview",WebView.getCurrentWebViewPackage().versionName);

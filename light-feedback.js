@@ -29,6 +29,7 @@
  function mount(){const control=document.querySelector('[data-setting="glow"]');if(!control||document.querySelector('[data-light-diagnostics]'))return;const button=document.createElement('button');button.type='button';button.className='kdLightDiagnosticsButton';button.dataset.lightDiagnostics='1';button.textContent='ⓘ';button.setAttribute('aria-label',t('Işık İzi Tanılama'));button.title=t('Işık İzi Tanılama');button.onclick=diagnostics;const icon=control.parentElement.querySelector('.kdSettingIcon');if(icon)icon.replaceChildren(button);}
  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
  const shell=document.getElementById('kdShell');if(shell)new MutationObserver(mount).observe(shell,{childList:true,subtree:true});
+ const game=document.getElementById('kdGame');new MutationObserver(()=>{if(game.hidden){clear();try{KaraNative.setTapLightEnabled(false);nativeEnabled=null;}catch(_){}}else sync();}).observe(game,{attributes:true,attributeFilter:['hidden']});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){clear();try{KaraNative.setTapLightEnabled(false);nativeEnabled=null;}catch(_){}}else sync();});
  window.kdLightFeedback={state:()=>({...stats,enabled:enabled(),native:native(),reduced:reduced.matches,limited}),nativePainted:sequence=>{if(Number.isInteger(sequence)&&sequence>0&&sequence<=stats.last){stats.nativePaints++;stats.route='Android ✓';update();}},diagnostics};
  sync();mount();
