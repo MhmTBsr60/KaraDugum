@@ -17,6 +17,9 @@ assert re.search(r'ADS_TEST_MODE\s*=\s*true\s*;',java)
 with zipfile.ZipFile(apk) as archive:
     for file in ['index.html','obsidian-gold.css','obsidian-gold.js','board-renderer.js','theme-renderer.js','localization.js','cloud-model.js','cloud-sync.js','reward-receipts.js','board-focus.css','board-focus.js','feedback.js','wheel.js','wheel-motion.js','ux-locales.js','ux-polish.css','gameplay-ui.js','gameplay-layout.css','onboarding.js','onboarding.css','light-feedback.js','light-feedback.css']:
         assert archive.read('assets/'+file)==Path(file).read_bytes(),file
+    if 'src="pipe-flow.js"' in archive.read('assets/index.html').decode():
+        for file in ['connection-model.js','pipe-flow.js','pipe-flow.css']:
+            assert archive.read('assets/'+file)==Path(file).read_bytes(),file
     assert not any(name.endswith(('.jks','.keystore')) for name in archive.namelist())
     assert not any(name.startswith('assets/design/') for name in archive.namelist())
     dex=b''.join(archive.read(name) for name in archive.namelist() if re.match(r'classes\d*\.dex$',name))

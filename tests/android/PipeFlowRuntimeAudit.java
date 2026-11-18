@@ -117,4 +117,25 @@ public final class PipeFlowRuntimeAudit {
         result.put("themes",themes).put("performance",perf).put("status","PASS");
         try(FileOutputStream f=new FileOutputStream(new File(output,"pipe-flow-report.json"))){f.write(result.toString(2).getBytes("UTF-8"));}
     }
+    /** Real Android WebView/GPU, simulated capable-device properties. Default-device path is tested separately. */
+    @Test(timeout=120000) public void testAnimatedConnectionPathOnAndroidWebView() throws Exception {
+        String html;try(InputStream in=activity.getAssets().open("index.html")){html=new String(in.readAllBytes(),"UTF-8");}
+        String injected="<script>Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>8});Object.defineProperty(navigator,'deviceMemory',{get:()=>8});window.__kdAnimatedHarness=true;</script>";
+        final String page=html.replace("<head>","<head>"+injected);
+        instrumentation.runOnMainSync(()->web.loadDataWithBaseURL("file:///android_asset/index.html",page,"text/html","UTF-8",null));
+        long ready=SystemClock.uptimeMillis()+15000;while(SystemClock.uptimeMillis()<ready){if(Boolean.TRUE.equals(eval("!!window.__kdAnimatedHarness&&!!window.kdPipeFlow")))break;SystemClock.sleep(100);}
+        assertTrue(Boolean.TRUE.equals(eval("!!window.__kdAnimatedHarness&&!!window.kdPipeFlow")));SystemClock.sleep(2600);
+        eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdNavigate('game');kdOnboarding.leave();kdSelectLevel(1);kdLearning.leave();kdSetPaused(true);return true})()");
+        SystemClock.sleep(150);JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
+        tapSelector("#board>.tile[data-i=\"0\"]");SystemClock.sleep(220);shot("animated-flow-on");JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
+        assertEquals("strong-1",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());
+        SystemClock.sleep(1000);JSONObject after=(JSONObject)eval("kdPipeFlow.state()");shot("animated-flow-rest");
+        assertTrue(after.getJSONObject("stats").getInt("frames")-before.getJSONObject("stats").getInt("frames")>5);
+        int frames=after.getJSONObject("stats").getInt("frames");SystemClock.sleep(300);assertEquals(frames,((JSONObject)eval("kdPipeFlow.state()")).getJSONObject("stats").getInt("frames"));
+        eval("(()=>{localStorage.setItem('kd64_hintCoupons','2000');let k=0;while(!kdGetLearningState().locked&&k++<100)document.getElementById('hint').click();return true})()");
+        assertTrue(Boolean.TRUE.equals(eval("kdGetLearningState().locked")));SystemClock.sleep(200);JSONObject completion=(JSONObject)eval("kdPipeFlow.state()");assertFalse(completion.isNull("wave"));shot("animated-completion");SystemClock.sleep(2300);assertTrue(Boolean.TRUE.equals(eval("kdPipeFlow.state().wave===null")));
+        JSONObject report=new JSONObject().put("status","PASS").put("phoneVerified",false).put("androidApi",android.os.Build.VERSION.SDK_INT).put("hardwareOverrideForTest",true).put("scope","Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values, not physical POCO performance").put("during",during).put("after",after).put("completion",completion);
+        try(FileOutputStream f=new FileOutputStream(new File(output,"animated-flow-report.json"))){f.write(report.toString(2).getBytes("UTF-8"));}
+    }
+
 }

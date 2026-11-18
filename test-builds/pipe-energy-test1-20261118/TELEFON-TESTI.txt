@@ -1,0 +1,15 @@
+KARA DÜĞÜM 6.50-pipe-energy-test1 — Güçlendirilmiş boru içi enerji
+
+Mevcut TEST uygulamasının üzerine kurun. Oyunu kaldırmayın; uygulama verilerini temizlemeyin.
+Paket: com.orynexa.karadugum; sürüm kodu 110. Önceki TEST imzası korunur.
+
+1. Android Uygulama bilgileri ekranında sürümün 6.50-pipe-energy-test1 olduğunu doğrulayın.
+2. Ayarlar → Işık İzi AÇIK. Açıklama artık “Bağlı borulardaki enerji akışı.” olmalı.
+3. Düğümü yalnız döndürmek tek başına enerji üretmez. İki boru ucu karşılıklı bağlanınca borunun iç hattında altın çekirdek ilerler ve bağlantı hafif aydınlık kalır.
+4. Bağlantıyı bozun: değişmeyen komşudaki ışık kısa sürede söner. Dönen parçanın eski çizgisi hemen kalkar. Yanlış/açık uçta yeni enerji oluşmamalı.
+5. Işık İzi KAPALI iken yeni akış/aydınlatma olmamalı. Ses ve titreşim anahtarları bağımsızdır.
+6. Hareketi azalt veya düşük donanım yolunda hareketli akış yerine sabit, hafif bağlantı aydınlatması beklenir.
+7. Bölüm bitiminde sıralı güçlü enerji dalgası çalışır. Mevcut sonuç paneli bazı boruları örtebilir; ödül ve kayıt zamanlaması değişmedi.
+
+Bu APK yalnız Google test reklam birimlerini kullanır. Fiziksel POCO görünürlüğü henüz doğrulanmadı; çalıştı sayılabilmesi için telefon testi gerekir.
+Main/Google Play 6.50/AdMob hesabı/mağaza görselleri değiştirilmez. AAB oluşturulmaz veya yayımlanmaz.
