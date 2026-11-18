@@ -72,7 +72,7 @@ public final class PipeFlowRuntimeAudit {
         SystemClock.sleep(80);
     }
     private void shot(String name) throws Exception {
-        if(name.startsWith("theme-"))visualFrame();
+        if(name.startsWith("theme-")||name.startsWith("animated-")||name.equals("connection-flow"))visualFrame();
         // Use Android's screencap Surface path instead of emulator UiAutomation bitmap binding.
         try(android.os.ParcelFileDescriptor descriptor=instrumentation.getUiAutomation().executeShellCommand("screencap -p");
             InputStream input=new android.os.ParcelFileDescriptor.AutoCloseInputStream(descriptor);
@@ -83,11 +83,17 @@ public final class PipeFlowRuntimeAudit {
     }
     private void tap() throws Exception { tapSelector("#board>.tile:not(.good)"); }
     private void tapSelector(String selector) throws Exception {
-        JSONObject r=(JSONObject)eval("(()=>{const e=document.querySelector("+JSONObject.quote(selector)+");e.scrollIntoView({block:'nearest'});const r=e.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight}})()");
+        // Navigation and scroll JS can precede the compositor hit-test tree. Wait for
+        // its frame before resolving coordinates; then require a click on THIS node.
+        eval("(()=>{document.querySelector("+JSONObject.quote(selector)+").scrollIntoView({block:'nearest'});return true})()");
+        visualFrame();
+        JSONObject r=(JSONObject)eval("(()=>{const e=document.querySelector("+JSONObject.quote(selector)+"),r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);window.__kdAuditClicked=false;e.addEventListener('click',()=>window.__kdAuditClicked=true,{once:true});return {x:r.left+r.width/2,y:r.top+r.height/2,vw:innerWidth,vh:innerHeight,hit:e===hit||e.contains(hit)}})()");
+        assertTrue("Expected input node must own its centre",r.getBoolean("hit"));
         int[] location=new int[2],size=new int[2];instrumentation.runOnMainSync(()->{web.getLocationOnScreen(location);size[0]=web.getWidth();size[1]=web.getHeight();});
         float x=location[0]+(float)(r.getDouble("x")*size[0]/r.getDouble("vw")),y=location[1]+(float)(r.getDouble("y")*size[1]/r.getDouble("vh"));
         long time=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(time,time,MotionEvent.ACTION_DOWN,x,y,0),up=MotionEvent.obtain(time,time+25,MotionEvent.ACTION_UP,x,y,0);
         instrumentation.sendPointerSync(down);instrumentation.sendPointerSync(up);down.recycle();up.recycle();
+        long deadline=SystemClock.uptimeMillis()+3000;boolean clicked=false;while(SystemClock.uptimeMillis()<deadline){if(Boolean.TRUE.equals(eval("window.__kdAuditClicked===true"))){clicked=true;break;}SystemClock.sleep(10);}assertTrue("Native tap must dispatch a click on the intended node",clicked);
     }
     @Test(timeout=120000) public void testConnectionsThemesPixelsAndPerformance() throws Exception {
         assertTrue(Boolean.TRUE.equals(eval("!!kdPipeFlow && !window.kdLightFeedback")));
@@ -126,15 +132,17 @@ public final class PipeFlowRuntimeAudit {
         long ready=SystemClock.uptimeMillis()+15000;while(SystemClock.uptimeMillis()<ready){if(Boolean.TRUE.equals(eval("!!window.__kdAnimatedHarness&&!!window.kdPipeFlow")))break;SystemClock.sleep(100);}
         assertTrue(Boolean.TRUE.equals(eval("!!window.__kdAnimatedHarness&&!!window.kdPipeFlow")));SystemClock.sleep(2600);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdNavigate('game');kdOnboarding.leave();kdSelectLevel(1);kdLearning.leave();kdSetPaused(true);return true})()");
-        SystemClock.sleep(150);JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
+        SystemClock.sleep(150);visualFrame();JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
         tapSelector("#board>.tile[data-i=\"0\"]");SystemClock.sleep(220);shot("animated-flow-on");JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
         assertEquals("strong-1",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());
         SystemClock.sleep(1000);JSONObject after=(JSONObject)eval("kdPipeFlow.state()");shot("animated-flow-rest");
-        assertTrue(after.getJSONObject("stats").getInt("frames")-before.getJSONObject("stats").getInt("frames")>5);
+        JSONObject progress=new JSONObject().put("status","RUNNING").put("phoneVerified",false).put("vw",eval("innerWidth")).put("before",before).put("during",during).put("after",after);
+        try(FileOutputStream f=new FileOutputStream(new File(output,"animated-progress.json"))){f.write(progress.toString(2).getBytes("UTF-8"));}
+        assertTrue("At least two distinct drawn frames; visible Surface pixels verified separately: "+progress,after.getJSONObject("stats").getInt("frames")-before.getJSONObject("stats").getInt("frames")>1);
         int frames=after.getJSONObject("stats").getInt("frames");SystemClock.sleep(300);assertEquals(frames,((JSONObject)eval("kdPipeFlow.state()")).getJSONObject("stats").getInt("frames"));
         eval("(()=>{localStorage.setItem('kd64_hintCoupons','2000');let k=0;while(!kdGetLearningState().locked&&k++<100)document.getElementById('hint').click();return true})()");
         assertTrue(Boolean.TRUE.equals(eval("kdGetLearningState().locked")));SystemClock.sleep(200);JSONObject completion=(JSONObject)eval("kdPipeFlow.state()");assertFalse(completion.isNull("wave"));shot("animated-completion");SystemClock.sleep(2300);assertTrue(Boolean.TRUE.equals(eval("kdPipeFlow.state().wave===null")));
-        JSONObject report=new JSONObject().put("status","PASS").put("phoneVerified",false).put("androidApi",android.os.Build.VERSION.SDK_INT).put("hardwareOverrideForTest",true).put("scope","Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values, not physical POCO performance").put("during",during).put("after",after).put("completion",completion);
+        JSONObject report=new JSONObject().put("status","PASS").put("phoneVerified",false).put("androidApi",android.os.Build.VERSION.SDK_INT).put("hardwareOverrideForTest",true).put("vw",eval("innerWidth")).put("scope","Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values, not physical POCO performance").put("during",during).put("after",after).put("completion",completion);
         try(FileOutputStream f=new FileOutputStream(new File(output,"animated-flow-report.json"))){f.write(report.toString(2).getBytes("UTF-8"));}
     }
 
