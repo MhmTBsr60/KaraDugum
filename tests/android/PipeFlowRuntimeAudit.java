@@ -136,7 +136,7 @@ public final class PipeFlowRuntimeAudit {
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdNavigate('game');kdOnboarding.leave();kdSelectLevel(1);kdLearning.leave();kdSetPaused(true);return true})()");
         SystemClock.sleep(150);visualFrame();JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
         eval("(()=>{const original=kdPipeFlow.afterRender;kdPipeFlow.afterRender=function(...args){const result=original.apply(this,args);if(kdGetLearningState().level===1&&kdGetLearningState().moves===1)PipeVisualAudit.queued();return result};return true})()");
-        Exception[] captureError={null};Thread sampler=new Thread(()->{try{if(!moveQueued.await(5,TimeUnit.SECONDS))throw new TimeoutException("No real move callback");SystemClock.sleep(80);for(int i=0;i<6;i++){shot("animated-sample-"+i);SystemClock.sleep(100);}}catch(Exception e){captureError[0]=e;}},"pipe-surface-sampler");sampler.start();
+        Exception[] captureError={null};Thread sampler=new Thread(()->{try{if(!moveQueued.await(5,TimeUnit.SECONDS))throw new TimeoutException("No real move callback");SystemClock.sleep(80);for(int i=0;i<6;i++){shot("capture-energy-"+i);SystemClock.sleep(100);}}catch(Exception e){captureError[0]=e;}},"pipe-surface-sampler");sampler.start();
         tapSelector("#board>.tile[data-i=\"0\"]");JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
         sampler.join(6000);assertFalse("Surface sampler must finish",sampler.isAlive());if(captureError[0]!=null)throw captureError[0];
         assertEquals("strong-1",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());

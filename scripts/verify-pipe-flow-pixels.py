@@ -25,7 +25,7 @@ seg=next(v for v in f['segments'] if v['id']=='0:1');xs=[p[0]+g['x'] for p in se
 reference=list(rest.crop(boardbox).getdata());allowed=list(mask.crop(boardbox).getdata());end=list(rest.crop(roi).getdata());valid=[]
 luma=lambda p:.2126*p[0]+.7152*p[1]+.0722*p[2]
 for i in range(6):
- name='animated-sample-'+str(i)+'.png';im=Image.open(root/name).convert('RGB');pixels=list(im.crop(boardbox).getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed))
+ name='capture-energy-'+str(i)+'.png';im=Image.open(root/name).convert('RGB');pixels=list(im.crop(boardbox).getdata());changed=[k for k,(p,q) in enumerate(zip(pixels,reference)) if delta(p,q)>16];outside=sum(not allowed[k] for k in changed)/max(1,len(changed))
  bright=[k for k,(p,q) in enumerate(zip(im.crop(roi).getdata(),end)) if luma(p)-luma(q)>18]
  if outside<.01 and len(bright)>=8:valid.append({'sample':name,'brightPixels':len(bright),'centroidX':sum(roi[0]+k%(roi[2]-roi[0]) for k in bright)/len(bright),'outsideMatchedPipesFraction':outside})
 assert len(valid)>=2,('No two visible moving-light Surface frames on the same committed puzzle',valid)
