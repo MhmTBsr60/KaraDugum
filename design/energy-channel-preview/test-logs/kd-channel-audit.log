@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "androidWebViewVerified": false,
+  "checks": [
+    "bounded ordered engine-win wave; unchanged result panel revealed after wave",
+    "low hardware: static light, no animation loop, result immediate",
+    "reduced motion: static light, no rings/wave, result immediate"
+  ],
+  "themes": [
+    {
+      "theme": "gold",
+      "frontEarly": 61.44219529370328,
+      "frontMiddle": 173.4380955758966,
+      "ringCount": 2,
+      "stationaryFrames": 53,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ice",
+      "frontEarly": 62.219944601218515,
+      "frontMiddle": 174.21584488341185,
+      "ringCount": 2,
+      "stationaryFrames": 116,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "fire",
+      "frontEarly": 59.88669667867282,
+      "frontMiddle": 171.88259696086615,
+      "ringCount": 2,
+      "stationaryFrames": 179,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "shadow",
+      "frontEarly": 60.66444598618804,
+      "frontMiddle": 172.66034626838135,
+      "ringCount": 2,
+      "stationaryFrames": 242,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "emerald",
+      "frontEarly": 61.44219529370328,
+      "frontMiddle": 173.4380955758966,
+      "ringCount": 2,
+      "stationaryFrames": 305,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ruby",
+      "frontEarly": 62.219944601218515,
+      "frontMiddle": 174.21584488341185,
+      "ringCount": 2,
+      "stationaryFrames": 368,
+      "joinBreakUndoOffOn": true
+    }
+  ],
+  "campaign": {
+    "levels": 300,
+    "edges": 7566,
+    "errors": []
+  },
+  "errors": [],
+  "scope": "Real Chromium engine and pipe geometry; controlled test time and synthetic player/device data. No APK build."
+}

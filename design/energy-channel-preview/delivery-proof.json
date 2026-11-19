@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "branch": "design/energy-wave-channel-preview-20261119",
+  "androidSourceCommit": "2163547a811f8a77c97afbe2b5714966b072b4e7",
+  "androidRun": 44510081023,
+  "sourceTestGroups": 18,
+  "browserTestGroups": 43,
+  "levels": 300,
+  "themes": 6,
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 860,
+        "height": 1864,
+        "r_frame_rate": "24/1"
+      }
+    ],
+    "format": {
+      "duration": "12.000000",
+      "size": "932013"
+    }
+  },
+  "noGameApkBuilt": true,
+  "noAabBuilt": true,
+  "physicalPocoVerified": false,
+  "originalReferenceBitmapIncluded": false,
+  "comparisonLeftIsRejectedPreviousGame": true,
+  "media": {
+    "energy-channel-12s.mp4": {
+      "sha256": "f3e2794ba956102472cf7fc07651f60c0221512476457678177f79cf0a6ea5bd",
+      "bytes": 932013
+    },
+    "four-states.png": {
+      "sha256": "99c519687847cd42fd8a0aec76ae1982f67c7b10a4c2d7b3aa6df69f60875092",
+      "bytes": 2091999
+    },
+    "before-after.png": {
+      "sha256": "e6a72d248430fed6a68e56f1e0d4be128592caad7e6f27d0f4226d5d09b0640c",
+      "bytes": 1097895
+    },
+    "01-before.png": {
+      "sha256": "edd418417ef5adb43b3f65b342c3950dfe901e1441f4b8f8c51e4c5812f90461",
+      "bytes": 857678
+    },
+    "02-wave-middle.png": {
+      "sha256": "b39ccb34ef12248401770f69c054d6a0e56a1a838165a225389a3542711f2d46",
+      "bytes": 873992
+    },
+    "03-connected.png": {
+      "sha256": "c65e6528e35f871f0cff3a8ee1bb163fd554f3709e2716af35364c6e9e4fcef0",
+      "bytes": 864355
+    },
+    "04-completion.png": {
+      "sha256": "0d07d3a2dec9dd1f02244d74319571676ede18aafee354ad1486ef376ef063d3",
+      "bytes": 901252
+    },
+    "small-320x568.png": {
+      "sha256": "361751fe20f33414ca3866becd72ff61fc6631b6c0dbe9b87b733a21cee95dc8",
+      "bytes": 432393
+    }
+  }
+}

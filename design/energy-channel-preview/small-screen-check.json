@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "minimumReachedChannelCssPixels": 7.5621,
+  "bendHalos": 1,
+  "phoneVerified": false
+}
