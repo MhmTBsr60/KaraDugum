@@ -1,0 +1,40 @@
+{
+  "status": "LIMITED",
+  "clockControlled": false,
+  "phoneVerified": false,
+  "cases": [
+    {
+      "level": 6,
+      "tiles": 16,
+      "edges": 15,
+      "paintSamples": 4,
+      "paintP95Ms": 0.6999999999970896,
+      "paintMaxMs": 0.6999999999970896,
+      "finite": true,
+      "static": false,
+      "sufficientSamples": false
+    },
+    {
+      "level": 76,
+      "tiles": 49,
+      "edges": 53,
+      "paintSamples": 8,
+      "paintP95Ms": 6.899999999994179,
+      "paintMaxMs": 6.899999999994179,
+      "finite": true,
+      "static": false,
+      "sufficientSamples": false
+    },
+    {
+      "level": 151,
+      "tiles": 64,
+      "edges": 77,
+      "paintSamples": 9,
+      "paintP95Ms": 9.69999999999709,
+      "paintMaxMs": 9.69999999999709,
+      "finite": true,
+      "static": false,
+      "sufficientSamples": false
+    }
+  ]
+}

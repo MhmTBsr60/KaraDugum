@@ -1,0 +1,49 @@
+{
+  "testedSource": "b8e0effddb117771fde65b7ea9be7f66e0ad243e",
+  "runtimeFiles": [
+    "pipe-flow.css",
+    "pipe-flow.js"
+  ],
+  "androidRun": 44544485353,
+  "androidSurfaceVisibility": "PASS",
+  "androidPerformance": "LIMITED",
+  "protectedRefs": {
+    "refs/heads/design/daily-treasure-preview-20261119": "10d5c8600475ef692314f82f544cc2d0214d0e85",
+    "refs/heads/design/energy-wave-bend-rings-preview-20261119": "a87fde95f6896b4c4e20614842d48c5366877190",
+    "refs/heads/main": "0acb75b117e9cb4fee53b316dd7226f97a1e7256"
+  },
+  "productionAabSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+  "originalReferenceIncluded": false,
+  "physicalPOCOTested": false,
+  "apkBuilt": false,
+  "aabBuilt": false,
+  "mediaSha256": {
+    "03-bend-rings.png": "871fbd0ca76665f49d4ac46370eacf367f8679ead7e6b4657e3036399c07b920",
+    "layer-channel-board.png": "7b1e8fd7806456456675d0cd0c29d91b5ec1a4b988e4d3c67e9e2af614924784",
+    "02-new-connection.png": "78ca547dde42303aacfbfde8461515477b9f40d20fe924b1de0e425a78c33115",
+    "04-settled.png": "b4c37a57ad23efc6e0df7739290ed914b292cf095a88e23b98a6dc6a56818468",
+    "01-light-off-board.png": "3f4b1831a5996dcae71d30c04db48e1b51502f7fbf94431947c607975279a161",
+    "layer-channel.png": "177de9ce599c439ec08d6314b85b00c56837eb1715a98204c15a51ea5144badc",
+    "same-state-metal-board.png": "98c8d3464918d5af5b964a912d262eeba8d0c02e710be9bea5bfaf0f289f2293",
+    "current-board.png": "d22395d4601829f4f16468cf59ec87d7ab6f82d52dc10167ba2d456ab4089890",
+    "layer-wave-board.png": "89d65bd502c082f5d0993be880656e353ab38a6f57e63f53274c0859dd0b3abe",
+    "five-scenes.png": "7577a37eeb7e6a56e65dd2aaa77654c34b6c0a68becc51b25bb2948f2bbbf482",
+    "energy-wave-14s.mp4": "1a2e1d9df9ccbc8cc98c73c703f27248956d42b82fb5a1d0429995581d8a4383",
+    "previous-board.png": "7de646a9dddf869a788d5420b5716e21a3dc441e972118c0121e11d476132b8b",
+    "05-completion-board.png": "fd54a23925bf42756df3422581951a20364d144ba0a8bf82ccda3e34dd954f97",
+    "layer-settled.png": "b4c37a57ad23efc6e0df7739290ed914b292cf095a88e23b98a6dc6a56818468",
+    "03-bend-rings-board.png": "7a47074813667e42a47ee0e4542ba27ad819fa7754c8256a85b17a3bde94eb11",
+    "four-layers.png": "c091c0729d6831a5ab7beb62aa7d0ab31a435adb4826632775d18445cf77eaba",
+    "before-after.png": "c553a74087f91e90b93d05cd2bfb69dc1b6c192c4769dc48cc0696e9042261c9",
+    "same-state-metal.png": "b7a611a13154664929be8c5975595b3ca991b1f14bfc7284ef8a132fdf523e38",
+    "layer-wave.png": "d36f03aee3a2af183d8d0d4407af2d8349152d5e13e706b6c593112b886dd101",
+    "02-new-connection-board.png": "e1cd69a44c1db4b706a035fea7bc818cd915516495aa91e7d39ebf08365ab6e1",
+    "04-settled-board.png": "3a1d85b0c103a934799406596c1ef2db836883d99a2e952e55cfbd8c0e775940",
+    "layer-rings.png": "5a117263ba925a0100bb11be8a517223e78c1bd5efe44922f5d52c38e8ae4278",
+    "01-light-off.png": "14100763a5705cd97ee586581e79933bf44b34de1c054c744ac47bf28a75e155",
+    "reference-scale.zip": "111f8937149f22980a0278e71ab3add74bfc5b3e6eaef565d7087b6be543bc11",
+    "layer-rings-board.png": "440b1dba21f89d5da695705760570a83a196795fbff952bcdde3f8f8cac7a8e7",
+    "layer-settled-board.png": "3a1d85b0c103a934799406596c1ef2db836883d99a2e952e55cfbd8c0e775940",
+    "05-completion.png": "11aaebc8e1c625a8a75b73d084fb04401b5bbdf8dd813fff91decfcdfbdd7368"
+  }
+}

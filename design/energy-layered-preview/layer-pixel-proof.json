@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "sameRealBoardAndTime": true,
+  "layerPixels": {
+    "channel": {
+      "changedPixels": 20839,
+      "whitePixels": 3774
+    },
+    "wave": {
+      "changedPixels": 1394,
+      "whitePixels": 119
+    },
+    "rings": {
+      "changedPixels": 10820,
+      "whitePixels": 0
+    },
+    "settled": {
+      "changedPixels": 16371,
+      "whitePixels": 0
+    },
+    "all": {
+      "changedPixels": 31220,
+      "whitePixels": 3473
+    }
+  }
+}

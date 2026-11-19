@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source": "Android 35 WebView Surface PNGs",
+  "isolatedLayerChangedPixels": {
+    "settled": 2059,
+    "rings": 3841,
+    "channel": 4673,
+    "wave": 681
+  },
+  "addedWhitePixels": [
+    813,
+    1502
+  ],
+  "lightCentroidTravelPixels": 95.58382274610251,
+  "annularRidge": [
+    {
+      "cell": 4,
+      "annulusContrastPixels": 3565,
+      "angularBinsOf24": 22,
+      "higherContrastPixels": 1486
+    }
+  ],
+  "phoneVerified": false
+}

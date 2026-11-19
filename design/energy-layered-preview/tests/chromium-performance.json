@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "Desktop Chromium synthetic CPU throttling, not Android or physical phone FPS",
+  "cases": [
+    {
+      "level": 76,
+      "n": 7,
+      "cpuThrottle": 1,
+      "static": false,
+      "rendererFrames": 45,
+      "frameIntervalP95Ms": 16.800000000000182,
+      "canvasPaintP95Ms": 1.1000000014901161,
+      "canvasPaintMaxMs": 2.600000001490116,
+      "edges": 53,
+      "finiteWaveEnded": true
+    },
+    {
+      "level": 76,
+      "n": 7,
+      "cpuThrottle": 4,
+      "static": false,
+      "rendererFrames": 39,
+      "frameIntervalP95Ms": 16.800000000000182,
+      "canvasPaintP95Ms": 7,
+      "canvasPaintMaxMs": 7.700000002980232,
+      "edges": 53,
+      "finiteWaveEnded": true
+    },
+    {
+      "level": 151,
+      "n": 8,
+      "cpuThrottle": 1,
+      "static": false,
+      "rendererFrames": 45,
+      "frameIntervalP95Ms": 16.799999999999272,
+      "canvasPaintP95Ms": 1.5999999940395355,
+      "canvasPaintMaxMs": 11.799999997019768,
+      "edges": 77,
+      "finiteWaveEnded": true
+    },
+    {
+      "level": 151,
+      "n": 8,
+      "cpuThrottle": 4,
+      "static": false,
+      "rendererFrames": 33,
+      "frameIntervalP95Ms": 16.800000000000182,
+      "canvasPaintP95Ms": 13.599999994039536,
+      "canvasPaintMaxMs": 32.5,
+      "edges": 77,
+      "finiteWaveEnded": true
+    }
+  ],
+  "lowDeviceStaticNoLoop": true
+}

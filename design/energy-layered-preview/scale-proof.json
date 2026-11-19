@@ -1,0 +1,12 @@
+{
+  "comparison": "a87fde9 game vs layered game",
+  "level": 6,
+  "moves": [
+    10,
+    14,
+    14
+  ],
+  "tileSpacingCssPx": 100.25,
+  "boardWidthCssPx": 411,
+  "originalReferenceIncluded": false
+}
