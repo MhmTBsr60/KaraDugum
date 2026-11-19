@@ -1,12 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{execFileSync}=require('node:child_process');
 const {chromium,serve,init,root}=require('./ux-harness.cjs');
-const baseline='0acb75b117e9cb4fee53b316dd7226f97a1e7256',baselineRoot=path.join(os.tmpdir(),'kd-ux-test2-'+baseline.slice(0,7));
+const baseline='0acb75b117e9cb4fee53b316dd7226f97a1e7256',baselineRoot=process.env.KD_GAMEPLAY_BASELINE||path.join(os.tmpdir(),'kd-ux-test2-'+baseline.slice(0,7));
 if(!fs.existsSync(path.join(baselineRoot,'index.html')))execFileSync('git',['worktree','add','--detach',baselineRoot,baseline],{cwd:root,stdio:'ignore'});
 const out=process.env.KD_GAMEPLAY_FIX_REPORT||'/tmp/kd-gameplay-fix';fs.mkdirSync(out,{recursive:true});
 const report={baseline,physicalDevice:false,scope:'isolated Chromium and controlled native bridge; not Android GPU or motor',geometry:[],errors:[]};
 const wallet=p=>p.evaluate(()=>Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_xp'].map(k=>[k,localStorage.getItem(k)])));
-const puzzle=p=>p.evaluate(()=>{const s=kdGetLearningState();return {level:s.level,n:s.n,moves:s.moves,usedHints:s.usedHints,undos:s.undos,cells:[...document.querySelectorAll('#board>.tile')].map(e=>({i:e.dataset.i,pipe:e.dataset.pipe,svg:e.querySelector('svg')?.outerHTML}))}});
+const puzzle=p=>p.evaluate(()=>{const s=kdGetLearningState();return {level:s.level,n:s.n,moves:s.moves,usedHints:s.usedHints,undos:s.undos,cells:[...document.querySelectorAll('#board>.tile')].map(e=>({i:e.dataset.i,pipe:e.dataset.pipe,path:e.querySelector('.kdPipeShell')?.getAttribute('d')}))}});
 const settle=p=>p.clock.runFor(150);
 (async()=>{const {server,url}=await serve({beforeRoot:baselineRoot}),b=await chromium.launch({args:['--no-sandbox']});try{
  const before=await init(b,url,{before:true});await before.evaluate(()=>kdNavigate('levels'));await before.locator('.kdGoalCard button').click();assert(await before.locator('#kdGame').isHidden(),'Reproduce TEST2 goal self-navigation defect');await before.close();

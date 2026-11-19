@@ -1,0 +1,13 @@
+Preparing worktree (detached HEAD f18a62f)
+AssertionError [ERR_ASSERTION]: {"day":3,"before":{"dailyDate":"\"2026-11-19\"","streak":"3","coins":"500","hintCoupons":"8","dailySeen":"\"2026-11-19\"","dailyLastReward":"{\"date\":\"2026-11-19\",\"day\":3,\"coins\":0,\"hints\":1}","level":"17","completed":"{\"1\":3,\"2\":2}","best":"{\"1\":4200,\"2\":3100}","xp":null},"after":{"dailyDate":"\"2026-11-19\"","streak":"3","coins":"500","hintCoupons":"8","dailySeen":"\"2026-11-19\"","dailyLastReward":"{\"date\":\"2026-11-19\",\"day\":3,\"coins\":0,\"hints\":1}","level":"17","completed":"{\"1\":3,\"2\":2}","best":"{\"1\":4200,\"2\":3100}","xp":null},"clock":"2026-11-19T12:00:08.110Z"}
+
+1 !== 0
+
+    at /workspace/KaraDugum-energy-forged/tests/daily-treasure-audit.cjs:22:85 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
