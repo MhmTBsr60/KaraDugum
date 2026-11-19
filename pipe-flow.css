@@ -1,7 +1,7 @@
 /* Preview renderer: actual pipe centres only. No tile flash, blur, particle or layout change. */
 html>canvas.kdPipeFlowCanvas{position:fixed!important;margin:0!important;padding:0!important;border:0!important;right:auto!important;bottom:auto!important;pointer-events:none!important;z-index:9000;background:transparent!important;opacity:1!important;filter:none!important;transform:none!important;clip-path:none!important;mix-blend-mode:normal!important;visibility:visible!important;animation:none!important;transition:none!important}
-html[data-kd-theme] #board .kdPipeEnergy{opacity:.10!important;filter:none!important}
-html[data-kd-theme] #board .kdPipeFilament{opacity:.24!important;animation:none!important;transition:none!important}
+html[data-kd-theme] #board .kdPipeEnergy{opacity:0!important;filter:none!important}
+html[data-kd-theme] #board .kdPipeFilament{opacity:0!important;animation:none!important;transition:none!important}
 html[data-kd-theme] #board>.tile.flash{animation:none!important}
 html[data-kd-theme] #board[data-kd-gold-complete]::after{animation:none!important;opacity:0!important}
 body.kdFlowCelebrating #modal.kdWinModal{background:#0007}
