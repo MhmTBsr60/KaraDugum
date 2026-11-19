@@ -41,6 +41,9 @@ jobs:
             mkdir -p dist/energy-rings-webview
             sleep 3
             KD_WAVE_ANDROID_OUT=dist/energy-rings-webview timeout 260s node tests/energy-rings-webview.cjs || { timeout 10s adb logcat -d > dist/energy-rings-webview/failure-logcat.txt; timeout 10s adb exec-out screencap -p > dist/energy-rings-webview/failure.png; exit 1; }
+            adb shell am force-stop org.chromium.webview_shell
+            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/index.html -n org.chromium.webview_shell/.WebViewBrowserActivity
+            KD_WAVE_ANDROID_OUT=dist/energy-rings-webview timeout 90s node tests/energy-rings-webview-performance.cjs
       - name: Collect environment evidence
         if: always()
         run: |

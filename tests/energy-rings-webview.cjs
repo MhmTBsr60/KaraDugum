@@ -30,29 +30,6 @@ async function surface(name){await delay(450);fs.writeFileSync(path.join(out,nam
  // A winning modal correctly owns pointer input until it is dismissed.
  await p.locator('.kdWinReplay').dispatchEvent('click');
  await p.emulateMedia({reducedMotion:'reduce'});await H.select(p,1);await rotate(p,(await H.nextMove(p)).i);await p.clock.runFor(200);const reduced=await H.state(p);assert(reduced.static&&reduced.effects.waves.length===0&&reduced.effects.rings.length===0);await surface('reduced-static');
- // Use live time for paint timings. Hints drive only this disposable stress fixture.
- report.performance=[];
- await p.emulateMedia({reducedMotion:'no-preference'});
- for(const level of [76,151]){
-  await H.select(p,level);
-  await p.evaluate(()=>localStorage.setItem('kd64_hintCoupons','3000'));
-  await p.clock.resume();
-  await p.waitForTimeout(300);
-  const framesBefore=(await H.state(p)).stats.frames;
-  await p.evaluate(()=>{
-   for(let k=0;!kdGetLearningState().locked&&k<800;k++)document.getElementById('hint').click();
-   if(!kdGetLearningState().locked)throw Error('Stress fixture must reach actual engine win');
-  });
-  await p.waitForTimeout(2450);
-  const stress=await H.state(p);
-  const count=stress.stats.frames-framesBefore;
-  const paint=stress.stats.paintMs.slice(-count).sort((a,b)=>a-b);
-  assert(count>=20&&!stress.wave&&!stress.static,'Live stress run must render a finite wave');
-  const p95=paint[Math.ceil(paint.length*.95)-1];
-  assert(p95<20,'Android WebView JS canvas submission over budget: '+p95);
-  await p.clock.pauseAt(new Date(await p.evaluate(()=>Date.now())+6000));
-  report.performance.push({level,tiles:stress.ports.length,edges:stress.edges.length,paintSamples:paint.length,paintP95Ms:p95,paintMaxMs:paint.at(-1),finite:true});
- }
  report.input='Chromium pointer input in Android WebView';report.nativeBoardTaps=false;report.replayViaDOMClick=true;report.status='PASS';Object.assign(report,{first,middle,settled,completion,reduced,viewport:await p.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio})),sourceUrl:p.url()});assert.deepEqual(report.errors,[]);
  execFileSync('adb',['shell','uiautomator','dump','/sdcard/kd-wave-ui.xml']);fs.writeFileSync(path.join(out,'ui.xml'),execFileSync('adb',['exec-out','cat','/sdcard/kd-wave-ui.xml']));
  console.log('PASS: actual Android WebView source preview, 6 themes, moving head/rings, break/undo, off/on, completion and reduced motion. Surface PNG proof verified separately.');
