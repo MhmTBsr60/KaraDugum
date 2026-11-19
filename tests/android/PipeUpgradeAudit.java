@@ -49,7 +49,7 @@ public final class PipeUpgradeAudit {
     }
     private void write(String name,String text) throws Exception {try(FileOutputStream f=new FileOutputStream(new File(output,name))){f.write(text.getBytes("UTF-8"));}}
     @Test(timeout=60000) public void seedPreviousSignedTest() throws Exception {
-        assertFalse(Boolean.TRUE.equals(eval("!!window.kdPipeFlow")));
+        assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         eval("(()=>{localStorage.setItem('kd64_level','6');localStorage.setItem('kd64_completed','{\\\"1\\\":3,\\\"2\\\":2,\\\"3\\\":3}');localStorage.setItem('kd64_best','{\\\"1\\\":4200,\\\"2\\\":3100,\\\"3\\\":5000}');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_shopTheme_ruby','true');localStorage.setItem('kd5_glow','1');localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd3_sound','0');return true})()");
         inst.runOnMainSync(()->web.reload());SystemClock.sleep(500);ready();SystemClock.sleep(2600);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
@@ -71,14 +71,14 @@ public final class PipeUpgradeAudit {
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
     }
     @Test(timeout=60000) public void verifyPreviousBeforeUpgrade() throws Exception {
-        assertFalse(Boolean.TRUE.equals(eval("!!window.kdPipeFlow")));
+        assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         comparePersisted("old-restart");
         write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
     @Test(timeout=60000) public void verifyAfterInPlaceInstall() throws Exception {
-        assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("contrast-2",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         comparePersisted("new-install");
         assertTrue(Boolean.TRUE.equals(eval("!window.kdLightFeedback")));
-        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-light-visibility-test2").put("newVersion","6.50-pipe-energy-test1").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
+        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-pipe-energy-test1").put("newVersion","6.50-pipe-energy-test2").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
 }

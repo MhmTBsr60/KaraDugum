@@ -140,7 +140,7 @@ public final class PipeFlowRuntimeAudit {
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdFeedback.setEffects(false);kdFeedback.setHaptics(false);kdNavigate('game');kdOnboarding.leave();kdSelectLevel(1);kdLearning.leave();kdSetPaused(true);return true})()");
         SystemClock.sleep(150);visualFrame();JSONObject before=(JSONObject)eval("kdPipeFlow.state()");assertFalse(before.getBoolean("static"));
         eval("(()=>{const original=kdPipeFlow.afterRender;window.__kdCompletionAtRender=null;kdPipeFlow.afterRender=function(...args){const result=original.apply(this,args);if(kdGetLearningState().locked&&window.kdLastWin&&!window.__kdCompletionAtRender)window.__kdCompletionAtRender=kdPipeFlow.state();return result};return true})()");
-        // Software-emulated screenrecord dropped nearly the entire 900 ms pulse.
+        // Software-emulated screenrecord dropped nearly the entire short real-time pulse.
         // Freeze only the TEST HARNESS clock, then advance the real packaged renderer
         // to deterministic positions. This verifies Android Surface drawing/travel,
         // not real-time FPS or physical-device performance. No hook ships in the APK.
@@ -148,15 +148,15 @@ public final class PipeFlowRuntimeAudit {
         tapSelector("#board>.tile[data-i=\"0\"]");advanceSurfaceClock(200);JSONObject during=(JSONObject)eval("kdPipeFlow.state()");
         JSONArray samples=new JSONArray();
         for(int elapsed:new int[]{200,420,640}){advanceSurfaceClock(elapsed);String name="animated-sample-"+elapsed;shot(name);samples.put(name+".png");}
-        advanceSurfaceClock(1100);
-        assertEquals("strong-1",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());
+        advanceSurfaceClock(1600);
+        assertEquals("contrast-2",during.getString("style"));assertTrue(during.getJSONArray("edges").length()>before.getJSONArray("edges").length());
         SystemClock.sleep(1000);JSONObject after=(JSONObject)eval("kdPipeFlow.state()");shot("animated-flow-rest");
         JSONObject progress=new JSONObject().put("status","RUNNING").put("phoneVerified",false).put("vw",eval("innerWidth")).put("before",before).put("during",during).put("after",after);
         try(FileOutputStream f=new FileOutputStream(new File(output,"animated-progress.json"))){f.write(progress.toString(2).getBytes("UTF-8"));}
         assertTrue("At least two distinct drawn frames; visible Surface pixels verified separately: "+progress,after.getJSONObject("stats").getInt("frames")-before.getJSONObject("stats").getInt("frames")>1);
         int frames=after.getJSONObject("stats").getInt("frames");SystemClock.sleep(300);assertEquals(frames,((JSONObject)eval("kdPipeFlow.state()")).getJSONObject("stats").getInt("frames"));
         eval("(()=>{localStorage.setItem('kd64_hintCoupons','2000');let k=0;while(!kdGetLearningState().locked&&k++<100)document.getElementById('hint').click();return true})()");
-        assertTrue(Boolean.TRUE.equals(eval("kdGetLearningState().locked")));JSONObject completion=(JSONObject)eval("window.__kdCompletionAtRender");assertNotNull("Completion state must be captured in the actual engine render callback",completion);assertFalse(completion.isNull("wave"));advanceSurfaceClock(1450);shot("animated-completion");advanceSurfaceClock(3600);assertTrue(Boolean.TRUE.equals(eval("kdPipeFlow.state().wave===null")));
+        assertTrue(Boolean.TRUE.equals(eval("kdGetLearningState().locked")));JSONObject completion=(JSONObject)eval("window.__kdCompletionAtRender");assertNotNull("Completion state must be captured in the actual engine render callback",completion);assertFalse(completion.isNull("wave"));advanceSurfaceClock(1950);shot("animated-completion");advanceSurfaceClock(4100);assertTrue(Boolean.TRUE.equals(eval("kdPipeFlow.state().wave===null")));
         JSONObject report=new JSONObject().put("status","PASS").put("phoneVerified",false).put("androidApi",android.os.Build.VERSION.SDK_INT).put("hardwareOverrideForTest",true).put("clockControlledForSurfaceTest",true).put("surfaceSamples",samples).put("settledSurface","animated-flow-rest.png").put("vw",eval("innerWidth")).put("vh",eval("innerHeight")).put("scope","Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values and clock advanced to 200/420/640 ms; verifies actual Surface drawing, NOT real-time FPS or physical POCO performance").put("during",during).put("after",after).put("completion",completion);
         try(FileOutputStream f=new FileOutputStream(new File(output,"animated-flow-report.json"))){f.write(report.toString(2).getBytes("UTF-8"));}
     }

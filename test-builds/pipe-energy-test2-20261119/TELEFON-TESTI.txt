@@ -1,0 +1,10 @@
+KARA DÜĞÜM 6.50-pipe-energy-test2 — Dar beyaz-altın enerji
+
+Ana menüde 10 saniye bekleyip mevcut TEST1 üzerine kurun. Kaldırmayın, verileri temizlemeyin.
+Paket com.orynexa.karadugum, sürüm kodu 110; önceki TEST ile aynı imza.
+Işık İzi açıkken gerçek bir bağlantı oluşturun: 1,4 saniyelik dar beyaz-altın enerji hattı borunun içinden ilerler. Dış metal ve taş değişmez. Bağlı borular hafif altın kalır; kopunca söner. Kapalıyken ek enerji tamamen kalkar.
+Hareketi azalt / düşük donanımda hareket yerine hafif sabit bağlantı ışığı beklenir.
+Altı tema ve mevcut ses/titreşim tercihleri korunur. Google test reklam birimleri kullanılır.
+TEST1 aç/kapat davranışı kullanıcı tarafından gerçek POCO'da doğrulandı; TEST2'nin kontrastı ve gerçek telefon akıcılığı henüz doğrulanmadı.
+Hazine temalı günlük giriş önizlemesi bu APK'ya dahil DEĞİLDİR; ayrı dalda onay bekler.
+Main/Google Play 6.50/AdMob/mağaza görselleri değiştirilmedi. AAB oluşturulmaz/yayımlanmaz.
