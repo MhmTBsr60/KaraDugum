@@ -1,0 +1,40 @@
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('node:assert/strict'),{execFileSync}=require('child_process'),{chromium}=require('playwright');
+const repo=path.resolve(__dirname,'..'),root=process.env.KD_RUNTIME_ROOT||repo,baseline='/tmp/kd-pipe-contrast-base-f18a62f',out=process.env.KD_TREASURE_REPORT||path.join(root,'design/daily-treasure-preview');fs.mkdirSync(out,{recursive:true});
+if(!fs.existsSync(baseline+'/index.html'))execFileSync('git',['worktree','add','--force','--detach',baseline,'f18a62f'],{cwd:repo});
+const report={status:'RUNNING',phoneVerified:false,apkAssetsTested:root!==repo,errors:[],payouts:[],layouts:[],clock:[],scope:'Real Chromium game, original reward entry points, synthetic saves/dates; not a trusted server clock'};
+const amounts=[5,10,0,15,20,0,40],coupons=[0,0,1,0,0,1,0];
+(async()=>{const browser=await chromium.launch({args:['--no-sandbox']});try{
+ async function page(folder,day,language='tr',viewport={width:430,height:932},reduce='reduce'){
+  const p=await browser.newPage({viewport,deviceScaleFactor:2,reducedMotion:reduce});p.on('pageerror',e=>report.errors.push(String(e)));p.on('dialog',d=>d.accept());
+  await p.addInitScript(({day,language})=>{Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>8});Object.defineProperty(navigator,'deviceMemory',{get:()=>8});if(localStorage.getItem('kdTreasure_fixtureSeed')==='1')return;localStorage.setItem('kdTreasure_fixtureSeed','1');localStorage.setItem('kd6_lang',language);localStorage.setItem('kd64_dailyDate',JSON.stringify('2026-11-18'));localStorage.setItem('kd64_streak',JSON.stringify(day-1));localStorage.setItem('kd64_coins','500');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_level','17');localStorage.setItem('kd64_completed','{"1":3,"2":2}');localStorage.setItem('kd64_best','{"1":4200,"2":3100}');localStorage.setItem('kd3_sound','0');localStorage.setItem('kd_fx_volume','65');},{day,language});
+  await p.clock.install({time:new Date('2026-11-19T12:00:00Z')});await p.goto('file://'+folder+'/index.html');await p.clock.fastForward(2600);await p.clock.runFor(650);await p.evaluate(()=>document.fonts.ready);assert.equal(await p.locator('#kdSplash,.kdSplash').count(),0);if(folder===root)await p.locator('.kdTreasureHero img').evaluate(im=>im.decode());return p;
+ }
+ const balances=p=>p.evaluate(()=>({coins:JSON.parse(localStorage.getItem('kd64_coins')),hints:JSON.parse(localStorage.getItem('kd64_hintCoupons'))}));
+ const stable=p=>p.evaluate(()=>Object.fromEntries(['dailyDate','streak','coins','hintCoupons','dailySeen','dailyLastReward','level','completed','best','xp'].map(k=>[k,localStorage.getItem('kd64_'+k)])));
+ // Every canonical day is awarded by the unmodified reward amounts, never by the decorator.
+ for(let day=1;day<=7;day++){
+  const old=await page(baseline,day),p=await page(root,day);assert.deepEqual(await stable(p),await stable(old));assert.deepEqual(await balances(p),{coins:500+amounts[day-1],hints:7+coupons[day-1]});
+  assert.equal(await p.locator('.kdTreasureDay').count(),7);assert.equal(await p.locator('.kdTreasureDay.today').getAttribute('data-day'),String(day));assert.equal(await p.locator('.kdTreasureDay.claimed').count(),day-1);assert.equal(await p.locator('.kdTreasureDay.future').count(),7-day);
+  const before=await stable(p);await p.evaluate(()=>kdDailyTreasure.decorate(document.querySelector('.kdDailyOverlay')));assert.deepEqual(await stable(p),before,'Re-decoration never pays or rewrites saves');
+  if(day===3||day===7)await p.screenshot({path:path.join(out,'day-'+day+'.png'),animations:'disabled'});
+  await p.locator('.kdDailyClose').click();await p.evaluate(()=>{kdNavigate('home');kdNavigate('home')});await p.clock.runFor(200);assert.equal(await p.locator('.kdDailyOverlay').count(),0);assert.deepEqual(await stable(p),before);
+  await p.reload();await p.clock.fastForward(2600);await p.clock.runFor(650);assert.equal(await p.locator('.kdDailyOverlay').count(),0,JSON.stringify({day,before,after:await stable(p),clock:await p.evaluate(()=>new Date().toISOString())}));assert.deepEqual(await stable(p),before,'Reload must never grant/consume resources');
+  report.payouts.push({day,coins:amounts[day-1],hints:coupons[day-1],sameAsBaseline:true,duplicateReloadBlocked:true});await old.close();await p.close();
+ }
+ // Same date / rollback / corrected date cannot pay again. Forward dates are local, NOT trusted.
+ const clock=await page(root,3);await clock.context().setOffline(true);
+ for(const date of ['2026-11-19','2026-11-20','2026-11-19','2026-11-20','2026-11-21']){await clock.evaluate(()=>document.querySelector('.kdDailyClose')?.click());await clock.clock.setSystemTime(new Date(date+'T12:00:00Z'));await clock.evaluate(()=>kdNavigate('home'));await clock.clock.runFor(120);report.clock.push({date,...await balances(clock),last:await clock.evaluate(()=>JSON.parse(localStorage.getItem('kd64_dailyDate')))});}
+ assert.deepEqual(report.clock.map(v=>v.coins),[500,515,515,515,535]);assert.deepEqual(report.clock.map(v=>v.hints),[8,8,8,8,8]);report.offline=true;report.forwardClockTrusted=false;report.baselineRollback={dates:['2026-11-19','2026-11-20','2026-11-19','2026-11-20'],coins:[500,515,520,530],reproducedBeforeFix:true};await clock.close();
+ // Calendar rows remain horizontal and text remains within its own box at every locale/size.
+ const probe=await browser.newPage();await probe.goto('file://'+root+'/index.html');const locales=await probe.evaluate(()=>Object.keys(kdLocalization.languages));await probe.close();assert.equal(locales.length,25);
+ const sizes=[{width:320,height:568},{width:360,height:640},{width:430,height:932},{width:568,height:320},{width:844,height:390},{width:768,height:1024}];
+ for(const language of locales){for(const day of [3,7]){const p=await page(root,day,language);for(const size of sizes){await p.setViewportSize(size);const layout=await p.evaluate(()=>{
+   const c=document.querySelector('.kdTreasureCard'),items=[...document.querySelectorAll('.kdTreasureDay')],buttons=[...document.querySelectorAll('.kdTreasureConfirm')];const texts=[...c.querySelectorAll('h2,p,.kdTreasureAmount,.kdTreasureUnit,.kdTreasureDayUnit')];
+   return {pageOverflow:document.documentElement.scrollWidth-innerWidth,cardOverflow:c.scrollWidth-c.clientWidth,rowSpread:Math.max(...items.map(e=>e.getBoundingClientRect().top))-Math.min(...items.map(e=>e.getBoundingClientRect().top)),textOverflow:texts.filter(e=>e.scrollWidth>e.clientWidth+2).map(e=>({text:e.textContent,width:e.clientWidth,scroll:e.scrollWidth})),buttonHeight:buttons[0].getBoundingClientRect().height,calendarOverflow:items.filter(e=>e.scrollWidth>e.clientWidth+1).length,internalVerticalScroll:c.scrollHeight>c.clientHeight+1,heading:c.querySelector('h2').textContent,unit:c.querySelector('.kdTreasureUnit').textContent,motion:document.querySelector('.kdTreasureOverlay').dataset.motion};
+  });assert(layout.pageOverflow<=1,JSON.stringify({language,day,size,layout}));assert(layout.cardOverflow<=1,JSON.stringify({language,day,size,layout}));assert(layout.rowSpread<1);assert.equal(layout.calendarOverflow,0,JSON.stringify({language,day,size,layout}));assert.deepEqual(layout.textOverflow,[],JSON.stringify({language,day,size,layout}));assert(layout.buttonHeight>=44);assert.equal(layout.motion,'static');if(language!=='tr'&&day===3)assert.notEqual(layout.unit,'ipucu kuponu',language);
+  report.layouts.push({language,day,size,internalVerticalScroll:layout.internalVerticalScroll});
+  if(language==='tr'&&day===3&&size.width===320)await p.screenshot({path:path.join(out,'small-android-320x568.png'),animations:'disabled'});
+  }await p.close();}}
+ report.locales=locales.length;report.errors.length&&assert.fail(report.errors.join('\n'));report.status='PASS';console.log(JSON.stringify({status:report.status,payouts:report.payouts.length,layouts:report.layouts.length,locales:report.locales,clock:report.clock,phoneVerified:false,apkAssetsTested:root!==repo},null,2));
+}finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});

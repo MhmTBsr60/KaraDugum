@@ -12,3 +12,11 @@ body.kdNoGlow~canvas.kdPipeFlowCanvas{display:none!important}
    Reduced motion / low hardware / disabling light clears the class immediately. */
 body.kdFlowCelebrating #modal.kdWinModal{background:transparent!important}
 body.kdFlowCelebrating #modal.kdWinModal .dialog{opacity:0!important;pointer-events:none!important}
+
+/* The rib, reflected crest and socket bevel use the existing pipe outlines. */
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeShell{stroke:var(--kd-metal-shell)!important}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeLustre{stroke:var(--kd-metal-lustre)!important;opacity:1}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeCollar rect{fill:var(--kd-metal-cuff);stroke:#362109;stroke-width:1.3}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeCuffBevel{stroke:#ffedb8;stroke-opacity:.65;stroke-width:.85}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeJoint{fill:var(--kd-metal-hub)!important}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeJointLight{fill:var(--kd-metal-hub);stroke:#ffe1a1;stroke-opacity:.72}

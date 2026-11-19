@@ -10,11 +10,15 @@
  let values=[],net={edges:[],ports:[],ranks:[],maxRank:0},key='',theme='gold',rect=null,boxes=[],segments=[],frame=0,lastFrame=0,wave=null,lastRun='',revision=0,fading=[];
  const haloSprites=new Map(), channelTextures=new Map(), svgArms=new Map();
  const steady=document.createElement('canvas'),steadyContext=steady.getContext('2d');
+ const stoneStencil=document.createElement('canvas'),stoneLight=document.createElement('canvas');
+ const stencilContext=stoneStencil.getContext('2d'),stoneContext=stoneLight.getContext('2d');
+ const stoneBrushes=new Map();
+ const stoneScale=.85;
  const layerNames=['settled','rings','channel','wave'];
  let previewLayer='all', pixelScale=1;
  const previewAllowed=new URLSearchParams(location.search).has('energyPreview');
  const showLayer=name=>previewLayer==='all'||previewLayer===name;
- const emptyEffects=()=>({waves:[],rings:[],fronts:[],layers:{settled:0,rings:0,channel:0,wave:0}});
+ const emptyEffects=()=>({waves:[],rings:[],fronts:[],reflections:[],layers:{settled:0,rings:0,channel:0,wave:0}});
  const channelWidth=()=>theme==='emerald'||theme==='ruby'?20:13;
  let effects=emptyEffects(),bursts=[],burstId=0,lastMoves=0,lastUndos=0;
  let stats={frames:0,paintMs:[],updates:0,geometryReads:0};const joined=new Map();
@@ -23,7 +27,9 @@
  const blocked=()=>game.hidden||document.hidden||!!window.kdOnboarding?.isOpen()||!!window.kdLearning?.isOpen()||!!window.kdStorage?.isOpen?.()||!!window.kdAdPrivacyBusy||!!document.querySelector('.kdRuleHelpOverlay,.kdDailyOverlay');
  const stop=()=>{effects=emptyEffects();bursts=[];wave=null;fading=[];cancelAnimationFrame(frame);frame=0;canvas.remove();if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');};
  function geometry(){const b=board.getBoundingClientRect();if(!b.width||!b.height)return false;rect={x:b.left,y:b.top,width:b.width,height:b.height};pixelScale=Math.min(1.5,devicePixelRatio||1);const scale=pixelScale,w=Math.ceil(b.width*scale),h=Math.ceil(b.height*scale);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}Object.assign(canvas.style,{left:b.left+'px',top:b.top+'px',width:b.width+'px',height:b.height+'px'});ctx.setTransform(scale,0,0,scale,0,0);
-  boxes=[...board.querySelectorAll(':scope>.tile')].map(e=>{const r=e.getBoundingClientRect(),svg=e.querySelector('.kdSculptedPipe'),s=svg?.getBoundingClientRect();return {x:(s||r).left-b.left,y:(s||r).top-b.top,w:(s||r).width,h:(s||r).height};});stats.geometryReads++;return boxes.length===values.length;}
+  boxes=[...board.querySelectorAll(':scope>.tile')].map(e=>{const r=e.getBoundingClientRect(),svg=e.querySelector('.kdSculptedPipe'),s=svg?.getBoundingClientRect();return {x:(s||r).left-b.left,y:(s||r).top-b.top,w:(s||r).width,h:(s||r).height,
+   tile:{x:r.left-b.left,y:r.top-b.top,w:r.width,h:r.height},mask:Number(svg?.dataset.pipeMask),
+   shell:svg?.querySelector('.kdPipeShell')?.getAttribute('d')};});stats.geometryReads++;return boxes.length===values.length;}
  const elbowFirstPort={3:1,6:2,12:4,9:8};
  const portPoint={1:[50,0],2:[100,50],4:[50,100],8:[0,50]};
  function readSvgArm(mask,bit,path){
@@ -184,6 +190,85 @@
 
  // Layer 2: a shaped leading lobe with longitudinal falloff. Its colour and
  // opacity use global propagation distance, so the crest can cross a seam.
+ // The moving crest illuminates nearby stone. Cache its receiving surface
+ // by layout: inset tiles keep their grid and every metal silhouette is cut out.
+ function rebuildStoneStencil(){
+  if(!stencilContext||!stoneContext||staticOnly())return;
+  for(const surface of [stoneStencil,stoneLight]){
+   const w=Math.ceil(rect.width*stoneScale),h=Math.ceil(rect.height*stoneScale);
+   if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}
+  }
+  const painter=stencilContext;
+  painter.setTransform(stoneScale,0,0,stoneScale,0,0);
+  painter.clearRect(0,0,rect.width,rect.height);
+  painter.fillStyle='#fff';
+  painter.globalCompositeOperation='source-over';
+  const inset=2.3;
+  for(const box of boxes){
+   const t=box.tile;
+   painter.beginPath();painter.roundRect(t.x+inset,t.y+inset,t.w-2*inset,t.h-2*inset,3);
+   painter.fill();
+  }
+  painter.globalCompositeOperation='destination-out';
+  painter.strokeStyle='#fff';painter.lineJoin='round';painter.lineCap='round';
+  for(const box of boxes){
+   if(!box.shell)continue;
+   painter.save();painter.translate(box.x,box.y);painter.scale(box.w/100,box.h/100);
+   const tube=channelWidth();
+   painter.lineWidth=tube+12;
+   painter.stroke(new Path2D(box.shell));
+   if(!elbowFirstPort[box.mask]&&box.mask!==5&&box.mask!==10){
+    painter.beginPath();painter.arc(50,50,tube/2+7.5,0,2*Math.PI);painter.fill();
+   }
+   for(const [bit,x,y] of [[1,50,13],[2,87,50],[4,50,87],[8,13,50]]){
+    if(!(box.mask&bit))continue;
+    const across=(tube+16)/2,along=6.5,vertical=bit===1||bit===4;
+    const rx=vertical?across:along,ry=vertical?along:across;
+    painter.fillRect(x-rx,y-ry,rx*2,ry*2);
+   }
+   painter.restore();
+  }
+  painter.globalCompositeOperation='source-over';
+ }
+
+ function stoneBrush(color){
+  if(stoneBrushes.has(color))return stoneBrushes.get(color);
+  const surface=document.createElement('canvas');surface.width=64;surface.height=64;
+  const painter=surface.getContext('2d');
+  if(!painter)return null;
+  const beam=painter.createRadialGradient(32,32,2,32,32,32);
+  for(const [at,alpha] of [[0,.24],[.26,.20],[.52,.13],[.77,.05],[1,0]])beam.addColorStop(at,rgba(color,alpha));
+  painter.fillStyle=beam;painter.fillRect(0,0,64,64);
+  stoneBrushes.set(color,surface);
+  return surface;
+ }
+ function drawStoneReflections(profiles,color){
+  if(!stoneContext||!stencilContext||!showLayer('wave')||!profiles.size)return;
+  const colorOnStone=theme==='gold'||theme==='fire'?'#ffad57':color;
+  const brush=stoneBrush(colorOnStone);
+  if(!brush)return;
+  const limit=values.length>=49?1:3;
+  const painter=stoneContext;
+  painter.setTransform(stoneScale,0,0,stoneScale,0,0);
+  painter.globalCompositeOperation='source-over';
+  painter.clearRect(0,0,rect.width,rect.height);
+  for(const {s,frontDistance} of profiles.values()){
+   const travel=58*s.width/s.length,hot=frontDistance-travel*.46;
+   if(hot<0||hot>1)continue;
+   const [x,y]=dot(s,hot),radius=37*s.width;
+   painter.drawImage(brush,x-radius,y-radius,radius*2,radius*2);
+   effects.reflections.push({id:s.id,center:[x,y],radius});
+   if(effects.reflections.length>=limit)break;
+  }
+  if(!effects.reflections.length)return;
+  painter.globalCompositeOperation='destination-in';
+  painter.drawImage(stoneStencil,0,0,stoneStencil.width/stoneScale,stoneStencil.height/stoneScale);
+  ctx.save();
+  ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';
+  ctx.drawImage(stoneLight,0,0,stoneLight.width/stoneScale,stoneLight.height/stoneScale);
+  ctx.restore();
+ }
+
  function drawCrest(s,frontDistance,color,core){
   const travel=58*s.width/s.length;
   const from=Math.max(0,frontDistance-travel),to=Math.min(1,frontDistance);
@@ -218,9 +303,9 @@
   const brush=document.createElement('canvas');brush.width=brush.height=96;
   const painter=brush.getContext('2d');if(!painter)return null;
   const gradient=painter.createRadialGradient(48,48,0,48,48,47);
-  const shoulder=color,crest=theme==='gold'?'#ffc851':color;
+  const shoulder=theme==='gold'||theme==='fire'?'#ffa52c':color,crest=theme==='gold'||theme==='fire'?'#ffd488':color;
   for(const [at,tone,alpha]of [[0,color,0],[.53,color,0],[.63,shoulder,.10],
-   [.71,shoulder,.25],[.765,crest,.88],[.79,crest,.88],[.83,shoulder,.36],[.92,shoulder,.09],[1,color,0]]){
+   [.71,shoulder,.29],[.753,crest,.90],[.81,crest,.90],[.85,shoulder,.38],[.92,shoulder,.10],[1,color,0]]){
    gradient.addColorStop(at,rgba(tone,alpha));
   }
   painter.fillStyle=gradient;painter.fillRect(0,0,96,96);
@@ -298,9 +383,10 @@
     if(!old||strength>old.strength)profiles.set(s.id,{s,head,frontDistance,strength,winning:!!wave});
     if(head<1)tips.push({id:s.id,tip:dot(s,head),head});
    }
-   for(const bend of plan.bends)rings.push({...bend,phase:(age-bend.arrival/plan.distance*TRAVEL_MS+55)/690});
+   for(const bend of plan.bends)rings.push({...bend,phase:(age-bend.arrival/plan.distance*TRAVEL_MS)/690});
    effects.fronts.push({id:event.id||'completion',distance,progress:Math.min(1,age/TRAVEL_MS),tips,winning:!!wave});
   }
+  drawStoneReflections(profiles,color);
   rings.sort((a,b)=>Math.abs(a.phase-.32)-Math.abs(b.phase-.32));
   const seen=new Set();
   for(const ring of rings){
@@ -328,7 +414,7 @@
   if(!enabled()||blocked()){stop();return;}
   // Completion is reported by the existing engine/reward flow, not inferred from lit ports.
   if(!state.locked&&lastRun){lastRun='';wave=null;if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');}const run=state.locked&&window.kdLastWin?.id;if(run&&run!==lastRun){lastRun=run;const duration=staticOnly()?0:WIN_MS;wave={start:now,duration};document.body.classList.add('kdFlowCelebrating');}
-  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}if(!geometry())return;refreshSegments();rebuildSettled(...(palettes[theme]||palettes.gold));for(const b of bursts)b.plan=planEnergy(b.seedIds);if(wave)wave.plan=planEnergy([],true);if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
+  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}if(!geometry())return;refreshSegments();rebuildStoneStencil();rebuildSettled(...(palettes[theme]||palettes.gold));for(const b of bursts)b.plan=planEnergy(b.seedIds);if(wave)wave.plan=planEnergy([],true);if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
  }
  // A broken link never emits new energy. Its unchanged neighbour's real pipe fades for
  // 240 ms; rotated-away arms vanish immediately, so no stale line crosses the stone.
