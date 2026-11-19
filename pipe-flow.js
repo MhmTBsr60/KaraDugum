@@ -237,14 +237,14 @@
   const painter=surface.getContext('2d');
   if(!painter)return null;
   const beam=painter.createRadialGradient(32,32,2,32,32,32);
-  for(const [at,alpha] of [[0,.24],[.26,.20],[.52,.13],[.77,.05],[1,0]])beam.addColorStop(at,rgba(color,alpha));
+  for(const [at,alpha] of [[0,.34],[.26,.29],[.52,.18],[.77,.06],[1,0]])beam.addColorStop(at,rgba(color,alpha));
   painter.fillStyle=beam;painter.fillRect(0,0,64,64);
   stoneBrushes.set(color,surface);
   return surface;
  }
  function drawStoneReflections(profiles,color){
   if(!stoneContext||!stencilContext||!showLayer('wave')||!profiles.size)return;
-  const colorOnStone=theme==='gold'||theme==='fire'?'#ffad57':color;
+  const colorOnStone=theme==='gold'||theme==='fire'?'#ffa338':color;
   const brush=stoneBrush(colorOnStone);
   if(!brush)return;
   const limit=values.length>=49?1:3;
@@ -252,7 +252,13 @@
   for(const {s,frontDistance} of profiles.values()){
    const travel=58*s.width/s.length,hot=frontDistance-travel*.46;
    if(hot<0||hot>1)continue;
-   stamps.push({id:s.id,center:dot(s,hot),radius:37*s.width});
+   const center=dot(s,hot);
+   const tangentA=dot(s,hot-.015),tangentB=dot(s,hot+.015);
+   const angle=Math.atan2(tangentB[1]-tangentA[1],tangentB[0]-tangentA[0]);
+   // Small boards get a directional reflection following the current pipe.
+   // Dense boards keep the cheaper single round stamp.
+   const radius=(limit===1?37:45)*s.width;
+   stamps.push({id:s.id,center,radius,angle,crossRadius:(limit===1?37:35)*s.width});
    if(stamps.length>=limit)break;
   }
   if(!stamps.length)return;
@@ -268,8 +274,12 @@
   painter.setTransform(1,0,0,1,0,0);
   painter.globalCompositeOperation='source-over';
   painter.clearRect(left,top,width,height);
-  for(const {center:[x,y],radius}of stamps){
-   painter.drawImage(brush,(x-radius)*stoneScale,(y-radius)*stoneScale,radius*2*stoneScale,radius*2*stoneScale);
+  for(const {center:[x,y],radius,crossRadius,angle}of stamps){
+   painter.save();
+   painter.translate(x*stoneScale,y*stoneScale);
+   if(crossRadius!==radius)painter.rotate(angle);
+   painter.drawImage(brush,-radius*stoneScale,-crossRadius*stoneScale,radius*2*stoneScale,crossRadius*2*stoneScale);
+   painter.restore();
   }
   painter.globalCompositeOperation='destination-in';
   painter.drawImage(stoneStencil,left,top,width,height,left,top,width,height);
@@ -312,9 +322,9 @@
   const brush=document.createElement('canvas');brush.width=brush.height=96;
   const painter=brush.getContext('2d');if(!painter)return null;
   const gradient=painter.createRadialGradient(48,48,0,48,48,47);
-  const shoulder=theme==='gold'||theme==='fire'?'#ffa52c':color,crest=theme==='gold'||theme==='fire'?'#ffd488':color;
-  for(const [at,tone,alpha]of [[0,color,0],[.53,color,0],[.63,shoulder,.10],
-   [.71,shoulder,.29],[.753,crest,.90],[.81,crest,.90],[.85,shoulder,.38],[.92,shoulder,.10],[1,color,0]]){
+  const shoulder=theme==='gold'||theme==='fire'?'#ff8e22':color,crest=theme==='gold'||theme==='fire'?'#ffbe66':color;
+  for(const [at,tone,alpha]of [[0,color,0],[.53,color,0],[.63,shoulder,.06],
+   [.71,shoulder,.25],[.752,crest,.94],[.795,crest,.94],[.835,shoulder,.41],[.92,shoulder,.08],[1,color,0]]){
    gradient.addColorStop(at,rgba(tone,alpha));
   }
   painter.fillStyle=gradient;painter.fillRect(0,0,96,96);
@@ -331,9 +341,10 @@
    ctx.save();
    ctx.globalAlpha=strength;
    ctx.drawImage(brush,center[0]-extent,center[1]-extent,extent*2,extent*2);
-   if(!dense){
-    const echo=extent*.73;
-    ctx.globalAlpha=strength*.56;
+   const echoPhase=(phase-.17)/.83;
+   if(!dense&&echoPhase>0){
+    const echo=(13+19*(1-(1-echoPhase)**2))*width;
+    ctx.globalAlpha=.62*Math.min(1,echoPhase/.13)*(1-echoPhase)**.63;
     ctx.drawImage(brush,center[0]-echo,center[1]-echo,echo*2,echo*2);
    }
    ctx.restore();effects.layers.rings++;
