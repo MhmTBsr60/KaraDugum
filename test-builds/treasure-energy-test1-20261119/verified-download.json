@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "download": "https://raw.githubusercontent.com/MhmTBsr60/KaraDugum/64e76b05446e63c968fd2316dae927baf84738bb/test-builds/treasure-energy-test1-20261119/KaraDugum-6.50-TREASURE-ENERGY-TEST1.apk",
+  "publicationCommit": "64e76b05446e63c968fd2316dae927baf84738bb",
+  "runtimeCommit": "810ef0504d2950592da81862d5c6c85550a39b27",
+  "versionName": "6.50-treasure-energy-test1",
+  "sha256": "b54c5a267f7d780dd6fb704f8ffaef91f64fe867306dde26f4d4b0328df91548",
+  "package": "com.orynexa.karadugum",
+  "sameSignerAsPreviousTest": true,
+  "signer": {
+    "sha1": "A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A",
+    "sha256": "35:1B:49:B7:2B:FC:09:EB:B3:17:76:98:32:31:9E:AD:CA:9D:ED:6D:AE:70:9D:AE:B8:31:47:19:A5:3D:EE:9E",
+    "block": "0x7109871a"
+  },
+  "androidApi": 35,
+  "physicalPhoneVerified": false,
+  "sameStatePixelProof": {
+    "boardChangedFraction": 0.009830666283794955,
+    "addedGoldFraction": 0.008597210257481227,
+    "restoreDifference": 0.00017620800375910408,
+    "negativeControlRejected": true,
+    "method": "actual Android Surface on/off/restored screenshots, same puzzle; not counters"
+  },
+  "animatedAndroidHarnessPassed": true,
+  "animatedHardwareOverride": true,
+  "animationClockControlled": true,
+  "realTimePhonePerformanceVerified": false,
+  "inPlaceUpgradePreserved": true,
+  "fullWebRegressionRun": 44490852261,
+  "byteMatchedRuntimeAssets": [
+    "index.html",
+    "connection-model.js",
+    "pipe-flow.js",
+    "pipe-flow.css",
+    "obsidian-gold.css",
+    "obsidian-gold.js",
+    "board-renderer.js",
+    "theme-renderer.js",
+    "localization.js",
+    "cloud-model.js",
+    "cloud-sync.js",
+    "reward-receipts.js",
+    "board-focus.css",
+    "board-focus.js",
+    "feedback.js",
+    "wheel.js",
+    "wheel-motion.js",
+    "ux-locales.js",
+    "ux-polish.css",
+    "gameplay-ui.js",
+    "gameplay-layout.css",
+    "onboarding.js",
+    "onboarding.css",
+    "daily-treasure.js",
+    "daily-treasure.css",
+    "assets/daily-treasure-chest.webp",
+    "privacy-policy.html",
+    "delete-account.html"
+  ],
+  "whiteCoreMetrics": [
+    {
+      "theme": "gold",
+      "whitePixels": 210,
+      "contrastP95": 132.4246
+    },
+    {
+      "theme": "ice",
+      "whitePixels": 211,
+      "contrastP95": 135.2154
+    },
+    {
+      "theme": "fire",
+      "whitePixels": 206,
+      "contrastP95": 134.1438
+    },
+    {
+      "theme": "shadow",
+      "whitePixels": 210,
+      "contrastP95": 137.81619999999998
+    },
+    {
+      "theme": "emerald",
+      "whitePixels": 209,
+      "contrastP95": 125.88980000000001
+    },
+    {
+      "theme": "ruby",
+      "whitePixels": 209,
+      "contrastP95": 130.589
+    }
+  ],
+  "treasureBundled": true,
+  "actualPackagedTreasureNativePassed": true,
+  "dailyDateGuardVerified": true,
+  "nativeWhiteCoreSurfaceProof": {
+    "pixels": 51,
+    "maxLumaDifference": 81.13039999999998,
+    "scope": "Actual Android Surface, same new connection and committed puzzle; white-gold hue plus positive luminance versus settled metal; emulator, not POCO"
+  }
+}

@@ -1,3 +1,5 @@
+> Entegrasyon notu: Bu sayfa önceki önizlemenin arşividir. Hazine ekranı artık `6.50-treasure-energy-test1` birleşik TEST APK'sında paketlenmiştir. [Güncel APK/test raporu](../../test-builds/treasure-energy-test1-20261119/RAPOR.md).
+
 # Günlük Giriş Ödülü — Hazine Temalı Önizleme
 
 Bu tasarım onay bekler. Hazine ekranını içeren oyun TEST APK'sı oluşturulmadı, main'e birleştirilmedi. Boru enerjisi ayrı dalda sürdürülür; bu dal mevcut `f18a62f` enerji geliştirmelerini korur.

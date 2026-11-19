@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "sourceCommit": "810ef0504d2950592da81862d5c6c85550a39b27",
+  "candidateApkSha256": "04fae36d263cd47593f251c72c9774f9789a85baf8ebe26c85c2d9a709e2942d",
+  "day6ReloadCycles": 25,
+  "fixtureReseededOnReload": false,
+  "runtime": "Actual signed APK assets extracted from failed attempt, real Chromium with test clock",
+  "phoneVerified": false,
+  "scope": "Extra local diagnostic probe following a CI popup-count assertion. Does not establish the root cause of the single CI failure. Ordinary test suite and actual Android checks remain separate gates."
+}
