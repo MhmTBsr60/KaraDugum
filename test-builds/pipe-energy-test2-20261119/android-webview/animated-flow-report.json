@@ -12,7 +12,7 @@
   "settledSurface": "animated-flow-rest.png",
   "vw": 275,
   "vh": 610,
-  "scope": "Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values and clock advanced to 200\/420\/640 ms; verifies actual Surface drawing, NOT real-time FPS or physical POCO performance",
+  "scope": "Packaged runtime assets in actual Android WebView; navigator properties forced to capable-device values and clock advanced to 200/420/640 ms; verifies actual Surface drawing, NOT real-time FPS or physical POCO performance",
   "during": {
     "enabled": true,
     "static": false,
@@ -787,5 +787,31 @@
     "renderer": "root-canvas2d",
     "style": "contrast-2",
     "phoneVerified": false
+  },
+  "surfaceAnimationProof": {
+    "changedPixelsOnNewConnection": 26,
+    "sameCommittedPuzzle": true,
+    "visibleSamples": [
+      {
+        "sample": "animated-sample-420.png",
+        "frame": 1,
+        "brightPixels": 16,
+        "centroidX": 117.49090909090908,
+        "outsideMatchedPipesFraction": 0.0
+      },
+      {
+        "sample": "animated-sample-640.png",
+        "frame": 2,
+        "brightPixels": 26,
+        "centroidX": 166.35524475524477,
+        "outsideMatchedPipesFraction": 0.0
+      }
+    ],
+    "travelPixels": 48.864335664335684,
+    "selectedSample": "animated-sample-640.png",
+    "method": "actual Android Surface PNGs, controlled 200/420/640 ms animation clock: positive luminance and directional travel inside matched pipes; not counters or real-time FPS",
+    "clockControlled": true,
+    "physicalPhoneVerified": false,
+    "realTimePhonePerformanceVerified": false
   }
 }

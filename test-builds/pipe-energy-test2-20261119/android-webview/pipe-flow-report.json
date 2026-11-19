@@ -2630,5 +2630,12 @@
       "phoneVerified": false,
       "level": 151
     }
-  ]
+  ],
+  "pixelProof": {
+    "boardChangedFraction": 0.009830666283794955,
+    "addedGoldFraction": 0.008597210257481227,
+    "restoreDifference": 0.00017620800375910408,
+    "negativeControlRejected": true,
+    "method": "actual Android Surface on/off/restored screenshots, same puzzle; not counters"
+  }
 }

@@ -450,10 +450,10 @@ jobs:
             free -m > dist/android-webview/host-memory.txt
             sudo dmesg -T | tail -100 > dist/android-webview/host-kernel.txt || true
             python3 -c "assert 'OK (2 tests)' in open('/tmp/kd-webview-instrumentation.log').read()"
-            python3 scripts/verify-pipe-flow-pixels.py dist/android-webview
             timeout 120s adb shell am instrument -w -e class com.orynexa.karadugum.DailyTreasurePreviewAudit com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner | tee /tmp/kd-treasure-instrumentation.log
             timeout 30s adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/android-webview/ || true
             python3 -c "assert 'OK (1 test)' in open('/tmp/kd-treasure-instrumentation.log').read()"
+            python3 scripts/verify-pipe-flow-pixels.py dist/android-webview
             python3 scripts/verify-treasure-preview-pixels.py dist/android-webview
 
       - name: Tum mevcut tarayici, ses-titresim ve ogretici regresyonlari
