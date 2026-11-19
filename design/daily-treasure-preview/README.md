@@ -31,9 +31,9 @@ Yedi günlük ödüller: 5 kristal, 10 kristal, 1 ipucu kuponu, 15 kristal, 20 k
 
 - [Ödül/tarih/çevrimdışı ve 25 dilde 300 yerleşim kontrolü](report.json): başarılı.
 - [Gerçek Chromium animasyon örnekleri ve düşük donanım/hareketi azalt kontrolü](animation-report.json): başarılı. Masaüstü ölçümüdür; Android FPS kanıtı değildir.
-- 300 bölüm ve mevcut kaynak testleri; öğretici 204 yerleşim/60 tahta karşılaştırması; ses/titreşim ve UX regresyonları başarılı.
+- 43 tarayıcı regresyon grubu; 300 bölüm ve mevcut 18 kaynak grubu; öğretici 204 yerleşim/60 tahta karşılaştırması; ses/titreşim ve UX regresyonları başarılı.
 - Çok kısa/yatay ekranlarda ve bazı uzun çevirilerde kartın içi dikey kaydırılabilir; yedi günlük takvim tek yatay satırda kalır. Yazılar kesilmez, TAMAM en az 44 CSS piksel yüksekliktedir.
-- Android WebView sunum kontrolü ayrı boru TEST2 çalıştırmasında, hazine dosyaları yalnız test düzeneğine yüklenerek yapılır. Sonuçları tamamlandığında ayrıca eklenecektir. Dağıtılan boru APK'sına hazine dosyaları dahil edilmez.
+- Android 35 emülatörünün gerçek WebView sunum kontrolü başarılı: [üçüncü gün](android-webview-day-3.png), [yedinci gün](android-webview-day-7.png), [piksel/ödül raporu](android-webview-report.json). Kaynak `cc0d6029ab54ea0ba75bae12d9e8abe489acb2e6` yalnız test düzeneğine yüklendi; gerçek Surface görüntülerinde sandık ve mavi kristaller ölçüldü. Küçük ekran, gerçek düğme tıklaması, ödül ve tekrar giriş kontrol edildi. Bu, fiziksel POCO testi değildir. Dağıtılan boru APK'sına hazine dosyaları veya bu dalın tarih koruması dahil edilmez.
 
 ### Tarih geri alma açığı
 
@@ -44,3 +44,7 @@ Sunucu tarafından doğrulanmış saat bulunmadığından ileri tarih sıçramas
 Bu tarih düzeltmesi de onay bekleyen hazine dalındadır. Boru TEST2 APK'sının mevcut ödül motoruna karıştırılmadı.
 
 Main/Google Play üretim 6.50/AdMob hesabı/diğer uygulamalar/mağaza görselleri değiştirilmedi. AAB oluşturulmadı veya yayımlanmadı. Yeni hazine ekranı fiziksel POCO'da test edilmedi.
+
+Android kontrolünün başarılı çalıştırması: https://github.com/MhmTBsr60/KaraDugum/actions/runs/44466926216
+
+Bu dal web/Android WebView önizlemesidir. Onay sonrası hazine dosyaları oyun APK varlık listesine eklenip gerçek paket içeriği ayrıca doğrulanmalıdır. Bu aşamada hazine oyun APK'sı hazırlanmadı.
