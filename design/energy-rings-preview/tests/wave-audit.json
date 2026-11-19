@@ -1,0 +1,97 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "androidWebViewVerified": false,
+  "checks": [
+    {
+      "theme": "gold",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    {
+      "theme": "ice",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    {
+      "theme": "fire",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    {
+      "theme": "shadow",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    {
+      "theme": "emerald",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    {
+      "theme": "ruby",
+      "haloGradientAlphaLevels": 30,
+      "haloPeakAlpha": 216
+    },
+    "bounded ordered engine-win wave; unchanged result panel revealed after wave",
+    "low hardware: static light, no animation loop, result immediate",
+    "reduced motion: static light, no rings/wave, result immediate"
+  ],
+  "themes": [
+    {
+      "theme": "gold",
+      "frontEarly": 60.08113400555162,
+      "frontMiddle": 172.07703428774494,
+      "ringCount": 1,
+      "stationaryFrames": 53,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ice",
+      "frontEarly": 61.63663262058209,
+      "frontMiddle": 173.6325329027754,
+      "ringCount": 1,
+      "stationaryFrames": 116,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "fire",
+      "frontEarly": 60.08113400555162,
+      "frontMiddle": 172.07703428774494,
+      "ringCount": 1,
+      "stationaryFrames": 179,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "shadow",
+      "frontEarly": 61.63663262058209,
+      "frontMiddle": 173.6325329027754,
+      "ringCount": 1,
+      "stationaryFrames": 242,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "emerald",
+      "frontEarly": 60.08113400555162,
+      "frontMiddle": 172.07703428774494,
+      "ringCount": 1,
+      "stationaryFrames": 305,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ruby",
+      "frontEarly": 61.63663262058209,
+      "frontMiddle": 173.6325329027754,
+      "ringCount": 1,
+      "stationaryFrames": 368,
+      "joinBreakUndoOffOn": true
+    }
+  ],
+  "campaign": {
+    "levels": 300,
+    "edges": 7566,
+    "errors": []
+  },
+  "errors": [],
+  "scope": "Real Chromium engine and pipe geometry; controlled test time and synthetic player/device data. No APK build."
+}

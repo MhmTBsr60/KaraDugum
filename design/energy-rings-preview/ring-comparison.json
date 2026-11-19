@@ -1,0 +1,22 @@
+{
+  "sameGame": true,
+  "level": 6,
+  "moves": [
+    10,
+    14,
+    14
+  ],
+  "elapsedMs": 1390,
+  "measurements": [
+    {
+      "cell": 10,
+      "previousOuterRadius": 23.204491792633384,
+      "currentOuterRadius": 35.12139163134797
+    },
+    {
+      "cell": 14,
+      "previousOuterRadius": 18.550271148947626,
+      "currentOuterRadius": 25.712449847588196
+    }
+  ]
+}

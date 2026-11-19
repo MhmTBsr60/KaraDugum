@@ -1,0 +1,32 @@
+{
+  "branch": "design/energy-wave-bend-rings-preview-20261119",
+  "source": "d6c83b30a899b7d69e989a671fed4c27420bbd66",
+  "testedSource": "9a16193237d5fd034be9a76ee9405e28cd550c26",
+  "runtimeFiles": [
+    "pipe-flow.js"
+  ],
+  "androidRun": 44535311743,
+  "webViewVisibility": "PASS",
+  "webViewPerformance": "LIMITED",
+  "physicalPOCOTested": false,
+  "apkBuilt": false,
+  "aabBuilt": false,
+  "mediaSha256": {
+    "03-bend-rings.png": "0ac259646aecbc17bfa9b52dc3e7874fca2fd11ec4b50ccd9ce9396b4e88f0a9",
+    "five-states.png": "51e036b921c1a67ff0211b4fd991b4943e5578057f5e20f1063d98311f90e94d",
+    "02-new-connection.png": "8099eab369bea861c3eff9bdb37582a72fd4222c75143d60343c82ca2acd9e26",
+    "04-settled.png": "31f3d1e855631f8894607dac229de0364ea087803d598abd1d09d9f1e1515bbc",
+    "01-light-off-board.png": "58d3efdc2c5426093e403c3ac3f8639b6a7a149221c1556e5742cd1b64ec46f0",
+    "current-board.png": "d9f07c138bdd4a650c57e5248aa455ea37c88b8cc2c4ed61809714693dabc033",
+    "energy-wave-14s.mp4": "2f2d3ee877e8ff93a8ca65ba3fadb0cf39c014cc3de006844a6c1278443bb2be",
+    "previous-board.png": "801dad6ad5c61dd5288685324596801d6e41eebf91a3800b98572a13f9987b52",
+    "05-completion-board.png": "3d53751aadd25d80e5aa18cf47b2487577e8e24a3ee826ec8d7a69557fe261d6",
+    "reference-comparison.zip": "1aa788d34899e5906572fe431da118cf9e8377155633b1397cf19521f99bd293",
+    "03-bend-rings-board.png": "401a0c83ed28240ac03da6174264950e132231afeabe618a29bfd6df70d876c2",
+    "before-after.png": "5c7118efbcf2b40ac1ad45d6e3bf40ceb4625dbf4eeb7ef5480c4279c6064d21",
+    "02-new-connection-board.png": "9320c18d244d81056e4eca977a67a22b432cb68014c9405bfdc5f1ee9b961a67",
+    "04-settled-board.png": "fa004a54e71e3b24672b1c7f70d0ad2a3cf53242fa04001fa20fec9a73bf5282",
+    "01-light-off.png": "d8989631c86e3177f8c2d3dd0be1cf9ad40365364ddff26c3020bd71b756f812",
+    "05-completion.png": "affb3aa4bb738ef18b4d4a3c417809e463ce00a62aec59a613b96aae402d93b5"
+  }
+}
