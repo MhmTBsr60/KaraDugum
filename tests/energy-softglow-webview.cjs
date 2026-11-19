@@ -6,14 +6,20 @@ const delay=t=>new Promise(r=>setTimeout(r,t));
 let webBounds=null;
 async function nativeTap(p,selector){
  await delay(450);
- if(!webBounds){
-  execFileSync('adb',['shell','uiautomator','dump','/sdcard/kd-wave-ui.xml'],{timeout:15000});
-  const xml=execFileSync('adb',['exec-out','cat','/sdcard/kd-wave-ui.xml']).toString();fs.writeFileSync(path.join(out,'ui.xml'),xml);
-  const views=[...xml.matchAll(/<node\b[^>]*class="android\.webkit\.WebView"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/g)].map(m=>m.slice(1).map(Number));
-  assert(views.length,'Native WebView bounds required; never assume the toolbar offset');webBounds=views.sort((a,b)=>(b[2]-b[0])*(b[3]-b[1])-(a[2]-a[0])*(a[3]-a[1]))[0];console.log('Native WebView screen bounds:',webBounds);
- }
- const r=await p.locator(selector).evaluate(e=>{const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {x:r.x+r.width/2,y:r.y+r.height/2,vw:innerWidth,vh:innerHeight,hit:e===hit||e.contains(hit)}});assert(r.hit,'Intended game control must own the DOM hit target');
- const [x,y,right,bottom]=webBounds;execFileSync('adb',['shell','input','tap',String(Math.round(x+r.x*(right-x)/r.vw)),String(Math.round(y+r.y*(bottom-y)/r.vh))]);await delay(100);
+ // The shell toolbar can finish relayout after wm density changes. Read its
+ // CURRENT native WebView bounds instead of retaining the first frame's bounds.
+ execFileSync('adb',['shell','uiautomator','dump','/sdcard/kd-softglow-ui.xml'],{timeout:15000});
+ const xml=execFileSync('adb',['exec-out','cat','/sdcard/kd-softglow-ui.xml']).toString();fs.writeFileSync(path.join(out,'ui.xml'),xml);
+ const views=[...xml.matchAll(/<node\b[^>]*class="android\.webkit\.WebView"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/g)].map(m=>m.slice(1).map(Number));
+ assert(views.length,'Native WebView bounds required');webBounds=views.sort((a,b)=>(b[2]-b[0])*(b[3]-b[1])-(a[2]-a[0])*(a[3]-a[1]))[0];
+ const r=await p.locator(selector).evaluate(e=>{const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);window.__kdNativeTargetClicked=false;window.__kdNativeActualClick=null;e.addEventListener('click',()=>window.__kdNativeTargetClicked=true,{once:true});document.addEventListener('click',event=>window.__kdNativeActualClick={tag:event.target.tagName,classes:event.target.className,tile:event.target.closest('[data-i]')?.dataset.i,go:event.target.closest('[data-go]')?.dataset.go,x:event.clientX,y:event.clientY},{once:true,capture:true});return {x:r.x+r.width/2,y:r.y+r.height/2,vw:innerWidth,vh:innerHeight,dpr:devicePixelRatio,hit:e===hit||e.contains(hit)}});assert(r.hit,'Intended control must own its DOM hit target');
+ const [x,y,right,bottom]=webBounds,scale=(right-x)/r.vw;
+ // CSS pixels scale uniformly. Layout viewport height is not a reliable
+ // independent Y scale in Android's embedded browser.
+ const px=Math.round(x+r.x*scale),py=Math.round(y+r.y*scale);assert(px>=x&&px<right&&py>=y&&py<bottom);
+ execFileSync('adb',['shell','input','tap',String(px),String(py)]);
+ const deadline=Date.now()+2000;let tapped=false;while(Date.now()<deadline){if(await p.evaluate(()=>window.__kdNativeTargetClicked)){tapped=true;break;}await delay(60);}
+ const actual=await p.evaluate(()=>window.__kdNativeActualClick);console.log('Native input proof:',JSON.stringify({selector,bounds:webBounds,css:r,pixel:{x:px,y:py},actual,tapped}));assert(tapped,'Native input must dispatch on intended element: '+JSON.stringify({selector,bounds:webBounds,css:r,px,py,actual}));
 }
 async function rotate(p,i){const before=await p.evaluate(()=>kdGetLearningState().moves);await nativeTap(p,'#board>.tile[data-i="'+i+'"]');assert.equal(await p.evaluate(()=>kdGetLearningState().moves),before+1,'Real Android tap must rotate exactly once');}
 
