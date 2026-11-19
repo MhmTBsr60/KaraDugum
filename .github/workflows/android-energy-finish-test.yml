@@ -72,7 +72,7 @@ jobs:
           cp light-feedback.js light-feedback.css app/src/main/assets/
           cp wheel-motion.js app/src/main/assets/wheel-motion.js
           cp ux-locales.js app/src/main/assets/ux-locales.js
-          cp ux-polish.css ux-refinement.css app/src/main/assets/
+          cp ux-polish.css app/src/main/assets/
           cp gameplay-ui.js app/src/main/assets/gameplay-ui.js
           cp gameplay-layout.css app/src/main/assets/gameplay-layout.css
           cp localization.js app/src/main/assets/localization.js
@@ -251,7 +251,7 @@ jobs:
           from pathlib import Path
           from zipfile import ZipFile
           with ZipFile('app/build/outputs/apk/release/app-release.apk') as apk:
-              for name in ['daily-treasure.js','daily-treasure.css','assets/daily-treasure-chest.webp','ux-refinement.css']:
+              for name in ['daily-treasure.js','daily-treasure.css','assets/daily-treasure-chest.webp']:
                   assert apk.read('assets/'+name)==Path(name).read_bytes(),name
           PY
           SIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)

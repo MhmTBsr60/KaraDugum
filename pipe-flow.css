@@ -20,3 +20,8 @@ html[data-kd-theme] #board .kdSculptedPipe .kdPipeCollar rect{fill:var(--kd-meta
 html[data-kd-theme] #board .kdSculptedPipe .kdPipeCuffBevel{stroke:#ffedb8;stroke-opacity:.65;stroke-width:.85}
 html[data-kd-theme] #board .kdSculptedPipe .kdPipeJoint{fill:var(--kd-metal-hub)!important}
 html[data-kd-theme] #board .kdSculptedPipe .kdPipeJointLight{fill:var(--kd-metal-hub);stroke:#ffe1a1;stroke-opacity:.72}
+.kdPipeMetalEdge{display:none}
+html[data-kd-theme] #board .kdSculptedPipe .kdPipeMetalEdge{
+ display:block;stroke:#fff0c1;stroke-width:1.2;stroke-opacity:.54;stroke-linecap:round;
+ transform:translate(-3.4px,-3.2px);
+}
