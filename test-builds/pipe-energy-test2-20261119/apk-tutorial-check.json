@@ -1,0 +1,10 @@
+{
+  "apk": "app-release.apk",
+  "scope": "real Chromium clicks against extracted APK assets; no physical Android device",
+  "errors": [],
+  "freshAutomatic": true,
+  "existingNoAutomatic": true,
+  "replayVisible": true,
+  "statePreserved": true,
+  "completePersisted": true
+}

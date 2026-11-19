@@ -1,0 +1,19 @@
+{
+  "versionName": "6.50-pipe-energy-test2",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "09ad0c3c8d1074649d133c66aa8c7b9fbd7d3b04",
+  "baseCommit": "f18a62f1cafb2757418a24c343b8d87b339de2d0",
+  "adsMode": "test",
+  "sha256": "c66a4b326d48ad97c9efaeb34a02a2159b4e029e09f82c9df700da733c4340c2",
+  "phoneVerified": false,
+  "renderer": "root-canvas2d",
+  "style": "contrast-2",
+  "treasurePreviewRef": "cc0d6029ab54ea0ba75bae12d9e8abe489acb2e6",
+  "treasureIncludedInGameApk": false,
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "fullWebRegressionRun": 44466926216,
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}
