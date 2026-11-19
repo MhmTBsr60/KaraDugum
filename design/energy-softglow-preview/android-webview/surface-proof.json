@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "actualAndroidSurfacePixels": true,
+  "whiteAddedPixels": 2927,
+  "outwardBendRingPixels": 205,
+  "outsideAllowedHaloFraction": 0.0,
+  "whiteOutsideInnerChannelFraction": 0.0,
+  "whiteFillCentroids": [
+    [
+      92.48527131782946,
+      370.31162790697675
+    ],
+    [
+      130.88828151691152,
+      311.3628288349846
+    ]
+  ],
+  "whiteFillCentroidTravelPixels": 70.35447465784179,
+  "settledLightPixels": 9005,
+  "negativeControlRejected": true,
+  "nativeWebViewBounds": [
+    0,
+    282,
+    720,
+    1504
+  ],
+  "phoneVerified": false,
+  "scope": "Android35 system WebView/source page, actual adb taps and Surface images, test clock/hardware controlled; not game APK or POCO validation."
+}
