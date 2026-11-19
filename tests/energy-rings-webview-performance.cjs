@@ -24,7 +24,7 @@ const out = process.env.KD_WAVE_ANDROID_OUT || '/tmp/kd-energy-rings-android';
   });
   await page.goto('http://127.0.0.1:8765/index.html');
   await page.waitForTimeout(3200);
-  for (const level of [76,151]) {
+  for (const level of [6,76,151]) {
    await page.evaluate(level => {
     document.querySelector('.kdDailyClose')?.click();
     document.querySelector('.kdWinReplay')?.click();
@@ -36,25 +36,30 @@ const out = process.env.KD_WAVE_ANDROID_OUT || '/tmp/kd-energy-rings-android';
    },level);
    await page.waitForFunction(() => kdPipeFlow.state().canvas && !kdPipeFlow.state().static);
    const framesBefore = await page.evaluate(() => kdPipeFlow.state().stats.frames);
-   await page.evaluate(() => {
-    for (let k=0; !kdGetLearningState().locked && k<800; k++) {
+   const winStart = await page.evaluate(async () => {
+    // Leave the renderer time to flush the setup moves. Large synchronous
+    // batches can leave the software compositor busy as the win wave begins.
+    for (let k=0; k<800; k++) {
+     const before = kdPipeFlow.state().stats.frames;
      document.getElementById('hint').click();
+     if (kdGetLearningState().locked) return before;
+     if (k%3===2) await new Promise(resolve => setTimeout(resolve,45));
     }
-    if (!kdGetLearningState().locked) throw Error('Stress fixture must reach actual engine win');
+    throw Error('Stress fixture must reach actual engine win');
    });
-   await page.waitForTimeout(3200);
+   await page.waitForTimeout(3300);
    const stress = await page.evaluate(() => kdPipeFlow.state());
-   const count = stress.stats.frames-framesBefore;
+   const count = stress.stats.frames-Math.max(framesBefore,winStart);
    const paint = stress.stats.paintMs.slice(-Math.max(1,count)).sort((a,b)=>a-b);
    const result = {level,tiles:stress.ports.length,edges:stress.edges.length,paintSamples:count,
     paintP95Ms:paint[Math.ceil(paint.length*.95)-1],paintMaxMs:paint.at(-1),finite:!stress.wave,
     static:stress.static};
    report.cases.push(result);
    console.log('Android WebView canvas paint',JSON.stringify(result));
-   assert(count>=10 && result.finite && !stress.static,'Live stress run must render a finite wave');
-   assert(result.paintP95Ms<20,'Android WebView JS paint exceeds 20 ms at p95');
+   result.sufficientSamples=count>=10;
   }
-  report.status='PASS';
+  report.status=report.cases.every(c=>c.sufficientSamples&&c.finite&&!c.static&&c.paintP95Ms<20)?'PASS':'LIMITED';
+  if(report.status==='LIMITED')process.exitCode=1;
  } finally {
   fs.writeFileSync(path.join(out,'webview-performance.json'),JSON.stringify(report,null,2));
   await device.close();

@@ -119,13 +119,13 @@
   const c=brush.getContext('2d');if(!c)return null;
   const rgb=color.slice(1).match(/../g).map(v=>parseInt(v,16)),ink=a=>'rgba('+rgb.join(',')+','+a+')';
   const gradient=c.createRadialGradient(48,48,0,48,48,47);
-  for(const [at,alpha]of [[0,0],[.36,0],[.46,.06],[.59,.25],[.71,.49],[.77,.84],[.83,.51],[.92,.15],[1,0]])gradient.addColorStop(at,ink(alpha));
+  for(const [at,alpha]of [[0,0],[.36,0],[.46,.06],[.59,.28],[.71,.56],[.77,.88],[.83,.59],[.92,.18],[1,0]])gradient.addColorStop(at,ink(alpha));
   c.fillStyle=gradient;c.fillRect(0,0,96,96);haloSprites.set(color,brush);return brush;
  }
  function energyRing(center,w,phase,color,{id,cell,kind}){
   if(kind!=='bend'||phase<=0||phase>=1||effects.rings.length>=(values.length>=49?10:20))return;
   const spread=1-(1-phase)*(1-phase);
-  const envelope=Math.min(1,phase/.18)*(1-phase)**.85;
+  const envelope=Math.min(1,phase/.18)*(1-phase)**.63;
   const dense=values.length>=49;
   const extent=(dense?16+13*spread:18+21*spread)*w;
   const radius=extent*.77,brush=haloSprite(color);
