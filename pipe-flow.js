@@ -21,7 +21,7 @@
  const enabled=()=>!document.body.classList.contains('kdNoGlow');
  const staticOnly=()=>reduce.matches||low||document.documentElement.hasAttribute('data-kd-gold-low-motion');
  const blocked=()=>game.hidden||document.hidden||!!window.kdOnboarding?.isOpen()||!!window.kdLearning?.isOpen()||!!window.kdStorage?.isOpen?.()||!!window.kdAdPrivacyBusy||!!document.querySelector('.kdRuleHelpOverlay,.kdDailyOverlay');
- const stop=()=>{effects=emptyEffects();bursts=[];cancelAnimationFrame(frame);frame=0;canvas.remove();if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');};
+ const stop=()=>{effects=emptyEffects();bursts=[];wave=null;fading=[];cancelAnimationFrame(frame);frame=0;canvas.remove();if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');};
  function geometry(){const b=board.getBoundingClientRect();if(!b.width||!b.height)return false;rect={x:b.left,y:b.top,width:b.width,height:b.height};pixelScale=Math.min(1.5,devicePixelRatio||1);const scale=pixelScale,w=Math.ceil(b.width*scale),h=Math.ceil(b.height*scale);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}Object.assign(canvas.style,{left:b.left+'px',top:b.top+'px',width:b.width+'px',height:b.height+'px'});ctx.setTransform(scale,0,0,scale,0,0);
   boxes=[...board.querySelectorAll(':scope>.tile')].map(e=>{const r=e.getBoundingClientRect(),svg=e.querySelector('.kdSculptedPipe'),s=svg?.getBoundingClientRect();return {x:(s||r).left-b.left,y:(s||r).top-b.top,w:(s||r).width,h:(s||r).height};});stats.geometryReads++;return boxes.length===values.length;}
  const elbowFirstPort={3:1,6:2,12:4,9:8};
@@ -193,7 +193,10 @@
   if(!showLayer('wave'))return points;
   const width=channelWidth()*s.width;
   const progress=t=>1-(frontDistance-(from+(to-from)*t))/travel;
-  const envelope=t=>Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**.52;
+  const envelope=t=>{
+   const p=Math.max(0,Math.min(1,t));
+   return p<.76?(p/.76)**.72:((1-p)/.24)**.45;
+  };
   const gradient=ctx.createLinearGradient(...points[0],...points.at(-1));
   for(let band=0;band<=8;band++){
    const t=band/8,phase=progress(t);
