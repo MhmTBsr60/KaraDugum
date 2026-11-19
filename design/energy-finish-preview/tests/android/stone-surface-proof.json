@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "scope": "Android 35 actual Surface, same board with wave only versus Canvas hidden",
+  "warmStonePixels": 3175,
+  "warmOutsideFootprint": 0,
+  "physicalPOCO": false
+}

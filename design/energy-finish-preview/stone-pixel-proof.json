@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "sameEngineState": true,
+  "changedPixels": 4119,
+  "warmPixels": 4119,
+  "darkStonePixels": 4119,
+  "gridPixels": 0,
+  "peakAddedComponent": 42,
+  "settledAndOffClear": true
+}

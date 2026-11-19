@@ -1,0 +1,44 @@
+{
+  "apk": "KaraDugum-6.50-ENERGY-FINISH-TEST1.apk",
+  "sha256": "6c42b6bdf9ebcf23e0c25e030d64e1d7cb87cbbb5512c3e64ff8730ece55221d",
+  "sourceCommit": "dadcf0688d72c10d9f24fe989e0f46f55cbc2ce4",
+  "versionName": "6.50-energy-finish-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "sameSignerAsCombinedTest1": true,
+  "signer": {
+    "sha1": "A1:65:1D:CD:D6:56:A9:3D:E4:5C:DC:8B:CC:F0:48:1C:4F:A1:22:4A",
+    "sha256": "35:1B:49:B7:2B:FC:09:EB:B3:17:76:98:32:31:9E:AD:CA:9D:ED:6D:AE:70:9D:AE:B8:31:47:19:A5:3D:EE:9E",
+    "block": "0x7109871a"
+  },
+  "adsMode": "test",
+  "apkCi": 44547851496,
+  "androidWebViewCi": 44547850591,
+  "androidPerformance": "LIMITED",
+  "physicalPOCOTested": false,
+  "aabBuilt": false,
+  "playUpload": false,
+  "protectedRefs": {
+    "main": "0acb75b117e9cb4fee53b316dd7226f97a1e7256",
+    "design/daily-treasure-preview-20261119": "10d5c8600475ef692314f82f544cc2d0214d0e85",
+    "integration/treasure-energy-test-20261119": "0cb0a2f1f43b2a374cf966f888ba91b831e96fcb",
+    "design/energy-wave-layered-preview-20261119": "a723070fe52817ed67565c8569a4d34c6b941063"
+  },
+  "productionAabSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+  "byteMatchedAssets": [
+    "index.html",
+    "localization.js",
+    "pipe-flow.js",
+    "pipe-flow.css",
+    "theme-renderer.js",
+    "connection-model.js",
+    "daily-treasure.js",
+    "daily-treasure.css",
+    "assets/daily-treasure-chest.webp",
+    "cloud-model.js",
+    "cloud-sync.js",
+    "onboarding.js",
+    "feedback.js",
+    "wheel.js"
+  ]
+}
