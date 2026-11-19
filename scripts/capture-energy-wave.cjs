@@ -9,7 +9,7 @@ const H=require('../tests/energy-wave-harness.cjs'),out=process.env.KD_WAVE_REPO
  for(let f=0;f<total;f++){
   if(f===24){const m=await H.nextMove(p);assert(m.score>m.base);await H.rotate(p,m.i);events.push({second:f/fps,event:'real tile click forms reciprocal connection',move:m});}
   if([86,98,110].includes(f)){const m=await H.nextMove(p);if(m.score>m.base&&m.score<14){await H.rotate(p,m.i);events.push({second:f/fps,event:'additional real tile click',move:m});}}
-  if(f===156){const m=await H.nextMove(p,{breakLink:true});assert(m.score<m.base);await H.rotate(p,m.i);events.push({second:f/fps,event:'break reciprocal connection',move:m});}
+  if(f===156){const m=await H.nextMove(p,{breakLink:true});assert(m.lost.length>0);await H.rotate(p,m.i);events.push({second:f/fps,event:'break reciprocal connection',move:m});}
   if(f===168){await p.locator('#undo').click();events.push({second:f/fps,event:'actual undo restores connection'});}
   if(f===210){await H.solve(p);events.push({second:f/fps,event:'real engine finishes via hints in isolated synthetic save'});}
   await p.clock.runFor(1000/fps);
