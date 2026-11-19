@@ -28,6 +28,7 @@ public final class DailyTreasureRuntimeAudit {
     private MainActivity activity;
     private WebView web;
     private File output;
+    private long maxEvalMs=0;
     @Before public void setUp() throws Exception {
         Context context=instrumentation.getTargetContext();
         assertTrue(new AudienceChoiceStore(context.getNoBackupFilesDir()).save("under13"));
@@ -53,11 +54,12 @@ public final class DailyTreasureRuntimeAudit {
     @After public void tearDown(){try{if(output!=null){shot("final-state");try(FileOutputStream debug=new FileOutputStream(new File(output,"final-light-state.json"))){debug.write(String.valueOf(eval("kdPipeFlow.state()")).getBytes("UTF-8"));}}}catch(Exception ignored){}if(scenario!=null)scenario.close();}
     private String webUrl() throws Exception {final String[] s={null};instrumentation.runOnMainSync(()->s[0]=web.getUrl());return s[0];}
     private Object eval(String expression) throws Exception {
-        CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
+        long started=SystemClock.uptimeMillis();CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
         instrumentation.runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
         // A cold WebView may not answer during its first three seconds. The startup
         // readiness loop retries within 45 seconds; later evaluation timeouts still fail.
-        if(!latch.await(3,TimeUnit.SECONDS))throw new TimeoutException("WebView evaluateJavascript callback timeout");
+        if(!latch.await(12,TimeUnit.SECONDS))throw new TimeoutException("WebView evaluateJavascript callback timeout after bounded compositor wait");
+        maxEvalMs=Math.max(maxEvalMs,SystemClock.uptimeMillis()-started);
         Object raw=new JSONTokener(answer[0]).nextValue();return raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
     }
     private void visualFrame() throws Exception {
@@ -101,7 +103,13 @@ public final class DailyTreasureRuntimeAudit {
         JSONArray cases=new JSONArray();
         for(int day:new int[]{3,7}){
             eval("(()=>{document.querySelectorAll('.kdDailyOverlay').forEach(e=>e.remove());const yesterday=new Date(Date.now()-86400000).toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(yesterday));localStorage.setItem('kd64_dailySeen','\"\"');localStorage.setItem('kd64_streak','"+(day-1)+"');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');kdNavigate('home');return true})()");
-            long limit=SystemClock.uptimeMillis()+8000;while(SystemClock.uptimeMillis()<limit){if(Boolean.TRUE.equals(eval("document.querySelector('.kdTreasureOverlay')?.dataset.rewardDay==='"+day+"'")))break;SystemClock.sleep(100);}
+            // The software GPU previously blocked SwapBuffers for 8.5 s. Wait for
+            // actual committed pixels before inspecting the newly opened modal.
+            // This is test synchronization, never a phone performance assertion.
+            SystemClock.sleep(180);visualFrame();
+            Object progress=eval("({date:new Date().toLocaleDateString('en-CA'),last:localStorage.getItem('kd64_dailyDate'),seen:localStorage.getItem('kd64_dailySeen'),reward:localStorage.getItem('kd64_dailyLastReward'),accountActive:kdEconomy.active(),owner:kdEconomy.owner(),overlay:!!document.querySelector('.kdDailyOverlay')})");
+            try(FileOutputStream f=new FileOutputStream(new File(output,"treasure-progress-day"+day+".json"))){f.write(String.valueOf(progress).getBytes("UTF-8"));}
+            long limit=SystemClock.uptimeMillis()+12000;while(SystemClock.uptimeMillis()<limit){if(Boolean.TRUE.equals(eval("document.querySelector('.kdTreasureOverlay')?.dataset.rewardDay==='"+day+"'")))break;SystemClock.sleep(100);}
             assertTrue(Boolean.TRUE.equals(eval("document.querySelector('.kdTreasureOverlay')?.dataset.rewardDay==='"+day+"'")));
             long imageLimit=SystemClock.uptimeMillis()+8000;while(SystemClock.uptimeMillis()<imageLimit&&!Boolean.TRUE.equals(eval("document.querySelector('.kdTreasureHero img').complete&&document.querySelector('.kdTreasureHero img').naturalWidth>0")))SystemClock.sleep(50);
             assertTrue(Boolean.TRUE.equals(eval("document.querySelector('.kdTreasureHero img').complete&&document.querySelector('.kdTreasureHero img').naturalWidth>0")));
@@ -123,7 +131,7 @@ public final class DailyTreasureRuntimeAudit {
             JSONObject state=(JSONObject)eval("({coins:JSON.parse(localStorage.getItem('kd64_coins')),hints:JSON.parse(localStorage.getItem('kd64_hintCoupons')),last:JSON.parse(localStorage.getItem('kd64_dailyDate'))})");
             assertEquals("Duplicate/rollback reward on "+dates[i],coins[i],state.getInt("coins"));assertEquals(8,state.getInt("hints"));state.put("testDate",dates[i]);clockCases.put(state);
         }}finally{eval("(()=>{window.Date=window.__kdRealDate;return true})()");}
-        JSONObject report=new JSONObject().put("status","PASS").put("androidApi",android.os.Build.VERSION.SDK_INT).put("phoneVerified",false).put("runtimeAssets",true).put("injectedPreview",false).put("scope","Actual signed combined APK file:///android_asset assets. No JS/CSS/image injection. Real reward engine, native close-button taps, same-day and rollback guard; test dates are simulated, not trusted server time.").put("clockCases",clockCases).put("cases",cases);
+        JSONObject report=new JSONObject().put("status","PASS").put("androidApi",android.os.Build.VERSION.SDK_INT).put("phoneVerified",false).put("maxEvaluateCallbackMs",maxEvalMs).put("compositorSynchronization",true).put("runtimeAssets",true).put("injectedPreview",false).put("scope","Actual signed combined APK file:///android_asset assets. No JS/CSS/image injection. Real reward engine, native close-button taps, same-day and rollback guard; test dates are simulated, not trusted server time.").put("clockCases",clockCases).put("cases",cases);
         try(FileOutputStream f=new FileOutputStream(new File(output,"treasure-runtime-report.json"))){f.write(report.toString(2).getBytes("UTF-8"));}
     }
 }
