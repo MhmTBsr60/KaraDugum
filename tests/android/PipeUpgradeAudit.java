@@ -45,14 +45,15 @@ public final class PipeUpgradeAudit {
         fail("game did not load");
     }
     private String snapshot() throws Exception {
-        return (String)eval("(()=>{const saved=JSON.parse(localStorage.getItem('kd64_activeGame'));delete saved.elapsed;return JSON.stringify({saved,values:Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_shopTheme_ruby','kd5_glow','kd6_lang','kd3_sound'].map(k=>[k,localStorage.getItem(k)]))})})()");
+        return (String)eval("(()=>{const saved=JSON.parse(localStorage.getItem('kd64_activeGame'));delete saved.elapsed;return JSON.stringify({saved,values:Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_shopTheme_ruby','kd5_glow','kd6_lang','kd3_sound','kd64_dailyDate','kd64_streak','kd64_dailySeen','kd64_dailyLastReward'].map(k=>[k,localStorage.getItem(k)]))})})()");
     }
     private void write(String name,String text) throws Exception {try(FileOutputStream f=new FileOutputStream(new File(output,name))){f.write(text.getBytes("UTF-8"));}}
     @Test(timeout=60000) public void seedPreviousSignedTest() throws Exception {
-        assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("contrast-2",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("6.50-pipe-energy-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
         eval("(()=>{localStorage.setItem('kd64_level','6');localStorage.setItem('kd64_completed','{\\\"1\\\":3,\\\"2\\\":2,\\\"3\\\":3}');localStorage.setItem('kd64_best','{\\\"1\\\":4200,\\\"2\\\":3100,\\\"3\\\":5000}');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_shopTheme_ruby','true');localStorage.setItem('kd5_glow','1');localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd3_sound','0');return true})()");
         inst.runOnMainSync(()->web.reload());SystemClock.sleep(500);ready();SystemClock.sleep(2600);
-        eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
+        eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_dailySeen',JSON.stringify(today));localStorage.setItem('kd64_dailyLastReward',JSON.stringify({date:today,day:3,coins:0,hints:1}));document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
         write("upgrade-expected.json",snapshot());
         // Chromium LocalStorage is synchronous to JS, but commits its backing database
@@ -71,14 +72,17 @@ public final class PipeUpgradeAudit {
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
     }
     @Test(timeout=60000) public void verifyPreviousBeforeUpgrade() throws Exception {
-        assertEquals("strong-1",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("contrast-2",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("6.50-pipe-energy-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
         comparePersisted("old-restart");
         write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
     @Test(timeout=60000) public void verifyAfterInPlaceInstall() throws Exception {
         assertEquals("contrast-2",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        assertEquals("6.50-treasure-energy-test1",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
+        assertTrue(Boolean.TRUE.equals(eval("!!window.kdDailyTreasure")));
         comparePersisted("new-install");
         assertTrue(Boolean.TRUE.equals(eval("!window.kdLightFeedback")));
-        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-pipe-energy-test1").put("newVersion","6.50-pipe-energy-test2").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
+        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-pipe-energy-test2").put("newVersion","6.50-treasure-energy-test1").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
 }

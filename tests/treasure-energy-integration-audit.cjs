@@ -1,0 +1,5 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('fs'),path=require('path'),{execFileSync}=require('child_process');const repo=path.resolve(__dirname,'..');
+const sets=[['2917234',['pipe-flow.js','pipe-flow.css','connection-model.js','light-feedback.js','feedback.js','HapticFeedbackPlayer.java','UiFeedbackGate.java','MainActivity.java','AndroidManifest.xml','board-renderer.js','theme-renderer.js','onboarding.js','onboarding.css','cloud-model.js','cloud-sync.js','wheel.js','reward-receipts.js','admob-units.json','.github/workflows/android-apk.yml']],['10d5c86',['index.html','localization.js','daily-treasure.js','daily-treasure.css','assets/daily-treasure-chest.webp']]];
+for(const [ref,files]of sets)for(const file of files)assert.deepEqual(fs.readFileSync(path.join(repo,file)),execFileSync('git',['show',ref+':'+file],{cwd:repo}),ref+':'+file);
+console.log('PASS: approved treasure design/date guard and pipe contrast are byte-identical to user-pinned commits; mechanics, saves, sound/haptics, policy and production workflow unchanged');

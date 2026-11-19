@@ -20,6 +20,9 @@ with zipfile.ZipFile(apk) as archive:
     if 'src="pipe-flow.js"' in archive.read('assets/index.html').decode():
         for file in ['connection-model.js','pipe-flow.js','pipe-flow.css']:
             assert archive.read('assets/'+file)==Path(file).read_bytes(),file
+    if 'src="daily-treasure.js"' in archive.read('assets/index.html').decode():
+        for file in ['daily-treasure.js','daily-treasure.css','assets/daily-treasure-chest.webp']:
+            assert archive.read('assets/'+file)==Path(file).read_bytes(),file
     assert not any(name.endswith(('.jks','.keystore')) for name in archive.namelist())
     assert not any(name.startswith('assets/design/') for name in archive.namelist())
     dex=b''.join(archive.read(name) for name in archive.namelist() if re.match(r'classes\d*\.dex$',name))

@@ -1,0 +1,10 @@
+KARA DÜĞÜM 6.50-treasure-energy-test1 — Birleşik Hazine + Beyaz-altın Enerji TEST
+
+Ana menüde 10 saniye bekleyip mevcut TEST2 üzerine kurun. Oyunu kaldırmayın, verilerini temizlemeyin.
+Paket com.orynexa.karadugum, sürüm kodu 110; mevcut TEST ile aynı imza. Yalnız Google test reklam birimleri.
+Hazine JS/CSS/görseli ve günlük tarih koruması bu APK'nın içindedir. Ödül tutarları: 5, 10, 1 kupon, 15, 20, 1 kupon, 40 kristal.
+Bugünün ödülü daha önce alındıysa güncelleme yeni ödül veya pencere vermez. Sonraki uygun gün gerçek günlük giriş ödülü hazine penceresinde gösterilir.
+Tarih geri alınarak tekrar ödül verilmez. Sunucusuz ileri tarih/yerel veri düzenleme tamamen engellenemez; ileri tarihte alınan ödülden sonra saat düzeltilirse son ödül tarihine yetişmek gerekebilir.
+Boru enerjisi: Işık İzi açık, gerçek bir karşılıklı bağlantı oluşturun. Dar beyaz-altın çekirdek 1,4 saniye ilerler, sonra hafif altın ışık kalır; kopunca söner. Ayar kapalıyken enerji olmaz. Hareketi azalt/düşük donanımda sabit hafif ışık beklenir.
+Bu birleşik sürüm fiziksel POCO'da henüz denenmedi. Emülatör ve otomatik testler fiziksel ses/titreşim, canlı Google hesabı veya telefon FPS doğrulaması değildir.
+Main, Google Play 6.50, AdMob ve diğer uygulamalar değişmez. AAB oluşturulmaz.

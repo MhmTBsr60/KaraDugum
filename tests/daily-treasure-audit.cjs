@@ -1,8 +1,8 @@
 'use strict';
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict'),{execFileSync}=require('child_process'),{chromium}=require('playwright');
-const root=path.resolve(__dirname,'..'),baseline='/tmp/kd-pipe-contrast-base-f18a62f',out=process.env.KD_TREASURE_REPORT||path.join(root,'design/daily-treasure-preview');fs.mkdirSync(out,{recursive:true});
-if(!fs.existsSync(baseline+'/index.html'))execFileSync('git',['worktree','add','--force','--detach',baseline,'f18a62f'],{cwd:root});
-const report={status:'RUNNING',phoneVerified:false,apkBuilt:false,errors:[],payouts:[],layouts:[],clock:[],scope:'Real Chromium game, original reward entry points, synthetic saves/dates; not a trusted server clock'};
+const repo=path.resolve(__dirname,'..'),root=process.env.KD_RUNTIME_ROOT||repo,baseline='/tmp/kd-pipe-contrast-base-f18a62f',out=process.env.KD_TREASURE_REPORT||path.join(root,'design/daily-treasure-preview');fs.mkdirSync(out,{recursive:true});
+if(!fs.existsSync(baseline+'/index.html'))execFileSync('git',['worktree','add','--force','--detach',baseline,'f18a62f'],{cwd:repo});
+const report={status:'RUNNING',phoneVerified:false,apkAssetsTested:root!==repo,errors:[],payouts:[],layouts:[],clock:[],scope:'Real Chromium game, original reward entry points, synthetic saves/dates; not a trusted server clock'};
 const amounts=[5,10,0,15,20,0,40],coupons=[0,0,1,0,0,1,0];
 (async()=>{const browser=await chromium.launch({args:['--no-sandbox']});try{
  async function page(folder,day,language='tr',viewport={width:430,height:932},reduce='reduce'){
@@ -36,5 +36,5 @@ const amounts=[5,10,0,15,20,0,40],coupons=[0,0,1,0,0,1,0];
   report.layouts.push({language,day,size,internalVerticalScroll:layout.internalVerticalScroll});
   if(language==='tr'&&day===3&&size.width===320)await p.screenshot({path:path.join(out,'small-android-320x568.png'),animations:'disabled'});
   }await p.close();}}
- report.locales=locales.length;report.errors.length&&assert.fail(report.errors.join('\n'));report.status='PASS';console.log(JSON.stringify({status:report.status,payouts:report.payouts.length,layouts:report.layouts.length,locales:report.locales,clock:report.clock,phoneVerified:false,apkBuilt:false},null,2));
+ report.locales=locales.length;report.errors.length&&assert.fail(report.errors.join('\n'));report.status='PASS';console.log(JSON.stringify({status:report.status,payouts:report.payouts.length,layouts:report.layouts.length,locales:report.locales,clock:report.clock,phoneVerified:false,apkAssetsTested:root!==repo},null,2));
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});

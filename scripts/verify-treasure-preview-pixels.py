@@ -1,7 +1,8 @@
 from pathlib import Path
 from PIL import Image
 import json,sys
-root=Path(sys.argv[1]);p=root/'treasure-preview-report.json';r=json.loads(p.read_text());assert r['status']=='PASS' and len(r['cases'])==2
+root=Path(sys.argv[1]);p=root/(sys.argv[2] if len(sys.argv)>2 else 'treasure-preview-report.json');r=json.loads(p.read_text());assert r['status']=='PASS' and len(r['cases'])==2
+if p.name=='treasure-runtime-report.json':assert r['runtimeAssets'] and not r['injectedPreview'] and len(r['clockCases'])==5
 proof=[]
 for case in r['cases']:
  day=case['r']['day'];im=Image.open(root/f'treasure-day{day}.png').convert('RGB');scale=im.width/case['vw'];g=case['heroRect'];box=tuple(round(v*scale) for v in [g['x'],g['y'],g['right'],g['bottom']]);pixels=list(im.crop(box).getdata());gold=sum(a>150 and b>90 and c<155 and a>b*1.05 for a,b,c in pixels);blue=sum(c>130 and c>a*1.25 and c>b*1.05 for a,b,c in pixels)
