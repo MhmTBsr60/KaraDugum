@@ -88,7 +88,7 @@
    // stay unchanged. A joining edge has no instant full-length bright flash.
    stroke(s.points,color,9*s.width,.20*rise);stroke(s.points,color,3.2*s.width,.58*rise);
    const completion=wave?(now-wave.start)-s.rank*wave.step:-1,winning=completion>=0&&completion<WIN_MS;
-   if(!flat&&(age<NORMAL_MS||winning)){
+   if(!flat&&(wave?winning:age<NORMAL_MS)){
     energyWave(s,winning?completion/WIN_MS:age/NORMAL_MS,winning,color);moving=true;
    }
    const junction=dot(s,s.junctionAt);

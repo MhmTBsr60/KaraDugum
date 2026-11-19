@@ -11,7 +11,7 @@ const H=require('../tests/energy-wave-harness.cjs'),out=process.env.KD_WAVE_REPO
   if([86,98,110].includes(f)){const m=await H.nextMove(p);if(m.score>m.base&&m.score<14){await H.rotate(p,m.i);events.push({second:f/fps,event:'additional real tile click',move:m});}}
   if(f===156){const m=await H.nextMove(p,{breakLink:true});assert(m.lost.length>0);await H.rotate(p,m.i);events.push({second:f/fps,event:'break reciprocal connection',move:m});}
   if(f===168){await p.locator('#undo').click();events.push({second:f/fps,event:'actual undo restores connection'});}
-  if(f===210){await H.solve(p);events.push({second:f/fps,event:'real engine finishes via hints in isolated synthetic save'});}
+  if(f===210){await H.solve(p);events.push({second:f/fps,event:'real engine finishes via actual node rotations, read-only CSP, no hint use'});}
   await p.clock.runFor(1000/fps);
   const file=path.join(frames,String(f).padStart(4,'0')+'.png');await p.screenshot({path:file,animations:'allow'});
   if(shots[f]){const n=shots[f];fs.copyFileSync(file,path.join(out,n+'.png'));const r=await p.locator('#board').boundingBox();await p.screenshot({path:path.join(out,n+'-board.png'),clip:{x:r.x-6,y:r.y-6,width:r.width+12,height:r.height+12},animations:'allow'});states[n]={flow:await H.state(p),game:await H.snapshot(p),second:f/fps};}
