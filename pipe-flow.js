@@ -248,24 +248,33 @@
   const brush=stoneBrush(colorOnStone);
   if(!brush)return;
   const limit=values.length>=49?1:3;
-  const painter=stoneContext;
-  painter.setTransform(stoneScale,0,0,stoneScale,0,0);
-  painter.globalCompositeOperation='source-over';
-  painter.clearRect(0,0,rect.width,rect.height);
+  const stamps=effects.reflections;
   for(const {s,frontDistance} of profiles.values()){
    const travel=58*s.width/s.length,hot=frontDistance-travel*.46;
    if(hot<0||hot>1)continue;
-   const [x,y]=dot(s,hot),radius=37*s.width;
-   painter.drawImage(brush,x-radius,y-radius,radius*2,radius*2);
-   effects.reflections.push({id:s.id,center:[x,y],radius});
-   if(effects.reflections.length>=limit)break;
+   stamps.push({id:s.id,center:dot(s,hot),radius:37*s.width});
+   if(stamps.length>=limit)break;
   }
-  if(!effects.reflections.length)return;
+  if(!stamps.length)return;
+  // Limit the mask and screen composite to the moving footprint. Dense boards
+  // use at most one stamp, so the compositor touches only a small stone area.
+  const left=Math.max(0,Math.floor(Math.min(...stamps.map(s=>s.center[0]-s.radius))*stoneScale));
+  const top=Math.max(0,Math.floor(Math.min(...stamps.map(s=>s.center[1]-s.radius))*stoneScale));
+  const right=Math.min(stoneLight.width,Math.ceil(Math.max(...stamps.map(s=>s.center[0]+s.radius))*stoneScale));
+  const bottom=Math.min(stoneLight.height,Math.ceil(Math.max(...stamps.map(s=>s.center[1]+s.radius))*stoneScale));
+  const width=right-left,height=bottom-top;
+  if(width<=0||height<=0)return;
+  const painter=stoneContext;
+  painter.setTransform(1,0,0,1,0,0);
+  painter.globalCompositeOperation='source-over';
+  painter.clearRect(left,top,width,height);
+  for(const {center:[x,y],radius}of stamps){
+   painter.drawImage(brush,(x-radius)*stoneScale,(y-radius)*stoneScale,radius*2*stoneScale,radius*2*stoneScale);
+  }
   painter.globalCompositeOperation='destination-in';
-  painter.drawImage(stoneStencil,0,0,stoneStencil.width/stoneScale,stoneStencil.height/stoneScale);
-  ctx.save();
-  ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';
-  ctx.drawImage(stoneLight,0,0,stoneLight.width/stoneScale,stoneLight.height/stoneScale);
+  painter.drawImage(stoneStencil,left,top,width,height,left,top,width,height);
+  ctx.save();ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';
+  ctx.drawImage(stoneLight,left,top,width,height,left/stoneScale,top/stoneScale,width/stoneScale,height/stoneScale);
   ctx.restore();
  }
 
