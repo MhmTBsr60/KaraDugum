@@ -8,6 +8,7 @@
  const whites={gold:'#fffef5',ice:'#ffffff',fire:'#fffdf5',shadow:'#fffcff',emerald:'#fafffd',ruby:'#fffdf8'},NORMAL_MS=2200,WIN_MS=2200,TRAVEL_MS=1500;
  const low=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;
  let values=[],net={edges:[],ports:[],ranks:[],maxRank:0},key='',theme='gold',rect=null,boxes=[],segments=[],frame=0,lastFrame=0,wave=null,lastRun='',revision=0,fading=[];
+ const haloSprites=new Map();
  let effects={waves:[],rings:[],fronts:[]},bursts=[],burstId=0,lastMoves=0,lastUndos=0;
  let stats={frames:0,paintMs:[],updates:0,geometryReads:0};const joined=new Map();
  const enabled=()=>!document.body.classList.contains('kdNoGlow');
@@ -85,28 +86,50 @@
   if(filled.length<2)return;
   // The whole reached inner channel is luminous. No dark capsule outline,
   // thin filament or isolated dash; the original outer metal remains uncovered.
-  stroke(filled,color,(channel+18)*w,.10*strength);
-  stroke(filled,color,(channel+7)*w,.38*strength);
-  stroke(filled,color,channel*.98*w,.98*strength);
-  stroke(filled,core,channel*.84*w,.97*strength);
-  stroke(filled,whites[theme]||whites.gold,channel*.62*w,.96*strength);
+  const white=whites[theme]||whites.gold,dense=values.length>=49;
+  // Smooth the thermal shoulders with nested translucent bands. The wide
+  // reached channel remains .84 of the real inner diameter; no thin dash.
+  if(!dense)stroke(filled,color,(channel+22)*w,.045*strength);
+  stroke(filled,color,(channel+14)*w,.085*strength);
+  stroke(filled,color,(channel+6)*w,.22*strength);
+  stroke(filled,color,channel*.98*w,.82*strength);
+  if(!dense)stroke(filled,color,channel*.90*w,.72*strength);
+  stroke(filled,core,channel*.84*w,.93*strength);
+  stroke(filled,core,channel*.72*w,.92*strength);
+  stroke(filled,white,channel*.64*w,.98*strength);
+  stroke(filled,'#ffffff',channel*.48*w,.78*strength);
   const front=portion(s,head-.22,head);
   if(head<1&&front.length){
-   stroke(front,color,(channel+13)*w,.32);
+   stroke(front,color,(channel+13)*w,.20);
    stroke(front,core,channel*.96*w,1);
    stroke(front,whites[theme]||whites.gold,channel*.78*w,1);
   }
   effects.waves.push({id:s.id,head,tip:dot(s,head),winning,tail:filled,bright:front,channelWidth:channel*.84*w,pipeInnerWidth:channel*w,strength});
  }
+ // A procedural 96px annular brush is cached once per theme (<=216KiB).
+ // Radial alpha falloff replaces the previous crisp concentric target circles.
+ function haloSprite(color){
+  if(haloSprites.has(color))return haloSprites.get(color);
+  const brush=document.createElement('canvas');brush.width=brush.height=96;
+  const c=brush.getContext('2d');if(!c)return null;
+  const rgb=color.slice(1).match(/../g).map(v=>parseInt(v,16)),ink=a=>'rgba('+rgb.join(',')+','+a+')';
+  const gradient=c.createRadialGradient(48,48,0,48,48,47);
+  for(const [at,alpha]of [[0,0],[.50,0],[.60,.035],[.70,.20],[.79,.80],[.85,.25],[.93,.035],[1,0]])gradient.addColorStop(at,ink(alpha));
+  c.fillStyle=gradient;c.fillRect(0,0,96,96);haloSprites.set(color,brush);return brush;
+ }
  function energyRing(center,w,phase,color,{id,cell,kind}){
-  if(phase<=0||phase>=1||effects.rings.length>=(values.length>=49?10:20))return;
-  const envelope=Math.sqrt(Math.sin(Math.PI*phase)),radius=(kind==='bend'?12+12*phase:5+8*phase)*w;
-  // Concentric annular strokes create an outward halo without a filled disc
-  // over the stone. No shadowBlur, particles, image asset or screen flash.
-  for(const [scale,width,alpha]of [[1,8,.22],[1,3.1,1],[.74,2.1,.88],[1,1.0,.88]]){
-   ctx.beginPath();ctx.arc(center[0],center[1],radius*scale,0,Math.PI*2);ctx.strokeStyle=color;ctx.lineWidth=width*w;ctx.globalAlpha=alpha*envelope;ctx.stroke();
+  if(kind!=='bend'||phase<=0||phase>=1||effects.rings.length>=(values.length>=49?10:20))return;
+  const envelope=Math.sqrt(Math.sin(Math.PI*phase)),radius=(12+12*phase)*w,brush=haloSprite(color),extent=radius+4*w;
+  ctx.save();ctx.translate(center[0],center[1]);ctx.rotate(.18);ctx.scale(1.025,.97);
+  if(brush){
+   ctx.globalAlpha=.94*envelope;ctx.drawImage(brush,-extent,-extent,extent*2,extent*2);
+   const secondary=extent*.79;ctx.globalAlpha=.43*envelope;
+   ctx.drawImage(brush,-secondary+1.1*w,-secondary-.7*w,secondary*2,secondary*2);
+  }else{
+   // Canvas pressure must not revive a touch flash or break the puzzle.
+   ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.lineWidth=3*w;ctx.strokeStyle=color;ctx.globalAlpha=.44*envelope;ctx.stroke();
   }
-  effects.rings.push({id,cell,kind,center,radius,phase});
+  ctx.restore();effects.rings.push({id,cell,kind,center,radius,phase,profile:brush?'soft-annular':'bounded-fallback',haloOuterRadius:extent*1.025});
  }
  function render(now){
   frame=0;if(!enabled()||blocked()||!rect){stop();return;}
@@ -132,15 +155,14 @@
     const strength=Math.max(.12,Math.min(1,tailFade))*finish,old=profiles.get(s.id);
     if(!old||strength>old.strength)profiles.set(s.id,{s,head,strength,winning:!!wave});
     if(head<1)tips.push({id:s.id,tip:dot(s,head),head});
-    const jointAt=(offset+s.length*s.junctionAt)/plan.distance*TRAVEL_MS;
-    rings.push({center:dot(s,s.junctionAt),width:s.width,phase:(age-jointAt)/430,id:s.id,kind:'joint'});
+    // Energy crosses the real coupling as a continuous channel, without a dot-ring.
    }
    for(const bend of plan.bends)rings.push({...bend,phase:(age-bend.arrival/plan.distance*TRAVEL_MS)/720,kind:'bend'});
    effects.fronts.push({id:event.id||'completion',distance,progress:Math.min(1,age/TRAVEL_MS),tips,winning:!!wave});
   }
   for(const profile of profiles.values())broadChannel(profile,color,core);
   // Bends have priority, so the largest boards retain their informative halos.
-  rings.sort((a,b)=>(a.kind==='bend'?0:1)-(b.kind==='bend'?0:1));const seen=new Set();
+  rings.sort((a,b)=>Math.abs(a.phase-.5)-Math.abs(b.phase-.5));const seen=new Set();
   for(const ring of rings.filter(r=>r.phase>0&&r.phase<1)){const key=ring.kind+':'+(ring.cell??ring.id);if(seen.has(key))continue;seen.add(key);energyRing(ring.center,ring.width,ring.phase,color,ring);}
   fading=flat?[]:fading.filter(f=>now-f.start<240);
   for(const f of fading){stroke(f.points,color,channel*.8*f.width,.35*(1-(now-f.start)/240));moving=true;}
@@ -161,7 +183,7 @@
  // A broken link never emits new energy. Its unchanged neighbour's real pipe fades for
  // 240 ms; rotated-away arms vanish immediately, so no stale line crosses the stone.
  function sync(){if(!enabled()||blocked()){stop();return;}update(board,values.length?values:undefined);}
- window.kdPipeFlow={afterRender:update,state:()=>({enabled:enabled(),static:staticOnly(),theme,revision,key,edges:net.edges.map(e=>({...e})),ports:net.ports.slice(),ranks:net.ranks.slice(),wave:wave?{start:wave.start,duration:wave.duration}:null,fading:fading.length,canvas:canvas.isConnected,rect:rect?{...rect}:null,segments:segments.map(s=>({id:s.id,points:s.points.map(p=>p.slice())})),stats:{...stats,paintMs:stats.paintMs.slice()},renderer:'root-canvas2d',style:'energy-channel-wave-reference-3',timings:{joinMs:NORMAL_MS,travelMs:TRAVEL_MS,completionMaxMs:WIN_MS,fadeMs:240},effects:JSON.parse(JSON.stringify(effects)),phoneVerified:false})};
+ window.kdPipeFlow={afterRender:update,state:()=>({enabled:enabled(),static:staticOnly(),theme,revision,key,edges:net.edges.map(e=>({...e})),ports:net.ports.slice(),ranks:net.ranks.slice(),wave:wave?{start:wave.start,duration:wave.duration}:null,fading:fading.length,canvas:canvas.isConnected,rect:rect?{...rect}:null,segments:segments.map(s=>({id:s.id,points:s.points.map(p=>p.slice())})),stats:{...stats,paintMs:stats.paintMs.slice(),haloBrushes:haloSprites.size,haloBrushBytes:haloSprites.size*96*96*4},renderer:'root-canvas2d',style:'energy-reference-3-softglow',timings:{joinMs:NORMAL_MS,travelMs:TRAVEL_MS,completionMaxMs:WIN_MS,fadeMs:240},effects:JSON.parse(JSON.stringify(effects)),phoneVerified:false})};
  try{window.KaraNative?.setTapLightEnabled?.(false);window.KaraNative?.cancelTapLight?.(0);}catch(_){}
  new MutationObserver(sync).observe(game,{attributes:true,attributeFilter:['hidden']});new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});new MutationObserver(()=>{update(board);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-kd-theme']});
  new MutationObserver(sync).observe(document.body,{childList:true});reduce.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);window.addEventListener('resize',sync);window.addEventListener('scroll',sync,{passive:true});const resize=new ResizeObserver(sync);for(const el of [board,game.querySelector('main'),game.querySelector('.instructions'),game.querySelector('.kdTop')])if(el)resize.observe(el);sync();
