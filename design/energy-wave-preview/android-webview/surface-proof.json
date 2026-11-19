@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "actualAndroidSurfacePixels": true,
+  "nativeWebViewBounds": [
+    0,
+    282,
+    720,
+    1504
+  ],
+  "whiteCorePixels": 93,
+  "outsideBoundedPipeHaloFraction": 0.0,
+  "movingWhiteCentroids": [
+    [
+      47.08527131782946,
+      17.45736434108527
+    ],
+    [
+      91.75268817204301,
+      17.440860215053764
+    ]
+  ],
+  "visibleTravelPixels": 44.66741990326122,
+  "settledLightPixels": 5323,
+  "negativeControlRejected": true,
+  "phoneVerified": false,
+  "scope": "Android35 built-in system WebView source preview; native adb input and Surface screenshots; controlled clock/capable hardware. No game APK build; not phone FPS or game bridge validation."
+}

@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "actualScreenshotProof": true,
+  "themes": [
+    {
+      "theme": "gold",
+      "visibleWhitePixels": 175,
+      "changedPixels": 6146,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    },
+    {
+      "theme": "ice",
+      "visibleWhitePixels": 199,
+      "changedPixels": 5188,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    },
+    {
+      "theme": "fire",
+      "visibleWhitePixels": 175,
+      "changedPixels": 4355,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    },
+    {
+      "theme": "shadow",
+      "visibleWhitePixels": 223,
+      "changedPixels": 3723,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    },
+    {
+      "theme": "emerald",
+      "visibleWhitePixels": 205,
+      "changedPixels": 5927,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    },
+    {
+      "theme": "ruby",
+      "visibleWhitePixels": 191,
+      "changedPixels": 4116,
+      "outsideBoundedPipeHaloFraction": 0.0,
+      "negativeControlRejected": true,
+      "scope": "Same game state, compositor screenshot with Canvas on versus hidden; mask includes requested small halo/junction ring, not whole tile."
+    }
+  ],
+  "phoneVerified": false
+}

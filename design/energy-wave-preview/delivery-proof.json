@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "baseCommit": "2917234dbf8b26c1574156a908d9da24928893eb",
+  "branch": "design/energy-wave-preview-20261119",
+  "androidSourceCommit": "06055b18f7d93223128da6f33ba63f55076ec0a8",
+  "androidRun": 44498630207,
+  "sourceGroups": 18,
+  "browserGroups": 43,
+  "uxGroups": 8,
+  "tutorialPassed": true,
+  "campaignLevels": 300,
+  "themes": 6,
+  "noGameApkBuilt": true,
+  "noAabBuilt": true,
+  "physicalPhoneVerified": false,
+  "media": {
+    "energy-wave-12s.mp4": {
+      "sha256": "5c14eddd74f43732e471daf68a424c90e11d848f118b6b92818da1c856f28041",
+      "bytes": 509819
+    },
+    "four-states.png": {
+      "sha256": "d30ede9932e39ab9e517a9ba0f9c5b6c858badbd8c521192da282bb21dd6163f",
+      "bytes": 1298517
+    },
+    "01-before.png": {
+      "sha256": "d80b87193fe83913a63d99aa313727b6a9db902df300b936eeb583c6925f0f8d",
+      "bytes": 858139
+    },
+    "02-wave-middle.png": {
+      "sha256": "1231d2153af09bee6fc9046e4d83da9f45d8b57e133598716b1e1b0e5db04b4c",
+      "bytes": 861025
+    },
+    "03-connected.png": {
+      "sha256": "e89dfb940a710accf46737ed16323654bf71e2b89301e68512f69ccf58daf96d",
+      "bytes": 865154
+    },
+    "04-completion.png": {
+      "sha256": "a1663cddf149b9f86a9cdf2c4937df31c3e59261d2bd935867092855cfedf438",
+      "bytes": 903964
+    }
+  },
+  "gameFileSha256": {
+    "pipe-flow.js": "86a620aa343862949f7a1eb3203915f0c4ae32f7422928a41233fcc8f5b0650f",
+    "pipe-flow.css": "571fb0b73d9330ffb1e0d18596914241d611580b3309fb71a0f3386c9545f62b"
+  },
+  "videoProbe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 860,
+        "height": 1864,
+        "r_frame_rate": "24/1"
+      }
+    ],
+    "format": {
+      "duration": "12.000000",
+      "size": "509819"
+    }
+  }
+}

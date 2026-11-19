@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "baseCommit": "2917234dbf8b26c1574156a908d9da24928893eb",
+  "androidTestCommit": "06055b18f7d93223128da6f33ba63f55076ec0a8",
+  "runtimeMatchesAndroidTestCommit": true,
+  "onlyChangedGameFiles": [
+    "pipe-flow.js",
+    "pipe-flow.css"
+  ],
+  "protectedFileSha256": {
+    "index.html": "966220d3737df2170deabeaa22d1d6d9739c9bb0a911af76ead1acb92743084e",
+    "connection-model.js": "1de744a78d9fdb1b792e782df89def337eba07d3a70763b0e9b555538bc076bb",
+    "theme-renderer.js": "65c678c7259e618326734202e73bbec11191901d5cd4ff333fcd5b6eb51f86b3",
+    "board-renderer.js": "03e6e4716635745ad26e3a1f6d5dacd29f38cffc2206a566de7b29c55847c520",
+    "feedback.js": "5d6c83f7ad708c969973e58a55fd794bffa9dceede787f7ef54c06d87b8e385e",
+    "onboarding.js": "072465a382cce24629518c8ac7e59f32c333e2b3452c0c68f5b56e681623ff26",
+    "onboarding.css": "2e3b3ca3e89be30c698faff447a6d935ace6de37d1bb2bd5acdfbf994e37040f",
+    "wheel.js": "61a68f72e0f57b42cfa3c9a86b0e5d5a6cfab6ba657aeb54969b63ab12ecc662",
+    "wheel-motion.js": "38080b93aa0585bab652d9c4462f2e3c543d1b28394358a0f99d204649f3c25a",
+    "cloud-model.js": "f567310004cf0ce09540f10265bae8c7bb1e5946c2ca2539c768762213c5693f",
+    "cloud-sync.js": "f6a6819aa97f28ad8c98003b25728f2b99b94b568dd2003deab6f57b464eb852",
+    "reward-receipts.js": "17d8df416d98d2294ea002f0d03765195541ca00e9e739a2a7b29f1a694750d1",
+    "HapticFeedbackPlayer.java": "4ac8567299cf39a84f7c23aa6f6f1908d22361ea0e92a8869b6dd148cab8205e",
+    "UiFeedbackGate.java": "f4315faa940e59754a5f36669b28d7b2b79ec16beef3345e8f3c899367c0066b",
+    "MainActivity.java": "3b513116fe15bf1c7c7c9237a30b74e4a85052f3e03a93dae8381d1b9f76f18d",
+    "AndroidManifest.xml": "a2a4d3bf08c66b08a31eca20eb19278dac82d64f358f55495e00bd5c52cecb70",
+    "admob-units.json": "6c271919eb4ecf2a0873763917ab9334f9b25aaea14a554e0ad901c5639333fd",
+    "localization.js": "75d1f958af3d6cffd9f944b71402fe90107955b69f2094f86dddeedce66f136e",
+    ".github/workflows/android-apk.yml": "7aab6d2f30a6bb4846bc146f3ede4c22a5b8bdc4170ef43a284e12f4f42e7895"
+  },
+  "preservedRefs": {
+    "main": "0acb75b117e9cb4fee53b316dd7226f97a1e7256",
+    "treasure": "10d5c8600475ef692314f82f544cc2d0214d0e85",
+    "combinedTest": "0cb0a2f1f43b2a374cf966f888ba91b831e96fcb"
+  },
+  "noGameApkBuilt": true,
+  "noAabBuilt": true
+}

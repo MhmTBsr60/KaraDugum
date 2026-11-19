@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "androidWebViewVerified": false,
+  "checks": [
+    "bounded ordered engine-win wave; unchanged result panel revealed after wave",
+    "low hardware: static light, no animation loop, result immediate",
+    "reduced motion: static light, no rings/wave, result immediate"
+  ],
+  "themes": [
+    {
+      "theme": "gold",
+      "tipEarly": [
+        80.68123125,
+        55.125
+      ],
+      "tipMiddle": [
+        108.47053125000001,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 40,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ice",
+      "tipEarly": [
+        81.50829375,
+        55.125
+      ],
+      "tipMiddle": [
+        109.29759375,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 124,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "fire",
+      "tipEarly": [
+        81.01205625,
+        55.125
+      ],
+      "tipMiddle": [
+        108.80135625,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 208,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "shadow",
+      "tipEarly": [
+        80.51581875,
+        55.125
+      ],
+      "tipMiddle": [
+        108.30511875,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 292,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "emerald",
+      "tipEarly": [
+        81.34288125,
+        55.125
+      ],
+      "tipMiddle": [
+        109.13218125,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 376,
+      "joinBreakUndoOffOn": true
+    },
+    {
+      "theme": "ruby",
+      "tipEarly": [
+        80.84664375,
+        55.125
+      ],
+      "tipMiddle": [
+        108.63594375,
+        55.125
+      ],
+      "ringCount": 1,
+      "stationaryFrames": 460,
+      "joinBreakUndoOffOn": true
+    }
+  ],
+  "campaign": {
+    "levels": 300,
+    "edges": 7566,
+    "errors": []
+  },
+  "errors": [],
+  "scope": "Real Chromium engine and pipe geometry; controlled test time and synthetic player/device data. No APK build."
+}
