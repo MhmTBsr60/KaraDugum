@@ -86,24 +86,28 @@
   if(filled.length<2)return;
   // A warm, wide wake remains visible behind the brighter travelling crest.
   const white=whites[theme]||whites.gold;
-  const vivid=strength*(winning?1:.87);
+  const vivid=strength*(winning?1:.87),dense=values.length>=49;
   trace(filled);
   ctx.strokeStyle=color;
-  ctx.lineWidth=(channel+15)*w;ctx.globalAlpha=.11*vivid;ctx.stroke();
+  if(!dense){ctx.lineWidth=(channel+15)*w;ctx.globalAlpha=.11*vivid;ctx.stroke();}
   ctx.lineWidth=channel*.98*w;ctx.globalAlpha=.84*vivid;ctx.stroke();
   ctx.strokeStyle=core;
   ctx.lineWidth=channel*.84*w;ctx.globalAlpha=.63*vivid;ctx.stroke();
-  ctx.lineWidth=channel*.48*w;ctx.globalAlpha=.33*vivid;ctx.stroke();
+  if(!dense){ctx.lineWidth=channel*.48*w;ctx.globalAlpha=.33*vivid;ctx.stroke();}
 
   // Use distance along the graph, including edges already crossed. The crest
   // can span a joint, with a graded tail and a rounded, bright leading edge.
   const crestLength=42*w/s.length;
   const brightEnd=Math.min(1,frontDistance);
   let front=[];
-  for(const [tail,width,light,alpha] of [[1,.98,color,.68],[.74,.92,core,.89],[.47,.82,white,.98],[.24,.60,'#fff',1]]){
-   const band=portion(s,frontDistance-crestLength*tail,brightEnd);
-   stroke(band,light,channel*width*w,alpha);
-   if(tail===.47)front=band;
+  if(frontDistance-crestLength<1){
+   const bands=dense?[[1,.98,color,.68],[.48,.82,white,.98]]:
+    [[1,.98,color,.68],[.74,.92,core,.89],[.47,.82,white,.98],[.24,.60,'#fff',1]];
+   for(const [tail,width,light,alpha] of bands){
+    const band=portion(s,frontDistance-crestLength*tail,brightEnd);
+    stroke(band,light,channel*width*w,alpha);
+    if(light===white)front=band;
+   }
   }
   effects.waves.push({id:s.id,head,tip:dot(s,head),winning,tail:filled,bright:front,channelWidth:channel*.84*w,pipeInnerWidth:channel*w,strength});
  }
