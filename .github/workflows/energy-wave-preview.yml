@@ -1,0 +1,62 @@
+name: Energy wave 3 source preview - no game APK build
+on:
+  push:
+    branches: [design/energy-wave-preview-20261119]
+  workflow_dispatch:
+jobs:
+  webview-source-preview:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Protected core and preview syntax
+        run: |
+          node tests/ux-protected-core.cjs
+          node --check pipe-flow.js
+          npm ci --ignore-scripts
+      - name: Fetch existing generic WebView shell, never compile the game
+        run: |
+          python3 - <<'PY'
+          import urllib.request,zipfile,hashlib,shutil
+          url='https://storage.googleapis.com/chromium-browser-snapshots/Android/1749074/chrome-android.zip'
+          with urllib.request.urlopen(url,timeout=90) as r,open('/tmp/chromium-snapshot.zip','wb') as f:shutil.copyfileobj(r,f)
+          with zipfile.ZipFile('/tmp/chromium-snapshot.zip') as z:b=z.read('chrome-android/apks/SystemWebViewShell.apk')
+          assert hashlib.sha256(b).hexdigest()=='c7687bf46740b30baa7e554deaf7dc5bbf56a36b791713e48db5cb8a52450697'
+          open('/tmp/SystemWebViewShell.apk','wb').write(b)
+          PY
+          python3 -m http.server 8765 --bind 0.0.0.0 > /tmp/kd-http.log 2>&1 &
+          sudo chmod 666 /dev/kvm
+      - name: Render real engine in Android 35 system WebView
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          emulator-boot-timeout: 180
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 1536 -cores 2 -skin 720x1600 -dpi-device 320
+          script: |
+            adb install -r /tmp/SystemWebViewShell.apk
+            adb reverse tcp:8765 tcp:8765
+            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/index.html -n org.chromium.webview_shell/.WebViewBrowserActivity
+            mkdir -p dist/energy-wave-webview
+            sleep 3
+            KD_WAVE_ANDROID_OUT=dist/energy-wave-webview timeout 180s node tests/energy-wave-webview.cjs
+      - name: Collect environment evidence
+        if: always()
+        run: |
+          mkdir -p dist/energy-wave-webview
+          adb logcat -d > dist/energy-wave-webview/logcat.txt || true
+          adb exec-out screencap -p > dist/energy-wave-webview/final.png || true
+          cp /tmp/kd-http.log dist/energy-wave-webview/http.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: energy-wave-source-webview-evidence
+          path: dist/energy-wave-webview/

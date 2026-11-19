@@ -7,3 +7,8 @@ html[data-kd-theme] #board[data-kd-gold-complete]::after{animation:none!importan
 body.kdFlowCelebrating #modal.kdWinModal{background:#0007}
 
 body.kdNoGlow~canvas.kdPipeFlowCanvas{display:none!important}
+/* Let the real, already-locked win board display its finite ordered wave first.
+   The unchanged result dialog becomes visible when the renderer clears the class.
+   Reduced motion / low hardware / disabling light clears the class immediately. */
+body.kdFlowCelebrating #modal.kdWinModal{background:transparent!important}
+body.kdFlowCelebrating #modal.kdWinModal .dialog{opacity:0!important;pointer-events:none!important}
