@@ -26,7 +26,7 @@ async function rotate(p,i){const before=await p.evaluate(()=>kdGetLearningState(
 async function surface(name){await delay(450);fs.writeFileSync(path.join(out,name+'.png'),execFileSync('adb',['exec-out','screencap','-p'],{maxBuffer:12e6}));}
 (async()=>{const [device]=await _android.devices();assert(device,'Android emulator missing');const report={status:'RUNNING',phoneVerified:false,noGameApkBuilt:true,noAabBuilt:true,previewInjectedIntoGameApk:false,host:'Android system-image built-in org.chromium.webview_shell, HTTP served real source files; no native game bridge',clockControlled:true,capableHardwareSimulated:true,themes:[],errors:[]};try{
  const w=await device.webView({pkg:'org.chromium.webview_shell'}),p=await w.page();p.on('pageerror',e=>report.errors.push(String(e)));report.userAgent=await p.evaluate(()=>navigator.userAgent);
- await H.initialize(p,{base:'http://127.0.0.1:8765/'});console.log('Actual source loaded in system WebView');assert.equal((await H.state(p)).style,'energy-reference-3-bend-rings');
+ await H.initialize(p,{base:'http://127.0.0.1:8765/',pauseLead:6000});console.log('Actual source loaded in system WebView');assert.equal((await H.state(p)).style,'energy-reference-3-bend-rings');
  for(const theme of ['gold','ice','fire','shadow','emerald','ruby']){
   await H.select(p,1);await H.theme(p,theme);await p.clock.runFor(1800);const m={i:4};await rotate(p,m.i);await p.clock.runFor(900);const f=await H.state(p);assert(f.effects.waves.length&&f.effects.rings.some(r=>r.kind==='bend'));assert(f.effects.rings.every(r=>r.profile==='soft-annular'));assert(f.stats.haloBrushBytes<=216*1024);assert.equal(f.theme,theme);await surface('theme-'+theme);report.themes.push({theme,waves:f.effects.waves.length,rings:f.effects.rings.length});console.log('Surface captured:',theme);fs.writeFileSync(path.join(out,'progress.json'),JSON.stringify(report,null,2));
  }
@@ -59,7 +59,7 @@ async function surface(name){await delay(450);fs.writeFileSync(path.join(out,nam
   assert(count>=20&&!stress.wave&&!stress.static,'Live stress run must render a finite wave');
   const p95=paint[Math.ceil(paint.length*.95)-1];
   assert(p95<20,'Android WebView JS canvas submission over budget: '+p95);
-  await p.clock.pauseAt(new Date(await p.evaluate(()=>Date.now())+100));
+  await p.clock.pauseAt(new Date(await p.evaluate(()=>Date.now())+6000));
   report.performance.push({level,tiles:stress.ports.length,edges:stress.edges.length,paintSamples:paint.length,paintP95Ms:p95,paintMaxMs:paint.at(-1),finite:true});
  }
  report.nativeBoardTaps=true;report.nativeUndoTap=true;report.replayViaDOMClick=true;report.status='PASS';Object.assign(report,{first,middle,settled,completion,reduced,viewport:await p.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio})),sourceUrl:p.url()});assert.deepEqual(report.errors,[]);
