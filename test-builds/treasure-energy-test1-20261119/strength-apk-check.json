@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "phoneVerified": false,
+  "cases": [
+    {
+      "theme": "gold",
+      "baselineLight": 841981.3077780391,
+      "strongLight": 816342.5734086274,
+      "ratio": 0.8945947585883351,
+      "wholeBoardRatio": 0.9695495207167111,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 210,
+      "baselineWhiteCorePixels": 0,
+      "compositeCoreContrastP95": 132.4246
+    },
+    {
+      "theme": "ice",
+      "baselineLight": 870940.4183419608,
+      "strongLight": 841717.203545098,
+      "ratio": 0.8832470637184547,
+      "wholeBoardRatio": 0.9664463674191445,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 211,
+      "baselineWhiteCorePixels": 327,
+      "compositeCoreContrastP95": 135.2154
+    },
+    {
+      "theme": "fire",
+      "baselineLight": 802874.0049905882,
+      "strongLight": 784065.7452611764,
+      "ratio": 0.9181796245900669,
+      "wholeBoardRatio": 0.9765738339857792,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 206,
+      "baselineWhiteCorePixels": 0,
+      "compositeCoreContrastP95": 134.1438
+    },
+    {
+      "theme": "shadow",
+      "baselineLight": 736151.9812439216,
+      "strongLight": 710926.6481607843,
+      "ratio": 0.884728443500749,
+      "wholeBoardRatio": 0.9657335255139673,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 210,
+      "baselineWhiteCorePixels": 279,
+      "compositeCoreContrastP95": 137.81619999999998
+    },
+    {
+      "theme": "emerald",
+      "baselineLight": 833776.5692580392,
+      "strongLight": 809880.0233913725,
+      "ratio": 0.9002280052250957,
+      "wholeBoardRatio": 0.9713393890548738,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 209,
+      "baselineWhiteCorePixels": 0,
+      "compositeCoreContrastP95": 125.88980000000001
+    },
+    {
+      "theme": "ruby",
+      "baselineLight": 710902.2616847059,
+      "strongLight": 693593.9083607843,
+      "ratio": 0.9168534012531728,
+      "wholeBoardRatio": 0.9756529775515076,
+      "scope": "new connection 0:1, identical engine state at 400 ms; white-hot core contrast on actual board, NOT total brightness area",
+      "changedOutsidePipesFraction": 0,
+      "sameEngineState": true,
+      "visibleWhiteCorePixels": 209,
+      "baselineWhiteCorePixels": 0,
+      "compositeCoreContrastP95": 130.589
+    }
+  ],
+  "errors": [],
+  "locales": 25,
+  "noLegacyFallbackOnCanvasFailure": true
+}

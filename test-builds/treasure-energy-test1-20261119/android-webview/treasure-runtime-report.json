@@ -1,0 +1,162 @@
+{
+  "status": "PASS",
+  "androidApi": 35,
+  "phoneVerified": false,
+  "maxEvaluateCallbackMs": 3907,
+  "compositorSynchronization": true,
+  "runtimeAssets": true,
+  "injectedPreview": false,
+  "scope": "Actual signed combined APK file:///android_asset assets. No JS/CSS/image injection. Real reward engine, native close-button taps, same-day and rollback guard; test dates are simulated, not trusted server time.",
+  "clockCases": [
+    {
+      "coins": 500,
+      "hints": 8,
+      "last": "2026-11-19",
+      "testDate": "2026-11-19"
+    },
+    {
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20",
+      "testDate": "2026-11-20"
+    },
+    {
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20",
+      "testDate": "2026-11-19"
+    },
+    {
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20",
+      "testDate": "2026-11-20"
+    },
+    {
+      "coins": 535,
+      "hints": 8,
+      "last": "2026-11-21",
+      "testDate": "2026-11-21"
+    }
+  ],
+  "cases": [
+    {
+      "r": {
+        "date": "2026-11-19",
+        "day": 3,
+        "coins": 0,
+        "hints": 1
+      },
+      "rect": {
+        "x": 12,
+        "y": 42.51785659790039,
+        "width": 251.04762268066406,
+        "height": 525.25,
+        "top": 42.51785659790039,
+        "right": 263.04762268066406,
+        "bottom": 567.7678565979004,
+        "left": 12
+      },
+      "heroRect": {
+        "x": 21.904762268066406,
+        "y": 44.4226188659668,
+        "width": 231.23809814453125,
+        "height": 175,
+        "top": 44.4226188659668,
+        "right": 253.14286041259766,
+        "bottom": 219.4226188659668,
+        "left": 21.904762268066406
+      },
+      "prizeRect": {
+        "x": 36.66666793823242,
+        "y": 328.6845397949219,
+        "width": 201.71429443359375,
+        "height": 77.41667175292969,
+        "top": 328.6845397949219,
+        "right": 238.38096237182617,
+        "bottom": 406.10121154785156,
+        "left": 36.66666793823242
+      },
+      "count": 7,
+      "claimed": 2,
+      "future": 4,
+      "cardWidth": 247,
+      "scrollWidth": 247,
+      "cardHeight": 521,
+      "scrollHeight": 521,
+      "vw": 275,
+      "vh": 610,
+      "coins": 510,
+      "hints": 8,
+      "rowSpread": 0,
+      "motion": "static"
+    },
+    {
+      "r": {
+        "date": "2026-11-19",
+        "day": 7,
+        "coins": 40,
+        "hints": 0
+      },
+      "rect": {
+        "x": 12,
+        "y": 42.51785659790039,
+        "width": 251.04762268066406,
+        "height": 525.25,
+        "top": 42.51785659790039,
+        "right": 263.04762268066406,
+        "bottom": 567.7678565979004,
+        "left": 12
+      },
+      "heroRect": {
+        "x": 21.904762268066406,
+        "y": 44.4226188659668,
+        "width": 231.23809814453125,
+        "height": 175,
+        "top": 44.4226188659668,
+        "right": 253.14286041259766,
+        "bottom": 219.4226188659668,
+        "left": 21.904762268066406
+      },
+      "prizeRect": {
+        "x": 36.66666793823242,
+        "y": 328.6845397949219,
+        "width": 201.71429443359375,
+        "height": 77.41667175292969,
+        "top": 328.6845397949219,
+        "right": 238.38096237182617,
+        "bottom": 406.10121154785156,
+        "left": 36.66666793823242
+      },
+      "count": 7,
+      "claimed": 6,
+      "future": 0,
+      "cardWidth": 247,
+      "scrollWidth": 247,
+      "cardHeight": 521,
+      "scrollHeight": 521,
+      "vw": 275,
+      "vh": 610,
+      "coins": 550,
+      "hints": 7,
+      "rowSpread": 0,
+      "motion": "static"
+    }
+  ],
+  "surfaceProof": [
+    {
+      "day": 3,
+      "goldHeroPixels": 33978,
+      "blueCrystalPixels": 9515,
+      "method": "actual Android Surface screenshot, decoded chest asset; not DOM counters",
+      "phoneVerified": false
+    },
+    {
+      "day": 7,
+      "goldHeroPixels": 33977,
+      "blueCrystalPixels": 9515,
+      "method": "actual Android Surface screenshot, decoded chest asset; not DOM counters",
+      "phoneVerified": false
+    }
+  ]
+}

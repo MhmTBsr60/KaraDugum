@@ -1,0 +1,20 @@
+{
+  "versionName": "6.50-treasure-energy-test1",
+  "versionCode": 110,
+  "applicationId": "com.orynexa.karadugum",
+  "commit": "810ef0504d2950592da81862d5c6c85550a39b27",
+  "baseCommit": "2917234dbf8b26c1574156a908d9da24928893eb",
+  "adsMode": "test",
+  "sha256": "b54c5a267f7d780dd6fb704f8ffaef91f64fe867306dde26f4d4b0328df91548",
+  "phoneVerified": false,
+  "renderer": "root-canvas2d",
+  "style": "contrast-2",
+  "treasureSourceCommit": "10d5c8600475ef692314f82f544cc2d0214d0e85",
+  "pipeSourceCommit": "2917234dbf8b26c1574156a908d9da24928893eb",
+  "treasureIncludedInGameApk": true,
+  "noAabBuilt": true,
+  "noPlayUpload": true,
+  "fullWebRegressionRun": 44490852261,
+  "rewardedUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "interstitialUnitId": "ca-app-pub-3940256099942544/1033173712"
+}

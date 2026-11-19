@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "previousVersion": "6.50-pipe-energy-test2",
+  "newVersion": "6.50-treasure-energy-test1",
+  "inPlaceInstall": true,
+  "oldProcessRestartVerified": true,
+  "seedCommitWaitMs": 10000,
+  "uninstalledOrClearedData": false,
+  "phoneVerified": false,
+  "puzzleAndProgressPreserved": true,
+  "inventoryOwnershipAndPreferencesPreserved": true,
+  "undoAcrossProcessRestart": "Not claimed; original engine does not persist undo history across restart"
+}
