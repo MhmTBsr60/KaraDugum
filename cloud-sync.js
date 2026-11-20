@@ -117,7 +117,7 @@ function themeQuote(id){
   return {
    owner:uid,
    balance:model?projection.wallet.coins:M.num(get('coins',0)),
-   owned:id==='gold'||(model?projection.owned.has(id):!!(get('shopTheme_'+id,false)||get('v9_'+id,false))),
+   owned:id==='gold'||!!(projection?.owned.has(id)||get('shopTheme_'+id,false)||get('v9_'+id,false)),
    ready:!model||ready,
   };
  }catch(error){console.warn('Theme purchase recovery is waiting for storage',error);return {owner:uid,error:'storage'};}

@@ -48,7 +48,16 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle --no-daemon --stacktrace :app:assembleRelease :app:lintRelease :app:assembleReleaseAndroidTest
+        run: |
+          set -euo pipefail
+          tasks=(:app:assembleRelease :app:lintRelease :app:assembleReleaseAndroidTest)
+          if gradle --no-daemon --stacktrace "${tasks[@]}" > "$RUNNER_TEMP/build.log" 2>&1; then
+            tail -n 20 "$RUNNER_TEMP/build.log"
+          else
+            tail -n 140 "$RUNNER_TEMP/build.log"
+            grep -Eq 'Could not (find junit:junit:4.13.2|resolve.*https?://)|Received status code (429|50[0-9])' "$RUNNER_TEMP/build.log"
+            gradle --no-daemon --refresh-dependencies --stacktrace "${tasks[@]}"
+          fi
       - name: Verify TEST APK source assets, Google sample ads and upgrade signer
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
