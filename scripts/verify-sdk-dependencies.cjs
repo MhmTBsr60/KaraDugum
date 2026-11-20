@@ -35,10 +35,13 @@ function selectedCoordinate(value) {
   return parts.length === 3 && PART.test(parts[0]) && PART.test(parts[1]) && VERSION.test(parts[2]) ? parts : null;
 }
 
-function verify(report) {
+function verify(report, { versionName = RELEASE.versionName, versionCode = RELEASE.versionCode } = {}) {
+  check(typeof versionName === 'string' && VERSION.test(versionName), 'Expected a valid versionName');
+  check(Number.isSafeInteger(versionCode) && versionCode > 0, 'Expected a positive integer versionCode');
+  const release = { ...RELEASE, versionName, versionCode };
   check(isObject(report), 'Dependency report must be a JSON object');
   check(report.schemaVersion === 1, 'Unsupported dependency report schemaVersion; expected 1');
-  for (const [key, expected] of Object.entries(RELEASE)) {
+  for (const [key, expected] of Object.entries(release)) {
     check(report[key] === expected, `Dependency report ${key} mismatch: expected ${expected}`);
   }
   check(Array.isArray(report.modules) && report.modules.length > 0, 'Dependency report modules must be a non-empty array');
@@ -72,7 +75,7 @@ function verify(report) {
   }
 
   return {
-    ...RELEASE,
+    ...release,
     schemaVersion: 1,
     sdkVersions: Object.fromEntries(Object.keys(SDK_PINS).map(key => [key, modules.get(key)])),
     moduleCount: modules.size,
@@ -81,8 +84,12 @@ function verify(report) {
 }
 
 function main(argv = process.argv.slice(2)) {
-  check(argv.length === 1, 'Usage: node scripts/verify-sdk-dependencies.cjs <resolved-dependencies.json>');
-  const summary = verify(JSON.parse(fs.readFileSync(argv[0], 'utf8')));
+  check(argv.length === 1 || argv.length === 3,
+    'Usage: node scripts/verify-sdk-dependencies.cjs <resolved-dependencies.json> [<versionName> <versionCode>]');
+  const [filename, versionName, code] = argv;
+  check(code === undefined || /^\d+$/.test(code), 'Expected a decimal versionCode');
+  const summary = verify(JSON.parse(fs.readFileSync(filename, 'utf8')),
+    { versionName, versionCode: code === undefined ? undefined : Number(code) });
   const versions = Object.entries(summary.sdkVersions).map(([key, version]) => `${key.split(':')[1]}=${version}`).join(', ');
   console.log(`PASS: Android ${summary.versionName} (${summary.versionCode}), ${summary.moduleCount} resolved modules; ${versions}`);
   return summary;

@@ -128,7 +128,7 @@ jobs:
           keytool -printcert -jarfile "$aab" | awk '/SHA256:/{print tolower($2)}' | tr -d ':' > "$out/signer-sha256.txt"
           test "$(cat "$out/signer-sha256.txt")" = "$KD_EXPECTED_SIGNER"
           python3 scripts/verify-rc-assets.py --package "$aab" --report "$out/aab-assets.json"
-          node scripts/verify-sdk-dependencies.cjs build/reports/sdk/release-sdk-dependencies.json
+          node scripts/verify-sdk-dependencies.cjs build/reports/sdk/release-sdk-dependencies.json "$KD_VERSION_NAME" "$KD_VERSION_CODE"
           cp build/reports/manifests/live/{manifest-verification.json,bundle-manifest.xml,bundle-validation.txt} "$out/"
           cp build/reports/sdk/release-sdk-dependencies.json "$out/"
           git rev-parse HEAD > "$out/source-commit.txt"

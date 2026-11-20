@@ -84,6 +84,15 @@ try {
   assert.match(result.stdout, /fragment=1\.9\.1/);
   assert.match(result.stdout, /play-services-ads=25\.5\.0/);
 
+  fs.writeFileSync(reportFile, JSON.stringify({ ...fixture(), versionName: '6.51', versionCode: 111 }));
+  result = spawnSync(process.execPath, [cli, reportFile, '6.51', '111'], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /PASS: Android 6\.51 \(111\)/);
+  result = spawnSync(process.execPath, [cli, reportFile, '6.51', '112'], { encoding: 'utf8' });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /versionCode mismatch/);
+
+
   const old = fixture();
   old.modules[0].version = '1.1.0';
   fs.writeFileSync(reportFile, JSON.stringify(old));
