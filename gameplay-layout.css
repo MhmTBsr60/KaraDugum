@@ -52,7 +52,7 @@ html[data-kd-theme] #kdGame main>.controls.kdGameActions button{min-height:52px!
 @media(orientation:landscape) and (max-height:550px){html[data-kd-theme] #kdGame main>.controls.kdGameActions{grid-row:4!important;grid-column:2}}
 /* Physical board column stays stable when interface text is RTL. */
 html[data-kd-theme] #kdGame main{direction:ltr}
-html[dir="rtl"] #kdGame main>.stats,html[dir="rtl"] #kdGame main>.instructions,html[dir="rtl"] #kdGame main>.status,html[dir="rtl"] #kdGame main>.kdGameActions{direction:rtl}
+html[dir="rtl"] #kdGame main>.stats,html[dir="rtl"] #kdGame main>.instructions,html[dir="rtl"] #kdGame main>.status,html[dir="rtl"] #kdGame main>.kdGameActions button{direction:rtl}
 @media(orientation:landscape) and (max-height:550px){
  html[data-kd-theme] #kdGame main>.board{grid-column:1!important;grid-row:1/-1!important}
  html[data-kd-theme] #kdGame main>.stats{grid-column:2!important;grid-row:1!important}
@@ -63,8 +63,9 @@ html[dir="rtl"] #kdGame main>.stats,html[dir="rtl"] #kdGame main>.instructions,h
 
 /* Center the explanation between balanced help/star slots; keep the original buttons. */
 html[data-kd-theme] #kdGame #challenge{text-align:center;overflow-wrap:anywhere;min-width:0}
-html[data-kd-theme] #kdGame #kdModeRule{display:grid!important;grid-template-columns:50px minmax(0,1fr) 50px;gap:4px!important}
+html[data-kd-theme] #kdGame #kdModeRule{direction:ltr;display:grid!important;grid-template-columns:50px minmax(0,1fr) 50px;gap:4px!important}
 html[data-kd-theme] #kdGame #kdModeRule>span{grid-column:2;grid-row:1;text-align:center;min-width:0;overflow-wrap:anywhere}
+html[dir="rtl"] #kdGame #kdModeRule>span{direction:rtl}
 html[data-kd-theme] #kdGame #kdModeRule>button:not(.kdStarGoalButton){grid-column:1;grid-row:1;justify-self:center}
 html[data-kd-theme] #kdGame #kdModeRule>.kdStarGoalButton{grid-column:3;grid-row:1;justify-self:center}
 /* The source label and resource handling stay unchanged; this is the hint's presentation. */

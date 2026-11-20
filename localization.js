@@ -20,9 +20,32 @@ const excluded='script,style,textarea,option,#kdLanguageControl,[data-no-transla
 const skip=node=>{const e=node.nodeType===1?node:node.parentElement;return !e||!!e.closest(excluded)};
 function translateNode(node,code){if(skip(node))return;let r=originals.get(node);if(r&&r.code===code&&node.nodeValue===r.output)return;if(!r||node.nodeValue!==r.output)r={source:node.nodeValue};const out=text(r.source,code);r.output=out;r.code=code;originals.set(node,r);if(node.nodeValue!==out)node.nodeValue=out;}
 function translateAttrs(e,code){if(skip(e))return;const saved=attrs.get(e)||{};for(const name of ['aria-label','title','placeholder']){if(!e.hasAttribute(name))continue;const current=e.getAttribute(name),r=saved[name];if(r&&r.code===code&&current===r.output)continue;const source=r&&current===r.output?r.source:current,out=text(source,code);saved[name]={source,output:out,code};if(current!==out)e.setAttribute(name,out);}attrs.set(e,saved);}
-function languageControl(code){if(document.getElementById('kdLanguageControl'))return;const settings=document.querySelector('[data-setting="music"]'),panel=document.getElementById('kdLocaleSlot')||settings?.closest('.kdPanel');if(!panel)return;const row=document.createElement('div');row.className='kdRow';row.id='kdLanguageControl';const label=document.createElement('label');label.htmlFor='kdLangSelect';label.textContent=text('Oyun dili',code);if(panel.id==='kdLocaleSlot')label.className='kdSrOnly';const select=document.createElement('select');select.id='kdLangSelect';select.setAttribute('aria-label',text('Oyun dili',code));select.style.cssText='background:#17191c;color:#f7e8ca;border:1px solid #8a7447;border-radius:10px;padding:11px;max-width:100%';for(const [id,name] of [['auto','🌐 '+text('Telefon dili',code)],...Object.entries(labels)]){const option=document.createElement('option');option.value=id;option.textContent=name;select.append(option);}select.value=localStorage.getItem('kd6_lang')||'auto';select.onchange=()=>{localStorage.setItem('kd6_lang',select.value);location.reload()};row.append(label,select);panel.append(row);}
+function languageControl(code,changed){
+ let row=document.getElementById('kdLanguageControl');
+ if(!row){
+  const settings=document.querySelector('[data-setting="music"]'),panel=document.getElementById('kdLocaleSlot')||settings?.closest('.kdPanel');
+  if(!panel)return;
+  row=document.createElement('div');row.className='kdRow';row.id='kdLanguageControl';
+  const label=document.createElement('label');label.htmlFor='kdLangSelect';
+  if(panel.id==='kdLocaleSlot')label.className='kdSrOnly';
+  const select=document.createElement('select');select.id='kdLangSelect';select.style.cssText='background:#17191c;color:#f7e8ca;border:1px solid #8a7447;border-radius:10px;padding:11px;max-width:100%';
+  for(const [id,name] of [['auto',''],...Object.entries(labels)])select.add(new Option(name,id));
+  select.onchange=()=>{
+   localStorage.setItem('kd6_lang',select.value);
+   flush();
+   window.kdPrivacy?.refresh();
+  };
+  row.append(label,select);panel.append(row);
+ }else if(!changed)return;
+ const label=row.querySelector('label'),select=row.querySelector('select');
+ const name=text('Oyun dili',code);
+ label.textContent=name;select.setAttribute('aria-label',name);
+ select.options[0].textContent='🌐 '+text('Telefon dili',code);
+ const preference=localStorage.getItem('kd6_lang');
+ select.value=Object.hasOwn(labels,preference)?preference:'auto';
+}
 let codeNow=null,queued=false;const roots=new Set();const options={subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder']};
 function collect(records){for(const r of records){if(r.type==='childList'){for(const n of r.addedNodes)if(!skip(n))roots.add(n);}else if(!skip(r.target))roots.add(r.target);}}
-function flush(){queued=false;collect(observer.takeRecords());const code=selected(),previousCode=codeNow;if(code!==codeNow){roots.clear();roots.add(document.body);codeNow=code;try{window.KaraNative?.setLanguage?.(code);}catch(error){console.warn("Native language unavailable",error);}}observer.disconnect();try{if(document.documentElement.lang!==code)document.documentElement.lang=code;const dir=['ar','ur','fa'].includes(code)?'rtl':'ltr';if(document.documentElement.dir!==dir)document.documentElement.dir=dir;if(code!=='tr'||previousCode&&previousCode!==code){const list=[...roots].filter(n=>n.isConnected&&!skip(n));const top=list.filter(n=>!list.some(p=>p!==n&&p.nodeType===1&&p.contains(n)));for(const root of top){if(root.nodeType===3){translateNode(root,code);continue;}translateAttrs(root,code);const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>skip(n)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});let n;while(n=walker.nextNode())translateNode(n,code);for(const e of root.querySelectorAll('[aria-label],[title],[placeholder]'))translateAttrs(e,code);}}languageControl(code);}finally{roots.clear();observer.observe(document.body,options);}}
+function flush(){queued=false;collect(observer.takeRecords());const code=selected(),previousCode=codeNow;if(code!==codeNow){roots.clear();roots.add(document.body);codeNow=code;try{window.KaraNative?.setLanguage?.(code);}catch(error){console.warn("Native language unavailable",error);}}observer.disconnect();try{if(document.documentElement.lang!==code)document.documentElement.lang=code;const dir=['ar','ur','fa'].includes(code)?'rtl':'ltr';if(document.documentElement.dir!==dir)document.documentElement.dir=dir;if(code!=='tr'||previousCode&&previousCode!==code){const list=[...roots].filter(n=>n.isConnected&&!skip(n));const top=list.filter(n=>!list.some(p=>p!==n&&p.nodeType===1&&p.contains(n)));for(const root of top){if(root.nodeType===3){translateNode(root,code);continue;}translateAttrs(root,code);const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>skip(n)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});let n;while(n=walker.nextNode())translateNode(n,code);for(const e of root.querySelectorAll('[aria-label],[title],[placeholder]'))translateAttrs(e,code);}}languageControl(code,code!==previousCode);}finally{roots.clear();observer.observe(document.body,options);}}
 const observer=new MutationObserver(records=>{collect(records);if(roots.size&&!queued){queued=true;queueMicrotask(flush);}});roots.add(document.body);flush();
 })();

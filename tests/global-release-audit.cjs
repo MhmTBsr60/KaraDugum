@@ -50,7 +50,7 @@ const server=http.createServer((req,res)=>{
   }
   for(const code of ['tr','en','ar','zh']){
    await p.evaluate(()=>kdNavigate('settings'));
-   if(await p.locator('#kdLangSelect').inputValue()!==code){await Promise.all([p.waitForEvent('load'),p.locator('#kdLangSelect').selectOption(code)]);await p.clock.fastForward(2500);}
+   if(await p.locator('#kdLangSelect').inputValue()!==code){await p.locator('#kdLangSelect').selectOption(code);}
    await p.evaluate(()=>kdNavigate('settings'));await inspect(code,'language selection');
    assert.equal(await p.locator('#kdLangSelect').inputValue(),code);
    assert.equal(await p.evaluate(()=>nativeLanguages.at(-1)),code,'Selected language reaches the Android bridge');

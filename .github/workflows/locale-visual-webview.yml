@@ -1,0 +1,44 @@
+name: Locale consistency in Android WebView
+on:
+  push:
+    branches: [fix/locale-visual-consistency-20261120]
+  workflow_dispatch:
+jobs:
+  webview:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci --ignore-scripts
+      - name: Serve game source
+        run: |
+          nohup python3 -m http.server 8765 --bind 0.0.0.0 > /tmp/kd-locale-http.log 2>&1 &
+          sudo chmod 666 /dev/kvm
+      - name: Verify Android 35 WebView and capture screen
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          emulator-boot-timeout: 180
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 1536 -cores 2 -skin 720x1600 -dpi-device 320
+          script: |
+            mkdir -p dist/locale-webview
+            adb shell pm path org.chromium.webview_shell
+            adb shell wm density 320
+            adb reverse tcp:8765 tcp:8765
+            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/localization.js -n org.chromium.webview_shell/.WebViewBrowserActivity
+            timeout 300s node tests/locale-visual-webview.cjs
+            adb shell am force-stop org.chromium.webview_shell
+            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/localization.js -n org.chromium.webview_shell/.WebViewBrowserActivity
+            timeout 120s node tests/locale-visual-webview.cjs --reopen
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: locale-visual-android-35
+          path: dist/locale-webview/
