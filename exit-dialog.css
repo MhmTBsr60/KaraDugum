@@ -104,6 +104,14 @@
 }
 .kdExitDialog [data-exit-confirm]:disabled { opacity: .6; }
 .kdExitSaveStatus { margin: 10px 0 0; font-size: 13px; color: #ffce8a; }
+@media (max-width: 300px) {
+  .kdExitActions button {
+    min-height: 54px;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+  }
+}
 @media (max-height: 400px) {
   .kdExitHero { height: 87px; }
   .kdExitCopy { padding-bottom: 13px; }

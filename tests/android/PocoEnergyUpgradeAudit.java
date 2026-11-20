@@ -198,10 +198,11 @@ public final class PocoEnergyUpgradeAudit {
         expectVersion(argument("toVersion","6.51-rc3-test"));
         pressAndroidBack();
         assertTrue(waitForExitDialog(true,5000));
-        JSONObject geometry=(JSONObject)eval("(()=>{const d=document.querySelector('.kdExitDialog'),r=d.getBoundingClientRect();return {width:innerWidth,height:innerHeight,visible:r.top>=0&&r.left>=0&&r.right<=innerWidth&&r.bottom<=innerHeight,targets:[...d.querySelectorAll('button')].every(e=>e.getBoundingClientRect().height>=44),scroll:d.scrollWidth>d.clientWidth+1}})()");
+        JSONObject geometry=(JSONObject)eval("(()=>{const d=document.querySelector('.kdExitDialog'),r=d.getBoundingClientRect();const label=d.querySelector('[data-exit-cancel] span'),range=document.createRange();range.selectNodeContents(label);return {width:innerWidth,height:innerHeight,visible:r.top>=0&&r.left>=0&&r.right<=innerWidth&&r.bottom<=innerHeight,targets:[...d.querySelectorAll('button')].every(e=>e.getBoundingClientRect().height>=44),scroll:d.scrollWidth>d.clientWidth+1,cancelFitsOneLine:range.getClientRects().length===1}})()");
         assertTrue(geometry.getBoolean("visible"));
         assertTrue(geometry.getBoolean("targets"));
         assertFalse(geometry.getBoolean("scroll"));
+        assertTrue(geometry.getBoolean("cancelFitsOneLine"));
         String name="exit-viewport-"+geometry.getInt("width");
         geometry.put("status","PASS");
         write(name+".json",geometry.toString(2));
