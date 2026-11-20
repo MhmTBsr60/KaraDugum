@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "payout": "hintCoupon",
+      "offline": true,
+      "pendingBeforeRestart": true,
+      "restartSettledOnce": true,
+      "clockRollback": true,
+      "historicalPopupBlocked": true
+    },
+    {
+      "payout": "crystals",
+      "offline": true,
+      "pendingBeforeRestart": true,
+      "restartSettledOnce": true,
+      "clockRollback": true,
+      "historicalPopupBlocked": true
+    },
+    {
+      "payout": "accountLoginOperation",
+      "cloudReplay": 3,
+      "restart": true,
+      "oneFreshPopup": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kdCloud_login_write-fault",
+      "restart": false,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kdCloud_ops_write-fault",
+      "restart": true,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kd64_coins",
+      "restart": true,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kd64_hintCoupons",
+      "restart": true,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kd64_dailyDate",
+      "restart": false,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kd64_streak",
+      "restart": false,
+      "oneCredit": true
+    },
+    {
+      "payout": "accountLoginWriteFault",
+      "key": "kd64_dailyLastReward",
+      "restart": true,
+      "oneCredit": true
+    }
+  ]
+}
