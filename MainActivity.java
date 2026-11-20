@@ -7,6 +7,7 @@ import android.os.Build;
 import android.media.AudioManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,6 +35,11 @@ import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.UserMessagingPlatform;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
     private final UiFeedbackGate uiFeedbackGate = new UiFeedbackGate();
@@ -78,6 +84,8 @@ public class MainActivity extends Activity {
     private static volatile AudiencePolicy audience = AudiencePolicy.choose(null);
     private static boolean audienceAnswered;
     private AudienceChoiceStore audienceChoices;
+    private static final ScheduledExecutorService REWARD_WRITER = Executors.newSingleThreadScheduledExecutor();
+    private static RewardReceiptQueue rewardReceipts;
 
     @Override public void onCreate(Bundle state) {
         audienceChoices = new AudienceChoiceStore(getNoBackupFilesDir());
@@ -667,16 +675,54 @@ public class MainActivity extends Activity {
             try { JSONObject data=new JSONObject();data.put("purpose",purpose);data.put("owner",owner);send("accountAdReward",data.toString()); } catch(Exception e){Log.e(TAG,"Reward payload",e);}
         } else send("adReward",JSONObject.quote(purpose));
     }
+    /** Called on REWARD_WRITER so disk writes cannot block the ad callback or UI. */
+    private static RewardReceiptQueue rewardReceipts(Context application) {
+        if (rewardReceipts != null) return rewardReceipts;
+        SharedPreferences preferences = application.getSharedPreferences("reward_receipts", MODE_PRIVATE);
+        rewardReceipts = new RewardReceiptQueue(new RewardReceiptQueue.Store() {
+            @Override public boolean record(String purpose, String owner) {
+                return preferences.edit().putString("earned_"+purpose,purpose).putString("owner_"+purpose,owner).commit();
+            }
+            @Override public Map<String, String> pending() {
+                Map<String, ?> stored = preferences.getAll();
+                Map<String, String> pending = new LinkedHashMap<>();
+                for (Map.Entry<String, ?> entry : stored.entrySet()) {
+                    if (!entry.getKey().startsWith("earned_") || !(entry.getValue() instanceof String)) continue;
+                    String purpose = (String) entry.getValue();
+                    if (!RewardReceiptQueue.isTracked(purpose) || !entry.getKey().equals("earned_"+purpose)) continue;
+                    Object owner = stored.get("owner_"+purpose);
+                    pending.put(purpose, owner instanceof String ? (String) owner : "");
+                }
+                return pending;
+            }
+            @Override public void acknowledge(String purpose) {
+                preferences.edit().remove("earned_"+purpose).remove("owner_"+purpose).apply();
+            }
+        });
+        return rewardReceipts;
+    }
     private void recordReward(String purpose,String owner) {
-        if (purpose.matches("(double|coins|hint):[a-zA-Z0-9_-]{1,100}")) getApplicationContext().getSharedPreferences("reward_receipts",MODE_PRIVATE).edit().putString("earned_"+purpose,purpose).putString("owner_"+purpose,owner).commit();
-        sendEarnedReward(purpose,owner);
+        if (!RewardReceiptQueue.isTracked(purpose)) { sendEarnedReward(purpose, owner); return; }
+        Context application = getApplicationContext();
+        REWARD_WRITER.execute(() -> {
+            rewardReceipts(application).earn(purpose, owner);
+            flushRewardReceipts(application, 2);
+        });
+    }
+    private void flushRewardReceipts(Context application, int retries) {
+        RewardReceiptQueue queue = rewardReceipts(application);
+        boolean waiting = queue.flush();
+        for (Map.Entry<String, String> receipt : queue.ready().entrySet())
+            sendEarnedReward(receipt.getKey(), receipt.getValue());
+        if (waiting) {
+            if (retries > 0) REWARD_WRITER.schedule(() -> flushRewardReceipts(application, retries - 1),
+                retries == 2 ? 250 : 1000, TimeUnit.MILLISECONDS);
+            else Log.w(TAG, "Earned reward receipt awaits writable storage");
+        }
     }
     private void deliverPendingRewards() {
-        android.content.SharedPreferences receipts=getApplicationContext().getSharedPreferences("reward_receipts",MODE_PRIVATE);
-        for(String key:receipts.getAll().keySet())if(key.startsWith("earned_")) {
-            String purpose=receipts.getString(key,"");
-            if(purpose!=null&&purpose.matches("(double|coins|hint):[a-zA-Z0-9_-]{1,100}"))sendEarnedReward(purpose,receipts.getString("owner_"+purpose,""));
-        }
+        Context application = getApplicationContext();
+        REWARD_WRITER.execute(() -> flushRewardReceipts(application, 0));
     }
     private void loadRewarded() {
         if (!adsAllowed() || !adsInitialized || rewardedLoading || rewardedInProgress || interstitialInProgress || rewardedAd != null || !rewardedLoadGate.canAttempt(android.os.SystemClock.elapsedRealtime())) return;
@@ -863,8 +909,9 @@ public class MainActivity extends Activity {
             runOnUiThread(() -> { if(rewardedInProgress){send("doubleAdUnavailable",JSONObject.quote(requestId));return;}rewardPurpose="double:"+requestId;showRewarded(); });
         }
         @JavascriptInterface public void ackReward(String purpose) {
-            if(purpose==null || !purpose.matches("(double|coins|hint):[a-zA-Z0-9_-]{1,100}"))return;
-            getApplicationContext().getSharedPreferences("reward_receipts", MODE_PRIVATE).edit().remove("earned_"+purpose).remove("owner_"+purpose).apply();
+            if (!RewardReceiptQueue.isTracked(purpose)) return;
+            Context application = getApplicationContext();
+            REWARD_WRITER.execute(() -> rewardReceipts(application).acknowledge(purpose));
         }
         @JavascriptInterface public void levelCompletedForAds(int level) { runOnUiThread(() -> onLevelCompletedForAds(level)); }
         @JavascriptInterface public void login() {

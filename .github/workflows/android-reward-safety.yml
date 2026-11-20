@@ -1,0 +1,85 @@
+name: KaraDugum Android 16 reward and upgrade verification
+on:
+  push:
+    branches: [fix/6.51-reward-durability-audit]
+  workflow_dispatch:
+jobs:
+  test:
+    if: ${{ github.ref == 'refs/heads/fix/6.51-reward-durability-audit' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    env:
+      KD_ADS_MODE: test
+      KD_VERSION_NAME: 6.51-reward-safety-test
+      KD_VERSION_CODE: '114'
+      KD_TEST_VERSION: 6.51-reward-safety-test
+      KD_PREVIOUS_TEST_VERSION: '6.50'
+      KD_BASELINE_650_AUDIT: 'true'
+      KD_EXPECTED_SIGNER: 351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - uses: actions/download-artifact@v4
+        with:
+          name: KaraDugum-v6.50-TEST-APK-AAB
+          github-token: ${{ github.token }}
+          run-id: '42875715900'
+          path: ${{ runner.temp }}/baseline-110
+      - name: Prepare only the TEST app and verify the archived 6.50 TEST APK
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/baseline-110/KaraDugum-v6.50-TEST.apk" "$RUNNER_TEMP/previous-test.apk"
+          echo "d0833d0060481ce568029050457d7575bd79c2f0583cb245b260352329391001  $RUNNER_TEMP/previous-test.apk" | sha256sum --check
+          node tests/ux-protected-core.cjs
+          bash scripts/prepare-android-rc.sh
+      - name: Compile, lint and verify both TEST signatures
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          trap 'rm -f app/karadugum.jks' EXIT
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          printf '%s\n' "$KD_EXPECTED_SIGNER" > "$RUNNER_TEMP/expected-cert-sha256"
+          tasks=(:app:assembleRelease :app:lintRelease :app:assembleReleaseAndroidTest)
+          if gradle --no-daemon --stacktrace "${tasks[@]}" > "$RUNNER_TEMP/build.log" 2>&1; then
+            tail -n 20 "$RUNNER_TEMP/build.log"
+          else
+            tail -n 140 "$RUNNER_TEMP/build.log"
+            grep -Eq 'Could not (find junit:junit:4.13.2|resolve.*https?://)|Received status code (429|50[0-9])' "$RUNNER_TEMP/build.log"
+            gradle --no-daemon --refresh-dependencies --stacktrace "${tasks[@]}"
+          fi
+          for apk in "$RUNNER_TEMP/previous-test.apk" app/build/outputs/apk/release/app-release.apk; do
+            bash scripts/verify-apk-signature.sh "$apk" "$RUNNER_TEMP/expected-cert-sha256"
+          done
+          python3 scripts/verify-test-apk.py app/build/outputs/apk/release/app-release.apk
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$apksigner" sign --ks app/karadugum.jks --ks-pass env:KEYSTORE_PASSWORD --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASSWORD app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+          sudo chmod 666 /dev/kvm
+      - name: Android 16 in-place upgrade and receipt recovery
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          script: bash scripts/run-rc-upgrade-audit.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KaraDugum-Android16-reward-upgrade-evidence
+          path: dist/upgrade/
+          if-no-files-found: ignore

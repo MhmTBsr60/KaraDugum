@@ -162,11 +162,35 @@ function claimShopDaily(date=new Date().toLocaleDateString('en-CA')) {
   recoverGuest();return true;
  } catch(error) {console.warn('Daily shop reward awaiting durable storage',error);return false;}
 }
+const loginJournalKey=owner=>'kdCloud_login_'+encodeURIComponent(owner);
+function recoverAccountLogin(){
+ if(!model)return;
+ const pending=read(loginJournalKey(uid),null);
+ if(!pending)return;
+ const key='login:'+pending.date;
+ if(!projection.claims.has(key)&&pending.date>=get('dailyDate','')){
+  transact(key,{coins:pending.coins,hintCoupons:pending.hints});
+ }
+ if(projection.claims.has(key)){
+  // A failed wallet/date/streak write can leave only the operation committed.
+  projection=M.project(model);
+  put('kd64_coins',projection.wallet.coins);
+  put('kd64_hintCoupons',projection.wallet.hintCoupons);
+  applyClaim(key);
+  const op=model.ops[key];
+  if(get('dailyDate','')===pending.date&&op?.coins===pending.coins&&op?.hintCoupons===pending.hints){
+   put('kd64_dailyLastReward',pending);
+  }
+  schedule();
+ }
+ rawRemove.call(store,loginJournalKey(uid));
+}
+
 // Both account and guest paths use the same local calendar high-water mark.
-// Guest recovery happens before any wallet operation or account adoption.
+// Settle a prepared claim before computing the next day's streak or reward.
 function claimLoginReward(date,yesterday){
  try{
-  if(!model)recoverGuest();
+  if(model)recoverAccountLogin();else recoverGuest();
   const previous=get('dailyDate',''),receipt=get('dailyLastReward',null)?.date;
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<=previous||
     (/^\d{4}-\d{2}-\d{2}$/.test(receipt||'')&&date<=receipt))return false;
@@ -174,9 +198,9 @@ function claimLoginReward(date,yesterday){
   const day=(streakCount-1)%7+1;
   const reward={date,day,coins:[5,10,0,15,20,0,40][day-1],hints:[0,0,1,0,0,1,0][day-1]};
   if(model){
-   if(!transact('login:'+date,{coins:reward.coins,hintCoupons:reward.hints}))return false;
-   put('kd64_dailyLastReward',reward);
-   schedule();
+   put(loginJournalKey(uid),reward);
+   recoverAccountLogin();
+   if(!projection.claims.has('login:'+date))return false;
    return reward;
   }
   put('kdCloud_guestReward',{login:reward,streak:streakCount,

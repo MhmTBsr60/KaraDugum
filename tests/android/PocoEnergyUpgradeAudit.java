@@ -55,12 +55,16 @@ public final class PocoEnergyUpgradeAudit {
     private void expectVersion(String name) throws Exception {
         assertEquals(name,inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
     }
+    private boolean baseline650() { return Boolean.parseBoolean(argument("baseline650", "false")); }
+    private void expectPreviousStyle() throws Exception {
+        if (!baseline650()) assertEquals(argument("fromStyle","energy-reference-3-layered"),((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+    }
     @Test(timeout=100000) public void seedPreviousSignedTest() throws Exception {
-        assertEquals(argument("fromStyle","energy-reference-3-layered"),((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        expectPreviousStyle();
         expectVersion(argument("fromVersion","6.50-energy-finish-test2"));
         eval("(()=>{localStorage.setItem('kd64_level','6');localStorage.setItem('kd64_completed','{\\\"1\\\":3,\\\"2\\\":2,\\\"3\\\":3}');localStorage.setItem('kd64_best','{\\\"1\\\":4200,\\\"2\\\":3100,\\\"3\\\":5000}');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_shopTheme_ruby','true');localStorage.setItem('kd5_glow','1');localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd3_sound','0');return true})()");
         inst.runOnMainSync(()->web.reload());SystemClock.sleep(500);ready();SystemClock.sleep(2600);
-        eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_dailySeen',JSON.stringify(today));localStorage.setItem('kd64_dailyLastReward',JSON.stringify({date:today,day:3,coins:0,hints:1}));document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
+        eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');window.kdOnboarding?.leave();kdSelectLevel(6);kdLearning.leave();window.kdFeedback?.setHaptics(false);const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_dailySeen',JSON.stringify(today));localStorage.setItem('kd64_dailyLastReward',JSON.stringify({date:today,day:3,coins:0,hints:1}));document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
         if (!argument("candidateCode","").isEmpty()) {
             if (themePurchaseAudit()) {
@@ -78,7 +82,7 @@ public final class PocoEnergyUpgradeAudit {
         try(InputStream in=new FileInputStream(new File(output,"upgrade-expected.json"))){ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1)bytes.write(buffer,0,n);return bytes.toString("UTF-8");}
     }
     private void comparePersisted(String stage) throws Exception {
-        eval("(()=>{kdNavigate('game');kdOnboarding.leave();kdLearning.leave();kdSetPaused(true);return true})()");
+        eval("(()=>{kdNavigate('game');window.kdOnboarding?.leave();kdLearning.leave();kdSetPaused(true);return true})()");
         String expected=expectedSnapshot(),actual=snapshot();
         write("upgrade-"+stage+"-actual.json",actual);
         write("upgrade-"+stage+"-storage.json",(String)eval("JSON.stringify(Object.fromEntries(Object.keys(localStorage).sort().map(k=>[k,localStorage.getItem(k)])))"));
@@ -86,9 +90,13 @@ public final class PocoEnergyUpgradeAudit {
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
     }
     @Test(timeout=100000) public void verifyPreviousBeforeUpgrade() throws Exception {
-        assertEquals(argument("fromStyle","energy-reference-3-layered"),((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        expectPreviousStyle();
         expectVersion(argument("fromVersion","6.50-energy-finish-test2"));
         comparePersisted("old-restart");
+        if (baseline650()) {
+            eval("document.getElementById('undo').click()");
+            assertEquals("6.50 never persisted the undo stack",expectedSnapshot(),snapshot());
+        }
         write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
     @Test(timeout=100000) public void verifyAfterInPlaceInstall() throws Exception {
@@ -278,6 +286,64 @@ public final class PocoEnergyUpgradeAudit {
         write("exit-restart-report.json",new JSONObject().put("status","PASS")
             .put("activeBoardAndResourcesPreserved",true).put("undoRestoredAndExecuted",true)
             .put("phoneVerified",false).toString(2));
+    }
+
+    @Test public void verifyReceiptWriteFailure() throws Exception {
+        expectVersion(argument("toVersion", "6.51-reward-safety-test"));
+        class FailingStore implements RewardReceiptQueue.Store {
+            final java.util.Map<String, String> memory = new java.util.LinkedHashMap<>();
+            final java.util.Map<String, String> disk = new java.util.LinkedHashMap<>();
+            boolean writable;
+            @Override public boolean record(String purpose, String owner) {
+                memory.put(purpose, owner);
+                if (writable) disk.put(purpose, owner);
+                return writable;
+            }
+            @Override public java.util.Map<String, String> pending() { return new java.util.LinkedHashMap<>(memory); }
+            @Override public void acknowledge(String purpose) { memory.remove(purpose);disk.remove(purpose); }
+        }
+        FailingStore store = new FailingStore();
+        String purpose = "hint:interrupted-android";
+        RewardReceiptQueue queue = new RewardReceiptQueue(store);
+        queue.earn(purpose, "original-owner");
+        assertTrue(queue.flush());
+        assertTrue(store.disk.isEmpty());
+        assertTrue(queue.ready().isEmpty());
+        queue.acknowledge(purpose);
+        assertTrue(store.memory.containsKey(purpose));
+        store.writable = true;
+        queue.earn(purpose, "another-owner");
+        assertFalse(queue.flush());
+        assertEquals("original-owner", queue.ready().get(purpose));
+        store.memory.clear();store.memory.putAll(store.disk);
+        queue = new RewardReceiptQueue(store);
+        assertEquals("original-owner", queue.ready().get(purpose));
+        queue.acknowledge(purpose);
+        assertTrue(queue.ready().isEmpty());
+        write("receipt-native-android.json", new JSONObject().put("status", "PASS")
+            .put("failedCommitWasNotDelivered",true).put("ownerPinned",true).put("receiptReplayedAfterReload",true).toString(2));
+    }
+
+    @Test(timeout=100000) public void seedInterruptedLoginReward() throws Exception {
+        eval("(()=>{const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.removeItem('kd64_dailyLastReward');kdCloud.activate('android16-receipt-fixture');return true;})()");
+        // Recreate the footprint of a stop after the account operation but before
+        // the presentation receipt is written. Browser tests inject the actual write failure.
+        eval("(()=>{const date=new Date();date.setDate(date.getDate()+1);const next=date.toLocaleDateString('en-CA');const previous=new Date().toLocaleDateString('en-CA');const journal={date:next,day:4,coins:15,hints:0};localStorage.setItem('kdCloud_login_android16-receipt-fixture',JSON.stringify(journal));kdEconomy.transact('login:'+next,{coins:15});localStorage.removeItem('kd64_dailyLastReward');kdCloud.exportFull();return true;})()");
+        assertEquals(Boolean.TRUE, eval("!!localStorage.getItem('kdCloud_login_android16-receipt-fixture')"));
+        SystemClock.sleep(10000);
+    }
+
+    @Test(timeout=100000) public void verifyInterruptedLoginAfterRestart() throws Exception {
+        JSONObject after = (JSONObject)eval("(()=>{const d=new Date(),prev=d.toLocaleDateString('en-CA');d.setDate(d.getDate()+1);const date=d.toLocaleDateString('en-CA');const before=Number(localStorage.getItem('kd64_coins'));const duplicate=kdEconomy.claimLoginReward(date,prev);const recovered=JSON.parse(localStorage.getItem('kd64_dailyLastReward'));return {before,after:Number(localStorage.getItem('kd64_coins')),duplicate,recovered,date,pending:localStorage.getItem('kdCloud_login_android16-receipt-fixture')};})()");
+        assertEquals(after.getInt("before"),after.getInt("after"));
+        assertEquals(525,after.getInt("after"));
+        assertFalse(after.getBoolean("duplicate"));
+        assertTrue(after.isNull("pending"));
+        assertEquals(after.getString("date"),after.getJSONObject("recovered").getString("date"));
+        assertEquals(15,after.getJSONObject("recovered").getInt("coins"));
+        write("receipt-webview-android.json",new JSONObject().put("status","PASS")
+            .put("apiLevel",android.os.Build.VERSION.SDK_INT).put("interruptedAccountStateRecoveredAfterProcessStop",true)
+            .put("duplicateCredit",false).toString(2));
     }
 
 }
