@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "Real same-state game screenshots: Canvas on vs hidden. White channel width and outward elbow-ring pixels are measured; not a phone performance test.",
+  "themes": [
+    {
+      "theme": "gold",
+      "visibleWhitePixels": 3029,
+      "broadWhiteInnerChannelFraction": 0.839,
+      "outwardBendRingPixels": 790,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    },
+    {
+      "theme": "ice",
+      "visibleWhitePixels": 5859,
+      "broadWhiteInnerChannelFraction": 0.839,
+      "outwardBendRingPixels": 1363,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    },
+    {
+      "theme": "fire",
+      "visibleWhitePixels": 3786,
+      "broadWhiteInnerChannelFraction": 0.839,
+      "outwardBendRingPixels": 1190,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    },
+    {
+      "theme": "shadow",
+      "visibleWhitePixels": 5579,
+      "broadWhiteInnerChannelFraction": 0.839,
+      "outwardBendRingPixels": 1242,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    },
+    {
+      "theme": "emerald",
+      "visibleWhitePixels": 7614,
+      "broadWhiteInnerChannelFraction": 0.857,
+      "outwardBendRingPixels": 709,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    },
+    {
+      "theme": "ruby",
+      "visibleWhitePixels": 6865,
+      "broadWhiteInnerChannelFraction": 0.857,
+      "outwardBendRingPixels": 913,
+      "outsideAllowedHaloFraction": 0.0,
+      "whiteOutsideInnerChannelFraction": 0.0
+    }
+  ],
+  "phoneVerified": false
+}

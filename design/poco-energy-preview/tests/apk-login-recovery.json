@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "payout": "hintCoupon",
+      "offline": true,
+      "pendingBeforeRestart": true,
+      "restartSettledOnce": true,
+      "clockRollback": true,
+      "historicalPopupBlocked": true
+    },
+    {
+      "payout": "crystals",
+      "offline": true,
+      "pendingBeforeRestart": true,
+      "restartSettledOnce": true,
+      "clockRollback": true,
+      "historicalPopupBlocked": true
+    },
+    {
+      "payout": "accountLoginOperation",
+      "cloudReplay": 3,
+      "restart": true,
+      "oneFreshPopup": true
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+Preparing worktree (detached HEAD f18a62f)
+{
+  "status": "PASS",
+  "payouts": 7,
+  "layouts": 300,
+  "locales": 25,
+  "clock": [
+    {
+      "date": "2026-11-19",
+      "coins": 500,
+      "hints": 8,
+      "last": "2026-11-19"
+    },
+    {
+      "date": "2026-11-20",
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20"
+    },
+    {
+      "date": "2026-11-19",
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20"
+    },
+    {
+      "date": "2026-11-20",
+      "coins": 515,
+      "hints": 8,
+      "last": "2026-11-20"
+    },
+    {
+      "date": "2026-11-21",
+      "coins": 535,
+      "hints": 8,
+      "last": "2026-11-21"
+    }
+  ],
+  "phoneVerified": false,
+  "apkAssetsTested": false
+}

@@ -1,0 +1,3 @@
+PASS: full-cloud browser integration across 5 isolated devices/4 accounts, migration, inventory/XP/coupons, offline purchases/duplicate claims, actual win/double/ad receipts, records, crash recovery, delayed old-account payout and throttled gameplay uploads
+PASS: restored Android/WebView backup uses a fresh native actor; old history, concurrent counters, daily attempts, legacy journal migration and immediate-reload recovery survive
+PASS: offline gains upload on reconnect; no guest binding, duplicate credit or polling; hidden/bursty events, Google account changes and older bridge fallback
