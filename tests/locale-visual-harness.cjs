@@ -7,7 +7,7 @@ const themes = ['gold', 'ice', 'fire', 'shadow', 'emerald', 'ruby'];
 const rtl = ['ar', 'ur', 'fa'];
 const clockStart = new Date('2026-11-19T12:00:00Z');
 
-async function openGame(page, url, {deviceLocale, seed = true, native = false} = {}) {
+async function openGame(page, url, {deviceLocale, seed = true} = {}) {
   if (deviceLocale || seed) {
     await page.addInitScript(({deviceLocale, seed}) => {
       if (deviceLocale) {
@@ -27,10 +27,10 @@ async function openGame(page, url, {deviceLocale, seed = true, native = false} =
       for (const [key, value] of Object.entries(fixture)) localStorage.setItem(key, value);
     }, {deviceLocale, seed});
   }
-  await page.clock.install({time: clockStart});
+  // Pause before navigating so slow WebView initialization can't outrun the fixture clock.
+  await page.clock.install({time: new Date(clockStart.getTime() - 60_000)});
+  await page.clock.pauseAt(clockStart);
   await page.goto(url);
-  const now = await page.evaluate(() => Date.now());
-  await page.clock.pauseAt(new Date(now + (native ? 5000 : 1000)));
   await page.clock.runFor(2600);
 }
 
@@ -190,6 +190,35 @@ async function menus(page) {
   return {art: result, shopText};
 }
 
+async function motion(page) {
+  const sample = () => page.evaluate(() => {
+    const state = kdPipeFlow.state();
+    const canvas = document.querySelector('#kdPipeFlowCanvas');
+    const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+    let hash = 2166136261, brightPixels = 0;
+    for (let i = 0; i < pixels.length; i += 4) {
+      const [red, green, blue, alpha] = [pixels[i], pixels[i+1], pixels[i+2], pixels[i+3]];
+      hash = Math.imul(hash ^ (red << 24 | green << 16 | blue << 8 | alpha), 16777619);
+      if (red > 230 && green > 190 && alpha >= 96) brightPixels++;
+    }
+    return {hash, brightPixels, fronts: state.effects.fronts, wavePaths: state.effects.layers.wave};
+  });
+  const move = await H.nextMove(page);
+  assert(move.score > move.base, 'Fixture must create a verified new connection');
+  await H.rotate(page, move.i);
+  await page.clock.runFor(350);
+  const first = await sample();
+  await page.clock.runFor(550);
+  const middle = await sample();
+  assert(first.wavePaths > 0 && middle.wavePaths > 0 && middle.brightPixels > 0);
+  assert.notEqual(first.hash, middle.hash, 'Rendered Canvas pixels must advance');
+  assert(middle.fronts.some(current => first.fronts.some(previous =>
+    current.id === previous.id && current.progress > previous.progress)));
+  await page.clock.runFor(1800);
+  assert.equal((await sample()).wavePaths, 0);
+  return {newConnections: move.score - move.base, moved: true, settled: true};
+}
+
 async function checkReload(page, code, before, artworkBefore) {
   await page.reload();
   await page.clock.runFor(2700);
@@ -200,4 +229,4 @@ async function checkReload(page, code, before, artworkBefore) {
   assert.deepEqual(await boardAppearance(page), artworkBefore, code + ': reload changed artwork');
 }
 
-module.exports = {themes, rtl, openGame, resume, prime, choose, savedGame, boardAppearance, treasure, menus, checkReload};
+module.exports = {themes, rtl, openGame, resume, prime, choose, savedGame, boardAppearance, treasure, menus, motion, checkReload};

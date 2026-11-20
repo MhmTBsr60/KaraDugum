@@ -30,7 +30,7 @@ async function main() {
     const webview = await device.webView({pkg: 'org.chromium.webview_shell'});
     const page = await webview.page();
     page.on('pageerror', error => report.errors.push(String(error)));
-    await L.openGame(page, url, {seed: !reopening, native: true});
+    await L.openGame(page, url, {seed: !reopening});
     report.userAgent = await page.evaluate(() => navigator.userAgent);
     assert.match(report.userAgent, /Android.*wv/i);
     report.viewport = await page.evaluate(() => ({width: innerWidth, height: innerHeight, dpr: devicePixelRatio}));

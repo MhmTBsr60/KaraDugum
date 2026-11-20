@@ -17,7 +17,7 @@ fs.mkdirSync(out, {recursive: true});
 
 async function main() {
   const report = {viewport: size, level: 6, fixedThemeForScreenshots: 'gold', localized: [],
-    checks: [], reopen: [], fallback: [], panels: [], errors: [], status: 'RUNNING'};
+    checks: [], reopen: [], fallback: [], panels: [], motion: [], errors: [], status: 'RUNNING'};
   const browser = await chromium.launch({executablePath: process.env.CHROMIUM_PATH, args: ['--no-sandbox']});
   const newPage = async (locale) => {
     const page = await browser.newPage({viewport: size, locale});
@@ -100,7 +100,14 @@ async function main() {
           report.fallback.push({device: code, gameLanguage: 'en'});
         }
       }
-      if (codes.includes(code)) report.panels.find(item => item.code === code).scenes.push('treasure');
+      if (codes.includes(code)) {
+        report.panels.find(item => item.code === code).scenes.push('treasure');
+        if (code !== 'en') await L.prime(sample);
+        // Change from another UI language before the in-game animation check.
+        await L.choose(sample, code === 'tr' ? 'en' : 'tr');
+        await L.choose(sample, code);
+      }
+      report.motion.push({code, gameLanguage: expected, ...await L.motion(sample)});
       await sample.close();
     }
     assert.deepEqual(report.errors, []);

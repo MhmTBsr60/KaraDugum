@@ -32,10 +32,12 @@ jobs:
             adb shell pm path org.chromium.webview_shell
             adb shell wm density 320
             adb reverse tcp:8765 tcp:8765
-            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/localization.js -n org.chromium.webview_shell/.WebViewBrowserActivity
+            adb shell am start -a android.intent.action.VIEW -d about:blank -n org.chromium.webview_shell/.WebViewBrowserActivity
+            sleep 3
             timeout 300s node tests/locale-visual-webview.cjs
             adb shell am force-stop org.chromium.webview_shell
-            adb shell am start -a android.intent.action.VIEW -d http://127.0.0.1:8765/localization.js -n org.chromium.webview_shell/.WebViewBrowserActivity
+            adb shell am start -a android.intent.action.VIEW -d about:blank -n org.chromium.webview_shell/.WebViewBrowserActivity
+            sleep 3
             timeout 120s node tests/locale-visual-webview.cjs --reopen
       - uses: actions/upload-artifact@v4
         if: always()
