@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "versionCode": 114,
+  "locales": [
+    "en",
+    "ar",
+    "ja",
+    "tr"
+  ],
+  "dictionaryKeys": 597,
+  "savedThemeEntitlements": 6,
+  "boardDirectionPreserved": true,
+  "noPageReload": true,
+  "phoneVerified": false
+}

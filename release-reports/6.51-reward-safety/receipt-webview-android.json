@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "apiLevel": 36,
+  "interruptedAccountStateRecoveredAfterProcessStop": true,
+  "duplicateCredit": false
+}
