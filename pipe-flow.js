@@ -6,7 +6,8 @@
  const ctx=canvas.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)');if(!ctx)return;
  const palettes={gold:['#ffac24','#ffe09c'],ice:['#b9e4ff','#f3fcff'],fire:['#ffc568','#fff1c0'],shadow:['#d1a5ff','#f7e9ff'],emerald:['#78efb6','#e0ffe8'],ruby:['#ff9e71','#fff0ce']};
  const whites={gold:'#fffef5',ice:'#ffffff',fire:'#fffdf5',shadow:'#fffcff',emerald:'#fafffd',ruby:'#fffdf8'},NORMAL_MS=2200,WIN_MS=2200,TRAVEL_MS=1500;
- const low=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4)||matchMedia('(update: slow)').matches;
+ const slowDisplay=matchMedia('(update: slow)');
+ const low=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4);
  let values=[],net={edges:[],ports:[],ranks:[],maxRank:0},key='',theme='gold',rect=null,boxes=[],segments=[],frame=0,lastFrame=0,wave=null,lastRun='',revision=0,fading=[];
  const haloSprites=new Map(), channelTextures=new Map(), svgArms=new Map();
  const steady=document.createElement('canvas'),steadyContext=steady.getContext('2d');
@@ -23,7 +24,8 @@
  let effects=emptyEffects(),bursts=[],burstId=0,lastMoves=0,lastUndos=0;
  let stats={frames:0,paintMs:[],updates:0,geometryReads:0};const joined=new Map();
  const enabled=()=>!document.body.classList.contains('kdNoGlow');
- const staticOnly=()=>reduce.matches||low||document.documentElement.hasAttribute('data-kd-gold-low-motion');
+ // Capability estimates choose a cheaper animation. Only reduced motion or a genuinely slow display requests still light.
+ const staticOnly=()=>reduce.matches||slowDisplay.matches;
  const blocked=()=>game.hidden||document.hidden||!!window.kdOnboarding?.isOpen()||!!window.kdLearning?.isOpen()||!!window.kdStorage?.isOpen?.()||!!window.kdAdPrivacyBusy||!!document.querySelector('.kdRuleHelpOverlay,.kdDailyOverlay');
  const stop=()=>{effects=emptyEffects();bursts=[];wave=null;fading=[];cancelAnimationFrame(frame);frame=0;canvas.remove();if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');};
  function geometry(){const b=board.getBoundingClientRect();if(!b.width||!b.height)return false;rect={x:b.left,y:b.top,width:b.width,height:b.height};pixelScale=Math.min(1.5,devicePixelRatio||1);const scale=pixelScale,w=Math.ceil(b.width*scale),h=Math.ceil(b.height*scale);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}Object.assign(canvas.style,{left:b.left+'px',top:b.top+'px',width:b.width+'px',height:b.height+'px'});ctx.setTransform(scale,0,0,scale,0,0);
@@ -105,7 +107,7 @@
    const s={...source,points,lengths,startCell:backwards?source.endCell:source.startCell,endCell:backwards?source.startCell:source.endCell,junctionAt:backwards?1-source.junctionAt:source.junctionAt};
    const offset=Math.min(dist[source.a],dist[source.b]);entries.push({s,offset});distance=Math.max(distance,offset+s.length);
    const [color,core]=palettes[theme]||palettes.gold;
-   s.texture=source.texture??(source.texture=lumenTexture(source,color,core));
+   if(!low)s.texture=source.texture??(source.texture=lumenTexture(source,color,core));
    for(const [cell,at]of [[s.startCell,0],[s.endCell,1]]){
     if(![3,6,12,9].includes(values[cell])||net.ports[cell]!==values[cell])continue;
     const arrival=offset+at*s.length,old=bends.get(cell);
@@ -164,10 +166,10 @@
    // The narrow white core is inside a continuous saturated gold shoulder.
    // Many subpixel steps are baked here, outside the animation loop.
    for(let step=0;step<18;step++){
-    const t=step/17,hot=t<.42?mix(edge,shoulder,t/.42):mix(shoulder,center,Math.min(1,(t-.42)/.40));
+    const t=step/17,hot=t<.42?mix(edge,shoulder,t/.42):mix(shoulder,center,Math.min(1,(t-.42)/.24));
     painter.strokeStyle='rgb('+hot.join(',')+')';
     painter.globalAlpha=Math.min(1,.36+t*2.2);
-    painter.lineWidth=width*(1-t*.87);
+    painter.lineWidth=width*(1-t*.56);
     painter.stroke();
    }
    if(channelTextures.size>=64)channelTextures.delete(channelTextures.keys().next().value);
@@ -178,6 +180,16 @@
  function drawChannel(s,points,head,strength){
   if(!showLayer('channel')||points.length<2)return;
   const width=channelWidth()*s.width;
+  if(low){
+   // No baked textures, gradient allocation or reflection buffers on the lightweight path.
+   const [edge,core]=palettes[theme]||palettes.gold;
+   ctx.save();ctx.lineCap='butt';
+   stroke(points,edge,width*.96,strength);
+   stroke(points,core,width*.75,strength);
+   stroke(points,whites[theme]||whites.gold,width*.58,Math.min(1,strength+.22));
+   ctx.restore();effects.layers.channel++;
+   return;
+  }
   const texture=s.texture;
   if(!texture)return;
   ctx.save();
@@ -193,7 +205,7 @@
  // The moving crest illuminates nearby stone. Cache its receiving surface
  // by layout: inset tiles keep their grid and every metal silhouette is cut out.
  function rebuildStoneStencil(){
-  if(!stencilContext||!stoneContext||staticOnly())return;
+  if(!stencilContext||!stoneContext||staticOnly()||low)return;
   for(const surface of [stoneStencil,stoneLight]){
    const w=Math.ceil(rect.width*stoneScale),h=Math.ceil(rect.height*stoneScale);
    if(surface.width!==w||surface.height!==h){surface.width=w;surface.height=h;}
@@ -243,7 +255,7 @@
   return surface;
  }
  function drawStoneReflections(profiles,color){
-  if(!stoneContext||!stencilContext||!showLayer('wave')||!profiles.size)return;
+  if(low||!stoneContext||!stencilContext||!showLayer('wave')||!profiles.size)return;
   const colorOnStone=theme==='gold'||theme==='fire'?'#ffa338':color;
   const brush=stoneBrush(colorOnStone);
   if(!brush)return;
@@ -292,7 +304,7 @@
   const travel=58*s.width/s.length;
   const from=Math.max(0,frontDistance-travel),to=Math.min(1,frontDistance);
   if(to<=from)return [];
-  const count=10,points=Array.from({length:count+1},(_,i)=>dot(s,from+(to-from)*i/count));
+  const count=low?5:10,points=Array.from({length:count+1},(_,i)=>dot(s,from+(to-from)*i/count));
   const white=whites[theme]||whites.gold;
   if(!showLayer('wave'))return points;
   const width=channelWidth()*s.width;
@@ -301,13 +313,20 @@
    const p=Math.max(0,Math.min(1,t));
    return p<.76?(p/.76)**.72:((1-p)/.24)**.45;
   };
+  if(low){
+   ctx.save();ctx.globalAlpha=1;
+   ctx.fillStyle=white;
+   ctx.fill(buildRibbon(points,t=>width*.48*envelope(progress(t))));
+   ctx.restore();effects.layers.wave++;
+   return points;
+  }
   const gradient=ctx.createLinearGradient(...points[0],...points.at(-1));
   for(let band=0;band<=8;band++){
    const t=band/8,phase=progress(t);
    const tone=phase<.5?color:phase<.74?core:white;
-   gradient.addColorStop(t,rgba(tone,envelope(phase)*.97));
+   gradient.addColorStop(t,rgba(tone,Math.min(1,envelope(phase)*1.22)));
   }
-  ctx.save();ctx.globalAlpha=1;ctx.globalCompositeOperation='screen';
+  ctx.save();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   ctx.fillStyle=gradient;
   ctx.fill(buildRibbon(points,t=>width*.48*envelope(progress(t))));
   ctx.restore();
@@ -331,7 +350,7 @@
   haloSprites.set(color,brush);return brush;
  }
  function drawRing({cell,id,center,width,phase},color){
-  const dense=values.length>=49;
+  const dense=low||values.length>=49;
   if(phase<=0||phase>=1||effects.rings.length>=(dense?8:16))return;
   const brush=ringBrush(color);
   if(!brush)return;
@@ -364,8 +383,10 @@
   steadyContext.lineJoin='round';steadyContext.lineCap='butt';
   const width=channelWidth();
   for(const s of segments){
-   stroke(s.points,color,width*.96*s.width,.25,steadyContext);
-   stroke(s.points,core,width*.59*s.width,.23,steadyContext);
+      const strong=low||staticOnly();
+   stroke(s.points,color,width*.96*s.width,strong?.62:.36,steadyContext);
+   stroke(s.points,core,width*.61*s.width,strong?.74:.36,steadyContext);
+   if(strong)stroke(s.points,whites[theme]||whites.gold,width*.34*s.width,.55,steadyContext);
   }
  }
  function drawSettled(now,color,flat){
@@ -427,19 +448,24 @@
   stats.frames++;stats.paintMs.push(performance.now()-start);if(stats.paintMs.length>240)stats.paintMs.shift();if(moving)schedule();
  }
 
- function schedule(){if(frame||blocked()||!enabled())return;const interval=net.ports.length>=49?50:33;frame=requestAnimationFrame(now=>{if(now-lastFrame<interval){frame=0;schedule();return;}lastFrame=now;render(now);});}
+ function schedule(){if(frame||blocked()||!enabled())return;const interval=low?68:net.ports.length>=49?50:33;frame=requestAnimationFrame(now=>{if(now-lastFrame<interval){frame=0;schedule();return;}lastFrame=now;render(now);});}
  function update(host,masks){if(host!==board)return;const learning=window.kdLessonPreview?.(),state=window.kdGetLearningState?.();if(!learning||!state)return;const oldValues=values.slice(),oldSegments=segments.slice();values=Array.from(masks||learning.before);const nextKey=[state.level,state.daily?.date||'',window.kdExtra?.layer||0,values.length].join('|'),now=performance.now(),changed=nextKey!==key||state.moves===0&&lastMoves>0&&(state.undos||0)<=lastUndos;lastMoves=state.moves;lastUndos=state.undos||0;
   if(changed){key=nextKey;joined.clear();wave=null;lastRun='';fading=[];bursts=[];}
-  const next=kdConnectionModel.graph(values,learning.n,learning.flags.fog);if(!changed&&!staticOnly())for(const old of oldSegments)if(!next.edges.some(e=>e.id===old.id))for(const [cell,bit] of [[old.a,old.bit],[old.b,old.opp]])if(values[cell]===oldValues[cell]&&!learning.flags.fog[cell]&&boxes[cell])fading.push({points:line(cell,arm(values[cell],bit)),width:old.width,start:now});const newIds=changed?[]:next.edges.filter(e=>!joined.has(e.id)).map(e=>e.id);if(newIds.length&&!staticOnly()&&enabled()){bursts.push({id:++burstId,start:now,seedIds:newIds});bursts=bursts.slice(-3);}for(const e of next.edges)if(!joined.has(e.id))joined.set(e.id,changed?-1e9:now);for(const id of joined.keys())if(!next.edges.some(e=>e.id===id))joined.delete(id);net=next;theme=document.documentElement.dataset.kdTheme||'gold';revision++;stats.updates++;
+  const next=kdConnectionModel.graph(values,learning.n,learning.flags.fog);if(!changed&&!staticOnly())for(const old of oldSegments)if(!next.edges.some(e=>e.id===old.id))for(const [cell,bit] of [[old.a,old.bit],[old.b,old.opp]])if(values[cell]===oldValues[cell]&&!learning.flags.fog[cell]&&boxes[cell])fading.push({points:line(cell,arm(values[cell],bit)),width:old.width,start:now});const newIds=changed?[]:next.edges.filter(e=>!joined.has(e.id)).map(e=>e.id);if(newIds.length&&!staticOnly()&&enabled()){bursts.push({id:++burstId,start:null,seedIds:newIds});bursts=bursts.slice(-3);}for(const e of next.edges)if(!joined.has(e.id))joined.set(e.id,changed?-1e9:now);for(const id of joined.keys())if(!next.edges.some(e=>e.id===id))joined.delete(id);net=next;theme=document.documentElement.dataset.kdTheme||'gold';revision++;stats.updates++;
   if(!enabled()||blocked()){stop();return;}
   // Completion is reported by the existing engine/reward flow, not inferred from lit ports.
-  if(!state.locked&&lastRun){lastRun='';wave=null;if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');}const run=state.locked&&window.kdLastWin?.id;if(run&&run!==lastRun){lastRun=run;const duration=staticOnly()?0:WIN_MS;wave={start:now,duration};document.body.classList.add('kdFlowCelebrating');}
-  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}if(!geometry())return;refreshSegments();rebuildStoneStencil();rebuildSettled(...(palettes[theme]||palettes.gold));for(const b of bursts)b.plan=planEnergy(b.seedIds);if(wave)wave.plan=planEnergy([],true);if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
+  if(!state.locked&&lastRun){lastRun='';wave=null;if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');}const run=state.locked&&window.kdLastWin?.id;if(run&&run!==lastRun){lastRun=run;const duration=staticOnly()?0:WIN_MS;wave={start:null,duration};document.body.classList.add('kdFlowCelebrating');}
+  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}if(!geometry())return;refreshSegments();rebuildStoneStencil();rebuildSettled(...(palettes[theme]||palettes.gold));
+   for(const event of wave?[wave]:bursts){
+    event.plan=event===wave?planEnergy([],true):planEnergy(event.seedIds);
+    if(event.start===null)event.start=performance.now();
+   }
+   time=Math.max(time,performance.now());if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
  }
  // A broken link never emits new energy. Its unchanged neighbour's real pipe fades for
  // 240 ms; rotated-away arms vanish immediately, so no stale line crosses the stone.
  function sync(){if(!enabled()||blocked()){stop();return;}update(board,values.length?values:undefined);}
- window.kdPipeFlow={afterRender:update,state:()=>({enabled:enabled(),static:staticOnly(),theme,revision,key,edges:net.edges.map(e=>({...e})),ports:net.ports.slice(),ranks:net.ranks.slice(),wave:wave?{start:wave.start,duration:wave.duration}:null,fading:fading.length,canvas:canvas.isConnected,rect:rect?{...rect}:null,segments:segments.map(s=>({id:s.id,points:s.points.map(p=>p.slice())})),previewLayer,stats:{...stats,textureCount:channelTextures.size,paintMs:stats.paintMs.slice(),haloBrushes:haloSprites.size,haloBrushBytes:haloSprites.size*96*96*4},renderer:'canvas2d-four-passes',style:'energy-reference-3-layered',timings:{joinMs:NORMAL_MS,travelMs:TRAVEL_MS,completionMaxMs:WIN_MS,fadeMs:240},effects:JSON.parse(JSON.stringify(effects)),phoneVerified:false})};
+ window.kdPipeFlow={afterRender:update,state:()=>({enabled:enabled(),static:staticOnly(),profile:staticOnly()?'still':low?'lightweight':'full',theme,revision,key,edges:net.edges.map(e=>({...e})),ports:net.ports.slice(),ranks:net.ranks.slice(),wave:wave?{start:wave.start,duration:wave.duration}:null,fading:fading.length,canvas:canvas.isConnected,rect:rect?{...rect}:null,segments:segments.map(s=>({id:s.id,points:s.points.map(p=>p.slice())})),previewLayer,stats:{...stats,textureCount:channelTextures.size,paintMs:stats.paintMs.slice(),haloBrushes:haloSprites.size,haloBrushBytes:haloSprites.size*96*96*4},renderer:'canvas2d-four-passes',style:'energy-reference-3-poco',timings:{joinMs:NORMAL_MS,travelMs:TRAVEL_MS,completionMaxMs:WIN_MS,fadeMs:240},effects:JSON.parse(JSON.stringify(effects)),phoneVerified:false})};
  if(previewAllowed)window.kdPipeFlow.showLayer=name=>{
   if(name!=='all'&&!layerNames.includes(name))throw new RangeError('Unknown energy layer');
   previewLayer=name;
@@ -447,5 +473,5 @@
  };
  try{window.KaraNative?.setTapLightEnabled?.(false);window.KaraNative?.cancelTapLight?.(0);}catch(_){}
  new MutationObserver(sync).observe(game,{attributes:true,attributeFilter:['hidden']});new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});new MutationObserver(()=>{update(board);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-kd-theme']});
- new MutationObserver(sync).observe(document.body,{childList:true});reduce.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);window.addEventListener('resize',sync);window.addEventListener('scroll',sync,{passive:true});const resize=new ResizeObserver(sync);for(const el of [board,game.querySelector('main'),game.querySelector('.instructions'),game.querySelector('.kdTop')])if(el)resize.observe(el);sync();
+ new MutationObserver(sync).observe(document.body,{childList:true});reduce.addEventListener('change',sync);slowDisplay.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);window.addEventListener('resize',sync);window.addEventListener('scroll',sync,{passive:true});const resize=new ResizeObserver(sync);for(const el of [board,game.querySelector('main'),game.querySelector('.instructions'),game.querySelector('.kdTop')])if(el)resize.observe(el);sync();
 })();

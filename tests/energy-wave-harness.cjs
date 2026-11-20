@@ -1,12 +1,12 @@
 'use strict';
 const path=require('path');
 const root=path.resolve(__dirname,'..');
-async function initialize(p,{base='file://'+root+'/',low=false,reduce=false,seed=true,pauseLead=1000,query=''}={}){
+async function initialize(p,{base='file://'+root+'/',low=false,reduce=false,seed=true,pauseLead=1000,query='',deviceOverride=true}={}){
  await p.emulateMedia({reducedMotion:reduce?'reduce':'no-preference'});
- await p.addInitScript(({low,seed})=>{
-  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>low?2:8});Object.defineProperty(navigator,'deviceMemory',{get:()=>low?2:8});
+ await p.addInitScript(({low,seed,deviceOverride})=>{
+  if(deviceOverride){Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>low?2:8});Object.defineProperty(navigator,'deviceMemory',{get:()=>low?2:8});}
   if(seed){localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd64_level','300');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd3_sound','0');for(const t of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+t,'true');}
- },{low,seed});
+ },{low,seed,deviceOverride});
  await p.clock.install({time:new Date('2026-11-19T12:00:00Z')});await p.goto(base+'index.html'+query);await p.clock.pauseAt(new Date(await p.evaluate(()=>Date.now())+pauseLead));await p.clock.runFor(2600);
  await select(p,1);await p.clock.runFor(1800);
 }

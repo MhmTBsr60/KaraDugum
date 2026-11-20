@@ -65,7 +65,25 @@ let recoveringGuest=false;
 function recoverGuest(){
  const j=read('kdCloud_guestReward',null);if(!j||recoveringGuest)return;
  recoveringGuest=true;
- try{put(j.key,Math.max(M.num(read(j.key,0)),j.target));if(j.shopDailyDate){const last=get('shopDailyDate','');put('kd64_shopDailyDate',j.shopDailyDate>last?j.shopDailyDate:last);}else put('kd64_guestAd_'+j.token,true);rawRemove.call(store,'kdCloud_guestReward');}
+ try{
+  if(j.login){
+   const last=get('dailyDate','');
+   // A newer committed date owns its streak and last reward. At the same
+   // date replaying absolute targets is safe after interruption.
+   if(j.login.date>=last){
+    put('kd64_coins',Math.max(M.num(get('coins',0)),j.coinsTarget));
+    put('kd64_hintCoupons',Math.max(M.num(get('hintCoupons',0)),j.hintsTarget));
+    put('kd64_dailyLastReward',j.login);
+    put('kd64_streak',j.streak);
+    put('kd64_dailyDate',j.login.date);
+   }
+  }else{
+   put(j.key,Math.max(M.num(read(j.key,0)),j.target));
+   if(j.shopDailyDate){const last=get('shopDailyDate','');put('kd64_shopDailyDate',j.shopDailyDate>last?j.shopDailyDate:last);}
+   else put('kd64_guestAd_'+j.token,true);
+  }
+  rawRemove.call(store,'kdCloud_guestReward');
+ }
  finally{recoveringGuest=false;}
 }
 // Settle prepared guest credits before a later wallet read computes a purchase or reward.
@@ -87,6 +105,30 @@ function claimShopDaily(date=new Date().toLocaleDateString('en-CA')) {
   recoverGuest();return true;
  } catch(error) {console.warn('Daily shop reward awaiting durable storage',error);return false;}
 }
+// Both account and guest paths use the same local calendar high-water mark.
+// Guest recovery happens before any wallet operation or account adoption.
+function claimLoginReward(date,yesterday){
+ try{
+  if(!model)recoverGuest();
+  const previous=get('dailyDate',''),receipt=get('dailyLastReward',null)?.date;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<=previous||
+    (/^\d{4}-\d{2}-\d{2}$/.test(receipt||'')&&date<=receipt))return false;
+  const streakCount=previous===yesterday?M.num(get('streak',0))+1:1;
+  const day=(streakCount-1)%7+1;
+  const reward={date,day,coins:[5,10,0,15,20,0,40][day-1],hints:[0,0,1,0,0,1,0][day-1]};
+  if(model){
+   if(!transact('login:'+date,{coins:reward.coins,hintCoupons:reward.hints}))return false;
+   put('kd64_dailyLastReward',reward);
+   schedule();
+   return reward;
+  }
+  put('kdCloud_guestReward',{login:reward,streak:streakCount,
+   coinsTarget:M.num(get('coins',0))+reward.coins,
+   hintsTarget:M.num(get('hintCoupons',0))+reward.hints});
+  recoverGuest();
+  return reward;
+ }catch(error){console.warn('Login reward awaiting durable storage',error);return false;}
+}
 function guestReward(token,kind){recoverGuest();if(read('kd64_guestAd_'+token,false))return;const key=kind==='coins'?'kd64_coins':'kd64_hintCoupons',amount=kind==='coins'?15:1;put('kdCloud_guestReward',{key,target:M.num(read(key,0))+amount,token});recoverGuest();if(kind==='hint'){window.kdHintAdPending=false;const b=document.getElementById('hint');if(b&&!/\d+ ücretsiz/.test(b.textContent))b.textContent='◈ İPUCU ('+M.num(read(key,0))+' kupon)';}window.kdRefreshEconomy?.();}
 function activate(next){if(!uidOK(next))return;window.kdWeekly?.recover();window.kdDaily?.recover?.();recoverGuest();if(uid===next){window.kdStorage?.setOwner(next);return;}window.kdHintAdPending=false;const previous=uid;if(previous){window.kdNavigate?.('home');checkpoint();window.kdLastWin=null;document.getElementById('modal')?.classList.remove('show','kdWinModal');document.querySelectorAll('.kdDailyOverlay,.kdV9Overlay,#kdWheelOverlay').forEach(node=>node.remove());}window.kdStorage?.setOwner(next);const saved=read(accountKey(next),null),canAdopt=!read('kdCloud_guestOwner',null)&&!previous;if(!canAdopt){muted=true;try{for(let i=store.length-1;i>=0;i--){const k=store.key(i);if(managed(k))rawRemove.call(store,k);}if(saved?.local)for(const [k,v]of Object.entries(saved.local))if(managed(k))rawSet.call(store,k,v);}finally{muted=false;}}
 uid=next;put('kdCloud_activeAccount',uid);if(canAdopt){put('kdCloud_guestOwner',uid);put('kdCloud_migrationBackup',localArchive());const owners=read('kdCloud_rewardOwners',{});for(let i=0;i<store.length;i++){const k=store.key(i);if(k.startsWith('kd64_guestAd_')&&read(k,false))owners[k.slice('kd64_guestAd_'.length)]=uid;}put('kdCloud_rewardOwners',owners);}model=saved?.model?M.normalize(saved.model):initial();ready=!!saved?.ready&&!!model.root;lastSync=saved?.lastSync||0;recoverJournals();capture();projection=M.project(model);applyAll();window.kdWeekly?.adopt();window.kdMechanicQuests?.adopt();window.kdDaily?.recover?.();status=ready?'Kayıt cihazda; eşitleme bekleniyor.':'İlk bulut kaydı eşitleniyor…';checkpoint();window.kdReloadProgress?.();window.kdResetForAccount?.();renderStatus();}
@@ -103,9 +145,9 @@ if(event==='error'&&status.includes('eşitleniyor')){status='Eşitleme bekliyor;
 function dayStat(date,k){if(!model)return 0;let n=M.num((model.root||model.proposal)?.dailyBase?.[date]?.[k]);for(const c of Object.values(model.counters))n+=M.num(c.days?.[date]?.[k]);return n;}
 function requestAd(kind){if(!['coins','hint'].includes(kind))return false;const native=window.KaraNative;if(typeof native?.rewardedAccountRequest==='function'){native.rewardedAccountRequest(kind,id(),uid||'');return true;}const legacy=kind==='hint'?'rewardedHint':'rewardedAd';if(typeof native?.[legacy]!=='function')return false;native[legacy]();return true;}
 window.kdSafeUpload=points=>{const n=window.KaraNative;if(n?.uploadForAccount&&uid)n.uploadForAccount(uid,points);else if(!n?.uploadForAccount&&n?.upload)n.upload(points);};
-window.kdEconomy={device:()=>actor,dayStat,active:()=>!!model,owner:()=>uid,ready:()=>ready,transact,addStat,newId:prefix=>prefix+':'+id(),creditFor,requestAd,shopDailyAvailable,claimShopDaily};window.kdCloud={activate,receive,exportFull,bind,statusCard,canSync,requestSync:()=>reconnectNeeded?reconnect():window.kdCloudSync?.(),changed:schedule,project:()=>projection,model:()=>model};
+window.kdEconomy={device:()=>actor,dayStat,active:()=>!!model,owner:()=>uid,ready:()=>ready,transact,addStat,newId:prefix=>prefix+':'+id(),creditFor,requestAd,shopDailyAvailable,claimShopDaily,claimLoginReward};window.kdCloud={activate,receive,exportFull,bind,statusCard,canSync,requestSync:()=>reconnectNeeded?reconnect():window.kdCloudSync?.(),changed:schedule,project:()=>projection,model:()=>model};
 Storage.prototype.getItem=function(key){if(this===store)settleGuestWallet(String(key));return rawGet.call(this,key);};
 Storage.prototype.setItem=function(key,value){if(this===store)settleGuestWallet(String(key));const before=store.getItem(key);rawSet.call(this,key,value);if(this===store&&!muted&&model&&before!==String(value)){if(['kd64_activeGame','kd64_dailyActiveGame'].includes(key)){if(Date.now()-lastBoardSchedule>=30000){lastBoardSchedule=Date.now();schedule();}}else if(M.stateKeys.some(k=>key===stateRaw(k))||['kd64_completed','kd64_best','kd64_level'].includes(key))schedule();}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&model){window.kdSetPaused?.(true);checkpoint();if(window.kdSignedIn)window.kdCloudSync?.();}else if(reconnectNeeded)reconnect();});window.addEventListener('pagehide',()=>{if(model){window.kdSetPaused?.(true);checkpoint();}});
-recoverGuest();const prior=read('kdCloud_activeAccount',null);if(uidOK(prior)){const saved=read(accountKey(prior),null);if(saved?.model){uid=prior;window.kdStorage?.setOwner(prior);model=M.normalize(saved.model);ready=!!saved.ready&&!!model.root;lastSync=saved.lastSync||0;recoverJournals();capture();projection=M.project(model);applyAll();}}
+try{recoverGuest();}catch(error){console.warn('Guest reward will retry when storage is available',error);}const prior=read('kdCloud_activeAccount',null);if(uidOK(prior)){const saved=read(accountKey(prior),null);if(saved?.model){uid=prior;window.kdStorage?.setOwner(prior);model=M.normalize(saved.model);ready=!!saved.ready&&!!model.root;lastSync=saved.lastSync||0;recoverJournals();capture();projection=M.project(model);applyAll();}}
 })();
