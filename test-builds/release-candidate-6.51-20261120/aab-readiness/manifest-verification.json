@@ -1,0 +1,70 @@
+{
+  "aabBytes": 14791798,
+  "aabFilename": "app-release.aab",
+  "aabPath": "/home/runner/work/KaraDugum/KaraDugum/app/build/outputs/bundle/release/app-release.aab",
+  "aabSha256": "77e57fe24872f7920f283053906d50b57b75c9a8de418288088431020c078857",
+  "errors": [],
+  "expected": {
+    "adIdPermission": "com.google.android.gms.permission.AD_ID",
+    "adMobApplicationId": "ca-app-pub-6340528165840202~8704733869",
+    "minSdkVersion": 24,
+    "packageName": "com.orynexa.karadugum",
+    "targetSdkVersion": 36,
+    "versionCode": 111,
+    "versionName": "6.51"
+  },
+  "proofs": {
+    "bundle": {
+      "adIdPermission": {
+        "declarationCount": 1,
+        "directDeclarationCount": 1,
+        "name": "com.google.android.gms.permission.AD_ID",
+        "removalDirective": false,
+        "uncapped": true
+      },
+      "adMobApplicationId": "ca-app-pub-6340528165840202~8704733869",
+      "bytes": 12405,
+      "errors": [],
+      "filename": "bundle-manifest.xml",
+      "identity": {
+        "packageName": "com.orynexa.karadugum",
+        "versionCode": 111,
+        "versionName": "6.51"
+      },
+      "path": "/home/runner/work/KaraDugum/KaraDugum/build/reports/manifests/live/bundle-manifest.xml",
+      "sdk": {
+        "minSdkVersion": 24,
+        "targetSdkVersion": 36
+      },
+      "sha256": "d6515ddbcf51cc4fe62d86802f433e7e7c8b53a17b52809e3587ac184445c674",
+      "valid": true
+    },
+    "merged": {
+      "adIdPermission": {
+        "declarationCount": 1,
+        "directDeclarationCount": 1,
+        "name": "com.google.android.gms.permission.AD_ID",
+        "removalDirective": false,
+        "uncapped": true
+      },
+      "adMobApplicationId": "ca-app-pub-6340528165840202~8704733869",
+      "bytes": 13021,
+      "errors": [],
+      "filename": "merged-manifest.xml",
+      "identity": {
+        "packageName": "com.orynexa.karadugum",
+        "versionCode": 111,
+        "versionName": "6.51"
+      },
+      "path": "/home/runner/work/KaraDugum/KaraDugum/build/reports/manifests/live/merged-manifest.xml",
+      "sdk": {
+        "minSdkVersion": 24,
+        "targetSdkVersion": 36
+      },
+      "sha256": "03bed6e1c3953d216e44ffecbd4fa18866211936464d3b217df984bd5523d312",
+      "valid": true
+    }
+  },
+  "schemaVersion": 1,
+  "status": "passed"
+}
