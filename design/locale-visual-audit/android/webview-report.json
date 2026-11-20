@@ -1,0 +1,2779 @@
+{
+  "host": "Android 35 system WebView shell",
+  "phoneVerified": false,
+  "locales": [
+    {
+      "code": "tr",
+      "level": 6,
+      "theme": "gold",
+      "liveChange": true,
+      "reload": true
+    },
+    {
+      "code": "en",
+      "level": 6,
+      "theme": "gold",
+      "liveChange": true,
+      "reload": true
+    },
+    {
+      "code": "ar",
+      "level": 6,
+      "theme": "gold",
+      "liveChange": true,
+      "reload": true
+    },
+    {
+      "code": "ja",
+      "level": 6,
+      "theme": "gold",
+      "liveChange": true,
+      "reload": true
+    }
+  ],
+  "errors": [],
+  "status": "PASS",
+  "userAgent": "Mozilla/5.0 (Linux; Android 15; Android SDK built for x86_64 Build/AE3A.240806.019; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.219 Mobile Safari/537.36",
+  "viewport": {
+    "width": 360,
+    "height": 611,
+    "dpr": 2
+  },
+  "baseline": {
+    "level": 6,
+    "size": 4,
+    "optimum": 23,
+    "targets": {
+      "twoMoves": 31,
+      "threeMoves": 24,
+      "seconds": 79
+    },
+    "moves": 3,
+    "hints": 0,
+    "undos": 0,
+    "mode": -1,
+    "current": [
+      9,
+      4,
+      12,
+      8,
+      13,
+      14,
+      14,
+      3,
+      10,
+      7,
+      12,
+      1,
+      4,
+      2,
+      9,
+      4
+    ],
+    "save": {
+      "version": 2,
+      "daily": null,
+      "level": 6,
+      "solution": [
+        6,
+        8,
+        6,
+        8,
+        7,
+        14,
+        11,
+        12,
+        5,
+        7,
+        12,
+        1,
+        1,
+        1,
+        3,
+        8
+      ],
+      "tiles": [
+        9,
+        4,
+        12,
+        8,
+        13,
+        14,
+        14,
+        3,
+        10,
+        7,
+        12,
+        1,
+        4,
+        2,
+        9,
+        4
+      ],
+      "sealed": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "keys": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "fog": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "rotCount": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "targetDone": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "ice": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "moves": 3,
+      "hints": 3,
+      "usedHints": 0,
+      "undos": 0,
+      "extra": {
+        "portalPair": [],
+        "layer": 0,
+        "layerDone": false,
+        "otherSolution": [],
+        "otherTiles": [],
+        "otherInitial": [],
+        "switchOrder": [],
+        "switchProgress": 0,
+        "blockedIndex": -1,
+        "initialExtra": {
+          "portalPair": [],
+          "layer": 0,
+          "layerDone": false,
+          "otherSolution": [],
+          "otherTiles": [],
+          "otherInitial": [],
+          "switchOrder": [],
+          "switchProgress": 0,
+          "blockedIndex": -1
+        }
+      }
+    },
+    "storage": {
+      "level": "17",
+      "coins": "510",
+      "hintCoupons": "8",
+      "completed": "{\"1\":3,\"2\":2}",
+      "best": "{\"1\":4200,\"2\":3100}",
+      "xp": "92",
+      "dailyDate": "\"2026-11-19\"",
+      "dailySeen": "\"2026-11-19\"",
+      "dailyLastReward": "{\"date\":\"2026-11-19\",\"day\":3,\"coins\":0,\"hints\":1}",
+      "streak": "3",
+      "shopActiveTheme": null,
+      "shopTheme_gold": "true",
+      "shopTheme_ice": "true",
+      "shopTheme_fire": "true",
+      "shopTheme_shadow": "true",
+      "shopTheme_emerald": "true",
+      "shopTheme_ruby": "true"
+    }
+  },
+  "artwork": {
+    "physicalOrder": true,
+    "direction": "ltr",
+    "toolbar": [
+      "hint",
+      "undo",
+      "restart",
+      "new"
+    ],
+    "ruleToolbar": [
+      "",
+      "kdStarGoalButton"
+    ],
+    "theme": "gold",
+    "surfaces": [
+      [
+        "rgb(7, 8, 9)",
+        "linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.667) 22%, rgba(0, 0, 0, 0.733) 78%, rgba(0, 0, 0, 0.2)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-scenes.webp\")",
+        "rgb(247, 241, 233)",
+        "none",
+        "none"
+      ],
+      [
+        "rgb(5, 8, 11)",
+        "none",
+        "rgb(201, 158, 82)",
+        "rgb(11, 13, 14) 0px 0px 0px 3px, rgb(173, 138, 79) 0px 0px 0px 4px, rgba(0, 0, 0, 0.667) 0px 12px 24px 0px, rgba(201, 157, 32, 0.08) 0px 0px 20px 0px",
+        "none"
+      ]
+    ],
+    "pipes": [
+      {
+        "mask": "9",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "4",
+        "theme": "gold",
+        "axis": "x",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-shell-x\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-x\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "12",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "8",
+        "theme": "gold",
+        "axis": "y",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-y\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-y\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "13",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "14",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "14",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50H100M50 50V100M50 50H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "3",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 0 V25 Q50 50 75 50 H100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "10",
+        "theme": "gold",
+        "axis": "y",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M0 50H100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "url(\"#kd-metal-gold-shell-y\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-y\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M0 50H100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "7",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V0M50 50H100M50 50V100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "12",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 100 V75 Q50 50 25 50 H0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "1",
+        "theme": "gold",
+        "axis": "x",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "url(\"#kd-metal-gold-shell-x\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-x\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "4",
+        "theme": "gold",
+        "axis": "x",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-shell-x\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-x\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "2",
+        "theme": "gold",
+        "axis": "y",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50H100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "url(\"#kd-metal-gold-shell-y\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-y\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50H100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "9",
+        "theme": "gold",
+        "axis": "a",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "url(\"#kd-metal-gold-shell-a\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "url(\"#kd-metal-gold-lustre-a\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M0 50 H25 Q50 50 50 25 V0",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ]
+        ]
+      },
+      {
+        "mask": "4",
+        "theme": "gold",
+        "axis": "x",
+        "stone": [
+          "linear-gradient(145deg, rgba(44, 53, 60, 0.855), rgba(11, 16, 21, 0.93) 43%, rgba(2, 4, 6, 0.98)), url(\"http://127.0.0.1:8765/assets/kara-dugum-theme-stones.webp\")",
+          "rgb(8, 12, 16)",
+          "rgba(255, 240, 192, 0.31) 0px 1px 0px 0px inset, rgba(223, 188, 108, 0.13) 1px 0px 0px 0px inset, rgba(0, 0, 0, 0.867) 0px -2px 3px 0px inset",
+          "none",
+          "none"
+        ],
+        "geometry": [
+          [
+            "M50 50V100",
+            "none",
+            "rgba(0, 0, 0, 0.733)",
+            "calc(27px)",
+            "matrix(1, 0, 0, 1, 0, 3)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-shell-x\")",
+            "calc(23px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(118, 59, 16)",
+            "calc(17px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(223, 181, 109)",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 209, 107)",
+            "calc(10px)",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "url(\"#kd-metal-gold-lustre-x\")",
+            "13px",
+            "none",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "calc(7.02px)",
+            "matrix(1, 0, 0, 1, -1.7, -1.7)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.35px",
+            "matrix(1, 0, 0, 1, -3.4, -3.2)",
+            "none"
+          ],
+          [
+            "M50 50V100",
+            "none",
+            "rgb(255, 252, 228)",
+            "2px",
+            "matrix(1, 0, 0, 1, -1, -1)",
+            "none"
+          ],
+          [
+            "M-11.5 -3.7h23m-23 7.4h23",
+            "none",
+            "rgb(255, 241, 185)",
+            "0.75px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.5 -3v6m21 -6v6M-4 -2l4 4 4-4",
+            "none",
+            "rgb(255, 235, 179)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-10.9 1.55H10.9",
+            "none",
+            "rgb(118, 59, 16)",
+            "1px",
+            "none",
+            "none"
+          ],
+          [
+            "M-9.3 -1.3h1.3M8 -1.3h1.3",
+            "none",
+            "rgb(255, 241, 185)",
+            "1.25px",
+            "none",
+            "none"
+          ],
+          [
+            "M45 44q5-4 10 0",
+            "none",
+            "rgb(255, 244, 217)",
+            "2px",
+            "none",
+            "none"
+          ]
+        ]
+      }
+    ],
+    "energy": {
+      "enabled": true,
+      "profile": "lightweight",
+      "theme": "gold",
+      "ports": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        8,
+        0,
+        0,
+        3,
+        12,
+        0,
+        0,
+        2,
+        9,
+        0
+      ],
+      "edges": [
+        {
+          "id": "5:6",
+          "a": 5,
+          "b": 6,
+          "bit": 2,
+          "opp": 8
+        },
+        {
+          "id": "5:9",
+          "a": 5,
+          "b": 9,
+          "bit": 4,
+          "opp": 1
+        },
+        {
+          "id": "9:10",
+          "a": 9,
+          "b": 10,
+          "bit": 2,
+          "opp": 8
+        },
+        {
+          "id": "10:14",
+          "a": 10,
+          "b": 14,
+          "bit": 4,
+          "opp": 1
+        },
+        {
+          "id": "13:14",
+          "a": 13,
+          "b": 14,
+          "bit": 2,
+          "opp": 8
+        }
+      ],
+      "drawn": true
+    }
+  },
+  "processRestartPreserved": true
+}
