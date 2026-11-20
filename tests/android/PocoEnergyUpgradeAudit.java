@@ -20,13 +20,14 @@ public final class PocoEnergyUpgradeAudit {
     private final android.app.Instrumentation inst=InstrumentationRegistry.getInstrumentation();
     private ActivityScenario<MainActivity> scenario;
     private WebView web;
+    private MainActivity currentActivity;
     private File output;
     @Before public void start() throws Exception {
         Context context=inst.getTargetContext();
         assertTrue(new AudienceChoiceStore(context.getNoBackupFilesDir()).save("under13"));
         scenario=ActivityScenario.launch(MainActivity.class);
-        final MainActivity[] activity={null};scenario.onActivity(a->activity[0]=a);
-        Field f=MainActivity.class.getDeclaredField("view");f.setAccessible(true);web=(WebView)f.get(activity[0]);
+        scenario.onActivity(a->currentActivity=a);
+        Field f=MainActivity.class.getDeclaredField("view");f.setAccessible(true);web=(WebView)f.get(currentActivity);
         output=new File(context.getExternalFilesDir(null),"webview-audit");assertTrue(output.exists()||output.mkdirs());
         ready();SystemClock.sleep(2700);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();return true})()");
@@ -170,6 +171,112 @@ public final class PocoEnergyUpgradeAudit {
         verifyEmeraldOwnership();
         write("theme-purchase-restart.json",new JSONObject().put("status","PASS")
             .put("balance",350).put("emeraldOwned",true).toString(2));
+    }
+
+    private boolean waitForExitDialog(boolean expected, long timeout) throws Exception {
+        long until=SystemClock.uptimeMillis()+timeout;
+        do {
+            if (Boolean.valueOf(expected).equals(eval("!!document.querySelector('.kdExitDialog[open]')"))) return true;
+            SystemClock.sleep(75);
+        } while (SystemClock.uptimeMillis()<until);
+        return false;
+    }
+    private void pressAndroidBack() {
+        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+    }
+    private void screenshotExit(String file) throws Exception {
+        SystemClock.sleep(600);
+        android.graphics.Bitmap shot=inst.getUiAutomation().takeScreenshot();
+        assertNotNull(shot);
+        try (FileOutputStream stream = new FileOutputStream(new File(output,file))) {
+            assertTrue(shot.compress(android.graphics.Bitmap.CompressFormat.PNG,100,stream));
+        } finally {
+            shot.recycle();
+        }
+    }
+    @Test(timeout=100000) public void verifyExitViewport() throws Exception {
+        expectVersion(argument("toVersion","6.51-rc3-test"));
+        pressAndroidBack();
+        assertTrue(waitForExitDialog(true,5000));
+        JSONObject geometry=(JSONObject)eval("(()=>{const d=document.querySelector('.kdExitDialog'),r=d.getBoundingClientRect();return {width:innerWidth,height:innerHeight,visible:r.top>=0&&r.left>=0&&r.right<=innerWidth&&r.bottom<=innerHeight,targets:[...d.querySelectorAll('button')].every(e=>e.getBoundingClientRect().height>=44),scroll:d.scrollWidth>d.clientWidth+1}})()");
+        assertTrue(geometry.getBoolean("visible"));
+        assertTrue(geometry.getBoolean("targets"));
+        assertFalse(geometry.getBoolean("scroll"));
+        String name="exit-viewport-"+geometry.getInt("width");
+        geometry.put("status","PASS");
+        write(name+".json",geometry.toString(2));
+        screenshotExit(name+".png");
+        eval("document.querySelector('.kdExitClose').click()");
+        assertTrue(waitForExitDialog(false,5000));
+    }
+    @Test(timeout=100000) public void verifyCinematicExit() throws Exception {
+        expectVersion(argument("toVersion","6.51-rc3-test"));
+        eval("(()=>{kdNavigate('game');kdOnboarding.leave();kdLearning.leave();kdSetPaused(true);return true})()");
+        String before=(String)eval("JSON.stringify(kdLessonPreview().before)");
+        int moves=((JSONObject)eval("kdGetLearningState()")).getInt("moves");
+        eval("(()=>{document.querySelector('#board .tile:not(.good)').click();kdSetPaused(true);return true})()");
+        assertEquals(moves+1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        pressAndroidBack();
+        long until=SystemClock.uptimeMillis()+5000;
+        while (SystemClock.uptimeMillis()<until && !Boolean.TRUE.equals(eval("!!document.querySelector('.kdExactHome')"))) SystemClock.sleep(75);
+        assertEquals(Boolean.TRUE,eval("!!document.querySelector('.kdExactHome')"));
+        assertTrue(waitForExitDialog(false,2000));
+
+        pressAndroidBack();
+        assertTrue(waitForExitDialog(true,5000));
+        assertEquals("KARA DÜĞÜM",eval("document.getElementById('kdExitTitle').textContent"));
+        pressAndroidBack();
+        assertTrue(waitForExitDialog(false,5000));
+        pressAndroidBack();
+        assertTrue(waitForExitDialog(true,5000));
+        eval("document.querySelector('[data-exit-cancel]').click()");
+        assertTrue(waitForExitDialog(false,5000));
+        pressAndroidBack();
+        assertTrue(waitForExitDialog(true,5000));
+        eval("document.querySelector('.kdExitClose').click()");
+        assertTrue(waitForExitDialog(false,5000));
+
+        // Start at the left display edge with Android gesture navigation enabled.
+        final int[] size=new int[2];
+        scenario.onActivity(a->{
+            android.graphics.Rect bounds=a.getWindowManager().getCurrentWindowMetrics().getBounds();
+            size[0]=bounds.width();size[1]=bounds.height();
+        });
+        boolean gesture=false;
+        for(int i=0;i<3&&!gesture;i++){
+            int y=size[1]/2;
+            try(android.os.ParcelFileDescriptor fd=inst.getUiAutomation().executeShellCommand("input swipe 1 "+y+" "+(size[0]/3)+" "+y+" 220");
+                FileInputStream output=new FileInputStream(fd.getFileDescriptor())) {
+                while(output.read()!=-1) {}
+            }
+            gesture=waitForExitDialog(true,1500);
+        }
+        assertTrue("The emulator edge swipe should open the WebView exit confirmation",gesture);
+        screenshotExit("exit-dialog-android.png");
+        write("exit-before.json",new JSONObject().put("active",snapshot())
+            .put("boardBeforeLastMove",before).put("movesBeforeLastMove",moves).toString(2));
+        // Trigger the real UI button and wait for Activity.finish, not an instrumented substitute.
+        inst.runOnMainSync(()->web.evaluateJavascript("document.querySelector('[data-exit-confirm]').click()",null));
+        until=SystemClock.uptimeMillis()+10000;
+        while(SystemClock.uptimeMillis()<until&&scenario.getState()!=androidx.lifecycle.Lifecycle.State.DESTROYED) SystemClock.sleep(100);
+        assertEquals(androidx.lifecycle.Lifecycle.State.DESTROYED,scenario.getState());
+        write("exit-android-actions.json",new JSONObject().put("status","PASS")
+            .put("gameBackReturnsHome",true).put("backKeyOpenAndClose",true).put("edgeGestureOpen",true)
+            .put("cancelAndCloseStayInGame",true).put("confirmFinishedActivity",true).toString(2));
+    }
+    @Test(timeout=100000) public void verifyCinematicExitAfterRestart() throws Exception {
+        expectVersion(argument("toVersion","6.51-rc3-test"));
+        JSONObject expected;
+        try(FileInputStream input=new FileInputStream(new File(output,"exit-before.json"))){
+            expected=new JSONObject(new String(input.readAllBytes(),"UTF-8"));
+        }
+        assertEquals("The active board and paid rights must survive actual exit",expected.getString("active"),snapshot());
+        eval("(()=>{kdNavigate('game');kdOnboarding.leave();kdLearning.leave();document.getElementById('undo').click();kdSetPaused(true);return true})()");
+        assertEquals(expected.getString("boardBeforeLastMove"),eval("JSON.stringify(kdLessonPreview().before)"));
+        assertEquals(expected.getInt("movesBeforeLastMove"),((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        write("exit-restart-report.json",new JSONObject().put("status","PASS")
+            .put("activeBoardAndResourcesPreserved",true).put("undoRestoredAndExecuted",true)
+            .put("phoneVerified",false).toString(2));
     }
 
 }

@@ -1,6 +1,6 @@
 {
   "base": "c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4",
-  "normalizedCoreSha256": "6b16f40242955f695f490f2fd2c73b8d730c8707600e49ddac754181df96f3de",
+  "normalizedCoreSha256": "d1104351de10f637b46884f51bb2c3e6c926669b913f79c00dccb3d22b5b818b",
   "protectedFiles": {
     "cloud-model.js": "f567310004cf0ce09540f10265bae8c7bb1e5946c2ca2539c768762213c5693f",
     "cloud-sync.js": "271ed26dee88278ab2fa90c5951a3907da20df2de42c9731678b6588b778727c",

@@ -30,3 +30,17 @@ if [[ "${KD_THEME_PURCHASE_AUDIT:-false}" == true ]]; then
   adb shell am force-stop com.orynexa.karadugum
   audit verifyThemePurchaseAfterRestart purchase-restart.log
 fi
+
+if [[ "${KD_CINEMATIC_EXIT_AUDIT:-false}" == true ]]; then
+  adb shell wm size 640x1136
+  audit verifyExitViewport exit-small.log
+  adb shell wm size 1080x2160
+  audit verifyExitViewport exit-large.log
+  adb shell wm size reset
+  adb shell cmd overlay enable-exclusive --category com.android.internal.systemui.navbar.gestural
+  adb shell cmd overlay list | grep -F '[x] com.android.internal.systemui.navbar.gestural'
+  adb shell am force-stop com.orynexa.karadugum
+  audit verifyCinematicExit exit-actions.log
+  adb shell am force-stop com.orynexa.karadugum
+  audit verifyCinematicExitAfterRestart exit-restart.log
+fi

@@ -781,6 +781,22 @@ public class MainActivity extends Activity {
             });
         }
 
+        @JavascriptInterface public boolean saveExitUndo(String key, String value) {
+            if (key == null || key.length() > 280 || value == null || value.length() > 1024 * 1024) return false;
+            android.content.SharedPreferences.Editor checkpoint = getSharedPreferences("kd_exit_undo", MODE_PRIVATE).edit();
+            return (value.isEmpty() ? checkpoint.remove(key) : checkpoint.putString(key, value)).commit();
+        }
+        @JavascriptInterface public String takeExitUndo(String key) {
+            if (key == null || key.length() > 280) return "";
+            android.content.SharedPreferences checkpoint = getSharedPreferences("kd_exit_undo", MODE_PRIVATE);
+            String value = checkpoint.getString(key, "");
+            if (!value.isEmpty()) checkpoint.edit().remove(key).apply();
+            return value;
+        }
+        @JavascriptInterface public void finishGame() {
+            runOnUiThread(() -> { if (!isFinishing() && !isDestroyed()) finish(); });
+        }
+
         @JavascriptInterface public void setLanguage(String code) { runOnUiThread(() -> uiLanguage = NativeStrings.language(code)); }
         @JavascriptInterface public void openAccountDeletion() { runOnUiThread(() -> openLegalPage("delete-account.html")); }
         @JavascriptInterface public void rewardedAccountRequest(String kind, String requestId, String owner) {
@@ -899,32 +915,12 @@ public class MainActivity extends Activity {
         }
     }
     private void handleGameBack() {
-        if (backHandling || isFinishing() || isDestroyed()) return;
+        if (backHandling || view == null || isFinishing() || isDestroyed()) return;
         backHandling = true;
-        if (view == null) {
-            backHandling = false;
-            showExitConfirmation();
-            return;
-        }
         view.evaluateJavascript(
-            "(function(){try{return !!(window.kdHandleBack && window.kdHandleBack())}catch(e){return false}})()",
-            result -> {
-                backHandling = false;
-                if (!"true".equals(result) && !isFinishing() && !isDestroyed()) {
-                    showExitConfirmation();
-                }
-            }
+            "window.kdHandleBack && window.kdHandleBack()",
+            result -> backHandling = false
         );
-    }
-
-    private void showExitConfirmation() {
-        android.app.AlertDialog confirmation = new android.app.AlertDialog.Builder(this)
-            .setTitle("KARA DÜĞÜM")
-            .setMessage(NativeStrings.text("Oyundan çıkmak istiyor musun?", uiLanguage))
-            .setNegativeButton(NativeStrings.text("Vazgeç", uiLanguage), null)
-            .setPositiveButton(NativeStrings.text("Çıkış", uiLanguage), (dialog, which) -> finish())
-            .show();
-        confirmation.getWindow().getDecorView().setLayoutDirection("ar".equals(uiLanguage) ? android.view.View.LAYOUT_DIRECTION_RTL : android.view.View.LAYOUT_DIRECTION_LTR);
     }
 
     @Override protected void onPause() {
