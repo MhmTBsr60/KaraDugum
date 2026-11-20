@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "sourceVersion": "6.50 (110)",
+  "productionVersion": "6.51 (113)",
+  "applicationId": "com.orynexa.karadugum",
+  "priorProductionSha256": "9c43bd047dee9f305fc1d0897a3353c773ffa1b4a11ee2cca2519726bca017cf",
+  "productionSha256": "42f1b7b6c11a5c8ffe998de2cf5ba92a9182c38ace9298ae9a55d97c49db14c9",
+  "uploadCertificateSha256": "351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e",
+  "signedPayloadEntries": {
+    "priorProduction": 258,
+    "production": 280
+  },
+  "uploadCertificateAndSignedPayloadValidatedInBothBundles": true,
+  "productionAdUnitCount": 2,
+  "sameProductionAdUnitsAndAdMobApplicationId": true,
+  "googleSampleIdsInDex": false,
+  "exportedSurfaceMatchesPreviousProduction": true,
+  "addedPermissions": [
+    "android.permission.VIBRATE"
+  ],
+  "removedPermissions": [],
+  "debuggable": false,
+  "testOnly": false,
+  "cleartextTrafficAllowed": false,
+  "noPackagedSigningKeys": true,
+  "nativeLibraries": 0,
+  "approvedRC3WebAssetsMatchedByteForByte": 62,
+  "androidBaselineProfilesArePackagedAsAabMetadata": true
+}
