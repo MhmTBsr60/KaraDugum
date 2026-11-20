@@ -3,10 +3,11 @@ import json, os, re, subprocess, sys, zipfile
 from pathlib import Path
 apk=Path(sys.argv[1])
 version=os.environ.get("KD_TEST_VERSION","6.50-ux-test2")
+version_code=int(os.environ.get("KD_VERSION_CODE","110"))
 sdk=Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
 aapt=sorted((sdk/'build-tools').glob('*/aapt'))[-1]
 badging=subprocess.check_output([str(aapt),'dump','badging',str(apk)],text=True)
-for token in ["name='com.orynexa.karadugum'", "versionCode='110'", "versionName='"+version+"'", "targetSdkVersion:'36'", "uses-permission: name='com.google.android.gms.permission.AD_ID'", "uses-permission: name='android.permission.VIBRATE'"]:
+for token in ["name='com.orynexa.karadugum'", f"versionCode='{version_code}'", "versionName='"+version+"'", "targetSdkVersion:'36'", "uses-permission: name='com.google.android.gms.permission.AD_ID'", "uses-permission: name='android.permission.VIBRATE'"]:
     assert token in badging,token
 config=json.loads(Path('app/kd-ads.json').read_text())
 assert config['mode']=='test'

@@ -45,16 +45,25 @@ public final class PocoEnergyUpgradeAudit {
         fail("game did not load");
     }
     private String snapshot() throws Exception {
-        return (String)eval("(()=>{const saved=JSON.parse(localStorage.getItem('kd64_activeGame'));delete saved.elapsed;return JSON.stringify({saved,values:Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_shopTheme_ruby','kd5_glow','kd6_lang','kd3_sound','kd64_dailyDate','kd64_streak','kd64_dailySeen','kd64_dailyLastReward'].map(k=>[k,localStorage.getItem(k)]))})})()");
+        return (String)eval("(()=>{const saved=JSON.parse(localStorage.getItem('kd64_activeGame'));delete saved.elapsed;return JSON.stringify({saved,values:Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_shopTheme_ruby','kd64_shopTheme_gold','kd64_shopTheme_ice','kd64_shopTheme_fire','kd64_shopTheme_shadow','kd64_shopTheme_emerald','kd5_glow','kd6_lang','kd3_sound','kd64_dailyDate','kd64_streak','kd64_dailySeen','kd64_dailyLastReward'].map(k=>[k,localStorage.getItem(k)]))})})()");
     }
     private void write(String name,String text) throws Exception {try(FileOutputStream f=new FileOutputStream(new File(output,name))){f.write(text.getBytes("UTF-8"));}}
+    private String argument(String name,String fallback) {
+        return InstrumentationRegistry.getArguments().getString(name,fallback);
+    }
+    private void expectVersion(String name) throws Exception {
+        assertEquals(name,inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
+    }
     @Test(timeout=100000) public void seedPreviousSignedTest() throws Exception {
-        assertEquals("energy-reference-3-layered",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
-        assertEquals("6.50-energy-finish-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
+        assertEquals(argument("fromStyle","energy-reference-3-layered"),((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        expectVersion(argument("fromVersion","6.50-energy-finish-test2"));
         eval("(()=>{localStorage.setItem('kd64_level','6');localStorage.setItem('kd64_completed','{\\\"1\\\":3,\\\"2\\\":2,\\\"3\\\":3}');localStorage.setItem('kd64_best','{\\\"1\\\":4200,\\\"2\\\":3100,\\\"3\\\":5000}');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_shopTheme_ruby','true');localStorage.setItem('kd5_glow','1');localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd3_sound','0');return true})()");
         inst.runOnMainSync(()->web.reload());SystemClock.sleep(500);ready();SystemClock.sleep(2600);
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_dailySeen',JSON.stringify(today));localStorage.setItem('kd64_dailyLastReward',JSON.stringify({date:today,day:3,coins:0,hints:1}));document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        if (!argument("candidateCode","").isEmpty()) {
+            eval("(()=>{for(const id of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+id,'true');return true})()");
+        }
         write("upgrade-expected.json",snapshot());
         // Chromium LocalStorage is synchronous to JS, but commits its backing database
         // asynchronously. Do not kill the seed process immediately after its final move.
@@ -72,14 +81,14 @@ public final class PocoEnergyUpgradeAudit {
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
     }
     @Test(timeout=100000) public void verifyPreviousBeforeUpgrade() throws Exception {
-        assertEquals("energy-reference-3-layered",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
-        assertEquals("6.50-energy-finish-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
+        assertEquals(argument("fromStyle","energy-reference-3-layered"),((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
+        expectVersion(argument("fromVersion","6.50-energy-finish-test2"));
         comparePersisted("old-restart");
         write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
     @Test(timeout=100000) public void verifyAfterInPlaceInstall() throws Exception {
         assertEquals("energy-reference-3-poco",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
-        assertEquals("6.50-poco-energy-test3",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
+        expectVersion(argument("toVersion","6.50-poco-energy-test3"));
         assertTrue(Boolean.TRUE.equals(eval("!!window.kdDailyTreasure")));
         comparePersisted("new-install");
         assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('#board .kdPipeCuffInset path.kdPipeCuffRivets') && typeof kdPipeFlow.state().effects.layers.wave === 'number'")));
@@ -89,6 +98,28 @@ public final class PocoEnergyUpgradeAudit {
         SystemClock.sleep(420);
         assertEquals(0,((Number)eval("document.querySelectorAll('.kdDailyOverlay').length")).intValue());
         assertEquals("Returning home must not grant a second award",expectedSnapshot(),snapshot());
-        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-energy-finish-test2").put("newVersion","6.50-poco-energy-test3").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
+        if (!argument("candidateCode","").isEmpty()) verifyCandidateWebView();
+        write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion",argument("fromVersion","6.50-energy-finish-test2")).put("newVersion",argument("toVersion","6.50-poco-energy-test3")).put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
+    private void verifyCandidateWebView() throws Exception {
+        int expectedCode=Integer.parseInt(argument("candidateCode",""));
+        assertEquals(expectedCode,inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionCode);
+        assertTrue(Boolean.TRUE.equals(eval("(()=>{const l=kdLocalization,d=l.dictionaries;return Object.keys(l.languages).length===25&&Object.keys(d.en).length===586&&Object.keys(l.languages).filter(x=>x!=='tr').every(x=>Object.keys(d.en).every(k=>d[x][k]))})()")));
+        eval("(()=>{kdNavigate('game');window.kdFixtureBoard=document.querySelector('#board');window.kdFixtureCell=kdFixtureBoard.querySelector('.tile');return true})()");
+        for (String code:new String[]{"en","ar","ja","tr"}) {
+            eval("(()=>{kdNavigate('settings');return true})()");
+            JSONObject language=(JSONObject)eval("(()=>{const picker=document.getElementById('kdLangSelect');picker.value='"+code+"';picker.dispatchEvent(new Event('change',{bubbles:true}));kdNavigate('game');kdSetPaused(true);const board=document.querySelector('#board');return {language:document.documentElement.lang,direction:document.documentElement.dir,board:getComputedStyle(board).direction,same:board===window.kdFixtureBoard&&board.querySelector('.tile')===window.kdFixtureCell,actions:[...document.querySelectorAll('.kdGameActions button')].sort((a,b)=>a.getBoundingClientRect().x-b.getBoundingClientRect().x).map(b=>b.id).join(',')}})()");
+            assertEquals(code,language.getString("language"));
+            assertEquals(code.equals("ar")?"rtl":"ltr",language.getString("direction"));
+            assertEquals("ltr",language.getString("board"));
+            assertTrue("Language selection must keep the same board and first tile",language.getBoolean("same"));
+            assertEquals("hint,undo,restart,new",language.getString("actions"));
+        }
+        assertEquals("Language changes must preserve progress and resources",expectedSnapshot(),snapshot());
+        write("candidate-webview-report.json",new JSONObject().put("status","PASS")
+            .put("versionCode",expectedCode).put("locales",new JSONArray("[\"en\",\"ar\",\"ja\",\"tr\"]"))
+            .put("dictionaryKeys",586).put("savedThemeEntitlements",6).put("boardDirectionPreserved",true)
+            .put("noPageReload",true).put("phoneVerified",false).toString(2));
+    }
+
 }
