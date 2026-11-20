@@ -13,7 +13,12 @@ const locales = ['tr', 'en', 'ar', 'ja'];
 const reportPath = path.join(out, 'webview-report.json');
 fs.mkdirSync(out, {recursive: true});
 
-function capture(name) {
+async function capture(page, name) {
+  await page.clock.runFor(180);
+  await page.evaluate(() => document.fonts.ready);
+  // Flush a WebView frame, then allow Android's compositor to present it.
+  await page.screenshot({timeout: 15_000});
+  await new Promise(resolve => setTimeout(resolve, 700));
   const frame = execFileSync('adb', ['exec-out', 'screencap', '-p'], {maxBuffer: 16e6});
   assert.equal(frame.subarray(1, 4).toString(), 'PNG');
   fs.writeFileSync(path.join(out, name + '.png'), frame);
@@ -40,7 +45,7 @@ async function main() {
       assert.equal(await page.locator('.kdDailyOverlay').count(), 0);
       assert.deepEqual(await L.savedGame(page), report.baseline);
       assert.deepEqual(await L.boardAppearance(page), report.artwork);
-      capture('android-ja-yeniden-acilis');
+      await capture(page, 'android-ja-yeniden-acilis');
       report.processRestartPreserved = true;
       report.status = 'PASS';
     } else {
@@ -56,8 +61,7 @@ async function main() {
         await L.choose(page, code);
         assert.deepEqual(await L.savedGame(page), report.baseline);
         assert.deepEqual(await L.boardAppearance(page), report.artwork);
-        await page.evaluate(() => document.fonts.ready);
-        capture('android-' + code);
+        await capture(page, 'android-' + code);
         const panels = await L.menus(page);
         assert.deepEqual(panels.art, baseline.art);
         await L.checkReload(page, code, report.baseline, report.artwork);
