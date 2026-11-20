@@ -1,0 +1,1218 @@
+{
+  "root": "/workspace/KaraDugum-theme-confirm",
+  "productChanged": false,
+  "physicalDevice": false,
+  "status": "PASS",
+  "faults": [
+    {
+      "field": "kdCloud_guestReward",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": "2026-11-21",
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 1,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_coins",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_hintCoupons",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_dailyLastReward",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_streak",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_dailyDate",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "remove:kdCloud_guestReward",
+      "streak": 2,
+      "coins": 100,
+      "hints": 4,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 4,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 3,
+            "coins": 0,
+            "hints": 1
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 3,
+              "coins": 0,
+              "hints": 1
+            },
+            "streak": 3,
+            "coinsTarget": 100,
+            "hintsTarget": 4
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kdCloud_guestReward",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": "2026-11-21",
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 1,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_coins",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_hintCoupons",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_dailyLastReward",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_streak",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "kd64_dailyDate",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    },
+    {
+      "field": "remove:kdCloud_guestReward",
+      "streak": 3,
+      "coins": 115,
+      "hints": 3,
+      "afterFault": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "entry": {
+          "kd64_coins": 100,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-20",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-20",
+            "day": 1,
+            "coins": 5,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:00.160Z"
+      },
+      "restored": {
+        "raw": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": null
+        },
+        "entry": {
+          "kd64_coins": 115,
+          "kd64_hintCoupons": 3,
+          "kd64_dailyDate": "2026-11-21",
+          "kd64_dailySeen": null,
+          "kd64_dailyLastReward": {
+            "date": "2026-11-21",
+            "day": 4,
+            "coins": 15,
+            "hints": 0
+          },
+          "kdCloud_guestReward": {
+            "login": {
+              "date": "2026-11-21",
+              "day": 4,
+              "coins": 15,
+              "hints": 0
+            },
+            "streak": 4,
+            "coinsTarget": 115,
+            "hintsTarget": 3
+          }
+        },
+        "panel": 0,
+        "clock": "2026-11-21T12:00:02.760Z"
+      },
+      "doubleAward": false
+    }
+  ],
+  "accounts": [
+    {
+      "streak": 2,
+      "concurrentDevices": 2,
+      "coins": 100,
+      "hints": 4,
+      "mergedReceipt": {
+        "n": 8,
+        "d": "d_8ce8ae15-d206-4ee8-a7f3-6f917fcf8aa6",
+        "coins": 0,
+        "hintCoupons": 1,
+        "xp": 0
+      },
+      "replays": 3,
+      "doubleAward": false
+    },
+    {
+      "streak": 3,
+      "concurrentDevices": 2,
+      "coins": 115,
+      "hints": 3,
+      "mergedReceipt": {
+        "n": 8,
+        "d": "d_965e9e3b-0502-4173-ab8f-f306ffbc27ca",
+        "coins": 15,
+        "hintCoupons": 0,
+        "xp": 0
+      },
+      "replays": 3,
+      "doubleAward": false
+    }
+  ]
+}

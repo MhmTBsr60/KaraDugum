@@ -1,0 +1,456 @@
+{
+  "status": "PASS",
+  "prices": {
+    "ice": 150,
+    "fire": 200,
+    "shadow": 250,
+    "emerald": 900,
+    "ruby": 1200
+  },
+  "layouts": [
+    {
+      "code": "tr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "tr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "tr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "en",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "en",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "en",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "zh",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "zh",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "zh",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "hi",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "hi",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "hi",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "es",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "es",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "es",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ar",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ar",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ar",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "fr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "fr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "fr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "bn",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "bn",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "bn",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "pt",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "pt",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "pt",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ru",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ru",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ru",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ur",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ur",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ur",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "id",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "id",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "id",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "de",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "de",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "de",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ja",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ja",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ja",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "mr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "mr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "mr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "vi",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "vi",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "vi",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "te",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "te",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "te",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ha",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ha",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ha",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ta",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ta",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ta",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "pa",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "pa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "pa",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "sw",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "sw",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "sw",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "tl",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "tl",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "tl",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "fa",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "fa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "fa",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ko",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ko",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ko",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "jv",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "jv",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "jv",
+      "width": 568,
+      "height": 320
+    }
+  ],
+  "faults": [
+    {
+      "mode": "guest",
+      "key": "kdCloud_guestReward",
+      "prepared": false,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "guest",
+      "key": "kd64_coins",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "guest",
+      "key": "kd64_shopTheme_emerald",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "guest",
+      "key": "remove:kdCloud_guestReward",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "account",
+      "key": "kdCloud_ops_theme-fixture",
+      "prepared": false,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "account",
+      "key": "kd64_coins",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "account",
+      "key": "kd64_shopTheme_emerald",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    },
+    {
+      "mode": "account",
+      "key": "kd64_v9_emerald",
+      "prepared": true,
+      "balance": 600,
+      "owned": true
+    }
+  ],
+  "decisions": [
+    "cancel",
+    "Android bridge back",
+    "close",
+    "escape",
+    "backdrop",
+    "process reload with open confirmation"
+  ],
+  "errors": [],
+  "liveAccountRetryPass": true,
+  "sharedAccountReplayPass": true
+}

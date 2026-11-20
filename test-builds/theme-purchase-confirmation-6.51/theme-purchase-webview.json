@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "androidBackWithoutCharge": true,
+  "cancelWithoutCharge": true,
+  "confirmPrice": 900,
+  "balanceBefore": 1250,
+  "balanceAfter": 350,
+  "confirmDoubleClickDeduplicated": true,
+  "ownedThemeReappliedWithoutCharge": true
+}

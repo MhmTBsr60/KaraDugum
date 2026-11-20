@@ -1,0 +1,54 @@
+
+> test
+> node tests/level-audit.cjs && node tests/hint-runtime-audit.cjs && node tests/full-solve-audit.cjs && node tests/ui-regression.cjs && node tests/cloud-model-audit.cjs && node tests/weekly-calendar-audit.cjs && node tests/ad-config-audit.cjs && node tests/sdk-dependencies-audit.cjs && python3 tests/android-manifests-audit.py && node tests/mechanic-progress-audit.cjs && node tests/release-package-audit.cjs && node tests/mechanic-quests-audit.cjs && node tests/workshop-audit.cjs && node tests/wheel-readiness-audit.cjs && node tests/store-listing-audit.cjs && node tests/native-auth-audit.cjs && node tests/native-games-lifecycle-audit.cjs && node tests/native-cloud-callback-audit.cjs
+
+Audited 300 levels
+Difficulty 4x4: 15 levels, estimated moves 5-37, mean 22.3
+Difficulty 5x5: 15 levels, estimated moves 7-64, mean 33.5
+Difficulty 6x6: 45 levels, estimated moves 10-109, mean 46.5
+Difficulty 7x7: 75 levels, estimated moves 10-140, mean 62.0
+Difficulty 8x8: 150 levels, estimated moves 10-200, mean 78.2
+Already solved at start: none
+PASS: board sizes, tile bits, fixed tiles and solved target connectivity
+NOTE: This is NOT an exhaustive proof of reachability under special-mode rules.
+PASS: hint handler, reward path, coupon accounting and restart hint bands present
+PASS: hints invoke real moves and charge only after state changes
+Initial connection rates: min 0%, max 70.4%, mean 40.8%
+300 actual hint clicks checked; failures: 0
+300 levels completed by legal hint moves; failures: 0
+PASS: menu image, APK packaging, navigation and game controls
+PASS: cloud transaction/counter/claim migration; repeated sync, concurrent overspend, 100 merge convergence cases, daily records and account rejection (641 Java parity fixtures)
+PASS: local Monday weeks across year/leap/DST boundaries, current-week filtering, duplicate run IDs, daily/invalid rejection and 160-crystal weekly reward budget
+PASS: explicit test/live ad builds; absent/malformed/sample/wrong-publisher/duplicate units rejected; UMP permission checks, stale ad guards and offline policy packaging
+PASS: resolved SDK pins, legacy request selection, release identity/API compatibility, duplicate/unresolved rejection and CLI failures
+test_admob_application_metadata_must_be_unique_direct_and_literal (__main__.AndroidManifestAudit.test_admob_application_metadata_must_be_unique_direct_and_literal) ... ok
+test_cli_arguments_output_errors_and_input_preservation (__main__.AndroidManifestAudit.test_cli_arguments_output_errors_and_input_preservation) ... ok
+test_cli_reports_malformed_xml_missing_files_and_optional_aab (__main__.AndroidManifestAudit.test_cli_reports_malformed_xml_missing_files_and_optional_aab) ... ok
+test_cli_success_and_failure_replace_report_without_a_false_pass (__main__.AndroidManifestAudit.test_cli_success_and_failure_replace_report_without_a_false_pass) ... ok
+test_equivalent_duplicates_and_unrelated_caps_are_unambiguous (__main__.AndroidManifestAudit.test_equivalent_duplicates_and_unrelated_caps_are_unambiguous) ... ok
+test_every_cap_is_rejected_even_empty_or_hidden_beside_valid_permission (__main__.AndroidManifestAudit.test_every_cap_is_rejected_even_empty_or_hidden_beside_valid_permission) ... ok
+test_future_release_is_supplied_by_caller (__main__.AndroidManifestAudit.test_future_release_is_supplied_by_caller) ... ok
+test_identity_mismatch_in_either_proof_cannot_hide_behind_the_other (__main__.AndroidManifestAudit.test_identity_mismatch_in_either_proof_cannot_hide_behind_the_other) ... ok
+test_invalid_library_expectations_are_rejected (__main__.AndroidManifestAudit.test_invalid_library_expectations_are_rejected) ... ok
+test_malformed_or_unreadable_manifest_still_has_a_failure_proof (__main__.AndroidManifestAudit.test_malformed_or_unreadable_manifest_still_has_a_failure_proof) ... ok
+test_missing_and_empty_aab_provenance_fail_without_losing_xml_proofs (__main__.AndroidManifestAudit.test_missing_and_empty_aab_provenance_fail_without_losing_xml_proofs) ... ok
+test_missing_comment_nested_and_sdk_only_permission_are_rejected (__main__.AndroidManifestAudit.test_missing_comment_nested_and_sdk_only_permission_are_rejected) ... ok
+test_namespace_prefixes_and_utf16_are_not_text_matched (__main__.AndroidManifestAudit.test_namespace_prefixes_and_utf16_are_not_text_matched) ... ok
+test_removal_directives_in_any_ad_id_declaration_are_rejected (__main__.AndroidManifestAudit.test_removal_directives_in_any_ad_id_declaration_are_rejected) ... ok
+test_sdk_values_missing_duplicate_and_non_decimal_versions_fail (__main__.AndroidManifestAudit.test_sdk_values_missing_duplicate_and_non_decimal_versions_fail) ... ok
+test_valid_proofs_capture_exact_bytes_identity_and_contract (__main__.AndroidManifestAudit.test_valid_proofs_capture_exact_bytes_identity_and_contract) ... ok
+test_wrong_android_namespace_and_unqualified_permission_cannot_supply_proof (__main__.AndroidManifestAudit.test_wrong_android_namespace_and_unqualified_permission_cannot_supply_proof) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.678s
+
+OK
+PASS: 15 mechanic families, 290 normal levels, tutorial separation, existing stars, unlock bounds, read-only aggregates and safe mechanic filters
+PASS: test/live release separation, compiled configuration and version validation, content hashes, stale-mode rejection and empty-output protection
+PASS: eligible immutable mechanic quests, legal normal-run receipts, distinct mechanics/star improvements, duplicate/date rejection and cloud no-resource merge
+PASS: six reachable unsolved fixed puzzles, separate energy channel targets, mixing rejection, true one-way valve validation, invalid input rejection and campaign/economy isolation
+PASS: pure free/bonus readiness, legacy daily consumption, pending/midnight suppression, no wallet writes or polling, readiness-change events, duplicate/failed-ad handling and existing exactly-once lifecycle settlement
+PASS: four Play listing locales, title/short/full/release-note limits, real localized content and explicit unresolved operator declarations
+PASS: 172 assertions against actual MainActivity auth methods; quiet startup errors, explicit generic failures, real profile ownership, age/init/coalescing and stale/lifecycle callbacks
+PASS: 65 assertions against actual MainActivity startup/lifecycle and actual GamesStartupActivity; old late-init code10 contract, adult-before-Created ordering, restricted gates, real helper/result/resume sequence, cancelled/rejected starts and retained game WebView
+PASS: 77 assertions against actual native cloud methods; stale open/import/resolve/commit callbacks cannot publish, clear or flush another owner/epoch; current queue, cleanup and legacy boundaries preserved
