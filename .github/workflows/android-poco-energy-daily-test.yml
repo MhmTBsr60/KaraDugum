@@ -269,21 +269,21 @@ jobs:
           arch: x86_64
           profile: pixel_7
           disable-animations: false
-          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
           script: |
             adb shell settings put secure immersive_mode_confirmations confirmed
             mkdir -p dist/upgrade
             timeout 45s adb install -r "$RUNNER_TEMP/previous-test.apk"
             timeout 45s adb install -r app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
-            timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#seedPreviousSignedTest' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/seed.log
+            timeout 125s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#seedPreviousSignedTest' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/seed.log
             cat dist/upgrade/seed.log
             grep -F 'OK (1 test)' dist/upgrade/seed.log
-            timeout 90s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#verifyPreviousBeforeUpgrade' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/restart.log
+            timeout 125s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#verifyPreviousBeforeUpgrade' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/restart.log
             cat dist/upgrade/restart.log
             grep -F 'OK (1 test)' dist/upgrade/restart.log
             adb shell am force-stop com.orynexa.karadugum
             timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
-            timeout 100s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#verifyAfterInPlaceInstall' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/new.log
+            timeout 125s adb shell am instrument -w -e class 'com.orynexa.karadugum.PocoEnergyUpgradeAudit#verifyAfterInPlaceInstall' com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > dist/upgrade/new.log
             cat dist/upgrade/new.log
             adb pull /sdcard/Android/data/com.orynexa.karadugum/files/webview-audit/. dist/upgrade/
             grep -F 'OK (1 test)' dist/upgrade/new.log

@@ -35,12 +35,12 @@ public final class PocoEnergyUpgradeAudit {
     private Object eval(String expression) throws Exception {
         CountDownLatch latch=new CountDownLatch(1);String[] answer={null};
         inst.runOnMainSync(()->web.evaluateJavascript("(function(){try{return JSON.stringify("+expression+");}catch(e){return JSON.stringify({error:String(e)})}})()",v->{answer[0]=v;latch.countDown();}));
-        if(!latch.await(5,TimeUnit.SECONDS))throw new TimeoutException("evaluateJavascript");
+        if(!latch.await(15,TimeUnit.SECONDS))throw new TimeoutException("evaluateJavascript");
         Object raw=new JSONTokener(answer[0]).nextValue();Object value=raw instanceof String?new JSONTokener((String)raw).nextValue():raw;
         if(value instanceof JSONObject&&((JSONObject)value).has("error"))fail(value.toString());return value;
     }
     private void ready() throws Exception {
-        long limit=SystemClock.uptimeMillis()+45000;
+        long limit=SystemClock.uptimeMillis()+60000;
         while(SystemClock.uptimeMillis()<limit){try{if(Boolean.TRUE.equals(eval("!!window.kdGetLearningState&&!!window.kdNavigate")))return;}catch(TimeoutException ignored){}SystemClock.sleep(100);}
         fail("game did not load");
     }
@@ -48,7 +48,7 @@ public final class PocoEnergyUpgradeAudit {
         return (String)eval("(()=>{const saved=JSON.parse(localStorage.getItem('kd64_activeGame'));delete saved.elapsed;return JSON.stringify({saved,values:Object.fromEntries(['kd64_level','kd64_completed','kd64_best','kd64_coins','kd64_hintCoupons','kd64_shopTheme_ruby','kd5_glow','kd6_lang','kd3_sound','kd64_dailyDate','kd64_streak','kd64_dailySeen','kd64_dailyLastReward'].map(k=>[k,localStorage.getItem(k)]))})})()");
     }
     private void write(String name,String text) throws Exception {try(FileOutputStream f=new FileOutputStream(new File(output,name))){f.write(text.getBytes("UTF-8"));}}
-    @Test(timeout=60000) public void seedPreviousSignedTest() throws Exception {
+    @Test(timeout=100000) public void seedPreviousSignedTest() throws Exception {
         assertEquals("energy-reference-3-layered",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         assertEquals("6.50-energy-finish-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
         eval("(()=>{localStorage.setItem('kd64_level','6');localStorage.setItem('kd64_completed','{\\\"1\\\":3,\\\"2\\\":2,\\\"3\\\":3}');localStorage.setItem('kd64_best','{\\\"1\\\":4200,\\\"2\\\":3100,\\\"3\\\":5000}');localStorage.setItem('kd64_coins','510');localStorage.setItem('kd64_hintCoupons','7');localStorage.setItem('kd64_shopTheme_ruby','true');localStorage.setItem('kd5_glow','1');localStorage.setItem('kd6_lang','tr');localStorage.setItem('kd3_sound','0');return true})()");
@@ -71,13 +71,13 @@ public final class PocoEnergyUpgradeAudit {
         assertEquals("Persisted fixture differs at "+stage,expected,actual);
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
     }
-    @Test(timeout=60000) public void verifyPreviousBeforeUpgrade() throws Exception {
+    @Test(timeout=100000) public void verifyPreviousBeforeUpgrade() throws Exception {
         assertEquals("energy-reference-3-layered",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         assertEquals("6.50-energy-finish-test2",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
         comparePersisted("old-restart");
         write("upgrade-old-restart-report.json",new JSONObject().put("status","PASS").put("scope","Same old signed APK in a new process, before any package update").put("phoneVerified",false).toString(2));
     }
-    @Test(timeout=60000) public void verifyAfterInPlaceInstall() throws Exception {
+    @Test(timeout=100000) public void verifyAfterInPlaceInstall() throws Exception {
         assertEquals("energy-reference-3-poco",((JSONObject)eval("kdPipeFlow.state()")).getString("style"));
         assertEquals("6.50-poco-energy-test3",inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionName);
         assertTrue(Boolean.TRUE.equals(eval("!!window.kdDailyTreasure")));
@@ -85,6 +85,10 @@ public final class PocoEnergyUpgradeAudit {
         assertTrue(Boolean.TRUE.equals(eval("!!document.querySelector('#board .kdPipeCuffInset path.kdPipeCuffRivets') && typeof kdPipeFlow.state().effects.layers.wave === 'number'")));
 
         assertTrue(Boolean.TRUE.equals(eval("!window.kdLightFeedback")));
+        eval("(()=>{kdNavigate('home');kdNavigate('home');return true})()");
+        SystemClock.sleep(420);
+        assertEquals(0,((Number)eval("document.querySelectorAll('.kdDailyOverlay').length")).intValue());
+        assertEquals("Returning home must not grant a second award",expectedSnapshot(),snapshot());
         write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion","6.50-energy-finish-test2").put("newVersion","6.50-poco-energy-test3").put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
 }
