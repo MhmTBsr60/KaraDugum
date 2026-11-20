@@ -1,0 +1,98 @@
+name: KaraDugum 6.51 signed theme purchase TEST
+on:
+  push:
+    branches: [fix/theme-purchase-confirmation-6.51]
+  workflow_dispatch:
+jobs:
+  verify:
+    if: ${{ github.ref == 'refs/heads/fix/theme-purchase-confirmation-6.51' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      KD_ADS_MODE: test
+      KD_VERSION_NAME: 6.51-rc2-test
+      KD_VERSION_CODE: '112'
+      KD_TEST_VERSION: 6.51-rc2-test
+      KD_PREVIOUS_TEST_VERSION: 6.51-rc1-test
+      KD_THEME_PURCHASE_AUDIT: 'true'
+      KD_EXPECTED_SIGNER: 351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Prepare matching Android game assets and version
+        run: |
+          node tests/ux-protected-core.cjs
+          bash scripts/prepare-android-rc.sh
+      - name: Verify keystore fingerprint against production 6.50 and signed RC1
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_B64"
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" |
+            sha256sum | awk '{print $1}' > "$RUNNER_TEMP/expected-cert-sha256"
+          test "$(cat "$RUNNER_TEMP/expected-cert-sha256")" = "$KD_EXPECTED_SIGNER"
+      - name: Build signed TEST APK and run Android lint
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle --no-daemon --stacktrace :app:assembleRelease :app:lintRelease :app:assembleReleaseAndroidTest
+      - name: Verify TEST APK source assets, Google sample ads and upgrade signer
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/upgrade
+          apk=app/build/outputs/apk/release/app-release.apk
+          cp test-builds/release-candidate-6.51-20261120/KaraDugum-6.51-RC1-TEST.apk "$RUNNER_TEMP/previous-test.apk"
+          echo "284594f63f39994d2deeab72a18a5098523da9df5584ee72e4849f9a4e846632  $RUNNER_TEMP/previous-test.apk" | sha256sum --check
+          for package in "$apk" "$RUNNER_TEMP/previous-test.apk"; do
+            bash scripts/verify-apk-signature.sh "$package" "$RUNNER_TEMP/expected-cert-sha256"
+          done
+          python3 scripts/verify-test-apk.py "$apk"
+          python3 scripts/verify-rc-assets.py --package "$apk" --report dist/upgrade/test-assets.json
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$apksigner" sign --ks app/karadugum.jks --ks-pass env:KEYSTORE_PASSWORD --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASSWORD app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+          sudo chmod 666 /dev/kvm
+      - name: Install over signed RC1 and exercise the running Android WebView
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          script: bash scripts/run-rc-upgrade-audit.sh
+      - name: Stage verified TEST APK and evidence
+        run: |
+          mkdir -p dist/test-apk
+          cp app/build/outputs/apk/release/app-release.apk dist/test-apk/KaraDugum-6.51-RC2-TEST.apk
+          cp dist/upgrade/{upgrade-report,candidate-webview-report,test-assets,theme-purchase-webview,theme-purchase-restart}.json dist/test-apk/
+          cp "$RUNNER_TEMP/expected-cert-sha256" dist/test-apk/signer-sha256.txt
+          (cd dist/test-apk && sha256sum *.apk > SHA256SUMS)
+          git rev-parse HEAD > dist/test-apk/source-commit.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.51-RC2-signed-TEST
+          path: dist/test-apk/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KaraDugum-6.51-RC2-emulator
+          path: dist/upgrade/

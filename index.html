@@ -649,6 +649,80 @@ const expansionCrops={wheel:[0,140,512,690],emerald:[520,190,496,560],ruby:[1030
 function expansionArt(key,cls=''){const [x,y,w,h]=expansionCrops[key];const scale=key==='wheel'?1:(w/h)*(113/141);return `<span class="kdExpansionSlot ${cls}" style="aspect-ratio:${key==='wheel'?w+'/'+h:'141/113'}"><span class="kdRefCrop kdExpansionCrop" style="aspect-ratio:${w}/${h};transform:scaleY(${scale})"><img src="assets/kara-dugum-expansion.webp" alt="" aria-hidden="true" style="width:${1536/w*100}%;left:${-x/w*100}%;top:0;margin-top:${-y/w*100}%;height:auto"></span></span>`}
 const referenceThemes=[['gold','KADİM TAŞ','stone',0,'#cda660'],['ice','GECE TAPINAĞI','night',150,'#74afd9'],['fire','ÇÖL HARABELERİ','desert',200,'#ce9450'],['shadow','GECE MORU','night',250,'#ae91e5'],['emerald','ZÜMRÜT MABEDİ','emerald',900,'#83ddb0'],['ruby','YAKUT ATEŞİ','ruby',1200,'#f18d7b']];
 function themePreview(id,art){return `<span class="kdLivePreview" data-kd-preview="${id}">${expansionCrops[art]?expansionArt(art,'kdThemePreview'):referenceArt(art,'kdThemePreview')}<span class="kdMiniBoard" aria-hidden="true">${[6,10,12,5,6,9,3,10,8].map(v=>`<span class="tile">${window.kdPipeSvg(v,undefined,id)}</span>`).join('')}</span></span>`}
+let themePurchaseDialog=null;
+const themePurchaseMessages={
+ funds:'Bu tema için yeterli kristalin yok.',
+ sync:'Satın alma için önce bulut kaydını eşitle.',
+ storage:'Satın alma kaydı tamamlanamadı. Tekrar dene.',
+};
+function applyShopTheme(id){
+ set64('shopActiveTheme',id);
+ document.documentElement.setAttribute('data-kd-theme',id);
+ window.kdShopNotice='✓ Tema uygulandı. Koleksiyonunda kalıcı olarak saklanır.';
+ draw();
+}
+function closeThemePurchase(){
+ if(!themePurchaseDialog)return false;
+ const {dialog,trigger}=themePurchaseDialog;
+ themePurchaseDialog=null;
+ dialog.close();
+ dialog.remove();
+ if(trigger.isConnected&&!trigger.disabled)trigger.focus({preventScroll:true});
+ return true;
+}
+window.addEventListener('kd:storage-owner',closeThemePurchase);
+function chooseShopTheme(trigger){
+ if(themePurchaseDialog)return;
+ const entry=referenceThemes.find(([id])=>id===trigger.dataset.shopTheme);
+ if(!entry)return;
+ const [id,name,,price]=entry;
+ if(!price){applyShopTheme(id);return;}
+ const quote=window.kdEconomy.themeQuote(id);
+ if(quote.owned){applyShopTheme(id);return;}
+ const dialog=document.createElement('dialog');
+ dialog.className='kdThemePurchase';
+ dialog.setAttribute('aria-labelledby','kdThemePurchaseTitle');
+ dialog.setAttribute('aria-describedby','kdThemePurchaseDetails');
+ dialog.innerHTML=`<div class="kdThemePurchaseCard">
+  <button type="button" class="kdThemePurchaseClose" aria-label="Kapat">×</button>
+  <span class="kdThemePurchaseGem">${blueCrystal()}</span>
+  <h2 id="kdThemePurchaseTitle">Tema satın al</h2>
+  <p class="kdThemePurchaseName">${esc(name)}</p>
+  <dl id="kdThemePurchaseDetails">
+   <div><dt>Fiyat</dt><dd><bdi data-purchase-price></bdi> <span>KRİSTAL</span></dd></div>
+   <div><dt>Mevcut bakiye</dt><dd><bdi data-purchase-balance></bdi> <span>KRİSTAL</span></dd></div>
+  </dl>
+  <p class="kdThemePurchaseStatus" role="status" hidden></p>
+  <div class="kdThemePurchaseActions"><button type="button" data-theme-cancel autofocus>VAZGEÇ</button><button type="button" data-theme-confirm>SATIN AL</button></div>
+ </div>`;
+ const button=dialog.querySelector('[data-theme-confirm]');
+ const message=dialog.querySelector('.kdThemePurchaseStatus');
+ const number=new Intl.NumberFormat(window.kdLocalization?.language()||'tr');
+ const feedback=(offer,status)=>{
+  const error=status||offer.error||(offer.balance<price?'funds':!offer.ready?'sync':'');
+  dialog.querySelector('[data-purchase-balance]').textContent=offer.balance===undefined?'–':number.format(offer.balance);
+  message.textContent=themePurchaseMessages[error]||'';
+  message.hidden=!error;
+  button.disabled=error==='funds'||error==='sync';
+ };
+ dialog.querySelector('[data-purchase-price]').textContent=number.format(price);
+ dialog.querySelector('[data-theme-cancel]').onclick=closeThemePurchase;
+ dialog.querySelector('.kdThemePurchaseClose').onclick=closeThemePurchase;
+ dialog.addEventListener('cancel',event=>{event.preventDefault();closeThemePurchase();});
+ dialog.addEventListener('click',event=>{if(event.target===dialog)closeThemePurchase();});
+ button.onclick=()=>{
+  if(themePurchaseDialog?.dialog!==dialog||button.disabled)return;
+  button.disabled=true;
+  const result=window.kdEconomy.purchaseTheme(id,price,quote.owner);
+  if(result==='changed'){closeThemePurchase();return;}
+  if(result==='purchased'||result==='owned'){closeThemePurchase();applyShopTheme(id);return;}
+  feedback(window.kdEconomy.themeQuote(id),result);
+ };
+ feedback(quote);
+ themePurchaseDialog={dialog,trigger};
+ document.body.append(dialog);
+ dialog.showModal();
+}
 function referenceThemeCards(items=referenceThemes){return items.map(([id,name,art,price,color])=>{const owned=id==='gold'||get64('shopTheme_'+id,false)||get64('v9_'+id,false),active=get64('shopActiveTheme','gold')===id;return `<article data-theme="${id}" class="kdThemeCard kdRefTheme ${active?'kdThemeCurrent':''}" style="--preview-color:${color}"><button data-shop-theme="${id}" aria-label="${name}, ${active?'kullanılıyor':owned?'temayı uygula':price+' kristal, satın al'}" ${active?'disabled':''}><strong>${name}</strong>${themePreview(id,art)}<span class="kdRefSwatches" aria-hidden="true"><i style="background:${color}"></i><i></i><i></i></span><small>${active?'✓ AKTİF':owned?'UYGULA':price+' KRİSTAL'}</small></button></article>`}).join('')}
 function renderShop(){
  const coupons=Math.max(0,Number(get64('hintCoupons',0))||0),today=new Date().toLocaleDateString('en-CA'),claimed=!window.kdEconomy.shopDailyAvailable(today);
@@ -705,9 +779,9 @@ el('kdShell').innerHTML=html;if(page==='workshop')window.kdWorkshop?.bind();wind
 
 const profileRank=el('kdProfileRanking');if(profileRank){profileRank.disabled=window.kdAudience?.view().busy===true;profileRank.onclick=()=>{if(window.kdAudience?.view().needsReview){go('ranking');return;}if(window.kdAudience?.canUseAccounts()===false)return;if(native()&&typeof native().ranking==='function')native().ranking();else go('ranking')};}
 }
-function go(next){window.kdOnboarding?.leave();if(next!=='workshop')window.kdWorkshop?.leave();if(next!=='game'&&window.kdDailyActive?.())window.kdExitDaily();if(next!=='game')window.kdLearning?.leave();if(next==='shop'&&page!=='shop'){shopSection='packs';window.kdShopNotice='';}if(next==='profile'&&page!=='profile')window.kdShopNotice='';page=next;let game=next==='game';window.kdSetPaused(!game||document.hidden);el('kdShell').hidden=game;el('kdGame').hidden=!game;if(game){window.kdThemeArt?.refresh();window.kdUpdateGameHeading();window.kdLearning?.sync();window.kdBoardFocus?.sync();window.kdOnboarding?.enteredGame?.();return}draw();window.kdBoardFocus?.sync();if(next==='ranking')fetchRanking();window.scrollTo(0,0)}
+function go(next){closeThemePurchase();window.kdOnboarding?.leave();if(next!=='workshop')window.kdWorkshop?.leave();if(next!=='game'&&window.kdDailyActive?.())window.kdExitDaily();if(next!=='game')window.kdLearning?.leave();if(next==='shop'&&page!=='shop'){shopSection='packs';window.kdShopNotice='';}if(next==='profile'&&page!=='profile')window.kdShopNotice='';page=next;let game=next==='game';window.kdSetPaused(!game||document.hidden);el('kdShell').hidden=game;el('kdGame').hidden=!game;if(game){window.kdThemeArt?.refresh();window.kdUpdateGameHeading();window.kdLearning?.sync();window.kdBoardFocus?.sync();window.kdOnboarding?.enteredGame?.();return}draw();window.kdBoardFocus?.sync();if(next==='ranking')fetchRanking();window.scrollTo(0,0)}
 document.documentElement.setAttribute('data-kd-theme',get64('shopActiveTheme','gold'));
-window.kdRefreshShop=()=>{if(page==='shop')draw();window.kdScheduleRewardRefresh?.();};window.kdRefreshEconomy=()=>{window.kdReloadProgress();if(page!=='game')draw();if(user&&native()?.upload)window.kdSafeUpload?.(score());};window.kdNavigate=go;window.kdHandleBack=function(){if(window.kdStorage?.back())return true;if(window.kdOnboarding?.back())return true;if(window.kdLearning?.back())return true;if(window.kdBoardFocus?.back?.())return true;if(document.getElementById('kdWheelOverlay')){window.kdCloseWheel();return true}if(el('kdRuleHelpOverlay')){el('kdRuleHelpOverlay').remove();return true}const overlay=document.querySelector('.kdV9Overlay,.kdDailyOverlay');if(overlay){overlay.remove();return true}if(el('modal').classList.contains('show')){el('modal').classList.remove('show');go(window.kdLastWin?.daily?'daily':'levels');return true}if(page!=='home'){go('home');return true}return false};window.kdPause=()=>go('home');
+window.kdRefreshShop=()=>{if(page==='shop')draw();window.kdScheduleRewardRefresh?.();};window.kdRefreshEconomy=()=>{window.kdReloadProgress();if(page!=='game')draw();if(user&&native()?.upload)window.kdSafeUpload?.(score());};window.kdNavigate=go;window.kdHandleBack=function(){if(closeThemePurchase())return true;if(window.kdStorage?.back())return true;if(window.kdOnboarding?.back())return true;if(window.kdLearning?.back())return true;if(window.kdBoardFocus?.back?.())return true;if(document.getElementById('kdWheelOverlay')){window.kdCloseWheel();return true}if(el('kdRuleHelpOverlay')){el('kdRuleHelpOverlay').remove();return true}const overlay=document.querySelector('.kdV9Overlay,.kdDailyOverlay');if(overlay){overlay.remove();return true}if(el('modal').classList.contains('show')){el('modal').classList.remove('show');go(window.kdLastWin?.daily?'daily':'levels');return true}if(page!=='home'){go('home');return true}return false};window.kdPause=()=>go('home');
 window.kdRefreshAccountViews=()=>{if(['settings','profile','ranking'].includes(page)&&!el('kdShell').hidden)draw();};
 function fetchRanking(){if(window.kdAudience?.canUseAccounts()===false){draw();return;}rankMessage=user?'Dünya sıralaması yükleniyor…':'Dünya sıralaması için Google hesabınızla giriş yapın.';draw();if(user&&native())try{native().ranking()}catch(e){rankMessage='Sıralama isteği başarısız.';draw()}}
 function saveData(){const keys={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^kd(?:3|5|6|61|64)_/.test(k))keys[k]=localStorage.getItem(k)}return JSON.stringify({version:7,exportedAt:new Date().toISOString(),level:unlocked(),completed:read('kd64_completed'),best:read('kd64_best'),keys},null,2)}
@@ -718,7 +792,7 @@ if(t.dataset.extra){window.kdOpenExtras(t.dataset.extra);return}
 if(t.dataset.avatar!==undefined){put('kd61_avatar',t.dataset.avatar);draw();return}if(t.dataset.shopAd){if(window.KaraNative?.rewardedAd||window.KaraNative?.rewardedAccountRequest){try{if(window.kdEconomy?.requestAd)window.kdEconomy.requestAd('coins');else KaraNative.rewardedAd();}catch(e){alert('Reklam şu anda hazır değil.');}}else alert('Reklamlar Android uygulamasında kullanılabilir.');return}if(t.dataset.shopDaily){if(window.kdEconomy.claimShopDaily()){draw();alert('🎁 25 kristal kazandın!')}return}
 if(t.dataset.shopReward){if(t.dataset.shopReward==='wheel')window.kdOpenWheel?.();else el('kdShop-daily')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});return}
 if(t.dataset.shopSpin){window.kdOpenWheel?.();return}
-if(t.dataset.shopTheme){const id=t.dataset.shopTheme;const prices={gold:0,ice:150,fire:200,shadow:250,emerald:900,ruby:1200};if(!Object.prototype.hasOwnProperty.call(prices,id))return;if(id!=='gold'&&!get64('shopTheme_'+id,false)&&!get64('v9_'+id,false)){const balance=Number(get64('coins',0))||0;if(balance<prices[id]){alert('Bu tema için yeterli kristalin yok.');return}if(window.kdEconomy?.active()){if(!window.kdEconomy.transact(window.kdEconomy.newId('purchase'),{coins:-prices[id]},{theme:id}))return;}else{set64('coins',balance-prices[id]);set64('shopTheme_'+id,true)}}set64('shopActiveTheme',id);document.documentElement.setAttribute('data-kd-theme',id);window.kdShopNotice='✓ Tema uygulandı. Koleksiyonunda kalıcı olarak saklanır.';draw();return}
+if(t.dataset.shopTheme){chooseShopTheme(t);return}
 if(t.dataset.shopBuy){const count=Number(t.dataset.shopBuy);const prices={1:50,3:135,10:400,5:225,15:600,30:1050};const price=prices[count];if(!price)return;const balance=Number(get64('coins',0))||0;if(balance<price){alert('Yeterli kristalin yok. Bölümleri tamamlayarak kristal kazanabilirsin.');return}if(window.kdEconomy?.active()){if(!window.kdEconomy.transact(window.kdEconomy.newId('pack'),{coins:-price,hintCoupons:count}))return;}else{set64('coins',balance-price);set64('hintCoupons',(Number(get64('hintCoupons',0))||0)+count);}window.kdShopNotice='✓ '+count+' ipucu kuponu koleksiyonuna eklendi.';draw();return}
 if(t.dataset.onboardRepeat){window.kdOnboarding?.replay();return}if(t.classList.contains('kdHotPlay')&&window.kdOnboarding){window.kdOnboarding.beforePlay(()=>go('game'));return}if(t.dataset.go){go(t.dataset.go);return}if(t.dataset.level){const n=Number(t.dataset.level);if(n>unlocked())return;window.kdSelectLevel(n);go('game');return}
 if(t.dataset.feedbackTest){window.kdFeedback?.play('confirm',t.dataset.feedbackTest);return}if(t.dataset.setting){let s=t.dataset.setting;if(s==='sound'){sound=!sound;el('effects').click()}if(s==='haptics'){window.kdFeedback?.setHaptics(!window.kdFeedback.state().haptics)}if(s==='glow'){glow=!glow;put('kd5_glow',glow?'1':'0');document.body.classList.toggle('kdNoGlow',!glow)}draw();return}
@@ -741,7 +815,7 @@ const style=document.createElement('style');style.textContent='.kdNoGlow .tile.f
 go('home');
 })();
 </script>
-<script src="localization.js"></script><script src="ux-locales.js"></script><script src="ux-locales.js"></script>
+<script src="localization.js"></script><script src="ux-locales.js"></script><script src="ux-locales.js"></script><script src="theme-purchase-locales.js"></script>
 <style id="kd72style">
 #kdShell{padding:12px 16px 22px}.kdHomeHeader{display:flex;align-items:center;gap:11px;margin-bottom:16px}.kdMiniLogo{width:55px;height:55px;flex:0 0 55px}.kdMiniLogo .kdLogo{width:55px;height:55px;margin:0}.kdHomeBrand{min-width:0;flex:1}.kdHomeBrand strong{font-size:20px;letter-spacing:3px;white-space:nowrap}.kdHomeBrand small{display:block;font-size:9px;color:#999;letter-spacing:1px;margin-top:4px}.kdHomeProfile{background:none;border:0;padding:0;cursor:pointer}.kdHomeProfile .kdAvatar,.kdHomeProfile .kdAvatarPhoto{width:46px;height:46px;font-size:23px}.kdHomeTitle{text-align:center;margin:8px 0 15px}.kdHomeTitle strong{display:block;font-size:clamp(25px,7vw,35px);letter-spacing:3px}.kdHomeTitle small{display:block;color:#aaa;font-size:12px;margin-top:4px;letter-spacing:1px}.kdHomeScore{text-align:center;color:#aaa;font-size:13px;margin:9px 0 13px}.kdHomeScore span{color:#666;margin:0 6px}#kdShell .kdEconomy{margin:10px 0}#kdShell .kdBtn{min-height:54px;padding:11px 13px;margin:7px 0}#kdShell .kdFoot{margin-top:17px}.kdSplash{position:fixed;inset:0;z-index:99999;background:#050505;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;animation:kdSplashFade .4s ease 1.35s forwards;pointer-events:none}.kdSplash .kdLogo{width:min(55vw,190px);margin:0}.kdSplash strong{font-size:25px;letter-spacing:5px}.kdSplash small{font-size:11px;color:#999;letter-spacing:2px}@keyframes kdSplashFade{to{opacity:0;visibility:hidden}}@media(prefers-reduced-motion:reduce){.kdSplash{animation:none}}
 </style>
@@ -1000,4 +1074,4 @@ window.kdNativeEvent=function(event,payload){
 .kdMenuIcon svg{width:60%;height:60%}.kdMenuLabel{font-size:clamp(9px,2.4vw,13px);font-weight:800;letter-spacing:.2px;white-space:nowrap}
 .kdHotBottom .kdRewardBadge{right:8%;top:1%;padding:3px 6px;font-size:10px}.kdHotBottom.kdRewardAvailable{box-shadow:none!important;animation:none}.kdHotBottom.kdRewardAvailable .kdMenuIcon{box-shadow:0 0 15px #d9a74650}
 @media(max-height:500px){.kdHotBottom{gap:3px;padding-bottom:0}.kdMenuIcon{width:38px;height:32px;border-radius:8px}.kdMenuLabel{font-size:9px}}
-</style><link rel="stylesheet" href="board-focus.css"><link rel="stylesheet" href="obsidian-gold.css"><link rel="stylesheet" href="ux-polish.css"><link rel="stylesheet" href="gameplay-layout.css"><script src="daily-challenge.js"></script><script src="xp-cosmetics.js"></script><script src="workshop.js"></script><script src="learning.js"></script><script>window.kdCloud.bind();</script><script src="privacy-settings.js"></script><script src="board-focus.js"></script><script src="obsidian-gold.js"></script><link rel="stylesheet" href="light-feedback.css"><link rel="stylesheet" href="pipe-flow.css"><script src="connection-model.js"></script><script src="pipe-flow.js"></script><script src="light-feedback.js"></script><link rel="stylesheet" href="daily-treasure.css"><script src="daily-treasure.js"></script></body></html>
+</style><link rel="stylesheet" href="board-focus.css"><link rel="stylesheet" href="obsidian-gold.css"><link rel="stylesheet" href="ux-polish.css"><link rel="stylesheet" href="gameplay-layout.css"><link rel="stylesheet" href="theme-purchase.css"><script src="daily-challenge.js"></script><script src="xp-cosmetics.js"></script><script src="workshop.js"></script><script src="learning.js"></script><script>window.kdCloud.bind();</script><script src="privacy-settings.js"></script><script src="board-focus.js"></script><script src="obsidian-gold.js"></script><link rel="stylesheet" href="light-feedback.css"><link rel="stylesheet" href="pipe-flow.css"><script src="connection-model.js"></script><script src="pipe-flow.js"></script><script src="light-feedback.js"></script><link rel="stylesheet" href="daily-treasure.css"><script src="daily-treasure.js"></script></body></html>

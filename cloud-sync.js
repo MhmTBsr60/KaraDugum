@@ -66,7 +66,11 @@ function recoverGuest(){
  const j=read('kdCloud_guestReward',null);if(!j||recoveringGuest)return;
  recoveringGuest=true;
  try{
-  if(j.login){
+  if(j.themePurchase){
+   const {id,balance}=j.themePurchase;
+   put('kd64_coins',balance);
+   put('kd64_shopTheme_'+id,true);
+  }else if(j.login){
    const last=get('dailyDate','');
    // A newer committed date owns its streak and last reward. At the same
    // date replaying absolute targets is safe after interruption.
@@ -88,7 +92,60 @@ function recoverGuest(){
 }
 // Settle prepared guest credits before a later wallet read computes a purchase or reward.
 // If durable recovery still fails, block writes too; a fallback read must not overwrite the journal's balance.
-function settleGuestWallet(key){if(!model&&!recoveringGuest&&guestWalletKeys.has(key)&&rawGet.call(store,'kdCloud_guestReward')!==null)recoverGuest();}
+function settleGuestWallet(key){
+ if(model||recoveringGuest)return;
+ if(guestWalletKeys.has(key)){
+  if(rawGet.call(store,'kdCloud_guestReward')!==null)recoverGuest();
+ }else if(key.startsWith('kd64_shopTheme_')&&read('kdCloud_guestReward',null)?.themePurchase)recoverGuest();
+}
+
+// A confirmed purchase is durable before either the balance or the entitlement changes.
+let pendingThemeProjection=null;
+function repairThemeProjection(){
+ if(pendingThemeProjection?.owner!==uid)return;
+ const theme=pendingThemeProjection.theme;
+ put('kd64_coins',projection.wallet.coins);
+ if(projection.owned.has(theme)){
+  put('kd64_shopTheme_'+theme,true);
+  put('kd64_v9_'+theme,true);
+ }
+ pendingThemeProjection=null;
+}
+function themeQuote(id){
+ try{
+  if(model)repairThemeProjection();else recoverGuest();
+  return {
+   owner:uid,
+   balance:model?projection.wallet.coins:M.num(get('coins',0)),
+   owned:id==='gold'||(model?projection.owned.has(id):!!(get('shopTheme_'+id,false)||get('v9_'+id,false))),
+   ready:!model||ready,
+  };
+ }catch(error){console.warn('Theme purchase recovery is waiting for storage',error);return {owner:uid,error:'storage'};}
+}
+function purchaseTheme(theme,price,owner){
+ if(owner!==uid||theme==='gold'||!M.themes.includes(theme)||!Number.isSafeInteger(price)||price<=0)return 'changed';
+ const quote=themeQuote(theme);
+ if(quote.error)return quote.error;
+ if(quote.owned)return 'owned';
+ if(quote.balance<price)return 'funds';
+ if(!quote.ready)return 'sync';
+ const operation=model?'purchase:'+id():null;
+ try{
+  if(model)return transact(operation,{coins:-price},{theme})?'purchased':'sync';
+  put('kdCloud_guestReward',{themePurchase:{id:theme,balance:quote.balance-price}});
+  recoverGuest();
+  return 'purchased';
+ }catch(error){
+  if(model?.ops[operation]){
+   // The durable cloud operation can already be present even if its local projection failed.
+   projection=M.project(model);
+   pendingThemeProjection={owner:uid,theme};
+   schedule();
+  }
+  console.warn('Theme purchase is waiting for storage',error);
+  return 'storage';
+ }
+}
 
 // ISO calendar high-water mark: offline rollback/repeated dates cannot pay again.
 // This is not trusted time: forward clock jumps and cleared/edited local data require a server to prevent.
@@ -145,7 +202,7 @@ if(event==='error'&&status.includes('eşitleniyor')){status='Eşitleme bekliyor;
 function dayStat(date,k){if(!model)return 0;let n=M.num((model.root||model.proposal)?.dailyBase?.[date]?.[k]);for(const c of Object.values(model.counters))n+=M.num(c.days?.[date]?.[k]);return n;}
 function requestAd(kind){if(!['coins','hint'].includes(kind))return false;const native=window.KaraNative;if(typeof native?.rewardedAccountRequest==='function'){native.rewardedAccountRequest(kind,id(),uid||'');return true;}const legacy=kind==='hint'?'rewardedHint':'rewardedAd';if(typeof native?.[legacy]!=='function')return false;native[legacy]();return true;}
 window.kdSafeUpload=points=>{const n=window.KaraNative;if(n?.uploadForAccount&&uid)n.uploadForAccount(uid,points);else if(!n?.uploadForAccount&&n?.upload)n.upload(points);};
-window.kdEconomy={device:()=>actor,dayStat,active:()=>!!model,owner:()=>uid,ready:()=>ready,transact,addStat,newId:prefix=>prefix+':'+id(),creditFor,requestAd,shopDailyAvailable,claimShopDaily,claimLoginReward};window.kdCloud={activate,receive,exportFull,bind,statusCard,canSync,requestSync:()=>reconnectNeeded?reconnect():window.kdCloudSync?.(),changed:schedule,project:()=>projection,model:()=>model};
+window.kdEconomy={device:()=>actor,dayStat,active:()=>!!model,owner:()=>uid,ready:()=>ready,transact,addStat,newId:prefix=>prefix+':'+id(),creditFor,requestAd,shopDailyAvailable,claimShopDaily,claimLoginReward,themeQuote,purchaseTheme};window.kdCloud={activate,receive,exportFull,bind,statusCard,canSync,requestSync:()=>reconnectNeeded?reconnect():window.kdCloudSync?.(),changed:schedule,project:()=>projection,model:()=>model};
 Storage.prototype.getItem=function(key){if(this===store)settleGuestWallet(String(key));return rawGet.call(this,key);};
 Storage.prototype.setItem=function(key,value){if(this===store)settleGuestWallet(String(key));const before=store.getItem(key);rawSet.call(this,key,value);if(this===store&&!muted&&model&&before!==String(value)){if(['kd64_activeGame','kd64_dailyActiveGame'].includes(key)){if(Date.now()-lastBoardSchedule>=30000){lastBoardSchedule=Date.now();schedule();}}else if(M.stateKeys.some(k=>key===stateRaw(k))||['kd64_completed','kd64_best','kd64_level'].includes(key))schedule();}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&model){window.kdSetPaused?.(true);checkpoint();if(window.kdSignedIn)window.kdCloudSync?.();}else if(reconnectNeeded)reconnect();});window.addEventListener('pagehide',()=>{if(model){window.kdSetPaused?.(true);checkpoint();}});

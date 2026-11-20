@@ -1,0 +1,55 @@
+.kdThemePurchase {
+  box-sizing: border-box;
+  width: min(430px, calc(100% - 24px));
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid #b89957;
+  border-radius: 18px;
+  background: #141414;
+  color: #f7e6bd;
+  box-shadow: 0 18px 55px #000a, inset 0 0 0 3px #5c4828;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.kdThemePurchase::backdrop { background: #040506d9; }
+.kdThemePurchaseCard {
+  position: relative;
+  padding: 18px clamp(12px, 5vw, 24px);
+  background: radial-gradient(ellipse at top, #49361970, transparent 60%);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.kdThemePurchaseClose {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+.kdThemePurchaseGem .kdBlueCrystal { width: 25px; height: 29px; }
+.kdThemePurchase h2 { margin: 3px 0 8px; font-size: 20px; line-height: 1.25; }
+.kdThemePurchaseName { margin: 0 0 12px; font-size: 15px; font-weight: 700; color: #f9d981; }
+.kdThemePurchase dl { margin: 0; border: 1px solid #68522c; border-radius: 10px; background: #15181a; }
+.kdThemePurchase dl div { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; text-align: start; }
+.kdThemePurchase dl div + div { border-top: 1px solid #68522c; }
+.kdThemePurchase dt, .kdThemePurchase dd { min-width: 0; font-size: 13px; }
+.kdThemePurchase dd { margin: 0; text-align: end; font-weight: 700; }
+.kdThemePurchaseStatus { margin: 10px 0 0; color: #ffda9e; font-size: 13px; }
+.kdThemePurchaseActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.kdThemePurchase button {
+  min-height: 44px;
+  padding: 5px 7px;
+  border: 1px solid #a88a50;
+  border-radius: 9px;
+  color: #f7e6bd;
+  background: #252119;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+}
+.kdThemePurchase button:focus-visible { outline: 2px solid #ffe4a3; outline-offset: 2px; }
+.kdThemePurchase [data-theme-confirm] { border-color: #f3cf85; color: #261908; background: linear-gradient(#ffe3a3, #b98c45); font-weight: 800; }
+.kdThemePurchase [data-theme-confirm]:disabled { opacity: .55; }

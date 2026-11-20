@@ -3,7 +3,7 @@
   "normalizedCoreSha256": "6b16f40242955f695f490f2fd2c73b8d730c8707600e49ddac754181df96f3de",
   "protectedFiles": {
     "cloud-model.js": "f567310004cf0ce09540f10265bae8c7bb1e5946c2ca2539c768762213c5693f",
-    "cloud-sync.js": "99e1ec436d331041752acd18db5b9f48c5c5da0486c2f99012ec8ebbf57c30b9",
+    "cloud-sync.js": "e1c96e6dfd5b2989f18f99466fdf42d0640511e86762d4bc201fc05f1ae9dcac",
     "reward-receipts.js": "17d8df416d98d2294ea002f0d03765195541ca00e9e739a2a7b29f1a694750d1",
     "daily-challenge.js": "f48feabedef6bdb0504ac099ef937ce8fd552e3c8fc7c395965d1b1add4960de",
     "mechanic-progress.js": "c0c1b761a04053bebe050718a7477941426ed00cbbf1436fce9731790d267c5b",

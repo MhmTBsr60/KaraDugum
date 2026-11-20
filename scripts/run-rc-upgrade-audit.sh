@@ -11,8 +11,9 @@ audit() {
   local method="$1" report="$2"
   timeout 125s adb shell am instrument -w \
     -e class "com.orynexa.karadugum.PocoEnergyUpgradeAudit#$method" \
-    -e fromStyle energy-reference-3-poco -e fromVersion 6.50-poco-energy-test3 \
+    -e fromStyle energy-reference-3-poco -e fromVersion "${KD_PREVIOUS_TEST_VERSION:-6.50-poco-energy-test3}" \
     -e toVersion "$KD_TEST_VERSION" -e candidateCode "$KD_VERSION_CODE" \
+    -e themePurchaseAudit "${KD_THEME_PURCHASE_AUDIT:-false}" \
     com.orynexa.karadugum.test/androidx.test.runner.AndroidJUnitRunner > "dist/upgrade/$report"
   cat "dist/upgrade/$report"
   grep -F 'OK (1 test)' "dist/upgrade/$report"
@@ -24,3 +25,8 @@ audit verifyPreviousBeforeUpgrade restart.log
 adb shell am force-stop com.orynexa.karadugum
 timeout 45s adb install -r app/build/outputs/apk/release/app-release.apk
 audit verifyAfterInPlaceInstall candidate.log
+
+if [[ "${KD_THEME_PURCHASE_AUDIT:-false}" == true ]]; then
+  adb shell am force-stop com.orynexa.karadugum
+  audit verifyThemePurchaseAfterRestart purchase-restart.log
+fi

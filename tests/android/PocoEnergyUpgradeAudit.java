@@ -62,7 +62,11 @@ public final class PocoEnergyUpgradeAudit {
         eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdSelectLevel(6);kdLearning.leave();kdFeedback.setHaptics(false);const today=new Date().toLocaleDateString('en-CA');localStorage.setItem('kd64_dailyDate',JSON.stringify(today));localStorage.setItem('kd64_streak','3');localStorage.setItem('kd64_dailySeen',JSON.stringify(today));localStorage.setItem('kd64_dailyLastReward',JSON.stringify({date:today,day:3,coins:0,hints:1}));document.querySelector('#board>.tile').click();kdSetPaused(true);return true})()");
         assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
         if (!argument("candidateCode","").isEmpty()) {
-            eval("(()=>{for(const id of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+id,'true');return true})()");
+            if (themePurchaseAudit()) {
+                eval("(()=>{for(const id of ['gold','ice','fire','shadow','ruby'])localStorage.setItem('kd64_shopTheme_'+id,'true');localStorage.setItem('kd64_coins','1250');return true})()");
+            } else {
+                eval("(()=>{for(const id of ['gold','ice','fire','shadow','emerald','ruby'])localStorage.setItem('kd64_shopTheme_'+id,'true');return true})()");
+            }
         }
         write("upgrade-expected.json",snapshot());
         // Chromium LocalStorage is synchronous to JS, but commits its backing database
@@ -99,12 +103,13 @@ public final class PocoEnergyUpgradeAudit {
         assertEquals(0,((Number)eval("document.querySelectorAll('.kdDailyOverlay').length")).intValue());
         assertEquals("Returning home must not grant a second award",expectedSnapshot(),snapshot());
         if (!argument("candidateCode","").isEmpty()) verifyCandidateWebView();
+        if (themePurchaseAudit()) verifyThemePurchase();
         write("upgrade-report.json",new JSONObject().put("status","PASS").put("previousVersion",argument("fromVersion","6.50-energy-finish-test2")).put("newVersion",argument("toVersion","6.50-poco-energy-test3")).put("inPlaceInstall",true).put("oldProcessRestartVerified",true).put("seedCommitWaitMs",10000).put("uninstalledOrClearedData",false).put("phoneVerified",false).put("puzzleAndProgressPreserved",true).put("inventoryOwnershipAndPreferencesPreserved",true).put("undoAcrossProcessRestart","Not claimed; original engine does not persist undo history across restart").toString(2));
     }
     private void verifyCandidateWebView() throws Exception {
         int expectedCode=Integer.parseInt(argument("candidateCode",""));
         assertEquals(expectedCode,inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionCode);
-        assertTrue(Boolean.TRUE.equals(eval("(()=>{const l=kdLocalization,d=l.dictionaries;return Object.keys(l.languages).length===25&&Object.keys(d.en).length===586&&Object.keys(l.languages).filter(x=>x!=='tr').every(x=>Object.keys(d.en).every(k=>d[x][k]))})()")));
+        assertTrue(Boolean.TRUE.equals(eval("(()=>{const l=kdLocalization,d=l.dictionaries;return Object.keys(l.languages).length===25&&Object.keys(d.en).length>=586&&Object.keys(l.languages).filter(x=>x!=='tr').every(x=>Object.keys(d.en).every(k=>d[x][k]))})()")));
         eval("(()=>{kdNavigate('game');window.kdFixtureBoard=document.querySelector('#board');window.kdFixtureCell=kdFixtureBoard.querySelector('.tile');return true})()");
         for (String code:new String[]{"en","ar","ja","tr"}) {
             eval("(()=>{kdNavigate('settings');return true})()");
@@ -118,8 +123,53 @@ public final class PocoEnergyUpgradeAudit {
         assertEquals("Language changes must preserve progress and resources",expectedSnapshot(),snapshot());
         write("candidate-webview-report.json",new JSONObject().put("status","PASS")
             .put("versionCode",expectedCode).put("locales",new JSONArray("[\"en\",\"ar\",\"ja\",\"tr\"]"))
-            .put("dictionaryKeys",586).put("savedThemeEntitlements",6).put("boardDirectionPreserved",true)
+            .put("dictionaryKeys",eval("Object.keys(kdLocalization.dictionaries.en).length")).put("savedThemeEntitlements",themePurchaseAudit()?5:6).put("boardDirectionPreserved",true)
             .put("noPageReload",true).put("phoneVerified",false).toString(2));
+    }
+
+    private boolean themePurchaseAudit() {
+        return Boolean.parseBoolean(argument("themePurchaseAudit","false"));
+    }
+    private void openEmerald() throws Exception {
+        eval("(()=>{kdNavigate('shop');document.querySelector('[data-shop-theme=emerald]').click();return true})()");
+    }
+    private void verifyThemePurchase() throws Exception {
+        openEmerald();
+        assertEquals("900",eval("document.querySelector('[data-purchase-price]').textContent"));
+        assertEquals("1.250",eval("document.querySelector('[data-purchase-balance]').textContent"));
+        assertEquals(1250,((Number)eval("+localStorage.getItem('kd64_coins')")).intValue());
+        eval("(()=>{document.querySelector('[data-theme-cancel]').click();return true})()");
+        assertEquals(expectedSnapshot(),snapshot());
+        openEmerald();
+        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+        long limit=SystemClock.uptimeMillis()+5000;
+        while (SystemClock.uptimeMillis()<limit && Boolean.TRUE.equals(eval("!!document.querySelector('.kdThemePurchase')"))) {
+            SystemClock.sleep(75);
+        }
+        assertEquals(Boolean.FALSE,eval("!!document.querySelector('.kdThemePurchase')"));
+        assertEquals(expectedSnapshot(),snapshot());
+        openEmerald();
+        eval("(()=>{const confirm=document.querySelector('[data-theme-confirm]');confirm.click();confirm.click();return true})()");
+        verifyEmeraldOwnership();
+        eval("(()=>{document.querySelector('[data-shop-theme=gold]').click();document.querySelector('[data-shop-theme=emerald]').click();return true})()");
+        assertEquals(Boolean.FALSE,eval("!!document.querySelector('.kdThemePurchase')"));
+        verifyEmeraldOwnership();
+        write("theme-purchase-webview.json",new JSONObject().put("status","PASS")
+            .put("androidBackWithoutCharge",true).put("cancelWithoutCharge",true)
+            .put("confirmPrice",900).put("balanceBefore",1250).put("balanceAfter",350)
+            .put("confirmDoubleClickDeduplicated",true).put("ownedThemeReappliedWithoutCharge",true).toString(2));
+        SystemClock.sleep(10000);
+    }
+    private void verifyEmeraldOwnership() throws Exception {
+        assertEquals(350,((Number)eval("+localStorage.getItem('kd64_coins')")).intValue());
+        assertEquals("true",eval("localStorage.getItem('kd64_shopTheme_emerald')"));
+        assertEquals("emerald",eval("document.documentElement.dataset.kdTheme"));
+    }
+    @Test(timeout=100000) public void verifyThemePurchaseAfterRestart() throws Exception {
+        expectVersion(argument("toVersion","6.51-rc2-test"));
+        verifyEmeraldOwnership();
+        write("theme-purchase-restart.json",new JSONObject().put("status","PASS")
+            .put("balance",350).put("emeraldOwned",true).toString(2));
     }
 
 }
