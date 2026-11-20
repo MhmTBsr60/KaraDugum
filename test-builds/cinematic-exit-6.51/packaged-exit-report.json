@@ -1,0 +1,665 @@
+{
+  "status": "PASS",
+  "layouts": [
+    {
+      "code": "tr",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "tr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "tr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "tr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "tr",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "en",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "en",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "en",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "en",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "en",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "zh",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "zh",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "zh",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "zh",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "zh",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "hi",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "hi",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "hi",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "hi",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "hi",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "es",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "es",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "es",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "es",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "es",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ar",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ar",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ar",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ar",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ar",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "fr",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "fr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "fr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "fr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "fr",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "bn",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "bn",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "bn",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "bn",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "bn",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "pt",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "pt",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "pt",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "pt",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "pt",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ru",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ru",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ru",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ru",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ru",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ur",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ur",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ur",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ur",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ur",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "id",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "id",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "id",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "id",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "id",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "de",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "de",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "de",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "de",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "de",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ja",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ja",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ja",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ja",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ja",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "mr",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "mr",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "mr",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "mr",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "mr",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "vi",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "vi",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "vi",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "vi",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "vi",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "te",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "te",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "te",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "te",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "te",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ha",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ha",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ha",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ha",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ha",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ta",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ta",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ta",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ta",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ta",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "pa",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "pa",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "pa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "pa",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "pa",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "sw",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "sw",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "sw",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "sw",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "sw",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "tl",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "tl",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "tl",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "tl",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "tl",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "fa",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "fa",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "fa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "fa",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "fa",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "ko",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "ko",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "ko",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "ko",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "ko",
+      "width": 540,
+      "height": 1080
+    },
+    {
+      "code": "jv",
+      "width": 244,
+      "height": 433
+    },
+    {
+      "code": "jv",
+      "width": 320,
+      "height": 568
+    },
+    {
+      "code": "jv",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "code": "jv",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "code": "jv",
+      "width": 540,
+      "height": 1080
+    }
+  ],
+  "exits": [
+    "second Back",
+    "cancel",
+    "X",
+    "Escape",
+    "backdrop",
+    "retry after save failure"
+  ],
+  "undo": [
+    {
+      "level": 6,
+      "account": false,
+      "daily": false,
+      "confirmed": true,
+      "boardMatches": true,
+      "undoReplayed": true
+    },
+    {
+      "level": 151,
+      "account": true,
+      "daily": false,
+      "confirmed": true,
+      "boardMatches": true,
+      "undoReplayed": true
+    },
+    {
+      "level": 12,
+      "account": false,
+      "daily": true,
+      "confirmed": true,
+      "boardMatches": true,
+      "undoReplayed": true
+    }
+  ],
+  "errors": []
+}

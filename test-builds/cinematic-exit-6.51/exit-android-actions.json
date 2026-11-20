@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "gameBackReturnsHome": true,
+  "backKeyOpenAndClose": true,
+  "edgeGestureOpen": true,
+  "cancelAndCloseStayInGame": true,
+  "confirmFinishedActivity": true
+}
