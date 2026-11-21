@@ -1,15 +1,16 @@
 /* A spotlight over the live game: it never occupies a layout row or shrinks the board. */
 .kdOnboardingOverlay{position:fixed;inset:0;z-index:25500;pointer-events:none;color:#f5dfad}
-.kdTutorialShade{position:fixed;background:#020609bd;pointer-events:auto}
+.kdTutorialShade{position:fixed;background:#020609bd;pointer-events:none}
 .kdTutorialSpotlight{position:fixed;box-sizing:border-box;border:1px solid #f3d78d;border-radius:11px;box-shadow:0 0 0 3px #e6bb4a1a,0 0 18px #dfb34d44;pointer-events:none}
 .kdTutorialTarget{position:fixed;pointer-events:auto;min-width:44px;min-height:44px;padding:0;border:0;border-radius:8px;background:transparent;cursor:pointer;touch-action:manipulation;color:transparent}
 .kdTutorialTarget:focus-visible{outline:2px solid #fff1b8;outline-offset:3px}
-.kdOnboardingCard{position:fixed;box-sizing:border-box;pointer-events:auto;overflow:auto;overscroll-behavior:contain;padding:18px;border:1px solid #ae8b4e;border-radius:17px;background:linear-gradient(145deg,#252218f7,#0b1216fc);box-shadow:0 12px 38px #0009;text-align:center;scrollbar-width:thin}
-.kdOnboardingCard>.kdEyebrow{display:block;font:700 10px/1.4 system-ui;letter-spacing:1px;color:#c5ac72}
+.kdOnboardingCard{position:fixed;box-sizing:border-box;display:flex;flex-direction:column;pointer-events:auto;overflow:hidden;padding:18px;border:1px solid #ae8b4e;border-radius:17px;background:linear-gradient(145deg,#252218f7,#0b1216fc);box-shadow:0 12px 38px #0009;text-align:center}
+.kdTutorialCopy{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.kdTutorialCopy>.kdEyebrow{display:block;font:700 10px/1.4 system-ui;letter-spacing:1px;color:#c5ac72}
 .kdOnboardingCard h2{margin:8px 0;font:600 24px/1.2 Georgia,serif;color:#f5da94;overflow-wrap:anywhere}
 .kdOnboardingCard p{margin:8px 0;font:14px/1.45 system-ui;overflow-wrap:anywhere}
 .kdOnboardingCard .kdOnboardingSafe{font-size:11px;color:#b7b5a4}
-.kdTutorialNavigation{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:14px}
+.kdTutorialNavigation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));flex:none;gap:7px;margin-top:14px}
 .kdOnboardingCard button{min-width:44px;min-height:44px;padding:8px 5px;border:1px solid #92733d;border-radius:10px;font:600 12px/1.25 system-ui;overflow-wrap:anywhere;cursor:pointer;touch-action:manipulation}
 .kdOnboardingSecondary{background:#10181b;color:#e6cb8c}.kdOnboardingPrimary{background:linear-gradient(125deg,#f3dba1,#b88a42);color:#211a10}
 .kdOnboardingCard button:disabled{opacity:.42;cursor:default}.kdOnboardingCard :focus-visible{outline:2px solid #fff1b8;outline-offset:2px}

@@ -288,6 +288,93 @@ public final class PocoEnergyUpgradeAudit {
             .put("phoneVerified",false).toString(2));
     }
 
+    private void tapWeb(String selector) throws Exception {
+        String query=JSONObject.quote(selector);
+        JSONArray point=(JSONArray)eval("(()=>{const e=document.querySelector("+query+"),r=e.getBoundingClientRect();"+
+            "const x=r.left+r.width/2,y=r.top+r.height/2;return [x,y,innerWidth,innerHeight,e.contains(document.elementFromPoint(x,y))]})()");
+        assertTrue("Touchable element expected: "+selector,point.getBoolean(4));
+        int[] origin=new int[2];float[] screenPoint=new float[2];
+        inst.runOnMainSync(()->{
+            web.getLocationOnScreen(origin);
+            screenPoint[0]=origin[0]+(float)(point.optDouble(0)*web.getWidth()/point.optDouble(2));
+            screenPoint[1]=origin[1]+(float)(point.optDouble(1)*web.getHeight()/point.optDouble(3));
+        });
+        long down=SystemClock.uptimeMillis();
+        for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
+            android.view.MotionEvent event=android.view.MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,screenPoint[0],screenPoint[1],0);
+            event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
+            try{inst.sendPointerSync(event);}finally{event.recycle();}
+        }
+    }
+
+    private void expectTutorialStep(int step) throws Exception {
+        long deadline=SystemClock.uptimeMillis()+5000;
+        do {
+            Object value=eval("document.querySelector('#kdOnboardingOverlay')?.dataset.step||'0'");
+            if(String.valueOf(step).equals(value))return;
+            SystemClock.sleep(50);
+        }while(SystemClock.uptimeMillis()<deadline);
+        fail("Tutorial step "+step+" was not displayed");
+    }
+
+    @Test(timeout=100000) public void verifyTutorial114() throws Exception {
+        expectVersion("6.51");
+        tapWeb(".kdHotPlay");expectTutorialStep(1);
+        assertEquals(Boolean.TRUE,eval("document.querySelector('[data-onboard-next]').disabled"));
+        tapWeb("[data-onboard-next]");expectTutorialStep(1);
+        tapWeb(".kdTutorialTarget");tapWeb("[data-onboard-next]");expectTutorialStep(2);
+        tapWeb("[data-onboard-skip]");expectTutorialStep(0);
+        write("tutorial-baseline-114.json",new JSONObject().put("status","PASS").put("baselineReproduced",true)
+            .put("nextOnlyWorkedAfterPractice",true).toString(2));
+    }
+
+    @Test(timeout=100000) public void verifyTutorialFresh115() throws Exception {
+        expectVersion("6.52");
+        assertEquals(115,inst.getTargetContext().getPackageManager().getPackageInfo("com.orynexa.karadugum",0).versionCode);
+        tapWeb(".kdHotPlay");expectTutorialStep(1);
+        String before=snapshot();
+        assertEquals(Boolean.TRUE,eval("!document.getElementById('kdGame').inert"));
+        tapWeb("[data-onboard-next]");expectTutorialStep(2);
+        tapWeb("[data-onboard-back]");expectTutorialStep(1);
+        String tile=(String)eval("(()=>{for(const tile of document.querySelectorAll('#board>.tile:not(.good)')){const r=tile.getBoundingClientRect();"+
+            "if(Number(tile.dataset.pipe)<15&&tile.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))return tile.dataset.i;}return '';})()");
+        assertFalse("Ordinary board tiles must be touchable during step one",tile.isEmpty());
+        String selector="#board>.tile[data-i=\""+tile+"\"]";
+        tapWeb(selector);
+        assertEquals(Boolean.TRUE,eval("!!document.querySelector("+JSONObject.quote(selector+" > .kdTutorialDemoTile")+")"));
+        assertEquals(before,snapshot());
+        for(int step=2;step<=4;step++){
+            tapWeb("[data-onboard-next]");expectTutorialStep(step);
+            tapWeb(".kdTutorialTarget");
+            assertEquals(Boolean.TRUE,eval("document.querySelector('#kdOnboardingOverlay').classList.contains('kdTutorialDidAct')"));
+            assertEquals(before,snapshot());
+        }
+        tapWeb("[data-onboard-next]");expectTutorialStep(0);
+        assertEquals(before,snapshot());
+        assertEquals(Boolean.TRUE,eval("Object.keys(localStorage).some(k=>k.startsWith('kd_onboarding_v1_')&&JSON.parse(localStorage.getItem(k)).completed)"));
+        eval("(()=>{kdNavigate('home');return true;})()");
+        tapWeb(".kdHotPlay");SystemClock.sleep(400);expectTutorialStep(0);
+        tapWeb(selector);
+        assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        write("tutorial-fresh-115.json",new JSONObject().put("status","PASS").put("apiLevel",android.os.Build.VERSION.SDK_INT)
+            .put("realTouch",true).put("fourSteps",true).put("nextWithoutPractice",true).put("back",true)
+            .put("practiceDoesNotMutateSave",true).put("boardPlayableAfterCompletion",true).toString(2));
+    }
+
+    @Test(timeout=100000) public void verifyTutorialExisting115() throws Exception {
+        expectVersion("6.52");
+        String before=snapshot();assertEquals(expectedSnapshot(),before);
+        tapWeb(".kdHotPlay");SystemClock.sleep(400);expectTutorialStep(0);
+        assertEquals(before,snapshot());
+        eval("(()=>{kdNavigate('settings');return true;})()");
+        tapWeb("[data-onboard-repeat]");expectTutorialStep(1);
+        tapWeb("[data-onboard-skip]");expectTutorialStep(0);
+        assertEquals(Boolean.TRUE,eval("!!document.querySelector('.kdSettingsScreen')"));
+        assertEquals(before,snapshot());
+        write("tutorial-existing-115.json",new JSONObject().put("status","PASS").put("apiLevel",android.os.Build.VERSION.SDK_INT)
+            .put("existingDoesNotAutoOpen",true).put("settingsReplayAndSkip",true).put("savedBoardAndPurchasesPreserved",true).toString(2));
+    }
+
     @Test public void verifyReceiptWriteFailure() throws Exception {
         expectVersion(argument("toVersion", "6.51-reward-safety-test"));
         class FailingStore implements RewardReceiptQueue.Store {
