@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "applicationId": "com.orynexa.karadugum",
+  "previousVersion": "6.51 (114)",
+  "productionVersion": "6.52 (115)",
+  "previousAabSha256": "e253770e2424858a8066db27660f27a6e0abb21be521516acd9d5018c22f2efe",
+  "productionAabSha256": "a4b503795197927c209174ca2014ff7293ce3d33474a6d0a23742f5093e7e67b",
+  "uploadCertificateSha256": "351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e",
+  "previousSignedEntries": 280,
+  "productionSignedEntries": 280,
+  "sameProductionAdUnitsVerified": true,
+  "productionAdUnitCount": 2,
+  "sampleAdIdsInDex": false,
+  "manifestChanges": [
+    "versionName",
+    "versionCode"
+  ],
+  "webAssetsChangedSince114": [
+    "onboarding.css",
+    "onboarding.js"
+  ],
+  "approvedTestWebAssetsByteMatched": 62,
+  "nativeReceiptQueueRetained": true
+}
