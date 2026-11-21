@@ -38,6 +38,7 @@ jobs:
           run-id: '44730919930'
           path: ${{ runner.temp }}/baseline-114
       - name: Build and verify signed TEST APK with lint
+        id: build_test
         env:
           KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -97,14 +98,14 @@ jobs:
           emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
           script: bash scripts/run-onboarding-android-audit.sh
       - name: Stage test-only package
-        if: matrix.scenario == 'fresh'
+        if: always() && matrix.scenario == 'fresh' && steps.build_test.outcome == 'success'
         run: |
           mkdir -p dist/tutorial-apk
           cp app/build/outputs/apk/release/app-release.apk dist/tutorial-apk/KaraDugum-6.52-115-TEST.apk
           (cd dist/tutorial-apk && sha256sum *.apk > SHA256SUMS)
           git rev-parse HEAD > dist/tutorial-apk/source-commit.txt
       - uses: actions/upload-artifact@v4
-        if: matrix.scenario == 'fresh'
+        if: always() && matrix.scenario == 'fresh' && steps.build_test.outcome == 'success'
         with:
           name: KaraDugum-6.52-115-TEST-APK
           path: dist/tutorial-apk/

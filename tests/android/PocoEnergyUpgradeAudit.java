@@ -339,6 +339,15 @@ public final class PocoEnergyUpgradeAudit {
         fail("Tutorial step "+step+" was not displayed");
     }
 
+    private void expectWebCondition(String expression, String message) throws Exception {
+        long deadline=SystemClock.uptimeMillis()+5000;
+        do {
+            if(Boolean.TRUE.equals(eval(expression)))return;
+            SystemClock.sleep(50);
+        }while(SystemClock.uptimeMillis()<deadline);
+        fail(message);
+    }
+
     @Test(timeout=100000) public void verifyTutorial114() throws Exception {
         expectVersion("6.51");
         tapWeb(".kdHotPlay");expectTutorialStep(1);
@@ -363,12 +372,14 @@ public final class PocoEnergyUpgradeAudit {
         assertFalse("Ordinary board tiles must be touchable during step one",tile.isEmpty());
         String selector="#board>.tile[data-i=\""+tile+"\"]";
         tapWeb(selector);
-        assertEquals(Boolean.TRUE,eval("!!document.querySelector("+JSONObject.quote(selector+" > .kdTutorialDemoTile")+")"));
+        expectWebCondition("!!document.querySelector("+JSONObject.quote(selector+" > .kdTutorialDemoTile")+")",
+            "The ordinary tile did not display its practice rotation");
         assertEquals(before,snapshot());
         for(int step=2;step<=4;step++){
             tapWeb("[data-onboard-next]");expectTutorialStep(step);
             tapWeb(".kdTutorialTarget");
-            assertEquals(Boolean.TRUE,eval("document.querySelector('#kdOnboardingOverlay').classList.contains('kdTutorialDidAct')"));
+            expectWebCondition("document.querySelector('#kdOnboardingOverlay').classList.contains('kdTutorialDidAct')",
+                "The practice action did not react on step "+step);
             assertEquals(before,snapshot());
         }
         tapWeb("[data-onboard-next]");expectTutorialStep(0);
@@ -377,7 +388,7 @@ public final class PocoEnergyUpgradeAudit {
         eval("(()=>{kdNavigate('home');return true;})()");
         tapWeb(".kdHotPlay");SystemClock.sleep(400);expectTutorialStep(0);
         tapWeb(selector);
-        assertEquals(1,((JSONObject)eval("kdGetLearningState()")).getInt("moves"));
+        expectWebCondition("kdGetLearningState().moves===1","The board must accept a real move after the tutorial closes");
         write("tutorial-fresh-115.json",new JSONObject().put("status","PASS").put("apiLevel",android.os.Build.VERSION.SDK_INT)
             .put("realTouch",true).put("fourSteps",true).put("nextWithoutPractice",true).put("back",true)
             .put("practiceDoesNotMutateSave",true).put("boardPlayableAfterCompletion",true).toString(2));
