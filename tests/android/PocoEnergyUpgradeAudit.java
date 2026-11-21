@@ -290,20 +290,42 @@ public final class PocoEnergyUpgradeAudit {
 
     private void tapWeb(String selector) throws Exception {
         String query=JSONObject.quote(selector);
-        JSONArray point=(JSONArray)eval("(()=>{const e=document.querySelector("+query+"),r=e.getBoundingClientRect();"+
-            "const x=r.left+r.width/2,y=r.top+r.height/2;return [x,y,innerWidth,innerHeight,e.contains(document.elementFromPoint(x,y))]})()");
-        assertTrue("Touchable element expected: "+selector,point.getBoolean(4));
+        long deadline=SystemClock.uptimeMillis()+10000;
+        String previous=null;
+        JSONArray point=null;
+        do {
+            boolean[] focused={false};
+            inst.runOnMainSync(()->focused[0]=web.hasWindowFocus());
+            Object result=eval("(()=>{const e=document.querySelector("+query+");if(!e)return null;const r=e.getBoundingClientRect();"+
+                "const x=r.left+r.width/2,y=r.top+r.height/2;return [x,y,innerWidth,innerHeight,e.contains(document.elementFromPoint(x,y))]})()");
+            if(focused[0]&&result instanceof JSONArray&&((JSONArray)result).getBoolean(4)){
+                if(result.toString().equals(previous)){point=(JSONArray)result;break;}
+                previous=result.toString();
+            }else previous=null;
+            SystemClock.sleep(110);
+        }while(SystemClock.uptimeMillis()<deadline);
+        assertNotNull("Focused WebView with a stable touch target expected: "+selector,point);
+        CountDownLatch painted=new CountDownLatch(1);
+        inst.runOnMainSync(()->{
+            web.postVisualStateCallback(0,new WebView.VisualStateCallback(){
+                @Override public void onComplete(long requestId){painted.countDown();}
+            });
+            web.invalidate();
+        });
+        assertTrue("WebView did not present the touch target: "+selector,painted.await(5,TimeUnit.SECONDS));
+        JSONArray stable=point;
         int[] origin=new int[2];float[] screenPoint=new float[2];
         inst.runOnMainSync(()->{
             web.getLocationOnScreen(origin);
-            screenPoint[0]=origin[0]+(float)(point.optDouble(0)*web.getWidth()/point.optDouble(2));
-            screenPoint[1]=origin[1]+(float)(point.optDouble(1)*web.getHeight()/point.optDouble(3));
+            screenPoint[0]=origin[0]+(float)(stable.optDouble(0)*web.getWidth()/stable.optDouble(2));
+            screenPoint[1]=origin[1]+(float)(stable.optDouble(1)*web.getHeight()/stable.optDouble(3));
         });
         long down=SystemClock.uptimeMillis();
         for(int action:new int[]{android.view.MotionEvent.ACTION_DOWN,android.view.MotionEvent.ACTION_UP}){
             android.view.MotionEvent event=android.view.MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,screenPoint[0],screenPoint[1],0);
             event.setSource(android.view.InputDevice.SOURCE_TOUCHSCREEN);
-            try{inst.sendPointerSync(event);}finally{event.recycle();}
+            try{assertTrue("Android rejected the touch: "+selector,inst.getUiAutomation().injectInputEvent(event,true));}
+            finally{event.recycle();}
         }
     }
 

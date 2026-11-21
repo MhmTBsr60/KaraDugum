@@ -3,6 +3,8 @@ set -euo pipefail
 adb shell cmd connectivity airplane-mode enable
 adb shell svc wifi disable
 adb shell svc data disable
+adb shell input keyevent KEYCODE_WAKEUP
+adb shell wm dismiss-keyguard
 adb shell settings put secure immersive_mode_confirmations confirmed
 mkdir -p dist/tutorial
 remote_files=/sdcard/Android/data/com.orynexa.karadugum/files/webview-audit
