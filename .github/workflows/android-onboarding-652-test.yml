@@ -58,6 +58,9 @@ jobs:
           else
             tail -n 120 "$RUNNER_TEMP/build.log"
             grep -Eq 'Could not (find junit:junit:4.13.2|resolve.*https?://)|Received status code (429|50[0-9])' "$RUNNER_TEMP/build.log"
+            if grep -q 'Received status code 429' "$RUNNER_TEMP/build.log"; then
+              sed -i "s|mavenCentral()|maven { url = uri('https://maven-central.storage-download.googleapis.com/maven2/') }|g" settings.gradle
+            fi
             gradle --no-daemon --refresh-dependencies --stacktrace "${tasks[@]}"
           fi
           apk=app/build/outputs/apk/release/app-release.apk
