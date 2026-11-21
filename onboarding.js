@@ -82,13 +82,14 @@
   const next=button('İleri',()=>step===3?finish(true):move(1),'kdOnboardingPrimary');next.dataset.onboardNext='1';
   const skip=button('Atla',()=>finish(false),'kdOnboardingSecondary');skip.dataset.onboardSkip='1';
   copy.append(eyebrow,title,description,safe);
-  const banner=byId('kdSaveHealth');if(banner)copy.append(banner);
   nav.append(back,next,skip);card.append(copy,nav);
  }
  function draw(){
   if(!overlay)return;
   paintBoard();
   const card=overlay.querySelector('.kdOnboardingCard');
+  const banner=byId('kdSaveHealth'),copy=card.querySelector('.kdTutorialCopy');
+  if(banner&&banner.parentElement!==copy)copy.append(banner);
   card.querySelector('.kdEyebrow').textContent=t('ÖĞRETİCİ')+' · '+(step+1)+' / 4';
   card.querySelector('h2').textContent=t(titles[step]);
   byId('kdOnboardingDescription').textContent=t(descriptions[step]);
