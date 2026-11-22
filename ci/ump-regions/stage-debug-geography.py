@@ -34,6 +34,12 @@ source = source.replace(start, replacement)
 account_start = "        if (audience.allowOnlineAccounts()) {"
 assert source.count(account_start) >= 2
 source = source.replace(account_start, "        if (getIntent().getStringExtra(\"kdUmpRegion\") == null && audience.allowOnlineAccounts()) {")
+# The audit asserts only the settings entry and the actual UMP privacy-options
+# form. Keep the separate first-launch consent dialog out of this narrow case.
+startup_form = """                UserMessagingPlatform.loadAndShowConsentFormIfRequired(MainActivity.this,
+                    error -> completion.complete(error == null ? null : error.getMessage()));"""
+assert source.count(startup_form) == 1
+source = source.replace(startup_form, "                completion.complete(null);")
 activity.write_text(source)
 gradle = Path("app/build.gradle")
 source = gradle.read_text()
