@@ -1,0 +1,68 @@
+name: KaraDugum signed UMP TEST APK
+on:
+  push:
+    branches: [ci/ump-test-9dc9c61]
+    paths: [.github/workflows/android-ump-signed-test.yml]
+  workflow_dispatch:
+jobs:
+  build:
+    if: github.ref == 'refs/heads/ci/ump-test-9dc9c61'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      KD_SOURCE: 9dc9c61fda0283f6e1f73f8f201e2f0217278a08
+      KD_EXPECTED_SIGNER: 351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e
+      KD_VERSION_NAME: '6.52'
+      KD_VERSION_CODE: '115'
+      KD_TEST_VERSION: '6.52'
+      KD_ADS_MODE: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.KD_SOURCE }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build, lint and verify the exact TEST commit
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$KD_SOURCE"
+          test -n "$KEYSTORE_B64"
+          bash scripts/prepare-android-rc.sh
+          umask 077
+          trap 'rm -f app/karadugum.jks' EXIT
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          unset KEYSTORE_B64
+          out=dist/ump-test
+          mkdir -p "$out"
+          printf '%s\n' "$KD_EXPECTED_SIGNER" > "$out/expected-signer-sha256.txt"
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" |
+            sha256sum | awk '{print $1}' | cmp - "$out/expected-signer-sha256.txt"
+          gradle --no-daemon :app:assembleRelease :app:lintRelease :app:exportReleaseSdkDependencies :app:checkReleaseAarMetadata | tee "$out/build-lint.log"
+          apk=app/build/outputs/apk/release/app-release.apk
+          bash scripts/verify-apk-signature.sh "$apk" "$out/expected-signer-sha256.txt" | tee "$out/signature.txt"
+          python3 scripts/verify-test-apk.py "$apk" | tee "$out/test-package.txt"
+          python3 scripts/verify-rc-assets.py --package "$apk" --report "$out/assets.json"
+          node scripts/verify-sdk-dependencies.cjs build/reports/sdk/release-sdk-dependencies.json "$KD_VERSION_NAME" "$KD_VERSION_CODE" | tee "$out/sdk-verification.txt"
+          cp build/reports/sdk/release-sdk-dependencies.json "$out/"
+          cp app/build/reports/lint-results-release.xml "$out/"
+          cp "$apk" "$out/KaraDugum-6.52-115-UMP-TEST.apk"
+          (cd "$out" && sha256sum *.apk > SHA256SUMS)
+          printf '%s\n' "$KD_SOURCE" > "$out/source-commit.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.52-115-UMP-signed-TEST
+          path: dist/ump-test/
+          if-no-files-found: error
