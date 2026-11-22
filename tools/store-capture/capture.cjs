@@ -41,6 +41,10 @@ async function run(){
       }
       async function shot(num,name,selector){
         await p.locator(selector).first().waitFor({state:'visible'});await prepare();
+        if (lang==='ar' && name==='levels') {
+          await p.locator('.kdChapterTabs').evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));
+          await p.waitForFunction(()=>Math.abs(document.querySelector('.kdChapterTabs').getBoundingClientRect().top)<12);
+        }
         const data=await p.evaluate(()=>({lang:document.documentElement.lang,dir:document.documentElement.dir,width:document.documentElement.scrollWidth,viewport:innerWidth,text:document.body.innerText.slice(0,2200),broken:[...document.images].filter(i=>i.getBoundingClientRect().width>0&&!i.naturalWidth).map(i=>i.getAttribute('src'))}));
         assert.equal(data.lang,lang);assert.equal(data.dir,lang==='ar'?'rtl':'ltr');assert(data.width<=data.viewport+2,locale+'/'+name+' page overflow');assert.deepEqual(data.broken,[]);
         if(name==='shop'){
