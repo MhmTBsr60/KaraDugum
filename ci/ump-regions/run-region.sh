@@ -5,7 +5,7 @@ mkdir -p "$kd_output"
 record_evidence() {
   adb logcat -d -s KdUmpRegion KaraDugum UserMessagingPlatform > "$kd_output/ump-logcat.txt" || true
   adb exec-out screencap -p > "$kd_output/end.png" || true
-  for kind in settings options-form not-required startup; do
+  for kind in settings options-form options-attempt not-required startup; do
     if adb shell run-as com.orynexa.karadugum test -f "files/$KD_REGION-$kind.png"; then
       adb exec-out run-as com.orynexa.karadugum cat "files/$KD_REGION-$kind.png" > "$kd_output/$KD_REGION-$kind.png"
     fi
@@ -15,6 +15,7 @@ trap record_evidence EXIT
 adb shell pm list packages com.orynexa.karadugum | if grep -q .; then exit 1; fi
 # The emulator starts fresh. Dismiss the OS-only immersion tutorial before running the app.
 adb shell settings put secure immersive_mode_confirmations confirmed
+adb shell settings put secure anr_show_background 0
 adb install source/app/build/outputs/apk/debug/app-debug.apk
 adb install source/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 set +e

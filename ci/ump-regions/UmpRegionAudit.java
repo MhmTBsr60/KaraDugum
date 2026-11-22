@@ -91,15 +91,28 @@ public final class UmpRegionAudit {
             assertEquals("UMP must require the options entry", required, status);
             String ready = "(() => { const b = document.querySelector('[data-privacy-options]'); return !b.hidden && !b.disabled && b.getClientRects().length > 0; })()";
             waitFor("Options button visible and enabled", 12000, () -> js(ready).equals(Boolean.TRUE));
+            waitFor("Unobstructed settings button and Android focus", 25000, () -> {
+                if (!hasGameWindowFocus()) {
+                    clickLabels(ui.getRootInActiveWindow(), "got it|wait");
+                    return false;
+                }
+                return js("(() => {"
+                    + "document.querySelector('.kdDailyClose')?.click();"
+                    + "const b=document.querySelector('[data-privacy-options]');"
+                    + "const r=b.getBoundingClientRect();"
+                    + "return document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.closest('[data-privacy-options]')===b;"
+                    + "})()").equals(Boolean.TRUE);
+            });
             screenshot(context, region + "-settings");
 
-            assertTrue("Game window focused before touch", hasGameWindowFocus());
             tapPrivacyButton();
             try {
                 waitFor("Native UMP options dialog presented", 15000, this::optionFormShowing);
             } catch (AssertionError firstAttempt) {
                 // UMP may asynchronously reload its cached options form after a transient load error.
+                screenshot(context, region + "-options-attempt");
                 if (gateFormOpen() || !js(ready).equals(Boolean.TRUE)) throw firstAttempt;
+                waitFor("Game window recovered before retry", 4000, this::hasGameWindowFocus);
                 Log.i(TAG, "Retrying a completed SDK load attempt");
                 tapPrivacyButton();
                 waitFor("Native UMP options dialog presented on retry", 15000, this::optionFormShowing);
@@ -201,17 +214,22 @@ public final class UmpRegionAudit {
     }
 
     private boolean clickConsentDecision(AccessibilityNodeInfo node) {
+        return clickLabels(node, "got it|wait|do not consent|don.t consent|reject all|reject")
+            || clickLabels(node, "confirm choices|save preferences|consent|accept all|agree|continue|confirm");
+    }
+
+    private boolean clickLabels(AccessibilityNodeInfo node, String allowed) {
         if (node == null) return false;
         CharSequence text = node.getText();
         if (text == null) text = node.getContentDescription();
         String label = text == null ? "" : text.toString().trim().toLowerCase(Locale.ROOT);
-        if (label.matches("got it|do not consent|don.t consent|reject all|reject|confirm choices|save preferences|consent|accept all|agree|continue|confirm")) {
+        if (label.matches(allowed)) {
             for (AccessibilityNodeInfo button = node; button != null; button = button.getParent()) {
                 if (button.isClickable() && button.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return true;
             }
         }
         for (int i = 0; i < node.getChildCount(); i++) {
-            if (clickConsentDecision(node.getChild(i))) return true;
+            if (clickLabels(node.getChild(i), allowed)) return true;
         }
         return false;
     }

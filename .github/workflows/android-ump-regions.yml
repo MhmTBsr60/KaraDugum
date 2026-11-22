@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [eea, us]
+        region: [eea]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,7 +58,7 @@ jobs:
           arch: x86_64
           profile: pixel_7
           disable-animations: false
-          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 3072 -cores 4 -skin 720x1600 -dpi-device 320
           script: bash audit/ci/ump-regions/run-region.sh
       - uses: actions/upload-artifact@v4
         if: always()
