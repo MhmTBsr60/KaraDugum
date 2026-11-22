@@ -29,7 +29,12 @@ replacement = """                String region = getIntent().getStringExtra("kdU
                         failure.complete(error.getMessage());
                     });"""
 assert source.count(start) == 1
-activity.write_text(source.replace(start, replacement))
+source = source.replace(start, replacement)
+# Keep Play Games account prompts out of the empty emulator's foreground during this SDK test.
+account_start = "        if (audience.allowOnlineAccounts()) {"
+assert source.count(account_start) >= 2
+source = source.replace(account_start, "        if (getIntent().getStringExtra(\"kdUmpRegion\") == null && audience.allowOnlineAccounts()) {")
+activity.write_text(source)
 gradle = Path("app/build.gradle")
 source = gradle.read_text()
 assert source.count("testBuildType 'release'") == 1

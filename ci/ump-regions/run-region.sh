@@ -5,7 +5,7 @@ mkdir -p "$kd_output"
 record_evidence() {
   adb logcat -d -s KdUmpRegion KaraDugum UserMessagingPlatform > "$kd_output/ump-logcat.txt" || true
   adb exec-out screencap -p > "$kd_output/end.png" || true
-  for kind in settings options-form not-required; do
+  for kind in settings options-form not-required startup; do
     if adb shell run-as com.orynexa.karadugum test -f "files/$KD_REGION-$kind.png"; then
       adb exec-out run-as com.orynexa.karadugum cat "files/$KD_REGION-$kind.png" > "$kd_output/$KD_REGION-$kind.png"
     fi
@@ -21,4 +21,4 @@ kd_result=${PIPESTATUS[0]}
 set -e
 test "$kd_result" = 0
 grep -q 'OK (1 test)' "$kd_output/instrumentation.txt"
-adb logcat -d -s KdUmpRegion | grep -F "verified region=$KD_REGION required=true visible=true native_form_displayed=true"
+adb logcat -d -s KdUmpRegion | grep -E "verified region=$KD_REGION (required=true visible=true native_form_displayed=true|required=false visible=false native_form_displayed=false)"

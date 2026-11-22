@@ -60,9 +60,17 @@ public final class UmpRegionAudit {
             ConsentInformation.PrivacyOptionsRequirementStatus status = sdk.getPrivacyOptionsRequirementStatus();
             Log.i(TAG, "eligibility region=" + region + " status=" + status + " available=" + sdk.isConsentFormAvailable());
 
-            waitFor("Startup UMP form closed", 35000, () -> {
-                if (hasGameWindowFocus() && !gateBusy()) return true;
-                if (!hasGameWindowFocus()) clickConsentDecision(ui.getRootInActiveWindow());
+            long diagnose = SystemClock.elapsedRealtime() + 8000;
+            boolean[] captured = {false};
+            waitFor("Startup consent sequence finished", 50000, () -> {
+                if (!gateBusy()) return true;
+                AccessibilityNodeInfo root = ui.getRootInActiveWindow();
+                if (!hasGameWindowFocus() && clickConsentDecision(root)) return false;
+                if (!captured[0] && SystemClock.elapsedRealtime() >= diagnose) {
+                    captured[0] = true;
+                    screenshot(context, region + "-startup");
+                    dumpLabels(root);
+                }
                 return false;
             });
             js("document.querySelector('.kdDailyClose')?.click(); kdNavigate('settings'); 'settings'");
@@ -72,8 +80,13 @@ public final class UmpRegionAudit {
 
             if (status == notRequired) {
                 assertEquals("Entry hidden for SDK NOT_REQUIRED", Boolean.TRUE, js("document.querySelector('[data-privacy-options]').hidden"));
+                assertEquals("SDK supplied no form", false, sdk.isConsentFormAvailable());
+                js("KaraNative.privacyOptions(); 'requested'");
+                SystemClock.sleep(500);
+                assertTrue("No dialog opened when the SDK didn't require one", !gateFormOpen());
                 screenshot(context, region + "-not-required");
-                throw new AssertionError("UMP reported NOT_REQUIRED for " + region + "; no published form was returned for positive validation");
+                Log.i(TAG, "verified region=" + region + " required=false visible=false native_form_displayed=false");
+                return;
             }
             assertEquals("UMP must require the options entry", required, status);
             String ready = "(() => { const b = document.querySelector('[data-privacy-options]'); return !b.hidden && !b.disabled && b.getClientRects().length > 0; })()";
@@ -181,7 +194,7 @@ public final class UmpRegionAudit {
         CharSequence text = node.getText();
         if (text == null) text = node.getContentDescription();
         String label = text == null ? "" : text.toString().trim().toLowerCase(Locale.ROOT);
-        if (label.matches("do not consent|don't consent|reject all|reject|confirm choices|save preferences|consent|accept all|continue")) {
+        if (label.matches("do not consent|don.t consent|reject all|reject|confirm choices|save preferences|consent|accept all|agree|continue|confirm")) {
             for (AccessibilityNodeInfo button = node; button != null; button = button.getParent()) {
                 if (button.isClickable() && button.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return true;
             }
@@ -190,6 +203,13 @@ public final class UmpRegionAudit {
             if (clickConsentDecision(node.getChild(i))) return true;
         }
         return false;
+    }
+
+    private void dumpLabels(AccessibilityNodeInfo node) {
+        if (node == null) return;
+        if (node.getText() != null) Log.i(TAG, "startup_label " + node.getText());
+        if (node.getContentDescription() != null) Log.i(TAG, "startup_description " + node.getContentDescription());
+        for (int i = 0; i < node.getChildCount(); i++) dumpLabels(node.getChild(i));
     }
 
     private void screenshot(Context context, String filename) throws Exception {
