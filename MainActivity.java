@@ -856,7 +856,17 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void privacyState() { runOnUiThread(() -> sendPrivacyState()); }
         @JavascriptInterface public void audienceState() { runOnUiThread(() -> sendAudienceState()); }
         @JavascriptInterface public void ageOptions() { runOnUiThread(() -> showAudienceScreen(true, false)); }
-        @JavascriptInterface public void privacyOptions() { runOnUiThread(() -> { if (consentGate != null && !rewardedInProgress && !interstitialInProgress) consentGate.openOptions(); sendPrivacyState(); }); }
+        @JavascriptInterface public void privacyOptions() {
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                if (consentGate != null && audienceDialog == null && privacyDialog == null
+                        && !rewardedInProgress && !interstitialInProgress) {
+                    consentGate.openOptions();
+                }
+                sendPrivacyState();
+            });
+        }
+        @JavascriptInterface public String appVersion() { return BuildConfig.VERSION_NAME; }
         @JavascriptInterface public void openPrivacyPolicy() { runOnUiThread(() -> MainActivity.this.openPrivacyPolicy()); }
         @JavascriptInterface public String installationId() { return installationId; }
         @JavascriptInterface public void rewardedAd() { runOnUiThread(() -> { rewardPurpose = "coins"; showRewarded(); }); }
