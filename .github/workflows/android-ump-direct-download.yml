@@ -1,0 +1,43 @@
+name: KaraDugum signed TEST APK direct download
+on:
+  push:
+    branches: [ci/ump-test-9dc9c61]
+    paths: [.github/workflows/android-ump-direct-download.yml]
+  workflow_dispatch:
+jobs:
+  upload:
+    if: github.ref == 'refs/heads/ci/ump-test-9dc9c61'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: KaraDugum-6.52-115-UMP-signed-TEST
+          github-token: ${{ github.token }}
+          run-id: '45003752455'
+          path: signed
+      - name: Verify the exact existing signed APK
+        working-directory: signed
+        run: |
+          set -euo pipefail
+          test "$(cat source-commit.txt)" = '9dc9c61fda0283f6e1f73f8f201e2f0217278a08'
+          echo '156c341f82bcb61f816edcb50debbfd8af2204ba6dee7aa606631618dbc33a94  KaraDugum-6.52-115-UMP-TEST.apk' | sha256sum --check
+      - name: Upload the APK in its original format
+        uses: actions/upload-artifact@v7.0.2
+        id: raw_apk
+        with:
+          path: signed/KaraDugum-6.52-115-UMP-TEST.apk
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+      - name: Record the direct download and APK digest
+        env:
+          KD_ARTIFACT_URL: ${{ steps.raw_apk.outputs.artifact-url }}
+          KD_ARTIFACT_DIGEST: ${{ steps.raw_apk.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          test "$KD_ARTIFACT_DIGEST" = '156c341f82bcb61f816edcb50debbfd8af2204ba6dee7aa606631618dbc33a94'
+          printf '[Download the original signed APK](%s)\n' "$KD_ARTIFACT_URL" >> "$GITHUB_STEP_SUMMARY"
