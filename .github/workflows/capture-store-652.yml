@@ -1,0 +1,50 @@
+name: Capture 6.52 store drafts in five languages
+on:
+  push:
+    branches: [capture/store-652-five-locales]
+permissions:
+  actions: read
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/store-capture
+      - uses: actions/download-artifact@v4
+        with:
+          name: KaraDugum-6.52-115-signed-production-AAB
+          github-token: ${{ github.token }}
+          run-id: 44921363338
+          path: production
+      - name: Verify and extract packaged assets
+        run: |
+          python3 - <<'PY'
+          import hashlib, pathlib, zipfile
+          bundle, = pathlib.Path('production').rglob('*.aab')
+          assert hashlib.sha256(bundle.read_bytes()).hexdigest() == 'a4b503795197927c209174ca2014ff7293ce3d33474a6d0a23742f5093e7e67b'
+          root=pathlib.Path('game').resolve()
+          with zipfile.ZipFile(bundle) as archive:
+              for item in archive.infolist():
+                  if item.filename.startswith('base/assets/') and not item.is_dir():
+                      dest=root/item.filename.removeprefix('base/assets/')
+                      assert dest.resolve().is_relative_to(root)
+                      dest.parent.mkdir(exist_ok=True, parents=True)
+                      dest.write_bytes(archive.read(item))
+          PY
+      - name: Capture real localized screens
+        run: |
+          npm install --prefix "$RUNNER_TEMP/kd-capture" --no-audit --no-fund --ignore-scripts playwright-core@1.56.1
+          NODE_PATH="$RUNNER_TEMP/kd-capture/node_modules" node tools/store-capture/capture.cjs
+      - name: Package the private previews
+        run: |
+          (cd screens && zip -qr ../screens.zip .)
+          openssl cms -encrypt -binary -aes256 -in screens.zip -outform DER -out store-drafts.cms tools/store-capture/recipient.pem
+      - uses: actions/upload-artifact@v4
+        with:
+          name: store-652-five-locales-private
+          path: store-drafts.cms
+          retention-days: 3
