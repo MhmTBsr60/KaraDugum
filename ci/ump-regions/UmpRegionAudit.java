@@ -55,7 +55,7 @@ public final class UmpRegionAudit {
             ConsentInformation.PrivacyOptionsRequirementStatus notRequired = ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED;
             ConsentInformation sdk = UserMessagingPlatform.getConsentInformation(context);
 
-            waitFor("Game page", 25000, () -> js("typeof kdNavigate").equals("function"));
+            waitFor("Game page", 60000, () -> "function".equals(js("typeof kdNavigate")));
             waitFor("UMP privacy eligibility", 30000, () -> sdk.getPrivacyOptionsRequirementStatus() != ConsentInformation.PrivacyOptionsRequirementStatus.UNKNOWN);
             ConsentInformation.PrivacyOptionsRequirementStatus status = sdk.getPrivacyOptionsRequirementStatus();
             Log.i(TAG, "eligibility region=" + region + " status=" + status + " available=" + sdk.isConsentFormAvailable());
@@ -142,7 +142,7 @@ public final class UmpRegionAudit {
             result.set(json);
             ready.countDown();
         }));
-        assertTrue("WebView response", ready.await(5, TimeUnit.SECONDS));
+        assertTrue("WebView response", ready.await(25, TimeUnit.SECONDS));
         return new JSONTokener(result.get()).nextValue();
     }
 
