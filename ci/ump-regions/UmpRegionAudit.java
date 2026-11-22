@@ -95,8 +95,15 @@ public final class UmpRegionAudit {
 
             assertTrue("Game window focused before touch", hasGameWindowFocus());
             tapPrivacyButton();
-            waitFor("Native UMP options dialog presented", 18000, () ->
-                gateFormOpen() && !hasGameWindowFocus() && hasWebView(ui.getRootInActiveWindow()));
+            try {
+                waitFor("Native UMP options dialog presented", 15000, this::optionFormShowing);
+            } catch (AssertionError firstAttempt) {
+                // UMP may asynchronously reload its cached options form after a transient load error.
+                if (gateFormOpen() || !js(ready).equals(Boolean.TRUE)) throw firstAttempt;
+                Log.i(TAG, "Retrying a completed SDK load attempt");
+                tapPrivacyButton();
+                waitFor("Native UMP options dialog presented on retry", 15000, this::optionFormShowing);
+            }
             screenshot(context, region + "-options-form");
             Log.i(TAG, "verified region=" + region + " required=true visible=true native_form_displayed=true");
         } finally {
@@ -156,6 +163,10 @@ public final class UmpRegionAudit {
         return result.get();
     }
 
+    private boolean optionFormShowing() {
+        return gateFormOpen() && !hasGameWindowFocus() && hasWebView(ui.getRootInActiveWindow());
+    }
+
     private boolean hasGameWindowFocus() {
         AtomicReference<Boolean> result = new AtomicReference<>();
         scenario.onActivity(activity -> result.set(webView(activity).hasWindowFocus()));
@@ -194,7 +205,7 @@ public final class UmpRegionAudit {
         CharSequence text = node.getText();
         if (text == null) text = node.getContentDescription();
         String label = text == null ? "" : text.toString().trim().toLowerCase(Locale.ROOT);
-        if (label.matches("do not consent|don.t consent|reject all|reject|confirm choices|save preferences|consent|accept all|agree|continue|confirm")) {
+        if (label.matches("got it|do not consent|don.t consent|reject all|reject|confirm choices|save preferences|consent|accept all|agree|continue|confirm")) {
             for (AccessibilityNodeInfo button = node; button != null; button = button.getParent()) {
                 if (button.isClickable() && button.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return true;
             }

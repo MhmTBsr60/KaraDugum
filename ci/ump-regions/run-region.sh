@@ -13,6 +13,8 @@ record_evidence() {
 }
 trap record_evidence EXIT
 adb shell pm list packages com.orynexa.karadugum | if grep -q .; then exit 1; fi
+# The emulator starts fresh. Dismiss the OS-only immersion tutorial before running the app.
+adb shell settings put secure immersive_mode_confirmations confirmed
 adb install source/app/build/outputs/apk/debug/app-debug.apk
 adb install source/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
 set +e
