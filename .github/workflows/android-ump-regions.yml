@@ -1,0 +1,98 @@
+name: KaraDugum UMP region audit
+on:
+  push:
+    branches: [ci/ump-test-9dc9c61]
+    paths: [.github/workflows/android-ump-regions.yml, ci/ump-regions/**]
+  workflow_dispatch:
+env:
+  KD_SOURCE: 9dc9c61fda0283f6e1f73f8f201e2f0217278a08
+  KD_VERSION_NAME: '6.52'
+  KD_VERSION_CODE: '115'
+  KD_ADS_MODE: test
+jobs:
+  geography:
+    if: github.ref == 'refs/heads/ci/ump-test-9dc9c61'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [eea, us]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.KD_SOURCE }}
+          persist-credentials: false
+          path: source
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: audit
+          sparse-checkout: ci/ump-regions
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build emulator-only instrumentation with UMP debug geography
+        working-directory: source
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$KD_SOURCE"
+          bash scripts/prepare-android-rc.sh
+          python3 ../audit/ci/ump-regions/stage-debug-geography.py
+          cp ../audit/ci/ump-regions/UmpRegionAudit.java app/src/androidTest/java/com/orynexa/karadugum/
+          gradle --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
+          sudo chmod 666 /dev/kvm
+      - name: Observe real UMP SDK and the settings button on Android 16
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          KD_REGION: ${{ matrix.region }}
+        with:
+          api-level: 36
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          script: bash audit/ci/ump-regions/run-region.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KaraDugum-UMP-Android36-${{ matrix.region }}-evidence
+          path: ump-evidence/
+          if-no-files-found: ignore
+  update:
+    if: github.ref == 'refs/heads/ci/ump-test-9dc9c61'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: KaraDugum-6.52-115-TEST-APK
+          github-token: ${{ github.token }}
+          run-id: '44916778639'
+          path: previous-apk
+      - uses: actions/download-artifact@v4
+        with:
+          name: KaraDugum-6.52-115-UMP-signed-TEST
+          github-token: ${{ github.token }}
+          run-id: '45003752455'
+          path: candidate-apk
+      - run: sudo chmod 666 /dev/kvm
+      - name: Install over the previous signed TEST APK on a disposable Android 16 emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: default
+          arch: x86_64
+          profile: pixel_7
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048 -cores 2 -skin 720x1600 -dpi-device 320
+          script: adb install previous-apk/KaraDugum-6.52-115-TEST.apk && adb install -r candidate-apk/KaraDugum-6.52-115-UMP-TEST.apk && adb shell pm path com.orynexa.karadugum
