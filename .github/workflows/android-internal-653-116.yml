@@ -1,0 +1,84 @@
+name: KaraDugum 6.53 (116) signed internal-test AAB
+on:
+  push:
+    branches: [release/6.53-116-internal]
+  workflow_dispatch:
+jobs:
+  build:
+    if: ${{ github.ref == 'refs/heads/release/6.53-116-internal' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      KD_APPROVED_SOURCE: 81e7266452d5a92bae0e49955e61d013d3a305b6
+      KD_ADS_MODE: live
+      KD_VERSION_NAME: '6.53'
+      KD_VERSION_CODE: '116'
+      KD_EXPECTED_SIGNER: 351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e
+      ADMOB_REWARDED_AD_UNIT_ID: ${{ vars.ADMOB_REWARDED_AD_UNIT_ID }}
+      ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ vars.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Verify player-erasure source and prepare the internal candidate
+        run: |
+          set -euo pipefail
+          git diff --exit-code "$KD_APPROVED_SOURCE" HEAD -- . ':(exclude).github/workflows/android-internal-653-116.yml'
+          node tests/player-erasure-audit.cjs
+          node tests/native-erasure-audit.cjs
+          node tests/ux-protected-core.cjs
+          bash scripts/prepare-android-rc.sh
+      - name: Check the keystore and build the release bundle and lint
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_B64"
+          umask 077
+          trap 'rm -f app/karadugum.jks' EXIT
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" |
+            sha256sum | awk '{print $1}' > "$RUNNER_TEMP/expected-cert-sha256"
+          test "$(cat "$RUNNER_TEMP/expected-cert-sha256")" = "$KD_EXPECTED_SIGNER"
+          gradle --no-daemon --stacktrace :app:bundleRelease :app:lintRelease :app:exportReleaseSdkDependencies :app:checkReleaseAarMetadata
+      - name: Validate production manifest, signature, packaged assets and SDK dependencies
+        run: |
+          set -euo pipefail
+          out=dist/internal-653-116
+          mkdir -p "$out"
+          bundletool="$RUNNER_TEMP/kd-bundletool.jar"
+          curl --fail --silent --show-error --location --retry 3 https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar -o "$bundletool"
+          echo "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29  $bundletool" | sha256sum --check
+          aab=app/build/outputs/bundle/release/app-release.aab
+          bash scripts/inspect-release-manifests.sh live "$KD_VERSION_NAME" "$KD_VERSION_CODE" "$bundletool"
+          bash scripts/verify-aab-signature.sh "$aab" "$RUNNER_TEMP/expected-cert-sha256" > "$out/jarsigner.txt"
+          grep -F 'jar verified.' "$out/jarsigner.txt"
+          keytool -printcert -jarfile "$aab" | awk '/SHA256:/{print tolower($2)}' | tr -d ':' > "$out/signer-sha256.txt"
+          cmp "$out/signer-sha256.txt" "$RUNNER_TEMP/expected-cert-sha256"
+          grep -Eq 'ADS_TEST_MODE = false;' app/build/generated/source/buildConfig/release/com/orynexa/karadugum/BuildConfig.java
+          python3 scripts/verify-rc-assets.py --package "$aab" --report "$out/aab-assets.json"
+          node scripts/verify-sdk-dependencies.cjs build/reports/sdk/release-sdk-dependencies.json "$KD_VERSION_NAME" "$KD_VERSION_CODE" | tee "$out/sdk-verification.txt"
+          cp build/reports/manifests/live/{manifest-verification.json,bundle-manifest.xml,bundle-validation.txt} "$out/"
+          cp build/reports/sdk/release-sdk-dependencies.json "$out/"
+          cp app/build/reports/lint-results-release.xml "$out/"
+          cp "$aab" "$out/KaraDugum-6.53-116.aab"
+          (cd "$out" && sha256sum *.aab > SHA256SUMS)
+          printf '%s\n' "$KD_APPROVED_SOURCE" > "$out/source-commit.txt"
+          git rev-parse HEAD > "$out/build-commit.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.53-116-signed-internal-AAB
+          path: dist/internal-653-116/
+          if-no-files-found: error
