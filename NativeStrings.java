@@ -9,6 +9,20 @@ public final class NativeStrings {
         return value.equals("tr") || value.equals("ar") || value.equals("zh") ? value : "en";
     }
     private static final String[][] TEXT = {
+        {"Oyun verilerimi sil", "Delete my game data", "حذف بيانات لعبي", "删除我的游戏数据"},
+        {"Yeniden dene", "Try again", "إعادة المحاولة", "重试"},
+        {"Google Play Oyunlar verilerini yönet", "Manage Google Play Games data", "إدارة بيانات ألعاب Google Play", "管理 Google Play 游戏数据"},
+        {"Tarayıcıda play.google.com/games/profile adresini aç.", "Open play.google.com/games/profile in your browser.", "افتح play.google.com/games/profile في المتصفح.", "请在浏览器打开 play.google.com/games/profile。"},
+        {"İşlem tamamlanamadı. Oyunda kullandığın hesapla internete bağlanıp tekrar dene.", "Could not finish. Connect to the internet with the account you use for this game and retry.", "لم تكتمل العملية. اتصل بالإنترنت باستخدام حساب اللعبة وحاول مجددًا.", "未能完成。请使用游戏账号联网后重试。"},
+        {"Oyun kaydı kontrol ediliyor…", "Checking your game profile…", "جارٍ التحقق من ملف اللعبة…", "正在检查游戏档案…"},
+        {"Bu cihazdaki misafir kaydı", "Guest on this device", "الضيف على هذا الجهاز", "此设备上的访客"},
+        {"Bu cihazdaki misafir ilerlemesi kalıcı olarak silinecek.", "Guest progress on this device will be permanently deleted.", "سيتم حذف تقدم الضيف على هذا الجهاز نهائيًا.", "此设备上的访客进度将被永久删除。"},
+        {"Bu profildeki bulut kayıtları ve bu cihazdaki oyun ilerlemesi kalıcı olarak silinecek. Diğer cihazlarda oyunu kapat. Google başarımları ve sıralama için Google Play Oyunlar verilerini ayrıca yönetebilirsin.", "Your cloud saves and this profile’s progress on this device will be permanently deleted. Close the game on your other devices. You can delete Google achievements and leaderboard data separately in Google Play Games.", "سيتم حذف محفوظاتك السحابية وتقدم هذا الملف على هذا الجهاز نهائيًا. أغلق اللعبة على أجهزتك الأخرى. يمكنك حذف إنجازات Google وبيانات لوحة الصدارة من ألعاب Google Play.", "此档案的云存档和本机进度将被永久删除。请在其他设备上关闭游戏。Google 成就和排行榜数据可在 Google Play 游戏中单独管理。"},
+        {"Kalıcı olarak sil", "Delete permanently", "حذف نهائي", "永久删除"},
+        {"Oyun verileri siliniyor…", "Deleting game data…", "جارٍ حذف بيانات اللعبة…", "正在删除游戏数据…"},
+        {"Bu cihazdaki misafir kaydı silindi.", "Guest progress on this device was deleted.", "تم حذف تقدم الضيف على هذا الجهاز.", "此设备上的访客进度已删除。"},
+        {"Bu cihazdaki oyun kaydın ve KARA DÜĞÜM bulut ilerlemen silindi. Google başarımları ve sıralama için Google Play Oyunlar verilerini yönetebilirsin.", "Your game save on this device and your KARA DÜĞÜM cloud saves were deleted. Use Google Play Games to manage achievements and leaderboard data.", "تم حذف محفوظاتك على هذا الجهاز وفي سحابة KARA DÜĞÜM. يمكنك إدارة الإنجازات ولوحة الصدارة من ألعاب Google Play.", "已删除本设备上的游戏存档和 KARA DÜĞÜM 云存档。你可以在 Google Play 游戏中管理成就和排行榜数据。"},
+        {"İşlem sürüyor. Biraz sonra tekrar dene.", "Another operation is in progress. Try again shortly.", "تجري عملية أخرى. حاول مجددًا بعد قليل.", "操作正在进行，请稍后重试。"},
         {"Hesap değiştirme yardımı", "Account switching help", "مساعدة تغيير الحساب", "账号切换帮助"},
         {"Kapat", "Close", "إغلاق", "关闭"},
         {"Google yardımını aç", "Open Google Help", "فتح مساعدة Google", "打开 Google 帮助"},

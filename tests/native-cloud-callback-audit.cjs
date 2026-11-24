@@ -16,6 +16,8 @@ public class NativeCloudCallbackAudit {
     private static final String TAG="audit",SAVE_NAME="legacy",FULL_SAVE_NAME="full";
     private AudiencePolicy audience=AudiencePolicy.choose("adult");
     private boolean signedIn=true,saving,finishing,destroyed;
+    private static <T> FakeTask<T> trackCloudWrite(FakeTask<T> task){return task;}
+    static class GameDataDeletion {static boolean pending(NativeCloudCallbackAudit h,String id){return false;}}
     private int authGeneration=1;
     private String currentPlayerId="A",pendingSave;
     final SnapshotsClient client=new SnapshotsClient();
@@ -52,7 +54,7 @@ ${methods}
     public static void main(String[] args){
         NativeCloudCallbackAudit normal=new NativeCloudCallbackAudit();String newest=request("A",true,"newest");
         normal.syncSave(request("A",true,"first"));CloudSaveOperation old=normal.activeCloudSave;
-        require(normal.client.opens.size()==1&&normal.client.opens.get(0).slot.equals(FULL_SAVE_NAME)&&normal.client.opens.get(0).create,"Rooted request opens the correct full slot");
+        require(normal.client.opens.size()==1&&normal.client.opens.get(0).slot.equals(FULL_SAVE_NAME)&&!normal.client.opens.get(0).create,"A rooted device cannot recreate an erased cloud slot");
         normal.syncSave(request("A",true,"middle"));normal.syncSave(newest);
         require(normal.client.opens.size()==1&&normal.pendingSave.equals(newest),"Concurrent same-owner saves coalesce to latest payload");
         openFirst(normal);normal.client.commits.get(0).task.success(new Object());
@@ -134,6 +136,7 @@ ${methods}
 }
 final class JSONObject {
     static final Map<String,JSONObject> registry=new HashMap<>();static int next;
+    int length(){return fields.size();}
     final Map<String,Object> fields=new LinkedHashMap<>();
     JSONObject(){}
     JSONObject(JSONObject other){for(Map.Entry<String,Object> e:other.fields.entrySet())fields.put(e.getKey(),e.getValue() instanceof JSONObject?new JSONObject((JSONObject)e.getValue()):e.getValue());}

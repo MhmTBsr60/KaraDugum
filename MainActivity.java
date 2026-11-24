@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
     private static final String FULL_SAVE_NAME = "karadugum_full_v1";
+    static boolean isGameSave(String name) { return SAVE_NAME.equals(name) || FULL_SAVE_NAME.equals(name); }
     private static final String ACH_FIRST = "CgkI-ZiLnPgfEAIQAg";
     private static final String ACH_STARS = "CgkI-ZiLnPgfEAIQAw";
     private static final String ACH_LEGEND = "CgkI-ZiLnPgfEAIQBA";
@@ -70,6 +71,8 @@ public class MainActivity extends Activity {
     private boolean checkingSignIn, gamesInitialized, gamesLifecycleReady, gamesStartupPending, gamesStartupFailed;
     private boolean pendingInteractiveLogin;
     private static final int GAMES_STARTUP_REQUEST = 9002;
+    private static final java.util.concurrent.atomic.AtomicInteger cloudWritesInFlight = new java.util.concurrent.atomic.AtomicInteger();
+    static boolean cloudWriteBusy() { return cloudWritesInFlight.get() != 0; }
     private boolean saving = false;
     private String pendingSave;
     private String installationId;
@@ -100,6 +103,10 @@ public class MainActivity extends Activity {
             gamesLifecycleReady = true;
         }
         super.onCreate(state);
+        if (GameDataDeletion.pending(this, "")) {
+            openDeletionScreen("");
+            return;
+        }
         try {
             installationId = InstallationIdentity.load(getNoBackupFilesDir());
         } catch (java.io.IOException e) {
@@ -364,6 +371,15 @@ public class MainActivity extends Activity {
             send("audienceState", state.toString());
         } catch (Exception error) { Log.w(TAG, "Audience state", error); }
     }
+    private void openDeletionScreen(String owner) {
+        if (isFinishing() || isDestroyed()) return;
+        Intent intent = new Intent(this, GameDataDeletion.class);
+        intent.putExtra("owner", owner);
+        intent.putExtra("language", uiLanguage);
+        startActivity(intent);
+        finish();
+    }
+
     private void openPrivacyPolicy() { openLegalPage("privacy-policy.html"); }
     private void showAccountHelp() {
         if (isFinishing() || isDestroyed()) return;
@@ -419,6 +435,19 @@ public class MainActivity extends Activity {
         close.setContentDescription(NativeStrings.text("Sayfayı kapat", uiLanguage));
         close.setOnClickListener(v -> dialog.dismiss());
         layout.addView(close, new android.widget.LinearLayout.LayoutParams(-1, -2));
+        if ("delete-account.html".equals(filename)) {
+            android.widget.Button erase = new android.widget.Button(this);
+            erase.setText(NativeStrings.text("Oyun verilerimi sil", uiLanguage));
+            erase.setOnClickListener(v -> {
+                if ((saving && cloudSaveCurrent(activeCloudSave)) || cloudWriteBusy()
+                        || rewardedInProgress || checkingSignIn || manualSigningIn) {
+                    error("İşlem sürüyor. Biraz sonra tekrar dene.");
+                    return;
+                }
+                openDeletionScreen(signedIn && audience.allowOnlineAccounts() ? currentPlayerId : "");
+            });
+            layout.addView(erase);
+        }
         layout.addView(policy, new android.widget.LinearLayout.LayoutParams(-1, 0, 1));
         dialog.setContentView(layout);
         dialog.setOnDismissListener(ignored -> { layout.removeView(policy); policy.stopLoading(); policy.destroy(); privacyDialog = null; sendAudienceState(); });
@@ -492,6 +521,16 @@ public class MainActivity extends Activity {
                 JSONObject data = new JSONObject();
                 data.put("name", player.getDisplayName());
                 currentPlayerId = player.getPlayerId();
+                if (GameDataDeletion.pending(this, currentPlayerId)) {
+                    signedIn = false;
+                    openDeletionScreen(currentPlayerId);
+                    return;
+                }
+                if (!GameDataDeletion.allowProfile(this, currentPlayerId, interactive)) {
+                    checkingSignIn = false; manualSigningIn = false; signedIn = false; currentPlayerId = "";
+                    send("user", "null");
+                    return;
+                }
                 data.put("uid", currentPlayerId);
                 checkingSignIn = false; manualSigningIn = false;
                 send("user", data.toString());
@@ -503,6 +542,8 @@ public class MainActivity extends Activity {
         });
     }
     private JSONObject mergeSave(JSONObject a, JSONObject b) throws Exception {
+        String generation = checkSaveGeneration(a, b);
+        String otherGeneration = checkSaveGeneration(b, a);
         JSONObject result = new JSONObject(), completed = new JSONObject(), best = new JSONObject();
         JSONObject ca = a.optJSONObject("completed"), cb = b.optJSONObject("completed");
         JSONObject ba = a.optJSONObject("best"), bb = b.optJSONObject("best");
@@ -519,8 +560,27 @@ public class MainActivity extends Activity {
         result.put("completed",completed);
         result.put("best",best);
         JSONObject full=CloudMerge.merge(a.optJSONObject("full"),b.optJSONObject("full"));
-        if(full!=null)result.put("full",full);
+        if(full!=null) {
+            result.put("full",full);
+            if (generation.isEmpty()) generation = otherGeneration;
+            if (!generation.isEmpty()) result.put("saveGeneration", generation);
+        }
         return result;
+    }
+    // New full slots record their first confirmed root. A returning device with an
+    // older, already-confirmed root must never merge its pre-deletion profile into one.
+    static String checkSaveGeneration(JSONObject remote, JSONObject incoming) {
+        String generation = remote.optString("saveGeneration", "");
+        JSONObject full = incoming.optJSONObject("full");
+        JSONObject root = full == null ? null : full.optJSONObject("root");
+        if (!generation.isEmpty() && root != null && !generation.equals(root.optString("id")))
+            throw new IllegalStateException("Obsolete save generation");
+        return generation;
+    }
+    private static <T> com.google.android.gms.tasks.Task<T> trackCloudWrite(com.google.android.gms.tasks.Task<T> write) {
+        cloudWritesInFlight.incrementAndGet();
+        write.addOnCompleteListener(done -> cloudWritesInFlight.decrementAndGet());
+        return write;
     }
     private static final class CloudSaveOperation {
         final int generation;
@@ -531,6 +591,7 @@ public class MainActivity extends Activity {
     private boolean cloudSaveCurrent(CloudSaveOperation operation) {
         return operation != null && activeCloudSave == operation && operation.generation == authGeneration
             && operation.owner.equals(currentPlayerId) && audience.allowOnlineAccounts() && signedIn
+            && !GameDataDeletion.pending(this, operation.owner)
             && !isFinishing() && !isDestroyed();
     }
     private void finishCloudSave(CloudSaveOperation operation, String message) {
@@ -555,7 +616,7 @@ public class MainActivity extends Activity {
         } else discardCloudSnapshot(client, result.getData());
     }
     private void syncSave(String raw) {
-        if (!audience.allowOnlineAccounts() || !signedIn || currentPlayerId.isEmpty() || isFinishing() || isDestroyed()) return;
+        if (!audience.allowOnlineAccounts() || !signedIn || currentPlayerId.isEmpty() || GameDataDeletion.pending(this,currentPlayerId) || isFinishing() || isDestroyed()) return;
         if (raw == null || raw.length()>2800000) { error("Kayıt boyutu geçersiz"); return; }
         CloudSaveOperation operation = null;
         try {
@@ -581,7 +642,10 @@ public class MainActivity extends Activity {
         if (!cloudSaveCurrent(operation)) return;
         String slot=incoming.optJSONObject("full")==null?SAVE_NAME:FULL_SAVE_NAME;
         try {
-            client.open(slot,true,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
+            // A previously synchronized device must not recreate a cloud slot erased elsewhere.
+            JSONObject full = incoming.optJSONObject("full");
+            boolean mayCreate = full == null || !full.has("root");
+            client.open(slot,mayCreate,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
                 .addOnSuccessListener(result -> handleSnapshot(client,result,incoming,0,operation))
                 .addOnFailureListener(e -> finishCloudSave(operation,"Bulut kayda erişilemedi: "+e.getMessage()));
         } catch (RuntimeException e) { finishCloudSave(operation,"Bulut kayda erişilemedi: "+e.getMessage()); }
@@ -638,7 +702,7 @@ public class MainActivity extends Activity {
                 JSONObject merged=mergeSave(mergeSave(readSnapshot(chosen),readSnapshot(other)),incoming);
                 chosen.getSnapshotContents().writeBytes(snapshotBytes(merged));
                 if (other != chosen) discardCloudSnapshot(client,other);
-                client.resolveConflict(conflict.getConflictId(),chosen)
+                trackCloudWrite(client.resolveConflict(conflict.getConflictId(),chosen))
                     .addOnSuccessListener(next -> handleSnapshot(client,next,merged,depth+1,operation))
                     .addOnFailureListener(e -> {
                         discardCloudSnapshot(client,chosen);
@@ -650,9 +714,16 @@ public class MainActivity extends Activity {
         Snapshot snapshot=result.getData();
         if(snapshot==null) { finishCloudSave(operation,"Bulut kayıt açılamadı"); return; }
         try {
-            JSONObject merged=mergeSave(readSnapshot(snapshot),incoming);
+            JSONObject remote = readSnapshot(snapshot);
+            JSONObject merged=mergeSave(remote,incoming);
+            JSONObject incomingFull = incoming.optJSONObject("full");
+            JSONObject mergedFull = merged.optJSONObject("full");
+            if (remote.length() == 0 && incomingFull != null && !incomingFull.has("root")
+                    && mergedFull != null && mergedFull.optJSONObject("root") != null) {
+                merged.put("saveGeneration", mergedFull.optJSONObject("root").optString("id"));
+            }
             snapshot.getSnapshotContents().writeBytes(snapshotBytes(merged));
-            client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE)
+            trackCloudWrite(client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE))
                 .addOnSuccessListener(meta -> {
                     if (!cloudSaveCurrent(operation)) return;
                     send("cloudSave",merged.toString()); finishCloudSave(operation,null);
@@ -705,6 +776,8 @@ public class MainActivity extends Activity {
         if (!RewardReceiptQueue.isTracked(purpose)) { sendEarnedReward(purpose, owner); return; }
         Context application = getApplicationContext();
         REWARD_WRITER.execute(() -> {
+            if (GameDataDeletion.pending(application, owner == null ? "" : owner) ||
+                    (owner != null && !owner.isEmpty() && !GameDataDeletion.allowProfile(application, owner, false))) return;
             rewardReceipts(application).earn(purpose, owner);
             flushRewardReceipts(application, 2);
         });
@@ -720,6 +793,26 @@ public class MainActivity extends Activity {
             else Log.w(TAG, "Earned reward receipt awaits writable storage");
         }
     }
+    static void eraseNativeRecords(Context context, String owner, java.util.function.Consumer<Boolean> done) {
+        REWARD_WRITER.execute(() -> {
+            Context app = context.getApplicationContext();
+            String scope = owner.isEmpty() ? "guest" : "account:" + owner;
+            boolean ok = app.getSharedPreferences("kd_exit_undo", MODE_PRIVATE).edit()
+                .remove("campaign:" + scope).remove("daily:" + scope).commit();
+            RewardReceiptQueue queue = rewardReceipts(app);
+            queue.discardWaiting(owner);
+            SharedPreferences prefs = app.getSharedPreferences("reward_receipts", MODE_PRIVATE);
+            SharedPreferences.Editor edit = prefs.edit();
+            for (Map.Entry<String, String> entry : queue.ready().entrySet()) {
+                if (owner.equals(entry.getValue())) {
+                    edit.remove("earned_" + entry.getKey()).remove("owner_" + entry.getKey());
+                }
+            }
+            boolean saved = edit.commit() && ok;
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> done.accept(saved));
+        });
+    }
+
     private void deliverPendingRewards() {
         Context application = getApplicationContext();
         REWARD_WRITER.execute(() -> flushRewardReceipts(application, 0));
@@ -979,6 +1072,7 @@ public class MainActivity extends Activity {
     }
     @Override protected void onResume() {
         super.onResume();
+        if (isFinishing()) return;
         uiFeedbackForeground = true;
         loadRewarded();
         loadInterstitial();

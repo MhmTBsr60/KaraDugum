@@ -9,6 +9,7 @@
     <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/game_services_project_id" />
     <!-- Register SDK lifecycle listeners only for an explicitly eligible age choice. -->
     <provider android:name="com.google.android.gms.games.provider.PlayGamesInitProvider" tools:node="remove" />
+    <activity android:name=".GameDataDeletion" android:exported="false" />
     <activity android:name=".GamesStartupActivity" android:exported="false" android:noHistory="true" android:excludeFromRecents="true" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     <activity android:name=".MainActivity" android:exported="true">
       <intent-filter>

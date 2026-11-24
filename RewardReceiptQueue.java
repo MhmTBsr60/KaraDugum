@@ -41,6 +41,10 @@ final class RewardReceiptQueue {
         return persisted;
     }
 
+    void discardWaiting(String owner) {
+        waiting.values().removeIf(owner::equals);
+    }
+
     void acknowledge(String purpose) {
         if (!waiting.containsKey(purpose)) store.acknowledge(purpose);
     }
