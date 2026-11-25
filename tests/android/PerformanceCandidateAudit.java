@@ -41,6 +41,14 @@ public final class PerformanceCandidateAudit {
         fail("Game not ready");
     }
     private void screenshot(Context context,String name) throws Exception {
+        // Real device screenshot, after the Android first-use immersive guidance is dismissed.
+        android.view.accessibility.AccessibilityNodeInfo root=inst.getUiAutomation().getRootInActiveWindow();
+        if(root!=null) {
+            for(android.view.accessibility.AccessibilityNodeInfo node:root.findAccessibilityNodeInfosByText("Got it")) {
+                if(node.isClickable()&&node.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)){SystemClock.sleep(500);break;}
+            }
+        }
+        System.out.println("VISUAL_657 "+name+" "+eval("JSON.stringify({width:innerWidth,height:innerHeight,dpr:devicePixelRatio})"));
         android.graphics.Bitmap bitmap=inst.getUiAutomation().takeScreenshot();
         assertNotNull("Android screenshot unavailable",bitmap);
         File dir=new File(context.getExternalFilesDir(null),"visual657");
@@ -82,7 +90,7 @@ public final class PerformanceCandidateAudit {
             scenario.recreate();ready(scenario);
             assertTrue(Boolean.TRUE.equals(eval("(()=>{document.querySelector('.kdDailyClose')?.click();kdNavigate('game');kdOnboarding.leave();kdLearning.leave();return true})()")));
             assertEquals(count.intValue(),((Number)eval("kdGetLearningState().moves")).intValue());
-            assertTrue(Boolean.TRUE.equals(eval("(()=>{let r=document.querySelector('#board').getBoundingClientRect();return r.width>0&&r.height>0&&r.left>=-1&&r.right<=innerWidth+1})()")));
+            assertTrue(Boolean.TRUE.equals(eval("(()=>{let r=document.querySelector('#board').getBoundingClientRect();const a=document.querySelector(\".kdGameActions\").getBoundingClientRect();return r.width>0&&r.height>0&&r.left>=-1&&r.right<=innerWidth+1&&r.bottom<=a.top+1&&a.bottom<=innerHeight+1})()")));
         }
         System.out.println("PASS: minified native bridge, offline game, saved progress after activity recreation, board fits viewport");
     }

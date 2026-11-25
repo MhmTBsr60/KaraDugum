@@ -82,3 +82,17 @@ html[data-kd-theme] #kdGame #kdModeRule{margin-block:1.5px!important}
 @media(orientation:landscape) and (max-height:550px){
  html[data-kd-theme] #kdGame main>.board,html[data-kd-theme] #kdGame.kdBoardFocus main>.board,html[data-kd-theme] #kdGame.kdCanFocusBoard:not(.kdBoardFocus):has(.kdLessonNotice) main>.board{width:min(var(--kd-play-board,250px),calc((100dvh - var(--kd-game-safe-top,env(safe-area-inset-top,0px)) - var(--kd-game-safe-bottom,env(safe-area-inset-bottom,0px)) - 58px)/1.045 - 6px))!important}
 }
+
+/* Keep the existing square and all four original actions; distribute the tall
+   phone's spare space within the board row instead of leaving a dead area below. */
+@media (orientation:portrait) and (min-height:740px) and (max-aspect-ratio:9/16){
+ html[data-kd-theme] #kdGame:not(.kdBoardFocus):not(:has(.kdLessonNotice)) main{
+  grid-template-rows:auto auto minmax(0,1fr) auto auto;
+  align-content:stretch;
+  padding-bottom:max(12px,env(safe-area-inset-bottom,0px));
+ }
+ html[data-kd-theme] #kdGame:not(.kdBoardFocus):not(:has(.kdLessonNotice)) main>.board{
+  align-self:center;
+  padding:12px!important;
+ }
+}
