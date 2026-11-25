@@ -17,6 +17,7 @@ public final class TapLightOverlay extends View {
     }
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF bounds = new RectF();
+    private final RectF drawingBounds = new RectF();
     private final Listener listener;
     private boolean enabled, active, announced, frameQueued;
     private long start;
@@ -61,7 +62,7 @@ public final class TapLightOverlay extends View {
         super.onDraw(canvas);
         if(!enabled||!active)return;
         float density=getResources().getDisplayMetrics().density;
-        RectF r=new RectF(bounds);r.inset(density,density);
+        RectF r=drawingBounds;r.set(bounds);r.inset(density,density);
         paint.setStyle(Paint.Style.FILL);paint.setColor(Color.argb(102,255,208,79));
         canvas.drawRoundRect(r,5*density,5*density,paint);
         paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(3*density);

@@ -7,9 +7,11 @@
  const palettes={gold:['#ffac24','#ffe09c'],ice:['#b9e4ff','#f3fcff'],fire:['#ffc568','#fff1c0'],shadow:['#d1a5ff','#f7e9ff'],emerald:['#78efb6','#e0ffe8'],ruby:['#ff9e71','#fff0ce']};
  const whites={gold:'#fffef5',ice:'#ffffff',fire:'#fffdf5',shadow:'#fffcff',emerald:'#fafffd',ruby:'#fffdf8'},NORMAL_MS=2200,WIN_MS=2200,TRAVEL_MS=1500;
  const slowDisplay=matchMedia('(update: slow)');
- const low=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4);
+ let low=(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory>0&&navigator.deviceMemory<=4);
  let values=[],net={edges:[],ports:[],ranks:[],maxRank:0},key='',theme='gold',rect=null,boxes=[],segments=[],frame=0,lastFrame=0,wave=null,lastRun='',revision=0,fading=[];
- const haloSprites=new Map(), channelTextures=new Map(), svgArms=new Map();
+ const haloSprites=new Map(), channelTextures=new Map(), svgArms=new Map(), shellPaths=new Map();
+ let overBudget=0, lastInput=null;
+ function observeCost(ms){if(low)return;overBudget=ms>32?overBudget+1:Math.max(0,overBudget-1);if(ms>75||overBudget>=2)low=true;}
  const steady=document.createElement('canvas'),steadyContext=steady.getContext('2d');
  const stoneStencil=document.createElement('canvas'),stoneLight=document.createElement('canvas');
  const stencilContext=stoneStencil.getContext('2d'),stoneContext=stoneLight.getContext('2d');
@@ -25,7 +27,7 @@
  let stats={frames:0,paintMs:[],updates:0,geometryReads:0};const joined=new Map();
  const enabled=()=>!document.body.classList.contains('kdNoGlow');
  // Capability estimates choose a cheaper animation. Only reduced motion or a genuinely slow display requests still light.
- const staticOnly=()=>reduce.matches||slowDisplay.matches;
+ const staticOnly=()=>reduce.matches||slowDisplay.matches||(navigator.hardwareConcurrency>0&&navigator.hardwareConcurrency<=2);
  const blocked=()=>game.hidden||document.hidden||!!window.kdOnboarding?.isOpen()||!!window.kdLearning?.isOpen()||!!window.kdStorage?.isOpen?.()||!!window.kdAdPrivacyBusy||!!document.querySelector('.kdRuleHelpOverlay,.kdDailyOverlay');
  const stop=()=>{effects=emptyEffects();bursts=[];wave=null;fading=[];cancelAnimationFrame(frame);frame=0;canvas.remove();if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');};
  function geometry(){const b=board.getBoundingClientRect();if(!b.width||!b.height)return false;rect={x:b.left,y:b.top,width:b.width,height:b.height};pixelScale=Math.min(1.5,devicePixelRatio||1);const scale=pixelScale,w=Math.ceil(b.width*scale),h=Math.ceil(b.height*scale);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}Object.assign(canvas.style,{left:b.left+'px',top:b.top+'px',width:b.width+'px',height:b.height+'px'});ctx.setTransform(scale,0,0,scale,0,0);
@@ -228,7 +230,7 @@
    painter.save();painter.translate(box.x,box.y);painter.scale(box.w/100,box.h/100);
    const tube=channelWidth();
    painter.lineWidth=tube+12;
-   painter.stroke(new Path2D(box.shell));
+   let path=shellPaths.get(box.shell);if(!path){path=new Path2D(box.shell);shellPaths.set(box.shell,path);}painter.stroke(path);
    if(!elbowFirstPort[box.mask]&&box.mask!==5&&box.mask!==10){
     painter.beginPath();painter.arc(50,50,tube/2+7.5,0,2*Math.PI);painter.fill();
    }
@@ -445,26 +447,27 @@
   }
   ctx.globalAlpha=1;
   if(wave&&(flat||now>=wave.start+wave.duration)){wave=null;bursts=[];document.body.classList.remove('kdFlowCelebrating');}
-  stats.frames++;stats.paintMs.push(performance.now()-start);if(stats.paintMs.length>240)stats.paintMs.shift();if(moving)schedule();
+  const paintMs=performance.now()-start;observeCost(paintMs);stats.frames++;stats.paintMs.push(paintMs);if(stats.paintMs.length>240)stats.paintMs.shift();if(moving)schedule();
  }
 
  function schedule(){if(frame||blocked()||!enabled())return;const interval=low?68:net.ports.length>=49?50:33;frame=requestAnimationFrame(now=>{if(now-lastFrame<interval){frame=0;schedule();return;}lastFrame=now;render(now);});}
- function update(host,masks){if(host!==board)return;const learning=window.kdLessonPreview?.(),state=window.kdGetLearningState?.();if(!learning||!state)return;const oldValues=values.slice(),oldSegments=segments.slice();values=Array.from(masks||learning.before);const nextKey=[state.level,state.daily?.date||'',window.kdExtra?.layer||0,values.length].join('|'),now=performance.now(),changed=nextKey!==key||state.moves===0&&lastMoves>0&&(state.undos||0)<=lastUndos;lastMoves=state.moves;lastUndos=state.undos||0;
+ function update(host,masks,force=false){if(host!==board)return;const learning=window.kdLessonPreview?.(),state=window.kdGetLearningState?.();if(!learning||!state)return;const incoming=Array.from(masks||learning.before),signature=JSON.stringify([state.level,state.moves,state.undos,state.daily?.date||"",window.kdExtra?.layer||0,state.locked,window.kdLastWin?.id||"",document.documentElement.dataset.kdTheme||"gold",incoming,learning.flags.fog,staticOnly()]);if(!force&&signature===lastInput&&canvas.isConnected)return;lastInput=signature;const oldValues=values.slice(),oldSegments=segments.slice();values=incoming;const nextKey=[state.level,state.daily?.date||'',window.kdExtra?.layer||0,values.length].join('|'),now=performance.now(),changed=nextKey!==key||state.moves===0&&lastMoves>0&&(state.undos||0)<=lastUndos;lastMoves=state.moves;lastUndos=state.undos||0;
   if(changed){key=nextKey;joined.clear();wave=null;lastRun='';fading=[];bursts=[];}
   const next=kdConnectionModel.graph(values,learning.n,learning.flags.fog);if(!changed&&!staticOnly())for(const old of oldSegments)if(!next.edges.some(e=>e.id===old.id))for(const [cell,bit] of [[old.a,old.bit],[old.b,old.opp]])if(values[cell]===oldValues[cell]&&!learning.flags.fog[cell]&&boxes[cell])fading.push({points:line(cell,arm(values[cell],bit)),width:old.width,start:now});const newIds=changed?[]:next.edges.filter(e=>!joined.has(e.id)).map(e=>e.id);if(newIds.length&&!staticOnly()&&enabled()){bursts.push({id:++burstId,start:null,seedIds:newIds});bursts=bursts.slice(-3);}for(const e of next.edges)if(!joined.has(e.id))joined.set(e.id,changed?-1e9:now);for(const id of joined.keys())if(!next.edges.some(e=>e.id===id))joined.delete(id);net=next;theme=document.documentElement.dataset.kdTheme||'gold';revision++;stats.updates++;
   if(!enabled()||blocked()){stop();return;}
   // Completion is reported by the existing engine/reward flow, not inferred from lit ports.
   if(!state.locked&&lastRun){lastRun='';wave=null;if(document.body.classList.contains('kdFlowCelebrating'))document.body.classList.remove('kdFlowCelebrating');}const run=state.locked&&window.kdLastWin?.id;if(run&&run!==lastRun){lastRun=run;const duration=staticOnly()?0:WIN_MS;wave={start:null,duration};document.body.classList.add('kdFlowCelebrating');}
-  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}if(!geometry())return;refreshSegments();rebuildStoneStencil();rebuildSettled(...(palettes[theme]||palettes.gold));
+  cancelAnimationFrame(frame);frame=requestAnimationFrame(time=>{frame=0;if(!enabled()||blocked()){stop();return;}const begin=performance.now();if(!geometry())return;refreshSegments();if(wave||bursts.length)rebuildStoneStencil();rebuildSettled(...(palettes[theme]||palettes.gold));
    for(const event of wave?[wave]:bursts){
     event.plan=event===wave?planEnergy([],true):planEnergy(event.seedIds);
     if(event.start===null)event.start=performance.now();
    }
-   time=Math.max(time,performance.now());if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
+   observeCost(performance.now()-begin);time=Math.max(time,performance.now());if(!canvas.isConnected)document.documentElement.appendChild(canvas);render(time);});
  }
  // A broken link never emits new energy. Its unchanged neighbour's real pipe fades for
  // 240 ms; rotated-away arms vanish immediately, so no stale line crosses the stone.
- function sync(){if(!enabled()||blocked()){stop();return;}update(board,values.length?values:undefined);}
+ function sync(){if(!enabled()||blocked()){lastInput=null;stop();return;}update(board);}
+ function layoutSync(){if(!enabled()||blocked()){lastInput=null;stop();return;}update(board,undefined,true);}
  window.kdPipeFlow={afterRender:update,state:()=>({enabled:enabled(),static:staticOnly(),profile:staticOnly()?'still':low?'lightweight':'full',theme,revision,key,edges:net.edges.map(e=>({...e})),ports:net.ports.slice(),ranks:net.ranks.slice(),wave:wave?{start:wave.start,duration:wave.duration}:null,fading:fading.length,canvas:canvas.isConnected,rect:rect?{...rect}:null,segments:segments.map(s=>({id:s.id,points:s.points.map(p=>p.slice())})),previewLayer,stats:{...stats,textureCount:channelTextures.size,paintMs:stats.paintMs.slice(),haloBrushes:haloSprites.size,haloBrushBytes:haloSprites.size*96*96*4},renderer:'canvas2d-four-passes',style:'energy-reference-3-poco',timings:{joinMs:NORMAL_MS,travelMs:TRAVEL_MS,completionMaxMs:WIN_MS,fadeMs:240},effects:JSON.parse(JSON.stringify(effects)),phoneVerified:false})};
  if(previewAllowed)window.kdPipeFlow.showLayer=name=>{
   if(name!=='all'&&!layerNames.includes(name))throw new RangeError('Unknown energy layer');
@@ -473,5 +476,5 @@
  };
  try{window.KaraNative?.setTapLightEnabled?.(false);window.KaraNative?.cancelTapLight?.(0);}catch(_){}
  new MutationObserver(sync).observe(game,{attributes:true,attributeFilter:['hidden']});new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});new MutationObserver(()=>{update(board);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-kd-theme']});
- new MutationObserver(sync).observe(document.body,{childList:true});reduce.addEventListener('change',sync);slowDisplay.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);window.addEventListener('resize',sync);window.addEventListener('scroll',sync,{passive:true});const resize=new ResizeObserver(sync);for(const el of [board,game.querySelector('main'),game.querySelector('.instructions'),game.querySelector('.kdTop')])if(el)resize.observe(el);sync();
+ new MutationObserver(sync).observe(document.body,{childList:true});reduce.addEventListener('change',layoutSync);slowDisplay.addEventListener('change',layoutSync);document.addEventListener('visibilitychange',sync);window.addEventListener('resize',layoutSync);window.addEventListener('scroll',layoutSync,{passive:true});const resize=new ResizeObserver(layoutSync);for(const el of [board,game.querySelector('main'),game.querySelector('.instructions'),game.querySelector('.kdTop')])if(el)resize.observe(el);sync();
 })();

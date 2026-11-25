@@ -1,0 +1,57 @@
+name: KaraDugum 6.56 performance candidate audit
+on:
+  push:
+    branches: [release/6.56-119-performance-rc]
+permissions:
+  contents: read
+jobs:
+  performance:
+    if: github.ref == 'refs/heads/release/6.56-119-performance-rc'
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [compact-slow, standard-mid, large-fast]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Measure game responsiveness on a synthetic phone profile
+        env:
+          PERF_PROFILES: ${{ matrix.profile }}
+          PERF_OUT: ${{ runner.temp }}/kd-perf
+        run: node tests/mobile-performance-audit.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-${{ matrix.profile }}
+          path: ${{ runner.temp }}/kd-perf/report.json
+          if-no-files-found: warn
+  layout:
+    if: github.ref == 'refs/heads/release/6.56-119-performance-rc'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Check compact, tall and landscape responsive layouts
+        env:
+          KD_MATRIX_OUT: ${{ runner.temp }}/kd-layout.json
+        run: node tests/mobile-layout-matrix.cjs --devices=compact_320,tall_393,landscape_844
+      - name: Check reward and interaction flow in isolated browser
+        if: always()
+        run: node tests/reward-performance-audit.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: layout-audit
+          path: ${{ runner.temp }}/kd-layout.json
+          if-no-files-found: warn
