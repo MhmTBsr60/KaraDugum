@@ -468,8 +468,13 @@ public class MainActivity extends Activity {
     }
     private void error(String message) {
         Log.e(TAG, message);
-        runOnUiThread(() -> Toast.makeText(this, NativeStrings.text(message, uiLanguage), Toast.LENGTH_LONG).show());
-        send("error", JSONObject.quote(NativeStrings.text(message, uiLanguage)));
+        String localized = NativeStrings.text(message, uiLanguage);
+        if ("Google Play Oyunlar'a bağlanılamadı. Yerel kayıtların korunuyor; daha sonra yeniden deneyebilirsin.".equals(message)) {
+            send("loginError", JSONObject.quote(localized));
+            return;
+        }
+        runOnUiThread(() -> Toast.makeText(this, localized, Toast.LENGTH_LONG).show());
+        send("error", JSONObject.quote(localized));
     }
     private void checkSignIn() {
         if (!audience.allowOnlineAccounts() || !gamesInitialized || !gamesLifecycleReady || gamesStartupPending || audienceDialog != null || manualSigningIn || checkingSignIn || isFinishing() || isDestroyed()) return;
@@ -890,6 +895,7 @@ public class MainActivity extends Activity {
         catch (RuntimeException e) { interstitialInProgress = false; sendAudienceState(); Log.w(TAG,"Interstitial display failed",e); loadInterstitial(); }
     }
     public class Bridge {
+        @JavascriptInterface public String appVersion() { return BuildConfig.VERSION_NAME; }
         @JavascriptInterface public boolean feedbackAudioAllowed() {
             AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (manager == null || manager.getRingerMode() == AudioManager.RINGER_MODE_SILENT || manager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) return false;
