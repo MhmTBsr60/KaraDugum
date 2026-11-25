@@ -18,6 +18,8 @@ public class NativeAuthAudit {
     private AudiencePolicy audience=AudiencePolicy.choose("adult");
     private boolean gamesInitialized=true,gamesLifecycleReady=true,gamesStartupPending,gamesStartupFailed,pendingInteractiveLogin,manualSigningIn,checkingSignIn,signedIn,finishing,destroyed;
     private Object audienceDialog;
+    private void openDeletionScreen(String owner){events.add("erase:"+owner);}
+    static class GameDataDeletion {static boolean pending(NativeAuthAudit host,String owner){return owner.equals("erase-me");} static boolean allowProfile(NativeAuthAudit host,String owner,boolean interactive){return !owner.equals("erased")||interactive;}}
     private int authGeneration,delivered,preparationRequests,reviewRequests;
     private boolean lastReviewing,lastLoginRequested;
     private String currentPlayerId="";
@@ -62,6 +64,15 @@ ${methods}
         require(h.delivered==1,context+": reward delivery starts after profile");
     }
     public static void main(String[] args){
+        NativeAuthAudit pending=new NativeAuthAudit();pending.checkSignIn();
+        pending.signInClient.automatic.get(0).success(new AuthenticationResult(true));
+        pending.playersClient.tasks.get(0).success(new Player("erase-me","Player"));
+        require(!pending.signedIn&&pending.events.equals(List.of("erase:erase-me"))&&pending.delivered==0,"Pending deletion resumes before syncing or reward delivery");
+        NativeAuthAudit erased=new NativeAuthAudit();erased.checkSignIn();
+        erased.signInClient.automatic.get(0).success(new AuthenticationResult(true));
+        erased.playersClient.tasks.get(0).success(new Player("erased","Player"));
+        disconnected(erased,"Erased profile stays signed out on automatic login");
+
         for(String age:new String[]{null,"under13","teen","unknown"}){
             NativeAuthAudit h=new NativeAuthAudit();h.audience=AudiencePolicy.choose(age);h.checkSignIn();h.signIn();
             require(h.signInClient.automatic.isEmpty()&&h.signInClient.manual.isEmpty()&&h.playersClient.tasks.isEmpty(),"Restricted/pending age never calls account SDK: "+age);

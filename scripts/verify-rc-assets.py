@@ -32,7 +32,7 @@ class GameAssets(HTMLParser):
 def game_assets():
     parser = GameAssets()
     parser.feed((ROOT / 'index.html').read_text())
-    paths = parser.paths | {'index.html', 'privacy-policy.html', 'delete-account.html'}
+    paths = parser.paths | {'index.html', 'privacy-policy.html', 'delete-account.html', 'erase-local.js'}
     paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / 'assets').rglob('*') if p.is_file())
     result = {}
     for name in sorted(paths):
