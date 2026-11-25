@@ -17,7 +17,7 @@ if(value===undefined){const m=source.match(/^([\s↻↶◈◇🔊▶✓★🏆�
 const out=value===undefined?raw:raw.replace(source,value);if(translations.size>8000)translations.clear();translations.set(cacheKey,out);return out;}
 window.kdTranslate=text;for(const name of ['alert','confirm']){const native=window[name].bind(window);window[name]=message=>native(text(String(message)));}window.kdLocalization={languages:labels,dictionaries:dict,language:selected};
 const excluded='script,style,textarea,option,#kdLanguageControl,[data-no-translate],.kdThemeDefinitions,.kdBoardOrnament,.kdSculptedPipe,.kdMenuArtwork';
-const skip=node=>{const e=node.nodeType===1?node:node.parentElement;return !e||!!e.closest(excluded)};
+const skip=node=>{if(node.nodeType!==1&&node.nodeType!==3)return true;const e=node.nodeType===1?node:node.parentElement;return !e||!!e.closest(excluded)};
 function translateNode(node,code){if(skip(node))return;let r=originals.get(node);if(r&&r.code===code&&node.nodeValue===r.output)return;if(!r||node.nodeValue!==r.output)r={source:node.nodeValue};const out=text(r.source,code);r.output=out;r.code=code;originals.set(node,r);if(node.nodeValue!==out)node.nodeValue=out;}
 function translateAttrs(e,code){if(skip(e))return;const saved=attrs.get(e)||{};for(const name of ['aria-label','title','placeholder']){if(!e.hasAttribute(name))continue;const current=e.getAttribute(name),r=saved[name];if(r&&r.code===code&&current===r.output)continue;const source=r&&current===r.output?r.source:current,out=text(source,code);saved[name]={source,output:out,code};if(current!==out)e.setAttribute(name,out);}attrs.set(e,saved);}
 function languageControl(code,changed){
