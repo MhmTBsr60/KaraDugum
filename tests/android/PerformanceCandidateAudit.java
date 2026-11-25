@@ -41,6 +41,14 @@ public final class PerformanceCandidateAudit {
         fail("Game not ready");
     }
     private void screenshot(Context context,String name) throws Exception {
+        // Real device screenshot, after the Android first-use immersive guidance is dismissed.
+        android.view.accessibility.AccessibilityNodeInfo root=inst.getUiAutomation().getRootInActiveWindow();
+        if(root!=null) {
+            for(android.view.accessibility.AccessibilityNodeInfo node:root.findAccessibilityNodeInfosByText("Got it")) {
+                if(node.isClickable()&&node.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK)){SystemClock.sleep(500);break;}
+            }
+        }
+        System.out.println("VISUAL_657 "+name+" "+eval("JSON.stringify({width:innerWidth,height:innerHeight,dpr:devicePixelRatio})"));
         android.graphics.Bitmap bitmap=inst.getUiAutomation().takeScreenshot();
         assertNotNull("Android screenshot unavailable",bitmap);
         File dir=new File(context.getExternalFilesDir(null),"visual657");
