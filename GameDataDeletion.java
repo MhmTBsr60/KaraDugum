@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.SnapshotsClient;
@@ -75,7 +76,11 @@ public final class GameDataDeletion extends Activity {
             catch (android.content.ActivityNotFoundException ignored) { message("Tarayıcıda play.google.com/games/profile adresini aç."); }
         });
         button(layout, "Kapat", this::finish);
-        setContentView(layout);
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFitsSystemWindows(true);
+        scroll.setFillViewport(true);
+        scroll.addView(layout, new ScrollView.LayoutParams(-1, -2));
+        setContentView(scroll);
         if (!owner.isEmpty() && !eligible) { fail(); return; }
         try (InputStream in = getAssets().open("erase-local.js"); ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
