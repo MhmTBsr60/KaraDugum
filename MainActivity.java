@@ -117,7 +117,6 @@ public class MainActivity extends Activity {
             Log.e(TAG, "Installation identity unavailable", e);
         }
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        configureGameWindow();
         // Safe child defaults before any explicit ad initialization; wait for the age screen.
         configureAudienceAds();
         view = new WebView(this);
@@ -160,6 +159,7 @@ public class MainActivity extends Activity {
             });
         }
         setContentView(gameSurface);
+        configureGameWindow();
         gameSurface.requestApplyInsets();
         view.loadUrl("file:///android_asset/index.html");
         tapLightStage(0,"ready");
@@ -173,7 +173,7 @@ public class MainActivity extends Activity {
     private void configureGameWindow() {
         if (Build.VERSION.SDK_INT >= 30) {
             getWindow().setDecorFitsSystemWindows(false);
-            android.view.WindowInsetsController controller = getWindow().getInsetsController();
+            android.view.WindowInsetsController controller = getWindow().getDecorView().getWindowInsetsController();
             if (controller != null) {
                 controller.setSystemBarsBehavior(android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                 controller.hide(android.view.WindowInsets.Type.systemBars());
