@@ -129,3 +129,5 @@ html[data-kd-theme] body.kdNoGlow #kdGame #board>.tile.flash:after{display:none}
 }
 .kdQuestsFull #v9Rows{grid-template-rows:repeat(3,minmax(0,1fr)) max-content}
 .kdQuestsFull .kdQuestFinale strong{display:block}
+
+.kdProfileAccount{margin:12px 0 18px}.kdProfileAccount .kdModernLogin{display:block;width:100%;margin:0!important}.kdProfileAccount .kdAudienceNote{margin:0 0 10px}.kdLoginError{border:1px solid #b58c56;border-radius:12px;padding:12px;margin:10px 0 0;background:#29221a;color:#f3d59e;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
