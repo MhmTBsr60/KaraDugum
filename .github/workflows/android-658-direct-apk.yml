@@ -1,0 +1,94 @@
+name: KARA DÜĞÜM 6.58 (121) signed direct APKs
+on:
+  push:
+    branches: [ci/6.58-121-direct-apk]
+permissions:
+  contents: read
+jobs:
+  apk:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [test]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      KD_ADS_MODE: ${{ matrix.mode }}
+      KD_VERSION_NAME: '6.58'
+      KD_VERSION_CODE: '121'
+      KD_EXPECTED_SIGNER: 351b49b72bfc09ebb317769832319eadca9ded6dae709daeb8314719a53dee9e
+      ADMOB_REWARDED_AD_UNIT_ID: ${{ vars.ADMOB_REWARDED_AD_UNIT_ID }}
+      ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ vars.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Stage the exact reviewed game assets
+        run: |
+          git diff --exit-code 62e1a276c8ee6eeb269c06138558a55c32cc0e4c HEAD -- . ':(exclude).github/workflows/android-658-direct-apk.yml'
+          bash scripts/prepare-android-rc.sh
+          if [ "$KD_ADS_MODE" = test ]; then
+            sed -i "s/applicationId 'com.orynexa.karadugum'/applicationId 'com.orynexa.karadugum.visualtest'/" app/build.gradle
+            sed -i 's/android:allowBackup="true"/android:allowBackup="false"/' app/src/main/AndroidManifest.xml
+          fi
+      - name: Sign and assemble the APK
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$KEYSTORE_B64"
+          umask 077
+          trap 'rm -f app/karadugum.jks' EXIT
+          printf '%s' "$KEYSTORE_B64" | base64 -d > app/karadugum.jks
+          keytool -exportcert -keystore app/karadugum.jks -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}' > "$RUNNER_TEMP/expected-cert-sha256"
+          test "$(cat "$RUNNER_TEMP/expected-cert-sha256")" = "$KD_EXPECTED_SIGNER"
+          gradle --no-daemon :app:assembleRelease || (sleep 10; gradle --no-daemon :app:assembleRelease)
+      - name: Verify version, package, signature, source assets and advertisement mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          out=dist/apk
+          mkdir -p "$out"
+          apk=app/build/outputs/apk/release/app-release.apk
+          bash scripts/verify-apk-signature.sh "$apk" "$RUNNER_TEMP/expected-cert-sha256" > "$out/signature.txt"
+          aapt=$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)
+          "$aapt" dump badging "$apk" > "$out/badging.txt"
+          grep -F "versionCode='121' versionName='6.58'" "$out/badging.txt"
+          if [ "$KD_ADS_MODE" = test ]; then
+            grep -F "package: name='com.orynexa.karadugum.visualtest'" "$out/badging.txt"
+            grep -F "application-label:'KARA DÜĞÜM TEST'" "$out/badging.txt"
+            grep -Eq 'ADS_TEST_MODE = true;' app/build/generated/source/buildConfig/release/com/orynexa/karadugum/BuildConfig.java
+            filename=KaraDugum-6.58-121-Gorsel-Test.apk
+          else
+            grep -F "package: name='com.orynexa.karadugum'" "$out/badging.txt"
+            grep -Eq 'ADS_TEST_MODE = false;' app/build/generated/source/buildConfig/release/com/orynexa/karadugum/BuildConfig.java
+            filename=KaraDugum-6.58-121.apk
+          fi
+          python3 scripts/verify-rc-assets.py --package "$apk" --report "$out/assets.json"
+          python3 - <<'PY'
+          import json,zipfile,os,re
+          cfg=json.load(open('app/kd-ads.json'))
+          with zipfile.ZipFile('app/build/outputs/apk/release/app-release.apk') as z:
+              dex=b''.join(z.read(n) for n in z.namelist() if re.fullmatch(r'classes\d*\.dex',n))
+          assert cfg['mode']==os.environ['KD_ADS_MODE']
+          assert all(cfg[k].encode() in dex for k in ['rewardedUnitId','interstitialUnitId'])
+          print('PASS: compiled ad identifiers match intended configuration')
+          PY
+          cp "$apk" "$out/$filename"
+          (cd "$out"; sha256sum *.apk > SHA256SUMS)
+          echo '62e1a276c8ee6eeb269c06138558a55c32cc0e4c' > "$out/source-commit.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.58-121-${{ matrix.mode }}-APK
+          path: dist/apk/
+          if-no-files-found: error
