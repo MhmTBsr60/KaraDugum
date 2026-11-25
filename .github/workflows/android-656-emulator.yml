@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           bash scripts/prepare-android-rc.sh
           # Test runner links to this transitive app dependency; keep only in disposable QA builds.
-          printf '\n-keep class androidx.tracing.** { *; }\n' >> proguard-rules.pro
+          printf '\n-keep class androidx.** { *; }\n-keep class kotlin.** { *; }\n-keep class kotlinx.** { *; }\n' >> proguard-rules.pro
           rm app/src/androidTest/java/com/orynexa/karadugum/PocoEnergyUpgradeAudit.java
           cp tests/android/PerformanceCandidateAudit.java app/src/androidTest/java/com/orynexa/karadugum/
           keytool -genkeypair -keystore app/karadugum.jks -storepass android -alias androiddebugkey -keypass android -dname 'CN=Disposable QA' -keyalg RSA -keysize 2048 -validity 30
