@@ -1,0 +1,47 @@
+name: KaraDugum 6.56 full gameplay and Android-adjacent regression
+on:
+  push:
+    branches: [audit/6.56-regression-20261125]
+permissions:
+  contents: read
+jobs:
+  logic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm test
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        audit: [cloud, rewards, gameplay, energy]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run targeted regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ matrix.audit }}" in
+            cloud) for test in full-cloud-audit installation-restore-audit cloud-reconnect-audit account-help-audit; do node tests/$test.cjs; done ;;
+            rewards) for test in ad-owner-audit reward-performance-audit reward-indicators-audit privacy-settings-audit; do node tests/$test.cjs; done ;;
+            gameplay) for test in browser-audit history-bound-audit tablet-landscape-audit onboarding-save-audit; do node tests/$test.cjs; done ;;
+            energy) KD_PERFORMANCE_REPORT="$RUNNER_TEMP/energy.json" node tests/pipe-flow-performance.cjs ;;
+          esac
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.audit == 'energy'
+        with:
+          name: energy-performance
+          path: ${{ runner.temp }}/energy.json
+          if-no-files-found: warn
