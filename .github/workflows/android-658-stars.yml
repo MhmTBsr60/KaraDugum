@@ -1,0 +1,20 @@
+name: KARA DÜĞÜM 6.58 earned-star visual regression
+on:
+  push:
+    branches: [release/6.58-121-star-celebration]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/star-celebration-658.cjs
+      - run: node tests/reward-performance-audit.cjs
+      - run: npm test

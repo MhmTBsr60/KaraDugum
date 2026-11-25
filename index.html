@@ -926,7 +926,19 @@ function updateRewardBadges(){
 }
 let busy=false;const observer=new MutationObserver(()=>{if(busy)return;const shell=$('kdShell');if(!shell||shell.hidden||!shell.querySelector('.kdHomeHeader')||shell.querySelector('[data-v9="shop"]'))return;busy=true;let foot=shell.querySelector('.kdFoot');for(const [icon,label,sub,key] of buttons){let b=document.createElement('button');b.className='kdBtn kdV9Btn';b.dataset.v9=key;b.innerHTML=`<span class="kdIcon">${icon}</span><span>${label}<small class="kdSmall">${sub}</small></span>`;b.onclick=()=>overlay(key);foot?foot.before(b):shell.append(b)}updateRewardBadges();let brand=shell.querySelector('.kdHomeTitle small');if(brand)brand.textContent='300 BÖLÜM · '+title().toUpperCase()+' · v'+(window.KaraNative?.appVersion?.()||'6.53');busy=false});observer.observe($('kdShell'),{childList:true,subtree:false});
 // The completion modal is already managed by the original game. Add a brief non-blocking visual flourish.
-let winShown=false;new MutationObserver(()=>{let m=$('modal');if(!m)return;let show=m.classList.contains('show'),won=show&&!!window.kdLastWin;if(won&&!winShown){winShown=true;let a=document.createElement('div');a.className='kdV9Win';a.textContent='✦ ★ ✦';document.body.append(a);setTimeout(()=>a.remove(),1250)}if(!show)winShown=false}).observe($('modal'),{attributes:true,attributeFilter:['class']});
+let winShown=null,winFlourish=null,winTimer=0,winGoal=null;
+function clearWinFlourish(){clearTimeout(winTimer);winFlourish?.remove();winFlourish=null;if(winGoal?.isConnected){winGoal.textContent='★★★';winGoal.removeAttribute('data-earned-stars');}winGoal=null;}
+new MutationObserver(()=>{
+ const m=$('modal'),w=window.kdLastWin;
+ if(!m?.classList.contains('show')||!w){clearWinFlourish();winShown=null;return;}
+ if(!Number.isInteger(w.star)||w.star<1||w.star>3||winShown===w.id)return;
+ clearWinFlourish();winShown=w.id;
+ const earned='★'.repeat(w.star);
+ winGoal=document.querySelector('#kdModeRule .kdStarGoalButton');
+ if(winGoal){winGoal.textContent=earned;winGoal.dataset.earnedStars=String(w.star);}
+ const a=document.createElement('div');a.className='kdV9Win';a.dataset.earnedStars=String(w.star);a.textContent=Array.from({length:w.star},()=> '★').join(' ');a.setAttribute('aria-hidden','true');winFlourish=a;document.body.append(a);
+ winTimer=setTimeout(()=>{a.remove();if(winFlourish===a)winFlourish=null;},1250);
+}).observe($('modal'),{attributes:true,attributeFilter:['class']});
 })();
 </script><style id="kd11-orbit">
 #kdShell:has(.kdOrbit){height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:clamp(5px,1dvh,12px) 14px 8px;gap:0}
