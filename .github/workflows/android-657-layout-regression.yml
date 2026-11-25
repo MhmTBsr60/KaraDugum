@@ -1,0 +1,29 @@
+name: 6.57 visual layout and gameplay regression
+on:
+  push:
+    branches: [audit/6.57-layout-regression-20261125]
+permissions:
+  contents: read
+jobs:
+  layout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Validate all 36 representative layouts
+        env:
+          KD_MATRIX_OUT: ${{ runner.temp }}/kd-layout.json
+        run: node tests/mobile-layout-matrix.cjs --devices=compact_320,tall_393,landscape_844
+      - run: node tests/reward-performance-audit.cjs
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: layout-audit-657
+          path: ${{ runner.temp }}/kd-layout.json
+          if-no-files-found: warn
