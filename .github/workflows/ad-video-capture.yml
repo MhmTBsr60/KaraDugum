@@ -1,0 +1,25 @@
+name: Capture authentic Kara Dugum 6.58 gameplay for video ads
+on:
+  push:
+    branches: [media/6.58-ad-video-capture]
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/ad-video-capture.cjs
+      - name: Encode gameplay footage
+        run: |
+          ffmpeg -hide_banner -loglevel error -y -framerate 24 -i ad-capture/g%04d.jpg -c:v libx264 -crf 18 -preset fast -pix_fmt yuv420p -movflags +faststart ad-capture/gameplay.mp4
+          rm ad-capture/g*.jpg
+          ffprobe -v error -show_entries format=duration:stream=width,height,codec_name -of json ad-capture/gameplay.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KaraDugum-6.58-authentic-gameplay
+          path: ad-capture/
+          if-no-files-found: error
