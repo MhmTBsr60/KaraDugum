@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 import java.nio.charset.StandardCharsets;
 
 public class NativeCloudCallbackAudit {
-    private static final String TAG="audit",SAVE_NAME="legacy",FULL_SAVE_NAME="full";
+    private static final String TAG="audit",SAVE_NAME="legacy",FULL_SAVE_NAME="full",RECOVERY_SAVE_NAME="recovery";
     private AudiencePolicy audience=AudiencePolicy.choose("adult");
     private boolean signedIn=true,saving,finishing,destroyed;
     private static <T> FakeTask<T> trackCloudWrite(FakeTask<T> task){return task;}
@@ -39,6 +39,8 @@ ${methods}
         return new JSONObject().put("level",17).put("completed",new JSONObject().put("16",3)).put("best",new JSONObject().put("16",500)).put("full",full).toString();
     }
     static Snapshot empty(){return new Snapshot();}
+    static Snapshot foreignPayload(){Snapshot s=empty();s.contents.bytes=new JSONObject().put("full",new JSONObject().put("account","B")).toString().getBytes(StandardCharsets.UTF_8);return s;}
+    static void verified(NativeCloudCallbackAudit h){h.client.players.get(h.client.players.size()-1).success(new AnnotatedData<>(new Player("A"),false));h.client.lists.get(h.client.lists.size()-1).success(new AnnotatedData<>(new MetadataBuffer(new SnapshotMetadata("full","A")),false));}
     static SnapshotsClient.DataOrConflict<Snapshot> normal(Snapshot value){return new SnapshotsClient.DataOrConflict<>(value,null,false);}
     static SnapshotsClient.DataOrConflict<Snapshot> conflict(Snapshot first,Snapshot second){return new SnapshotsClient.DataOrConflict<>(null,new SnapshotsClient.SnapshotConflict(first,second),true);}
     static void changeAccount(NativeCloudCallbackAudit h,String owner){h.authGeneration++;h.currentPlayerId=owner;h.signedIn=true;h.audience=AudiencePolicy.choose("adult");}
@@ -131,6 +133,22 @@ ${methods}
         require(one.closed&&two.closed&&!depth.saving&&depth.errors.size()==1,"Conflict depth limit closes handles and finishes current operation");
         NativeCloudCallbackAudit unverified=new NativeCloudCallbackAudit();unverified.currentPlayerId="";unverified.syncSave(request("A",true,"not-verified"));
         require(unverified.client.opens.isEmpty(),"No cloud API call before a verified player ID");
+        NativeCloudCallbackAudit mismatch=new NativeCloudCallbackAudit();mismatch.syncSave(request("A",false,"own-local"));
+        mismatch.client.opens.get(0).task.failure(new Exception("legacy absent"));
+        Snapshot wrong=foreignPayload();mismatch.client.opens.get(1).task.success(normal(wrong));
+        require(wrong.closed&&mismatch.client.commits.isEmpty(),"Mismatched original is closed without writing");
+        verified(mismatch);require(mismatch.client.opens.get(2).slot.equals(FULL_SAVE_NAME),"First retry refreshes original after fresh player and snapshot list");
+        Snapshot wrongAgain=foreignPayload();mismatch.client.opens.get(2).task.success(normal(wrongAgain));verified(mismatch);
+        require(wrongAgain.closed&&mismatch.client.commits.isEmpty()&&mismatch.client.opens.get(3).slot.equals(RECOVERY_SAVE_NAME)&&mismatch.client.opens.get(3).create,"Persistent mismatched payload uses separate recovery, untouched original");
+        mismatch.client.opens.get(3).task.success(normal(empty()));require(mismatch.client.commits.size()==1,"Verified recovery writes only own progress");
+        mismatch.client.commits.get(0).task.success(new Object());require(mismatch.received.get(0).optJSONObject("full").optString("account").equals("A"),"Recovered upload never imports a foreign account");
+        NativeCloudCallbackAudit wrongMetadata=new NativeCloudCallbackAudit();wrongMetadata.syncSave(request("A",true,"own"));Snapshot otherOwner=empty();otherOwner.metadata=new SnapshotMetadata("full","B");wrongMetadata.client.opens.get(0).task.success(normal(otherOwner));verified(wrongMetadata);
+        Snapshot otherOwnerAgain=empty();otherOwnerAgain.metadata=new SnapshotMetadata("full","B");wrongMetadata.client.opens.get(1).task.success(normal(otherOwnerAgain));require(wrongMetadata.client.commits.isEmpty()&&wrongMetadata.client.opens.size()==2&&wrongMetadata.errors.size()==1,"Repeated foreign SDK metadata cannot create recovery or commit");
+        NativeCloudCallbackAudit staleIdentity=new NativeCloudCallbackAudit();staleIdentity.syncSave(request("A",true,"own"));staleIdentity.client.opens.get(0).task.success(normal(foreignPayload()));staleIdentity.client.players.get(0).success(new AnnotatedData<>(new Player("B"),false));require(staleIdentity.client.opens.size()==1&&staleIdentity.client.commits.isEmpty()&&staleIdentity.errors.size()==1,"Changed verified player stops recovery");
+        NativeCloudCallbackAudit rooted=new NativeCloudCallbackAudit();rooted.syncSave(request("A",true,"own"));rooted.client.opens.get(0).task.success(normal(foreignPayload()));verified(rooted);rooted.client.opens.get(1).task.success(normal(foreignPayload()));verified(rooted);require(!rooted.client.opens.get(2).create,"Previously rooted device cannot recreate a missing recovery slot");
+        NativeCloudCallbackAudit staleList=new NativeCloudCallbackAudit();staleList.syncSave(request("A",true,"own"));staleList.client.opens.get(0).task.success(normal(foreignPayload()));staleList.client.players.get(0).success(new AnnotatedData<>(new Player("A"),false));MetadataBuffer buffer=new MetadataBuffer(new SnapshotMetadata("full","A"));staleList.client.lists.get(0).success(new AnnotatedData<>(buffer,true));require(buffer.released&&!staleList.saving&&staleList.client.opens.size()==1,"Stale list releases resources and stops safely");
+        NativeCloudCallbackAudit restored=new NativeCloudCallbackAudit();restored.client.discovery=new MetadataBuffer(new SnapshotMetadata("recovery","A"));restored.syncSave(request("A",false,"new-device"));require(restored.client.opens.size()==1&&restored.client.opens.get(0).slot.equals(RECOVERY_SAVE_NAME)&&!restored.client.opens.get(0).create,"New device discovers recovery without touching original or recreating deleted slot");
+        NativeCloudCallbackAudit foreignRoute=new NativeCloudCallbackAudit();foreignRoute.client.discovery=new MetadataBuffer(new SnapshotMetadata("recovery","B"));foreignRoute.syncSave(request("A",false,"new-device"));require(foreignRoute.client.opens.isEmpty()&&foreignRoute.errors.size()==1,"Foreign recovery metadata cannot be opened");
         System.out.println("PASS: "+checks+" assertions against actual native cloud methods; stale open/import/resolve/commit callbacks cannot publish, clear or flush another owner/epoch; current queue, cleanup and legacy boundaries preserved");
     }
 }
@@ -151,20 +169,29 @@ final class JSONObject {
     public String toString(){String id="json-fixture-"+(++next);registry.put(id,new JSONObject(this));return id;}
 }
 final class FakeTask<T> {
-    final List<Consumer<T>> success=new ArrayList<>();final List<Consumer<Exception>> failure=new ArrayList<>();
-    FakeTask<T> addOnSuccessListener(Consumer<T> c){success.add(c);return this;}
+    final List<Consumer<T>> success=new ArrayList<>();final List<Consumer<Exception>> failure=new ArrayList<>();T immediate;
+    FakeTask<T> addOnSuccessListener(Consumer<T> c){success.add(c);if(immediate!=null)c.accept(immediate);return this;}
     FakeTask<T> addOnFailureListener(Consumer<Exception> c){failure.add(c);return this;}
     void success(T value){for(Consumer<T> c:new ArrayList<>(success))c.accept(value);}
     void failure(Exception value){for(Consumer<Exception> c:new ArrayList<>(failure))c.accept(value);}
 }
 final class Snapshot {
-    final Contents contents=new Contents();boolean closed;
+    final Contents contents=new Contents();boolean closed;SnapshotMetadata metadata=new SnapshotMetadata("full","A");
+    SnapshotMetadata getMetadata(){return metadata;}
     Contents getSnapshotContents(){return contents;}
     static final class Contents {byte[] bytes=new byte[0];byte[] readFully(){return bytes.clone();}void writeBytes(byte[] b){bytes=b.clone();}}
 }
+final class Player {final String id;Player(String id){this.id=id;}String getPlayerId(){return id;}}
+final class SnapshotMetadata {final String slot;final Player owner;SnapshotMetadata(String slot,String id){this.slot=slot;owner=new Player(id);}String getUniqueName(){return slot;}Player getOwner(){return owner;}}
+final class MetadataBuffer extends ArrayList<SnapshotMetadata> {boolean released;MetadataBuffer(SnapshotMetadata... entries){addAll(Arrays.asList(entries));}void release(){released=true;}}
+final class AnnotatedData<T> {final T data;final boolean stale;AnnotatedData(T d,boolean s){data=d;stale=s;}T get(){return data;}boolean isStale(){return stale;}}
+final class PlayerClient {final SnapshotsClient client;PlayerClient(SnapshotsClient c){client=c;}FakeTask<AnnotatedData<Player>> getCurrentPlayer(boolean refresh){FakeTask<AnnotatedData<Player>> t=new FakeTask<>();client.players.add(t);client.deferNextLoad=true;return t;}}
 final class SnapshotMetadataChange {static final SnapshotMetadataChange EMPTY_CHANGE=new SnapshotMetadataChange();}
 final class SnapshotsClient {
     static final int RESOLUTION_POLICY_MANUAL=1;
+    final List<FakeTask<AnnotatedData<Player>>> players=new ArrayList<>();final List<FakeTask<AnnotatedData<MetadataBuffer>>> lists=new ArrayList<>();
+    boolean deferNextLoad;MetadataBuffer discovery=new MetadataBuffer();
+    FakeTask<AnnotatedData<MetadataBuffer>> load(boolean refresh){FakeTask<AnnotatedData<MetadataBuffer>> t=new FakeTask<>();if(deferNextLoad){deferNextLoad=false;lists.add(t);}else t.immediate=new AnnotatedData<>(discovery,false);return t;}
     final List<Open> opens=new ArrayList<>();final List<Commit> commits=new ArrayList<>();final List<FakeTask<DataOrConflict<Snapshot>>> resolves=new ArrayList<>();
     FakeTask<DataOrConflict<Snapshot>> open(String slot,boolean create,int resolution){Open o=new Open(slot,create);opens.add(o);return o.task;}
     FakeTask<DataOrConflict<Snapshot>> resolveConflict(String id,Snapshot chosen){FakeTask<DataOrConflict<Snapshot>> t=new FakeTask<>();resolves.add(t);return t;}
@@ -175,7 +202,7 @@ final class SnapshotsClient {
     static final class DataOrConflict<T> {final T data;final SnapshotConflict conflict;final boolean conflicted;DataOrConflict(T d,SnapshotConflict c,boolean v){data=d;conflict=c;conflicted=v;}T getData(){return data;}boolean isConflict(){return conflicted;}SnapshotConflict getConflict(){return conflict;}}
     static final class SnapshotConflict {final Snapshot chosen,other;SnapshotConflict(Snapshot a,Snapshot b){chosen=a;other=b;}Snapshot getSnapshot(){return chosen;}Snapshot getConflictingSnapshot(){return other;}String getConflictId(){return "conflict-id";}}
 }
-final class PlayGames {static SnapshotsClient getSnapshotsClient(NativeCloudCallbackAudit host){return host.client;}}
+final class PlayGames {static SnapshotsClient getSnapshotsClient(NativeCloudCallbackAudit host){return host.client;}static PlayerClient getPlayersClient(NativeCloudCallbackAudit host){return new PlayerClient(host.client);}}
 final class Log {static void w(String tag,String text){}static void w(String tag,String text,Throwable error){}}
 `;
 try{
@@ -184,3 +211,4 @@ try{
  try{execFileSync('javac',args,{stdio:'inherit'});}catch(error){if(error.code!=='ENOENT')throw error;execFileSync('java',['com.sun.tools.javac.Main',...args],{stdio:'inherit'});}
  execFileSync('java',['-cp',work,'com.orynexa.karadugum.NativeCloudCallbackAudit'],{stdio:'inherit'});
 }finally{fs.rmSync(work,{recursive:true,force:true});}
+

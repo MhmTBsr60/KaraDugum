@@ -20,6 +20,7 @@ import com.google.android.gms.games.PlayGamesSdk;
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdRequest;
@@ -48,7 +49,8 @@ public class MainActivity extends Activity {
     private static final String TAG = "KaraDugum";
     private static final String SAVE_NAME = "karadugum_progress_v1";
     private static final String FULL_SAVE_NAME = "karadugum_full_v1";
-    static boolean isGameSave(String name) { return SAVE_NAME.equals(name) || FULL_SAVE_NAME.equals(name); }
+    private static final String RECOVERY_SAVE_NAME = "karadugum_full_recovery_v1";
+    static boolean isGameSave(String name) { return SAVE_NAME.equals(name) || FULL_SAVE_NAME.equals(name) || RECOVERY_SAVE_NAME.equals(name); }
     private static final String ACH_FIRST = "CgkI-ZiLnPgfEAIQAg";
     private static final String ACH_STARS = "CgkI-ZiLnPgfEAIQAw";
     private static final String ACH_LEGEND = "CgkI-ZiLnPgfEAIQBA";
@@ -590,6 +592,8 @@ public class MainActivity extends Activity {
     private static final class CloudSaveOperation {
         final int generation;
         final String owner;
+        int identityRetries;
+        boolean recoverySlot, recoveryKnown;
         CloudSaveOperation(int generation, String owner) { this.generation = generation; this.owner = owner; }
     }
     private CloudSaveOperation activeCloudSave;
@@ -636,20 +640,44 @@ public class MainActivity extends Activity {
             operation = new CloudSaveOperation(authGeneration, currentPlayerId);
             activeCloudSave = operation; saving = true;
             SnapshotsClient client=PlayGames.getSnapshotsClient(this);
-            if(full!=null&&!full.has("root")) importLegacyAndOpen(client,incoming,operation);
-            else openCloudSnapshot(client,incoming,operation);
+            discoverCloudRoute(client,incoming,operation);
         } catch(Exception e) {
             if (operation != null) finishCloudSave(operation, "Kayıt verisi geçersiz");
             else error("Kayıt verisi geçersiz");
         }
     }
+    private void discoverCloudRoute(SnapshotsClient client, JSONObject incoming, CloudSaveOperation operation) {
+        if (!cloudSaveCurrent(operation)) return;
+        // Always discover an existing recovery slot before writing. A new device must not fork the account.
+        client.load(true).addOnSuccessListener(list -> {
+            if (list == null || list.get() == null) { finishCloudSave(operation,"Bulut kayıt listesi alınamadı; yerel kayıt korundu."); return; }
+            boolean valid=!list.isStale(), recovery=false;
+            try {
+                if (!cloudSaveCurrent(operation)) return;
+                if (valid) for (SnapshotMetadata entry : list.get()) {
+                    if (!RECOVERY_SAVE_NAME.equals(entry.getUniqueName())) continue;
+                    if (entry.getOwner()==null || !operation.owner.equals(entry.getOwner().getPlayerId())) { valid=false; break; }
+                    recovery=true;
+                }
+            } catch (RuntimeException error) { valid=false; }
+            finally { list.get().release(); }
+            if (!cloudSaveCurrent(operation)) return;
+            if (!valid) { finishCloudSave(operation,"Bulut kayıt listesi doğrulanamadı; yerel kayıt korundu."); return; }
+            JSONObject full=incoming.optJSONObject("full");
+            if (recovery && full==null) { finishCloudSave(operation,"Hesap kaydı doğrulanamadı; yerel kayıt korundu."); return; }
+            operation.recoverySlot=recovery;
+            operation.recoveryKnown=recovery;
+            if (!recovery && full!=null && !full.has("root")) importLegacyAndOpen(client,incoming,operation);
+            else openCloudSnapshot(client,incoming,operation);
+        }).addOnFailureListener(e -> finishCloudSave(operation,"Bulut kayıt listesi alınamadı; yerel kayıt korundu."));
+    }
     private void openCloudSnapshot(SnapshotsClient client,JSONObject incoming,CloudSaveOperation operation) {
         if (!cloudSaveCurrent(operation)) return;
-        String slot=incoming.optJSONObject("full")==null?SAVE_NAME:FULL_SAVE_NAME;
+        String slot=operation.recoverySlot?RECOVERY_SAVE_NAME:(incoming.optJSONObject("full")==null?SAVE_NAME:FULL_SAVE_NAME);
         try {
             // A previously synchronized device must not recreate a cloud slot erased elsewhere.
             JSONObject full = incoming.optJSONObject("full");
-            boolean mayCreate = full == null || !full.has("root");
+            boolean mayCreate = !operation.recoveryKnown && (full == null || !full.has("root"));
             client.open(slot,mayCreate,SnapshotsClient.RESOLUTION_POLICY_MANUAL)
                 .addOnSuccessListener(result -> handleSnapshot(client,result,incoming,0,operation))
                 .addOnFailureListener(e -> finishCloudSave(operation,"Bulut kayda erişilemedi: "+e.getMessage()));
@@ -666,9 +694,9 @@ public class MainActivity extends Activity {
                     if(result.isConflict()) {
                         SnapshotsClient.SnapshotConflict conflict=result.getConflict();
                         if(conflict==null)throw new IllegalStateException("Eski kayıt çakışması boş");
-                        legacy=mergeSave(readSnapshot(conflict.getSnapshot()),readSnapshot(conflict.getConflictingSnapshot()));
+                        legacy=mergeSave(readOwnedSnapshot(conflict.getSnapshot(),operation),readOwnedSnapshot(conflict.getConflictingSnapshot(),operation));
                     } else {
-                        Snapshot old=result.getData();legacy=old==null?new JSONObject():readSnapshot(old);
+                        Snapshot old=result.getData();legacy=old==null?new JSONObject():readOwnedSnapshot(old,operation);
                     }
                     legacy.remove("full");
                     enriched=mergeSave(legacy,incoming);
@@ -689,6 +717,63 @@ public class MainActivity extends Activity {
         byte[] bytes=snapshot.getSnapshotContents().readFully();
         return bytes.length==0?new JSONObject():new JSONObject(new String(bytes,StandardCharsets.UTF_8));
     }
+    // The SDK owner and the embedded account are separate checks. Never re-label or merge foreign data.
+    private static final class CloudIdentityMismatch extends Exception {
+        final boolean payloadOnly;
+        CloudIdentityMismatch(boolean payloadOnly) { this.payloadOnly=payloadOnly; }
+    }
+    private JSONObject readOwnedSnapshot(Snapshot snapshot, CloudSaveOperation operation) throws Exception {
+        if (snapshot == null || snapshot.getMetadata() == null || snapshot.getMetadata().getOwner() == null
+                || !operation.owner.equals(snapshot.getMetadata().getOwner().getPlayerId()))
+            throw new CloudIdentityMismatch(false);
+        JSONObject value=readSnapshot(snapshot);
+        JSONObject full=value.optJSONObject("full");
+        if (full != null && !operation.owner.equals(full.optString("account")))
+            throw new CloudIdentityMismatch(true);
+        return value;
+    }
+    private void recoverCloudMismatch(SnapshotsClient client, JSONObject incoming, CloudSaveOperation operation,
+                                      CloudIdentityMismatch mismatch) {
+        if (!cloudSaveCurrent(operation)) return;
+        final String message="Bulut kayıt sahibi doğrulanamadı; eski ve yerel kayıtlar korundu.";
+        // A second slot never adopts the old payload. A rooted device cannot recreate erased data.
+        if (operation.recoverySlot || operation.identityRetries >= 2 || incoming.optJSONObject("full")==null
+                || (operation.identityRetries > 0 && !mismatch.payloadOnly)) {
+            finishCloudSave(operation,message); return;
+        }
+        final boolean useRecovery=operation.identityRetries > 0;
+        operation.identityRetries++;
+        try {
+            PlayGames.getPlayersClient(this).getCurrentPlayer(true).addOnSuccessListener(player -> {
+                if (!cloudSaveCurrent(operation)) return;
+                if (player == null || player.isStale() || player.get() == null
+                        || !operation.owner.equals(player.get().getPlayerId())) {
+                    finishCloudSave(operation,message); return;
+                }
+                // Refresh the SDK's cached snapshot list before retrying. No old data is copied.
+                client.load(true).addOnSuccessListener(list -> {
+                    if (list == null || list.get() == null) { finishCloudSave(operation,message); return; }
+                    boolean verified=false, existingRecovery=false, valid=true;
+                    try {
+                        if (!cloudSaveCurrent(operation)) return;
+                        if (!list.isStale()) for (SnapshotMetadata entry : list.get()) {
+                            if (!FULL_SAVE_NAME.equals(entry.getUniqueName()) && !RECOVERY_SAVE_NAME.equals(entry.getUniqueName())) continue;
+                            boolean owned=entry.getOwner()!=null && operation.owner.equals(entry.getOwner().getPlayerId());
+                            if (!owned) { valid=false; break; }
+                            if (FULL_SAVE_NAME.equals(entry.getUniqueName())) verified=true;
+                            if (RECOVERY_SAVE_NAME.equals(entry.getUniqueName())) existingRecovery=true;
+                        }
+                    } catch (RuntimeException error) { valid=false; }
+                    finally { list.get().release(); }
+                    if (!cloudSaveCurrent(operation)) return;
+                    if (!valid || (!verified && !existingRecovery)) { finishCloudSave(operation,message); return; }
+                    operation.recoverySlot=useRecovery || existingRecovery;
+                    operation.recoveryKnown=existingRecovery;
+                    openCloudSnapshot(client,incoming,operation);
+                }).addOnFailureListener(e -> finishCloudSave(operation,message));
+            }).addOnFailureListener(e -> finishCloudSave(operation,message));
+        } catch (RuntimeException error) { finishCloudSave(operation,message); }
+    }
     private void handleSnapshot(SnapshotsClient client, SnapshotsClient.DataOrConflict<Snapshot> result, JSONObject incoming, int depth, CloudSaveOperation operation) {
         if (!cloudSaveCurrent(operation)) { discardCloudResult(client,result); return; }
         if (incoming.optJSONObject("full")!=null&&!operation.owner.equals(incoming.optJSONObject("full").optString("account"))) {
@@ -704,7 +789,7 @@ public class MainActivity extends Activity {
             Snapshot chosen=conflict.getSnapshot();
             Snapshot other=conflict.getConflictingSnapshot();
             try {
-                JSONObject merged=mergeSave(mergeSave(readSnapshot(chosen),readSnapshot(other)),incoming);
+                JSONObject merged=mergeSave(mergeSave(readOwnedSnapshot(chosen,operation),readOwnedSnapshot(other,operation)),incoming);
                 chosen.getSnapshotContents().writeBytes(snapshotBytes(merged));
                 if (other != chosen) discardCloudSnapshot(client,other);
                 trackCloudWrite(client.resolveConflict(conflict.getConflictId(),chosen))
@@ -713,13 +798,14 @@ public class MainActivity extends Activity {
                         discardCloudSnapshot(client,chosen);
                         finishCloudSave(operation,"Bulut kayıt çakışması: "+e.getMessage());
                     });
-            } catch(Exception e) { discardCloudResult(client,result); finishCloudSave(operation,"Bulut kayıt birleştirilemedi: "+e.getMessage()); }
+            } catch(CloudIdentityMismatch mismatch) { discardCloudResult(client,result); recoverCloudMismatch(client,incoming,operation,mismatch); }
+            catch(Exception e) { discardCloudResult(client,result); finishCloudSave(operation,"Bulut kayıt birleştirilemedi: "+e.getMessage()); }
             return;
         }
         Snapshot snapshot=result.getData();
         if(snapshot==null) { finishCloudSave(operation,"Bulut kayıt açılamadı"); return; }
         try {
-            JSONObject remote = readSnapshot(snapshot);
+            JSONObject remote = readOwnedSnapshot(snapshot,operation);
             JSONObject merged=mergeSave(remote,incoming);
             JSONObject incomingFull = incoming.optJSONObject("full");
             JSONObject mergedFull = merged.optJSONObject("full");
@@ -731,13 +817,18 @@ public class MainActivity extends Activity {
             trackCloudWrite(client.commitAndClose(snapshot,SnapshotMetadataChange.EMPTY_CHANGE))
                 .addOnSuccessListener(meta -> {
                     if (!cloudSaveCurrent(operation)) return;
+                    if (operation.recoverySlot) {
+                        try { merged.put("recoverySlot",true); }
+                        catch (Exception ignored) { /* the commit already succeeded */ }
+                    }
                     send("cloudSave",merged.toString()); finishCloudSave(operation,null);
                 })
                 .addOnFailureListener(e -> {
                     discardCloudSnapshot(client,snapshot);
                     finishCloudSave(operation,"Bulut kayıt yazılamadı: "+e.getMessage());
                 });
-        } catch(Exception e) { discardCloudSnapshot(client,snapshot); finishCloudSave(operation,"Bulut kayıt okunamadı: "+e.getMessage()); }
+        } catch(CloudIdentityMismatch mismatch) { discardCloudSnapshot(client,snapshot); recoverCloudMismatch(client,incoming,operation,mismatch); }
+        catch(Exception e) { discardCloudSnapshot(client,snapshot); finishCloudSave(operation,"Bulut kayıt okunamadı: "+e.getMessage()); }
     }
     private void flushPending() {
         if(pendingSave!=null) { String next=pendingSave; pendingSave=null; syncSave(next); }
@@ -1112,3 +1203,4 @@ public class MainActivity extends Activity {
         handleGameBack();
     }
 }
+

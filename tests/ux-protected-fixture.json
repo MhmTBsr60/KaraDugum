@@ -1,9 +1,10 @@
 {
   "base": "c38bbf3d19d686f1b62f418ed5dfae082e8bfcb4",
+  "cloudSyncApprovedChange": "6.55: recovery success status only; original account checks and save logic preserved",
   "normalizedCoreSha256": "d1104351de10f637b46884f51bb2c3e6c926669b913f79c00dccb3d22b5b818b",
   "protectedFiles": {
     "cloud-model.js": "f567310004cf0ce09540f10265bae8c7bb1e5946c2ca2539c768762213c5693f",
-    "cloud-sync.js": "83b69825ecaa67f83fab61a671b7dcb66fd2bac6ca2757f5a09ab21a1eae26a7",
+    "cloud-sync.js": "60140dd6a45bc5e012f3d2d4fa70c048972dca022a9b224b13ebdf3112c9f1e4",
     "reward-receipts.js": "17d8df416d98d2294ea002f0d03765195541ca00e9e739a2a7b29f1a694750d1",
     "daily-challenge.js": "f48feabedef6bdb0504ac099ef937ce8fd552e3c8fc7c395965d1b1add4960de",
     "mechanic-progress.js": "c0c1b761a04053bebe050718a7477941426ed00cbbf1436fce9731790d267c5b",
