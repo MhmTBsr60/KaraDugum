@@ -12,7 +12,7 @@ mkdir -p app/src/main/{assets,res/drawable-nodpi,res/values,java/com/orynexa/kar
 node scripts/configure-ads.cjs app/kd-ads.json
 cp ./*.java app/src/main/java/com/orynexa/karadugum/
 cp AndroidManifest.xml app/src/main/AndroidManifest.xml
-cp icon.png app/src/main/res/drawable-nodpi/karadugum_icon.png
+cp android-icons/runtime-icon-512.png app/src/main/res/drawable-nodpi/karadugum_icon.png
 printf '<resources><string name="game_services_project_id">1097423047801</string></resources>\n' > app/src/main/res/values/strings.xml
 python3 scripts/verify-rc-assets.py --stage app/src/main/assets
 
